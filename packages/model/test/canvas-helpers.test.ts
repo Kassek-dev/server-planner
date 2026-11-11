@@ -14,6 +14,7 @@ import {
   type Project,
   ProjectSchema,
   rackOccupancy,
+  setDeviceOs,
   updateDevice,
 } from '../src';
 import { buildHomeLab } from './support/home-lab';
@@ -154,5 +155,40 @@ describe('device.duplicate', () => {
     );
     expect(project.devices[result]?.placement).toBeUndefined();
     expect(project.layout.nodes[result]).toBeDefined();
+  });
+});
+
+describe('device.setOs', () => {
+  it('adds vmbr0 with the first port as member for Proxmox VE', () => {
+    const added = execute(lab, addDevice, { kind: 'mini-pc', name: 'pve9' }, ctx);
+    const id = added.result.deviceId;
+    const { project } = execute(
+      added.project,
+      setDeviceOs,
+      { id, os: { osId: 'proxmox-ve', version: '8.3' } },
+      ctx,
+    );
+    const owned = Object.values(project.interfaces).filter((i) => i.owner.id === id);
+    const bridge = owned.find((i) => i.kind === 'bridge');
+    expect(bridge?.name).toBe('vmbr0');
+    expect(owned.find((i) => i.name === 'eth0')?.parentId).toBe(bridge?.id);
+    expect(project.devices[id]?.os).toEqual({ osId: 'proxmox-ve', version: '8.3' });
+  });
+
+  it('does not add a second bridge and clears the OS with null', () => {
+    const pve = byName(lab, 'pve1');
+    const again = execute(
+      lab,
+      setDeviceOs,
+      { id: pve.id, os: { osId: 'proxmox-ve', version: '9.0' } },
+      ctx,
+    );
+    expect(
+      Object.values(again.project.interfaces).filter(
+        (i) => i.owner.id === pve.id && i.kind === 'bridge',
+      ),
+    ).toHaveLength(1);
+    const cleared = execute(again.project, setDeviceOs, { id: pve.id, os: null }, ctx);
+    expect(cleared.project.devices[pve.id]?.os).toBeUndefined();
   });
 });

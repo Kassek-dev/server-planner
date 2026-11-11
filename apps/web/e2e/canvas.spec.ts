@@ -31,8 +31,9 @@ test('add from the library, select, rename, delete and undo', async ({ page }) =
   const inspector = page.getByRole('complementary', { name: 'Inspector' });
   await expect(inspector.getByRole('heading', { name: 'mini-pc-1' })).toBeVisible();
   await expect(page).toHaveURL(/sel=dev_/);
-  await inspector.getByLabel('Name').fill('pve2');
-  await inspector.getByLabel('Name').press('Enter');
+  const name = inspector.getByRole('textbox', { name: 'Name', exact: true });
+  await name.fill('pve2');
+  await name.press('Enter');
   await expect(node(page, 'pve2')).toBeVisible();
 
   await node(page, 'pve2').click();

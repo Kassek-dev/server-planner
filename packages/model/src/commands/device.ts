@@ -1,6 +1,7 @@
 import { clone } from '../clone';
 import { createDevice } from '../factories';
 import type { Device, DeviceKind } from '../schema/device';
+import type { OsInstall } from '../schema/hardware';
 import type { Placement } from '../schema/location';
 import type { Interface } from '../schema/network';
 import type { Project } from '../schema/project';
@@ -171,5 +172,41 @@ export const duplicateDevice = defineCommand(
       : (draft.layout.nodes[id] ?? { x: 0, y: 0 });
     draft.layout.nodes[copyId] = { x: base.x + offset.x, y: base.y + offset.y };
     return copyId;
+  },
+);
+
+/**
+ * `device.setOs` (SW-01): sets or clears the host OS. Choosing Proxmox VE adds the `vmbr0`
+ * bridge with the first copper port as its member, like the Proxmox installer does.
+ */
+export const setDeviceOs = defineCommand(
+  'device.setOs',
+  (draft, { id, os }: { id: string; os: OsInstall | null }, ctx) => {
+    const device = getOrThrow(draft.devices, id, 'device');
+    if (os === null) {
+      delete device.os;
+      return;
+    }
+    device.os = { ...os };
+    if (os.osId !== 'proxmox-ve') return;
+    const owned = Object.values(draft.interfaces).filter(
+      (i) => i.owner.type === 'device' && i.owner.id === id,
+    );
+    if (owned.some((i) => i.kind === 'bridge')) return;
+    const bridgeId = ctx.createId('interface');
+    draft.interfaces[bridgeId] = {
+      id: bridgeId,
+      owner: { type: 'device', id },
+      name: 'vmbr0',
+      kind: 'bridge',
+      index: owned.length,
+      switchport: { mode: 'trunk', allowedVlanIds: 'all' },
+      addresses: [],
+      enabled: true,
+    };
+    const uplink = owned
+      .filter((i) => i.kind === 'rj45' || i.kind.startsWith('sfp'))
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))[0];
+    if (uplink) uplink.parentId = bridgeId;
   },
 );

@@ -84,6 +84,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["apps/web/src/features/inspector/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          }
+        }
+      }
     }
   ],
   "css": {
