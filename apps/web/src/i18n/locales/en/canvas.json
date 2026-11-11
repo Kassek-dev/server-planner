@@ -42,16 +42,6 @@
     "shelf": "Shelf",
     "rack": "Rack"
   },
-  "shape": {
-    "tower": "Tower",
-    "mini-pc": "Mini PC",
-    "desktop": "Desktop",
-    "nas": "NAS box",
-    "wall": "Wall",
-    "ceiling": "Ceiling",
-    "sbc": "SBC / Pi",
-    "other": "Other"
-  },
   "rack": {
     "free": "{units}U free",
     "shelf": "Shelf {units}U"
@@ -67,42 +57,6 @@
     "in": "Zoom in",
     "out": "Zoom out",
     "fit": "Fit to screen"
-  },
-  "panel": {
-    "title": "Inspector",
-    "name": "Name",
-    "formFactor": "Form factor",
-    "mount": "Mount",
-    "rackMount": "Rack-mount",
-    "location": "Location",
-    "unplaced": "Unplaced",
-    "unit": "Unit",
-    "onShelf": "Shelf at U{u}",
-    "ports": "Ports · {used}/{total} used",
-    "more": "Hardware, software and network settings arrive in the next stage.",
-    "delete": "Delete",
-    "rack": "Rack",
-    "units": "Height (U)",
-    "width": "Width",
-    "devices": "{count, plural, =0 {No devices} one {# device} other {# devices}}",
-    "link": "Link",
-    "cable": "Cable",
-    "medium": "Medium",
-    "multi": "{count} selected"
-  },
-  "portState": {
-    "free": "free",
-    "access": "access",
-    "trunk": "trunk",
-    "wan": "WAN",
-    "wifi": "Wi‑Fi"
-  },
-  "medium": {
-    "copper": "Copper",
-    "fiber": "Fiber",
-    "dac": "DAC",
-    "wifi": "Wi‑Fi",
-    "virtual": "Virtual"
   },
   "errors": {
     "generic": "That change is not possible ({code}).",

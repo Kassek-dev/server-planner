@@ -337,6 +337,13 @@ export const addRoute = defineCommand(
   },
 );
 
+export const updateRoute = defineCommand(
+  'route.update',
+  (draft, { id, changes }: { id: string; changes: Partial<Omit<Route, 'id' | 'deviceId'>> }) => {
+    applyChanges(getOrThrow(draft.routes, id, 'route'), changes);
+  },
+);
+
 export const deleteRoute = defineCommand('route.delete', (draft, { id }: { id: string }) => {
   getOrThrow(draft.routes, id, 'route');
   delete draft.routes[id];

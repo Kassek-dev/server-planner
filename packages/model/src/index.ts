@@ -1,3 +1,4 @@
+export * from './addressing';
 export * from './commands';
 export * from './connect';
 export * from './defaults';

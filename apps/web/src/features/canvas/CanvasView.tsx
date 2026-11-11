@@ -266,6 +266,8 @@ function Workspace() {
             project.devices[c.target] !== undefined
           }
           connectionMode={ConnectionMode.Loose}
+          // Layers from graph.ts: locations 0 < links 1 < devices 2 (docs/04 § 6.6), also inside racks.
+          zIndexMode="manual"
           snapToGrid
           snapGrid={[GRID, GRID]}
           minZoom={0.1}
