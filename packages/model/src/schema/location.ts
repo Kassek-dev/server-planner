@@ -3,6 +3,8 @@ import { IdSchema, WattsSchema } from './common';
 
 /** Form factor and physical locations (D9) — docs/02-model-danych.md § 4.3. */
 
+export const RACK_UNITS_MIN = 6;
+export const RACK_UNITS_MAX = 42;
 export const RACK_WIDTHS = ['10in', '19in'] as const;
 export const STANDALONE_SHAPES = [
   'tower',
@@ -27,7 +29,7 @@ export const FormFactorSchema = z.discriminatedUnion('mount', [
 export const PlacementSchema = z.object({
   locationId: IdSchema,
   /** Rack only: lowest occupied unit (1 = bottom of the rack). */
-  u: z.number().int().min(1).optional(),
+  u: z.number().int().min(1).max(RACK_UNITS_MAX).optional(),
   /** Standalone device standing on a rack shelf. */
   onShelf: z.boolean().optional(),
 });
@@ -40,9 +42,6 @@ const LocationBase = {
   description: z.string().optional(),
 };
 
-export const RACK_UNITS_MIN = 6;
-export const RACK_UNITS_MAX = 42;
-
 export const LocationSchema = z.discriminatedUnion('kind', [
   z.object({ ...LocationBase, kind: z.literal('room') }),
   z.object({ ...LocationBase, kind: z.literal('shelf') }),
@@ -53,7 +52,13 @@ export const LocationSchema = z.discriminatedUnion('kind', [
     width: z.enum(RACK_WIDTHS),
     depthMm: z.number().int().positive().optional(),
     shelves: z
-      .array(z.object({ u: z.number().int().min(1), units: z.number().int().min(1) }))
+      .array(
+        z.object({
+          u: z.number().int().min(1).max(RACK_UNITS_MAX),
+          units: z.number().int().min(1).max(RACK_UNITS_MAX),
+        }),
+      )
+      .max(RACK_UNITS_MAX)
       .optional(),
     powerBudgetW: WattsSchema.optional(),
   }),

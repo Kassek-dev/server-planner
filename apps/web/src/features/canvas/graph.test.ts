@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { RACK_HEADER } from './geometry';
-import { locationAt, toFlowEdges, toFlowNodes } from './graph';
+import { locationAt, toFlowEdges, toFlowNodes, usedUnits } from './graph';
 import { deviceByName, homeLab } from './testSupport';
 
 const lab = homeLab();
@@ -76,5 +76,24 @@ describe('locationAt', () => {
     if (!rect) throw new Error('fixture');
     expect(locationAt(lab, { x: rect.x * 16 + 40, y: rect.y * 16 + 60 })?.id).toBe(rack?.id);
     expect(locationAt(lab, { x: -500, y: -500 })).toBeUndefined();
+  });
+});
+
+describe('robustness against bad data', () => {
+  it('survives location parent cycles without recursing forever', () => {
+    const project = structuredClone(homeLab());
+    const [a, b] = Object.values(project.locations);
+    if (!a || !b) throw new Error('fixture');
+    a.parentId = b.id;
+    b.parentId = a.id;
+    const nodes = toFlowNodes(project);
+    expect(nodes.filter((n) => n.type === 'location').every((n) => n.parentId === undefined)).toBe(
+      true,
+    );
+    expect(() => locationAt(project, { x: 0, y: 0 })).not.toThrow();
+  });
+
+  it('clamps unit ranges to the rack height', () => {
+    expect(usedUnits([{ from: -5, to: 1_000_000_000 }], 12).size).toBe(12);
   });
 });

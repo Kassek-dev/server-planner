@@ -76,6 +76,16 @@ export function devicePorts(
     .map((i) => portView(project, i, linked));
 }
 
+/** Only room → rack/shelf nesting one level deep is drawn nested (cycle-safe for any input). */
+function validParent(
+  project: Project,
+  location: Location,
+): location is Location & { parentId: string } {
+  if (location.parentId === undefined || location.kind === 'room') return false;
+  const parent = project.locations[location.parentId];
+  return parent?.kind === 'room' && parent.parentId === undefined;
+}
+
 /** Location nesting order: parents before children (React Flow requirement). */
 function sortedLocations(project: Project): Location[] {
   return Object.values(project.locations).sort(
@@ -114,9 +124,7 @@ export function toFlowNodes(project: Project): CanvasNode[] {
       id: location.id,
       type: 'location',
       position: { x: toPx(rect.x), y: toPx(rect.y) },
-      ...(location.parentId && project.locations[location.parentId]
-        ? { parentId: location.parentId }
-        : {}),
+      ...(validParent(project, location) ? { parentId: location.parentId } : {}),
       data: {
         location,
         size,
@@ -125,11 +133,7 @@ export function toFlowNodes(project: Project): CanvasNode[] {
               occupied,
               freeUnits:
                 (location.kind === 'rack' ? location.units : 0) -
-                new Set(
-                  occupied.flatMap((o) =>
-                    Array.from({ length: o.to - o.from + 1 }, (_, i) => o.from + i),
-                  ),
-                ).size,
+                usedUnits(occupied, location.kind === 'rack' ? location.units : 0).size,
             }
           : {}),
       },
@@ -225,12 +229,7 @@ export function toFlowEdges(
 }
 
 function absoluteCenters(nodes: CanvasNode[]): Map<string, { x: number; y: number }> {
-  const byId = new Map(nodes.map((n) => [n.id, n]));
-  const origin = (n: CanvasNode): { x: number; y: number } => {
-    const parent = n.parentId ? byId.get(n.parentId) : undefined;
-    const base = parent ? origin(parent) : { x: 0, y: 0 };
-    return { x: base.x + n.position.x, y: base.y + n.position.y };
-  };
+  const origin = absoluteOrigin(nodes);
   return new Map(
     nodes.map((n) => {
       const o = origin(n);
@@ -285,11 +284,10 @@ export function absoluteLocationRects(
 ): { id: string; kind: Location['kind']; x: number; y: number; w: number; h: number }[] {
   const nodes = toFlowNodes(project).filter((n) => n.type === 'location');
   const byId = new Map(nodes.map((n) => [n.id, n]));
-  const absolute = (id: string): { x: number; y: number } => {
+  const origin = absoluteOrigin(nodes);
+  const absolute = (id: string) => {
     const n = byId.get(id);
-    if (!n) return { x: 0, y: 0 };
-    const parent = n.parentId ? absolute(n.parentId) : { x: 0, y: 0 };
-    return { x: parent.x + n.position.x, y: parent.y + n.position.y };
+    return n ? origin(n) : { x: 0, y: 0 };
   };
   return nodes
     .map((n) => {
@@ -313,3 +311,31 @@ export function locationAt(project: Project, point: { x: number; y: number }, ex
 }
 
 export { GRID };
+
+/** Max parent chain walked when resolving absolute positions (valid nesting is ≤ 2 deep). */
+const MAX_NESTING = 4;
+
+/** Absolute top-left of a node, walking parents iteratively with a depth cap (cycle-safe). */
+export function absoluteOrigin(nodes: CanvasNode[]): (n: CanvasNode) => { x: number; y: number } {
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  return (node) => {
+    let x = 0;
+    let y = 0;
+    let current: CanvasNode | undefined = node;
+    for (let depth = 0; current && depth <= MAX_NESTING; depth += 1) {
+      x += current.position.x;
+      y += current.position.y;
+      current = current.parentId ? byId.get(current.parentId) : undefined;
+    }
+    return { x, y };
+  };
+}
+
+/** Units covered by the given ranges, clamped to 1..rackUnits so bad data cannot blow up memory. */
+export function usedUnits(ranges: { from: number; to: number }[], rackUnits: number): Set<number> {
+  const used = new Set<number>();
+  for (const range of ranges) {
+    for (let u = Math.max(1, range.from); u <= Math.min(rackUnits, range.to); u += 1) used.add(u);
+  }
+  return used;
+}

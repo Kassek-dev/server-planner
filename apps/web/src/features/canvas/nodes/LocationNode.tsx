@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Silhouette } from '../../../icons/devices';
 import { RACK_HEADER, RACK_RAIL, RACK_U, rackRowTop } from '../geometry';
-import type { LocationNodeData } from '../graph';
+import { type LocationNodeData, usedUnits } from '../graph';
 
 /** Location containers — docs/04 § 6.8: rack (solid frame, U rail), shelf and room (dashed). */
 export const LocationNode = memo(function LocationNode({
@@ -32,11 +32,7 @@ export const LocationNode = memo(function LocationNode({
   }
 
   const units = Array.from({ length: location.units }, (_, i) => location.units - i);
-  const occupied = new Set(
-    (data.occupied ?? []).flatMap((o) =>
-      Array.from({ length: o.to - o.from + 1 }, (_, i) => o.from + i),
-    ),
-  );
+  const occupied = usedUnits(data.occupied ?? [], location.units);
   // Contiguous runs of free units, drawn as dashed slots with "nU free".
   const freeRuns: { top: number; count: number }[] = [];
   for (const u of units) {

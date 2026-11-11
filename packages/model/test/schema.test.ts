@@ -109,3 +109,25 @@ describe('hosting cycles (untrusted imports)', () => {
     ).toThrow(CommandError);
   });
 });
+
+describe('untrusted location data', () => {
+  it('rejects location parent cycles and deep nesting', () => {
+    const file = structuredClone(fixture);
+    const [a, b] = Object.values(file.project.locations) as { id: string; parentId?: string }[];
+    if (!a || !b) throw new Error('fixture');
+    a.parentId = b.id;
+    b.parentId = a.id;
+    expectFileError(file, 'INVALID_PROJECT');
+  });
+
+  it('rejects rack units beyond the 42U limit', () => {
+    const file = structuredClone(fixture);
+    const rack = Object.values(file.project.locations).find(
+      (l) => (l as { kind: string }).kind === 'rack',
+    ) as {
+      shelves: { u: number; units: number }[];
+    };
+    rack.shelves = [{ u: 1, units: 1_000_000_000 }];
+    expectFileError(file, 'INVALID_PROJECT');
+  });
+});

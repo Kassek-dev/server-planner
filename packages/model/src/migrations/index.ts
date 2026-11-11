@@ -78,6 +78,8 @@ export function parseProjectFile(raw: unknown): ParsedProjectFile {
   }
   const cycle = findHostingCycle(result.data.project);
   if (cycle) throw new ProjectFileError('INVALID_PROJECT', { count: 1, cycleAt: cycle });
+  const nesting = findInvalidLocationNesting(result.data.project);
+  if (nesting) throw new ProjectFileError('INVALID_PROJECT', { count: 1, locationAt: nesting });
 
   return version < CURRENT_SCHEMA_VERSION
     ? { file: result.data, migratedFrom: version }
@@ -98,6 +100,26 @@ export function findHostingCycle(project: Project): string | undefined {
       id = host?.type === 'workload' ? host.id : undefined;
     }
     for (const visited of path) state.set(visited, 'done');
+  }
+  return undefined;
+}
+
+/**
+ * Location nesting must be room → rack/shelf (max depth 2, LOC-07). Returns the first offending
+ * location ID — this also rules out parent cycles in untrusted files.
+ */
+export function findInvalidLocationNesting(project: Project): string | undefined {
+  for (const location of Object.values(project.locations)) {
+    if (location.parentId === undefined) continue;
+    const parent = project.locations[location.parentId];
+    if (
+      !parent ||
+      location.kind === 'room' ||
+      parent.kind !== 'room' ||
+      parent.parentId !== undefined
+    ) {
+      return location.id;
+    }
   }
   return undefined;
 }

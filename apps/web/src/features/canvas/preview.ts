@@ -1,5 +1,5 @@
 import type { Project } from '@server-planner/model';
-import { type CanvasNode, toFlowNodes } from './graph';
+import { absoluteOrigin, toFlowNodes } from './graph';
 
 /** Project card thumbnail (PRJ-02): absolute rectangles of locations and devices, normalised. */
 export interface ProjectPreview {
@@ -19,12 +19,7 @@ const MAX_ITEMS = 80;
 export function projectPreview(project: Project): ProjectPreview | undefined {
   const nodes = toFlowNodes(project);
   if (nodes.length === 0) return undefined;
-  const byId = new Map(nodes.map((n) => [n.id, n]));
-  const absolute = (n: CanvasNode): { x: number; y: number } => {
-    const parent = n.parentId ? byId.get(n.parentId) : undefined;
-    const base = parent ? absolute(parent) : { x: 0, y: 0 };
-    return { x: base.x + n.position.x, y: base.y + n.position.y };
-  };
+  const absolute = absoluteOrigin(nodes);
   const items = nodes.slice(0, MAX_ITEMS).map((n) => {
     const { x, y } = absolute(n);
     const size = n.data.size;
