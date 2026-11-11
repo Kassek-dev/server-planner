@@ -82,7 +82,11 @@
 
 ## Etap 5 — Silniki I
 
-- [ ] `buildGraph`, L2/L3, walidacja, capacity, worker, panel Issues (X‑02)
+- [x] Kontekst silnika (indeksy grafu, VLAN-y niesione przez porty), `analyze()` z pominięciem przeliczeń przy zmianach samego układu
+- [x] Walidacja: VAL‑01…11, 13, 14, rack, referencje reguł/NAT/DNS; automatyczne poprawki (Fix) przez rejestr komend
+- [x] Capacity (tryb „allocated”): CPU, RAM (z narzutem OS i ZFS ARC), pule (RAID, rezerwa), rekurencyjnie VM/LXC
+- [x] Web Worker (Comlink) z debounce 150 ms; panel Issues (X‑02), liczniki w top barze, diody LED i pasek RAM na kafelkach, zakładka Capacity
+- Uwagi: VAL‑04 obejmuje też VLAN-y SSID nieprzepuszczane na uplinku AP; `OS_OVERHEAD` w `packages/engine/src/defaults.ts` tymczasowo — do przeniesienia do katalogu w etapie 7
 
 ## Etap 6 — Silniki II
 
@@ -108,3 +112,4 @@
 | 2026-11-11 | Etap 3: canvas (React Flow), kafelki, lokalizacje i rack, biblioteka, łączenie, zaznaczanie, panel, miniatury | — |
 | 2026-11-11 | Etap 4a: inspector (urządzenie z zakładkami, workloady, aplikacje, łącza, lokalizacje) | — |
 | 2026-11-11 | Etap 4b: szuflady VLAN/podsieci/strefy, firewall + NAT, tagi, ustawienia projektu — etap 4 zamknięty | — |
+| 2026-11-11 | Etap 5: silnik (walidacja, capacity, poprawki), worker, panel Issues, diody i zakładka Capacity; unit 143, E2E 16 | — |

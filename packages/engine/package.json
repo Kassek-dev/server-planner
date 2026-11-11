@@ -7,9 +7,10 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
-    "@server-planner/model": "workspace:*"
+    "@server-planner/model": "workspace:*",
+    "ipaddr.js": "2.5.0"
   }
 }

@@ -5,7 +5,8 @@
     "label": "Device sections",
     "hardware": "Hardware",
     "software": "Software",
-    "network": "Network"
+    "network": "Network",
+    "capacity": "Capacity"
   },
   "actions": {
     "remove": "Remove"
@@ -301,5 +302,18 @@
     "RACK_STANDALONE_NEEDS_SHELF": "Standalone devices need a shelf in the rack.",
     "DEVICE_HAS_NO_FIREWALL": "This device has no firewall.",
     "NOT_FOUND": "That item no longer exists."
+  },
+  "capacity": {
+    "title": "Capacity",
+    "cpu": "CPU",
+    "memory": "Memory",
+    "pool": "Pool",
+    "meter": "{label} {percent}%",
+    "os": "Host OS",
+    "arc": "ZFS ARC",
+    "unbounded": "unbounded",
+    "overcommit": "Overcommit: CPU {cpu}:1, memory {memory}:1 (project settings).",
+    "noCpu": "Add a CPU in the Hardware tab to see CPU capacity.",
+    "tip": "Above the warning threshold — add resources, lower allocations or move a workload to another host."
   }
 }

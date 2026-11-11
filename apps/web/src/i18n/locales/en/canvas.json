@@ -71,5 +71,11 @@
     "INTERFACE_IN_USE": "That port already has a cable.",
     "LINK_INVALID_KINDS": "Those ports cannot be connected.",
     "LINK_EXISTS": "Those ports are already connected."
+  },
+  "status": {
+    "ok": "No problems",
+    "warning": "Has warnings",
+    "error": "Has errors",
+    "memory": "Memory {percent}%"
   }
 }

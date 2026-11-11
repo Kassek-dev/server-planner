@@ -1,7 +1,11 @@
 import { Handle, type Node, type NodeProps, Position, useStore } from '@xyflow/react';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSession } from '../../../app/services';
 import { DeviceIcon } from '../../../icons/devices';
+import { useResults } from '../../../store/results';
+import { Led } from '../../../ui/Led';
+import { SegmentBar } from '../../../ui/SegmentBar';
 import type { DeviceNodeData, PortView } from '../graph';
 
 /** DeviceTile — docs/04 § 6.7. Shape encodes form factor; selection = 2 px `selection` border. */
@@ -72,6 +76,38 @@ const handles = (
   </>
 );
 
+/** Status LED of a device from the engines (docs/04 § 6.4); hidden until analysed. */
+function StatusLed({ id, size = 8 }: { id: string; size?: 7 | 8 }) {
+  const { t } = useTranslation('canvas');
+  const status = useResults((s) => s.result?.deviceStatus[id]);
+  if (!status) return null;
+  return <Led status={status} size={size} label={t(`status.${status}`)} />;
+}
+
+/** 10-segment RAM bar on host tiles (docs/04 § 6.7). */
+function MemoryBar({ id }: { id: string }) {
+  const { t } = useTranslation('canvas');
+  const memory = useResults((s) => s.result?.capacity[id]?.memory);
+  const thresholds = useSession((s) => s.project?.settings.capacityThresholds);
+  if (!memory || !thresholds || memory.capacity === 0) return null;
+  const percent = Math.round(memory.ratio * 100);
+  return (
+    <span className="flex items-center gap-2 px-2.5 pb-1.5">
+      <span className="font-mono text-data-sm text-text-secondary">RAM</span>
+      <span className="flex-1">
+        <SegmentBar
+          ratio={memory.ratio}
+          segments={10}
+          height={5}
+          label={t('status.memory', { percent })}
+          {...thresholds}
+        />
+      </span>
+      <span className="font-mono text-data-sm text-text-secondary">{`${percent}%`}</span>
+    </span>
+  );
+}
+
 export const DeviceNode = memo(function DeviceNode({
   data,
   selected,
@@ -100,6 +136,7 @@ export const DeviceNode = memo(function DeviceNode({
     return (
       <div className={`flex h-full items-center gap-2 rounded-sm bg-tile px-2 ${border}`}>
         {handles}
+        <StatusLed id={device.id} size={7} />
         <span className="truncate text-body-sm font-semibold">{device.name}</span>
         {detailed ? (
           <span className="truncate font-mono text-data-sm text-text-secondary">{meta}</span>
@@ -135,7 +172,8 @@ export const DeviceNode = memo(function DeviceNode({
         {handles}
         {ear}
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-2.5">
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-center gap-2">
+            <StatusLed id={device.id} />
             <span className="truncate font-semibold">{device.name}</span>
             <span className="truncate font-mono text-data-sm text-text-secondary">{`${ff.units}U · ${meta}`}</span>
           </div>
@@ -163,12 +201,16 @@ export const DeviceNode = memo(function DeviceNode({
               <span className="truncate font-mono text-data-sm text-text-secondary">{meta}</span>
             ) : null}
           </span>
+          <span className="ml-auto pl-1">
+            <StatusLed id={device.id} />
+          </span>
         </div>
         {!pill && detailed ? (
           <div className="px-2.5 py-1.5">
             <Ports ports={ports} />
           </div>
         ) : null}
+        {!pill && detailed ? <MemoryBar id={device.id} /> : null}
       </div>
       {!pill && device.kind !== 'client' ? (
         <>

@@ -2,17 +2,19 @@ import { COMPUTE_KINDS, type Device, type Project, updateDevice } from '@server-
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices } from '../../../app/services';
+import { useResults } from '../../../store/results';
 import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Tabs } from '../../../ui/Tabs';
 import { deleteSelection } from '../../canvas/actions';
 import { useSelection } from '../../canvas/selection';
+import { CapacityMeters } from '../CapacityMeters';
 import { CommitField, useCommand } from '../parts';
 import { HardwareTab } from './HardwareTab';
 import { NetworkTab } from './NetworkTab';
 import { SoftwareTab } from './SoftwareTab';
 
-type Tab = 'hardware' | 'software' | 'network';
+type Tab = 'capacity' | 'hardware' | 'software' | 'network';
 
 /**
  * I-02 Device (docs/05 § 5.2). Tabs Hardware / Software / Network; the Capacity tab arrives with the
@@ -25,7 +27,9 @@ export function DeviceInspector({ project, device }: { project: Project; device:
   const [params, setParams] = useSearchParams();
   const compute = COMPUTE_KINDS.includes(device.kind);
   const clientType = device.clientType ?? 'other';
+  const report = useResults((s) => s.result?.capacity[device.id]);
   const tabs: { value: Tab; label: string }[] = [
+    ...(compute && report ? [{ value: 'capacity' as const, label: t('tabs.capacity') }] : []),
     { value: 'hardware', label: t('tabs.hardware') },
     ...(compute ? [{ value: 'software' as const, label: t('tabs.software') }] : []),
     { value: 'network', label: t('tabs.network') },
@@ -34,7 +38,9 @@ export function DeviceInspector({ project, device }: { project: Project; device:
   const tab: Tab = tabs.some((x) => x.value === requested)
     ? (requested as Tab)
     : compute
-      ? 'hardware'
+      ? report
+        ? 'capacity'
+        : 'hardware'
       : 'network';
   const setTab = (next: Tab) =>
     setParams(
@@ -66,6 +72,9 @@ export function DeviceInspector({ project, device }: { project: Project; device:
         <p className="m-0 text-text-secondary">{t('device.internetHint')}</p>
       ) : (
         <Tabs label={t('tabs.label')} value={tab} tabs={tabs} onChange={setTab}>
+          {tab === 'capacity' && report ? (
+            <CapacityMeters project={project} report={report} />
+          ) : null}
           {tab === 'hardware' ? <HardwareTab project={project} device={device} /> : null}
           {tab === 'software' ? <SoftwareTab project={project} device={device} /> : null}
           {tab === 'network' ? <NetworkTab project={project} device={device} /> : null}

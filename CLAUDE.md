@@ -108,4 +108,5 @@ Przed uznaniem pracy za skończoną: `pnpm lint && pnpm typecheck && pnpm test` 
 - Nie dodawaj zależności bez uzasadnienia — najpierw sprawdź, czy stos z `03` już to pokrywa; nowa zależność = wpis w `implementation.md`.
 - Nie dodawaj tekstów UI bez kluczy i18n, kolorów bez tokenów, interakcji bez obsługi klawiatury.
 - Nie pobieraj danych ze źródeł odrzuconych w `06` (selfh.st, PassMark, UserBenchmark, Geekbench).
+- Selektory Zustanda (`useSession`, `useResults`, …) nie mogą zwracać nowych obiektów/tablic przy każdym wywołaniu (np. `?? []` w selektorze) — to nieskończona pętla renderów (React #185). Domyślną wartość podawaj poza selektorem: `useX((s) => s.a) ?? STAŁA`.
 - Nie rozszerzaj zakresu poza zadanie; propozycje zgłaszaj osobno.

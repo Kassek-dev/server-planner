@@ -1,6 +1,9 @@
 import type { Project } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router';
+import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
+import { Led } from '../../ui/Led';
 import { useDrawer } from '../drawers/useDrawer';
 
 /** I-01 Project summary (nothing selected) — counts for now; resources and issues arrive with the engines. */
@@ -31,6 +34,7 @@ export function Summary({ project }: { project: Project }) {
           </div>
         ))}
       </dl>
+      <IssuesSummary />
       <div className="flex flex-col gap-2 border-t border-border-subtle pt-3">
         <h2 className="m-0 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
           {t('summary.manage')}
@@ -45,5 +49,40 @@ export function Summary({ project }: { project: Project }) {
         <Button onClick={() => open({ kind: 'settings' })}>{t('summary.settings')}</Button>
       </div>
     </section>
+  );
+}
+
+function IssuesSummary() {
+  const { t } = useTranslation('editor');
+  const issues = useResults((s) => s.result?.issues);
+  const [, setParams] = useSearchParams();
+  if (!issues) return null;
+  const errors = issues.filter((i) => i.severity === 'error').length;
+  const warnings = issues.filter((i) => i.severity === 'warning').length;
+  return (
+    <div className="flex flex-col gap-2 border-t border-border-subtle pt-3">
+      <h2 className="m-0 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+        {t('summary.issues')}
+      </h2>
+      <div className="flex items-center gap-2">
+        <Led status={errors ? 'error' : warnings ? 'warning' : 'ok'} />
+        <span className="flex-1">{t('summary.issueCount', { errors, warnings })}</span>
+        {errors + warnings > 0 ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() =>
+              setParams((prev) => {
+                const p = new URLSearchParams(prev);
+                p.set('panel', 'issues');
+                return p;
+              })
+            }
+          >
+            {t('summary.showIssues')}
+          </Button>
+        ) : null}
+      </div>
+    </div>
   );
 }

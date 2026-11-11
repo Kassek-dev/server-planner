@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router';
 import { useServices, useSession } from '../../app/services';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { deleteSelection } from '../canvas/actions';
 import { useSelection } from '../canvas/selection';
 import { Summary } from '../editor/Summary';
+import { IssuesPanel } from '../issues/IssuesPanel';
 import { AppInspector } from './AppInspector';
 import { DeviceInspector } from './device/DeviceInspector';
 import { LinkInspector } from './LinkInspector';
@@ -20,6 +22,14 @@ export function SelectionPanel() {
   const project = useSession((s) => s.project);
   const { nodeIds, edgeIds, detail } = useSelection();
   const error = useInspectorError((s) => s.error);
+  const [params, setParams] = useSearchParams();
+  const issuesOpen = params.get('panel') === 'issues';
+  const closeIssues = () =>
+    setParams((prev) => {
+      const p = new URLSearchParams(prev);
+      p.delete('panel');
+      return p;
+    });
 
   // A message belongs to the element it was raised for.
   const key = `${nodeIds.join()}|${edgeIds.join()}|${detail?.id ?? ''}`;
@@ -36,7 +46,8 @@ export function SelectionPanel() {
   const link = count === 1 && edgeIds[0] ? project.links[edgeIds[0]] : undefined;
 
   let body = <Summary project={project} />;
-  if (workload) body = <WorkloadInspector project={project} workload={workload} />;
+  if (issuesOpen) body = <IssuesPanel onClose={closeIssues} />;
+  else if (workload) body = <WorkloadInspector project={project} workload={workload} />;
   else if (app) body = <AppInspector project={project} app={app} />;
   else if (count > 1)
     body = (
