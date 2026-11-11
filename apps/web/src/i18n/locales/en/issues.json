@@ -1,0 +1,134 @@
+{
+  "panel": {
+    "title": "Issues",
+    "back": "Back to inspector",
+    "filter": "Filter issues",
+    "all": "All · {count}",
+    "errors": "Errors · {count}",
+    "warnings": "Warnings · {count}",
+    "infos": "Info · {count}",
+    "group": {
+      "error": "Errors · {count}",
+      "warning": "Warnings · {count}",
+      "info": "Info · {count}"
+    },
+    "none": "No issues found",
+    "analysing": "Analysing…",
+    "analysed": "Analysed in {ms} ms"
+  },
+  "counters": {
+    "label": "{errors, plural, one {# error} other {# errors}}, {warnings, plural, one {# warning} other {# warnings}} — open issues"
+  },
+  "VAL_01": {
+    "title": "Duplicate IP address",
+    "description": "{ip} is assigned more than once: {targets}.",
+    "fix": "Use the next free address"
+  },
+  "VAL_02": {
+    "title": "IP outside subnet",
+    "description": "{ip} on {target} is outside {subnet}."
+  },
+  "VAL_03": {
+    "title": "Static IP in DHCP pool",
+    "description": "{ip} on {target} is inside the DHCP pool {start}–{end}.",
+    "fix": "Move it out of the pool"
+  },
+  "VAL_04": {
+    "title": "VLAN not carried",
+    "description": "VLAN {vlan} not allowed on {device} {port}.",
+    "fix": "Allow VLAN {vlan} on {port}"
+  },
+  "VAL_05": {
+    "title": "Medium mismatch",
+    "description": "Copper and fiber on one cable: {ends} ({detail})."
+  },
+  "VAL_05_SPEED": {
+    "title": "Speed mismatch",
+    "description": "{ends} negotiates down to {speed} Mb/s."
+  },
+  "VAL_06": {
+    "title": "Layer 2 loop",
+    "description": "A second cable between {a} and {b} closes a loop (no spanning tree is modelled)."
+  },
+  "VAL_07_VLAN": {
+    "title": "VLAN without subnet",
+    "description": "VLAN {vlan} ({name}) has no subnet."
+  },
+  "VAL_07_GATEWAY": {
+    "title": "Subnet without gateway",
+    "description": "{subnet} has no gateway.",
+    "fix": "Use the first address as gateway"
+  },
+  "VAL_08": {
+    "title": "Port used twice",
+    "description": "{target} has {count} cables."
+  },
+  "VAL_08_ISOLATED": {
+    "title": "Not connected",
+    "description": "{device} is not connected to anything."
+  },
+  "VAL_09": {
+    "title": "Overlapping subnets",
+    "description": "{a} overlaps {b}."
+  },
+  "VAL_10": {
+    "title": "Port conflict",
+    "description": "{services} all use {port} on {host}."
+  },
+  "VAL_11_HYPERVISOR": {
+    "title": "No hypervisor",
+    "description": "{kind} {workload} needs Proxmox VE, but {host} does not run it."
+  },
+  "VAL_11_DOCKER_PVE": {
+    "title": "Docker on Proxmox",
+    "description": "Docker runs directly on the Proxmox host {host} — use a VM or LXC instead."
+  },
+  "VAL_11_DOCKER_WIN": {
+    "title": "Docker on Windows Server",
+    "description": "{host} runs Windows Server, which only runs Windows containers."
+  },
+  "VAL_11_NOT_COMPUTE": {
+    "title": "OS on a network device",
+    "description": "{device} is not a server but has an operating system set."
+  },
+  "VAL_13": {
+    "title": "Capacity warning",
+    "description": "{host} {resource} at {percent}%."
+  },
+  "VAL_13_OVER": {
+    "title": "Over capacity",
+    "description": "{host} {resource} is over capacity ({percent}%)."
+  },
+  "VAL_14": {
+    "title": "Missing dependency",
+    "description": "{app} needs {capability}, but nothing provides it."
+  },
+  "VAL_RACK_OVERLAP": {
+    "title": "Devices overlap in rack",
+    "description": "{device} overlaps another device at U{u} in {rack}."
+  },
+  "VAL_RACK_OUT_OF_RANGE": {
+    "title": "Outside the rack",
+    "description": "{device} at U{u} does not fit inside {rack}."
+  },
+  "VAL_RACK_WIDTH": {
+    "title": "Too wide for the rack",
+    "description": "{device} is 19″ wide and does not fit in {rack}."
+  },
+  "VAL_RACK_NO_SHELF": {
+    "title": "No shelf",
+    "description": "{device} stands in {rack} at U{u}, but there is no shelf there."
+  },
+  "VAL_REF_RULE": {
+    "title": "Rule points to a deleted item",
+    "description": "Firewall rule #{rule} on {device} refers to something that was deleted."
+  },
+  "VAL_REF_NAT": {
+    "title": "NAT points to a deleted item",
+    "description": "A NAT rule on {device} refers to an interface or app that was deleted."
+  },
+  "VAL_REF_DNS": {
+    "title": "DNS server deleted",
+    "description": "The DNS server of {subnet} was deleted."
+  }
+}

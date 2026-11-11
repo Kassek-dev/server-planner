@@ -1,5 +1,5 @@
 import type { Device, Location, Rack } from '@server-planner/model';
-import { deviceUnits } from '@server-planner/model';
+import { COMPUTE_KINDS, deviceUnits } from '@server-planner/model';
 
 /** Canvas geometry — docs/04 § 4.3 (grid, rack units) and § 6.7 (tile sizes). All px at zoom 100%. */
 
@@ -57,5 +57,6 @@ export function deviceSize(device: Device): Size {
   if (ff?.mount === 'rack') return { w: 240, h: Math.max(46, ff.units * 22 + 24) };
   if (ff?.shape === 'ceiling') return { w: 160, h: 48 };
   if (device.kind === 'client') return { w: 144, h: 52 };
-  return { w: 216, h: 72 };
+  // Hosts get room for the RAM bar (docs/04 § 6.7).
+  return { w: 216, h: COMPUTE_KINDS.includes(device.kind) ? 92 : 72 };
 }

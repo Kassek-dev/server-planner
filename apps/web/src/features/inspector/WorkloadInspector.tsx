@@ -15,10 +15,12 @@ import {
 } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../app/format';
+import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
 import { Select } from '../../ui/Select';
 import { useSelection } from '../canvas/selection';
+import { CapacityMeters } from './CapacityMeters';
 import { InterfaceCard } from './device/NetworkTab';
 import { OS_LABELS, rootDevice, WorkloadList } from './device/SoftwareTab';
 import {
@@ -120,6 +122,7 @@ function GuestSections({
 }) {
   const { t } = useTranslation('inspector');
   const transaction = useTransaction();
+  const report = useResults((s) => s.result?.capacity[workload.id]);
   const device = rootDevice(project, workload.host);
   const pools = device?.hardware.pools ?? [];
   const r = workload.resources;
@@ -138,6 +141,7 @@ function GuestSections({
 
   return (
     <>
+      {report ? <CapacityMeters project={project} report={report} /> : null}
       <Section title={t('workload.resources')}>
         <Grid>
           <CommitField

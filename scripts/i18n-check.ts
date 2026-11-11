@@ -6,6 +6,7 @@
  */
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
+import { ISSUE_CODES } from '../packages/engine/src/validation/rules';
 
 const ROOT = join(import.meta.dirname, '..');
 const SRC = join(ROOT, 'apps/web/src');
@@ -90,7 +91,15 @@ for (const key of base.keys()) {
   if (!isUsed) errors.push(`unused key "${key}"`);
 }
 
-// 3. other languages match en
+// 3. every engine issue code has a title and a description (docs/03 § 5.2)
+for (const code of ISSUE_CODES) {
+  for (const part of ['title', 'description']) {
+    if (!base.has(`issues:${code}.${part}`))
+      errors.push(`engine issue ${code} has no "issues:${code}.${part}"`);
+  }
+}
+
+// 4. other languages match en
 for (const lang of langs.filter((l) => l !== BASE_LANG)) {
   const dict = await loadLang(lang);
   for (const [key, msg] of base) {

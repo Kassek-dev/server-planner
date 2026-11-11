@@ -34,7 +34,7 @@ describe('addItemAt', () => {
     expect(result.ok).toBe(true);
     const project = session.getState().project;
     const id = result.ok ? result.selectId : undefined;
-    expect(id && project?.layout.nodes[id]).toEqual({ x: 93, y: 98 });
+    expect(id && project?.layout.nodes[id]).toEqual({ x: 93, y: 97 });
     expect(session.getState().past).toHaveLength(1);
   });
 

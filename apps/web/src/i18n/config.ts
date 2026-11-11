@@ -7,6 +7,7 @@ import dev from './locales/en/dev.json';
 import drawers from './locales/en/drawers.json';
 import editor from './locales/en/editor.json';
 import inspector from './locales/en/inspector.json';
+import issues from './locales/en/issues.json';
 import projects from './locales/en/projects.json';
 
 /** i18n setup — docs/01 § 7. Only `en` for now; add a language by copying locales/en. */
@@ -23,7 +24,7 @@ export const NAMESPACES = [
 ] as const;
 
 export const resources = {
-  en: { common, projects, editor, canvas, inspector, drawers, dev },
+  en: { common, projects, editor, canvas, inspector, drawers, issues, dev },
 } as const;
 
 export async function initI18n(): Promise<void> {

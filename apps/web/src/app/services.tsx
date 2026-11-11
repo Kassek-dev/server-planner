@@ -7,17 +7,20 @@ import {
   type ProjectSession,
   type ProjectSessionState,
 } from '../store/projectSession';
+import { createAnalyzer } from '../store/results';
 
 /** App-wide services (storage + editing session), created once at startup. */
 export interface AppServices {
   repository: ProjectRepository;
   session: ProjectSession;
+  /** Engine runner (Web Worker in the browser). */
+  analyzer: ReturnType<typeof createAnalyzer>;
 }
 
 export async function createServices(dbName?: string): Promise<AppServices> {
   const repository = new ProjectRepository(await openAppDb(dbName));
   const session = createProjectSession({ repository });
-  return { repository, session };
+  return { repository, session, analyzer: createAnalyzer() };
 }
 
 const ServicesContext = createContext<AppServices | null>(null);

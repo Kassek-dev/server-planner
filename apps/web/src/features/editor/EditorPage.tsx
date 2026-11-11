@@ -8,6 +8,7 @@ import { NotFoundPage } from '../../app/routes/NotFoundPage';
 import { useServices, useSession } from '../../app/services';
 import { TopBar } from '../../app/shell/TopBar';
 import { exportBlob, exportFileName } from '../../persistence/backup';
+import { connectResults } from '../../store/results';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { Led, type LedStatus } from '../../ui/Led';
@@ -15,14 +16,18 @@ import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
 import { DrawerHost } from '../drawers/DrawerHost';
 import { SelectionPanel } from '../inspector/SelectionPanel';
+import { IssueCounters } from '../issues/IssueCounters';
 
 type LoadState = 'loading' | 'ready' | 'missing';
 
 /** V-01 shell (docs/05 § 3) for MVP stage 2: load, rename, save state, undo/redo, export. */
 export function EditorPage() {
   const { projectId = '' } = useParams();
-  const { repository, session } = useServices();
+  const { repository, session, analyzer } = useServices();
   const [load, setLoad] = useState<LoadState>('loading');
+
+  // Engines follow the open project (docs/03 § 5.5).
+  useEffect(() => connectResults(session, analyzer), [session, analyzer]);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,6 +141,7 @@ function Editor() {
           </span>
         </nav>
         <div className="grow" />
+        <IssueCounters />
         <div className="flex items-center gap-1">
           <IconButton label={t('undo')} disabled={!canUndo} onClick={() => session.undo()}>
             <Undo2 size={16} aria-hidden="true" />

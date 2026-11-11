@@ -18,6 +18,7 @@
     "@server-planner/engine": "workspace:*",
     "@server-planner/model": "workspace:*",
     "@xyflow/react": "12.12.1",
+    "comlink": "4.4.2",
     "i18next": "27.1.1",
     "i18next-icu": "2.7.0",
     "idb": "8.0.4",
