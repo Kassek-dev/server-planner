@@ -17,7 +17,7 @@
 ## Etap 0 — Fundament
 
 - [x] `git init` (lokalnie, gałąź `main`), licencje (MIT, `catalog/LICENSE` CC‑BY‑SA‑4.0)
-- [ ] Repo publiczne na GitHubie + włączenie Pages (źródło: GitHub Actions)
+- [x] Repo publiczne https://github.com/Kassek-dev/server-planner + Pages (źródło: GitHub Actions)
 - [x] pnpm workspaces: `apps/web`, `packages/model`, `packages/engine`, `packages/catalog-builder`
 - [x] TypeScript strict (wspólny `tsconfig.base.json`), Biome, skrypty z `CLAUDE.md`
 - [x] Vite + React + hash router, `base: '/server-planner/'`
@@ -25,7 +25,7 @@
 - [x] i18next + ICU, `locales/en/*`, `pnpm i18n:check`
 - [x] Galeria `#/dev/design` (kolory, VLAN, typografia, przyciski, LED — oba motywy)
 - [x] CI `ci.yml`, deploy `deploy.yml` (z testem Playwright), `dependabot.yml` — napisane, lokalnie zielone
-- [ ] Pierwszy przebieg CI i deploy na GitHub Pages
+- [x] Pierwszy deploy na GitHub Pages (smoke test 2/2) → https://kassek-dev.github.io/server-planner/
 - [x] `pnpm tokens:check` (kontrast + zakaz surowej palety) — wykrył 8 par poniżej WCAG, poprawione (`04` § 12)
 
 ## Etap 1 — Model
@@ -65,4 +65,5 @@
 | Data       | Co                                                  | Commit                            |
 | ---------- | --------------------------------------------------- | --------------------------------- |
 | 2026-11-11 | Dokumentacja 01–07, makiety MVP, CLAUDE.md i skille | — (repo jeszcze nie zainicjowane) |
-| 2026-11-11 | Etap 0: monorepo, web (Vite 8, React 19, Tailwind 4, i18n, tokeny, galeria), model/engine/builder, skrypty kontroli, CI/deploy; lokalnie: lint, typecheck, 10 testów, E2E 2/2, build | — (przed pierwszym commitem) |
+| 2026-11-11 | Etap 0: monorepo, web (Vite 8, React 19, Tailwind 4, i18n, tokeny, galeria), model/engine/builder, skrypty kontroli, CI/deploy; lokalnie: lint, typecheck, 10 testów, E2E 2/2, build | `b1e044c`, `6f7f36f` |
+| 2026-11-11 | Repo na GitHubie, Pages, pierwszy deploy; CI z `workflow_dispatch` | ten commit |
