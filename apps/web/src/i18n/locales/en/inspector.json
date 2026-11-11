@@ -55,7 +55,8 @@
     "hostname": "Hostname",
     "delete": "Delete device",
     "internetHint": "The Internet node stands for everything outside your network. Connect it to your router's WAN port.",
-    "name": "Name"
+    "name": "Name",
+    "tags": "Tags"
   },
   "hardware": {
     "formFactor": "Form factor",
@@ -157,7 +158,8 @@
     "ssidName": "SSID",
     "security": "Security",
     "open": "Open",
-    "isolation": "Client isolation"
+    "isolation": "Client isolation",
+    "openFirewall": "Open firewall rules"
   },
   "workload": {
     "name": "Name",

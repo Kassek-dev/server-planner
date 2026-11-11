@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices } from '../../../app/services';
 import { Button } from '../../../ui/Button';
+import { Checkbox } from '../../../ui/Checkbox';
 import { Tabs } from '../../../ui/Tabs';
 import { deleteSelection } from '../../canvas/actions';
 import { useSelection } from '../../canvas/selection';
@@ -60,6 +61,7 @@ export function DeviceInspector({ project, device }: { project: Project; device:
         value={device.name}
         onCommit={(name) => name && run(updateDevice, { id: device.id, changes: { name } })}
       />
+      <TagPicker project={project} device={device} />
       {device.kind === 'internet' ? (
         <p className="m-0 text-text-secondary">{t('device.internetHint')}</p>
       ) : (
@@ -79,5 +81,37 @@ export function DeviceInspector({ project, device }: { project: Project; device:
         {t('device.delete')}
       </Button>
     </>
+  );
+}
+
+/** LBL-01: assign project tags to the device. */
+function TagPicker({ project, device }: { project: Project; device: Device }) {
+  const { t } = useTranslation('inspector');
+  const run = useCommand();
+  const tags = Object.values(project.tags);
+  if (tags.length === 0) return null;
+  return (
+    <fieldset className="m-0 flex flex-wrap gap-x-4 gap-y-1 border-0 p-0">
+      <legend className="mb-1.5 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+        {t('device.tags')}
+      </legend>
+      {tags.map((tag) => (
+        <Checkbox
+          key={tag.id}
+          label={tag.name}
+          checked={device.tagIds.includes(tag.id)}
+          onChange={(e) =>
+            run(updateDevice, {
+              id: device.id,
+              changes: {
+                tagIds: e.target.checked
+                  ? [...device.tagIds, tag.id]
+                  : device.tagIds.filter((x) => x !== tag.id),
+              },
+            })
+          }
+        />
+      ))}
+    </fieldset>
   );
 }
