@@ -1,9 +1,78 @@
 {
+  "title": "Projects",
   "firstRun": {
     "title": "Plan your home lab",
     "description": "Draw your devices and network, check if your hardware can run your apps, and see what can reach what. Everything stays in this browser.",
     "import": "Import JSON",
     "example": "Try example project",
     "create": "New project"
+  },
+  "actions": {
+    "newProject": "New project",
+    "importJson": "Import JSON",
+    "open": "Open",
+    "rename": "Rename",
+    "duplicate": "Duplicate",
+    "exportJson": "Export JSON",
+    "delete": "Delete",
+    "projectActions": "Actions for {name}"
+  },
+  "card": {
+    "meta": "{devices, plural, one {# device} other {# devices}} · {locations, plural, =0 {unplaced} one {# location} other {# locations}}",
+    "edited": "Edited {when}"
+  },
+  "copyName": "{name} (copy)",
+  "banner": {
+    "notPersistent": "Your projects are stored only in this browser, and the browser may clear them when disk space runs low.",
+    "keepPersistent": "Keep data persistent",
+    "backupDue": "Your last backup was {days, plural, one {# day} other {# days}} ago.",
+    "backupNever": "You have not exported a backup yet.",
+    "exportAll": "Export all"
+  },
+  "footer": {
+    "stored": "Stored in this browser · {count, plural, one {# project} other {# projects}} · {size} KB",
+    "persistent": "persistent",
+    "notPersistent": "not persistent"
+  },
+  "dropHint": "Drop a project file to import it",
+  "newDialog": {
+    "title": "New project",
+    "name": "Project name",
+    "defaultName": "Home lab",
+    "startWith": "Start with",
+    "empty": "Empty",
+    "emptyHint": "Blank canvas.",
+    "example": "Example project",
+    "exampleHint": "The sample lab from the docs, with issues to explore.",
+    "create": "Create project",
+    "nameRequired": "Enter a project name."
+  },
+  "renameDialog": {
+    "title": "Rename project",
+    "save": "Rename"
+  },
+  "deleteDialog": {
+    "title": "Delete project",
+    "description": "Delete “{name}” from this browser? This cannot be undone.",
+    "exportFirst": "Export JSON first",
+    "confirm": "Delete project"
+  },
+  "importDialog": {
+    "title": "Import project",
+    "success": "Imported “{name}” with {devices, plural, one {# device} other {# devices}}.",
+    "migrated": "The file used schema version {from} and was upgraded to version {to}.",
+    "asCopy": "A project with the same ID already exists, so this one was imported as a copy.",
+    "snapshotsSkipped": "{count, plural, one {# snapshot} other {# snapshots}} in the file were not imported (snapshots arrive later).",
+    "open": "Open project",
+    "close": "Close",
+    "failed": "This file could not be imported.",
+    "errors": {
+      "FILE_TOO_LARGE": "The file is larger than {maxMb} MB.",
+      "INVALID_JSON": "The file is not valid JSON.",
+      "NOT_A_PROJECT_FILE": "The file is not a Server Planner project.",
+      "SCHEMA_TOO_NEW": "This file was created by a newer version of Server Planner (schema {version}). Reload the app to update it.",
+      "SCHEMA_UNSUPPORTED": "Schema version {version} is no longer supported.",
+      "INVALID_PROJECT": "The project data is invalid ({count, plural, one {# problem} other {# problems}})."
+    }
   }
 }

@@ -15,7 +15,10 @@
   },
   "pages": {
     "settings": "Settings",
-    "about": "About",
-    "editor": "Project editor"
+    "about": "About"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "close": "Close"
   }
 }

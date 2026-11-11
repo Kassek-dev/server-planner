@@ -1,0 +1,26 @@
+{
+  "views": {
+    "label": "Views",
+    "topology": "Topology"
+  },
+  "rename": "Rename project",
+  "save": {
+    "saved": "Saved",
+    "pending": "Unsaved changes",
+    "saving": "Saving…",
+    "error": "Save failed"
+  },
+  "undo": "Undo",
+  "redo": "Redo",
+  "export": "Export JSON",
+  "loading": "Loading project…",
+  "summary": {
+    "title": "This project",
+    "devices": "Devices",
+    "locations": "Locations",
+    "vlans": "VLANs",
+    "workloads": "Workloads",
+    "apps": "Apps",
+    "canvasLater": "The canvas arrives in MVP stage 3. Projects are already saved, versioned and exportable."
+  }
+}

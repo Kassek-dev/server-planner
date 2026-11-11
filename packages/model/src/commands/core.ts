@@ -4,6 +4,9 @@ import type { Project } from '../schema/project';
 
 enablePatches();
 
+/** Re-exported so apps apply history patches without depending on Immer directly. */
+export { applyPatches, type Patch } from 'immer';
+
 /**
  * Command layer — docs/03-architektura.md § 4.3.
  * Every project change is a named, pure function on an Immer draft. UI never mutates state directly.

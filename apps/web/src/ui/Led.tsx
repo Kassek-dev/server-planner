@@ -11,8 +11,8 @@ const fill: Record<LedStatus, string> = {
 
 export interface LedProps {
   status: LedStatus;
-  /** Sentence describing the state; used as accessible name and tooltip. */
-  label: string;
+  /** Sentence describing the state (accessible name + tooltip). Omit only when text next to it says the same. */
+  label?: string;
   size?: 7 | 8;
 }
 
@@ -20,9 +20,7 @@ export function Led({ status, label, size = 8 }: LedProps) {
   const color = fill[status];
   return (
     <span
-      role="img"
-      aria-label={label}
-      title={label}
+      {...(label ? { role: 'img', 'aria-label': label, title: label } : { 'aria-hidden': true })}
       className="inline-block shrink-0 rounded-pill"
       style={{
         width: size,
