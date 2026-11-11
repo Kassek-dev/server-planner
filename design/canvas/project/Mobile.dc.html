@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mobile view</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ff8a3d}a:hover{color:#ffb07a}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #171717; color: #ececec; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px;">
+
+  <!-- top bar -->
+  <header style="position: absolute; left: 0; top: 0; width: 390px; height: 52px; box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; gap: 10px; background: #1c1c1c; border-bottom: 1px solid #2e2e2e; z-index: 2;">
+    <div style="width: 26px; height: 26px; background: #ff7a1a; border-radius: 3px; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 6px; box-sizing: border-box; flex-shrink: 0;">
+      <span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span>
+    </div>
+    <span style="font-weight: 600;">Home lab</span>
+    <button style="height: 44px; padding: 0 6px; display: flex; align-items: center; gap: 4px; background: transparent; color: #a3a3a3; border: 0; font: 13px 'IBM Plex Sans', sans-serif;">Topology<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <div style="flex-grow: 1;"></div>
+    <button aria-label="2 errors, 1 warning" style="height: 44px; padding: 0 4px; display: flex; align-items: center; gap: 8px; background: transparent; border: 0; font: 12px 'IBM Plex Mono', monospace;">
+      <span style="display: flex; align-items: center; gap: 4px; color: #ff6b6b;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #ff4d4d; box-shadow: 0 0 6px #ff4d4d;"></span>2</span>
+      <span style="display: flex; align-items: center; gap: 4px; color: #facc15;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #facc15; box-shadow: 0 0 6px #facc15;"></span>1</span>
+    </button>
+  </header>
+
+  <!-- canvas (semantic zoom ~55%: collapsed tiles) -->
+  <main style="position: absolute; left: 0; top: 52px; width: 390px; height: 792px; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 18px 18px;">
+    <div role="note" style="position: absolute; left: 12px; top: 12px; right: 12px; display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #13233a; border: 1px solid #1e3a5f; border-radius: 3px; font-size: 12px; color: #bfdbfe;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5eaefc" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v5h1"></path></svg>
+      View only. Editing is available on desktop.
+      <button aria-label="Dismiss" style="margin-left: auto; width: 28px; height: 28px; background: transparent; border: 0; color: #bfdbfe; font-size: 16px;">×</button>
+    </div>
+
+    <svg width="390" height="400" style="position: absolute; left: 0; top: 0;" aria-hidden="true">
+      <path d="M176 120 H190 V150" fill="none" stroke="#d4d4d4" stroke-width="2"></path>
+      <path d="M176 134 H200 V220 H222" fill="none" stroke="#d4d4d4" stroke-width="2"></path>
+      <path d="M200 220 V320 H222" fill="none" stroke="#d4d4d4" stroke-width="2"></path>
+      <path d="M298 320 H312" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="4 3"></path>
+    </svg>
+
+    <!-- rack -->
+    <div style="position: absolute; left: 16px; top: 72px; width: 160px; height: 200px; box-sizing: border-box; background: #1b1b1b; border: 1px solid #5c5c5c; border-radius: 3px;">
+      <div style="height: 22px; padding: 0 8px; display: flex; align-items: center; background: #2a2a2a; font: 600 10px 'IBM Plex Mono', monospace; letter-spacing: 0.06em;">RACK · CLOSET</div>
+      <div style="margin: 4px 6px; display: flex; flex-direction: column; gap: 3px;">
+        <span style="height: 18px; padding: 0 6px; display: flex; align-items: center; gap: 6px; background: #262626; border: 1px solid #ff4d4d; border-radius: 2px; font-size: 11px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #ff4d4d;"></span>gw-01</span>
+        <span style="height: 18px; padding: 0 6px; display: flex; align-items: center; gap: 6px; background: #262626; border: 1px solid #3a3a3a; border-radius: 2px; font-size: 11px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #4ade80;"></span>sw-core</span>
+        <span style="height: 38px; padding: 0 6px; display: flex; align-items: center; gap: 6px; background: #262626; border: 1px solid #3a3a3a; border-radius: 2px; font-size: 11px; font-weight: 600;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #4ade80;"></span>nas-01</span>
+        <span style="height: 90px; border: 1px dashed #3f3f3f; border-radius: 2px; display: flex; align-items: center; justify-content: center; font: 10px 'IBM Plex Mono', monospace; color: #959595;">7U free</span>
+      </div>
+    </div>
+
+    <!-- shelf with selected pve1 -->
+    <div style="position: absolute; left: 212px; top: 160px; width: 162px; height: 100px; box-sizing: border-box; border: 1px dashed #5c5c5c; border-radius: 3px;">
+      <div style="height: 22px; padding: 0 8px; display: flex; align-items: center; font: 600 10px 'IBM Plex Mono', monospace; letter-spacing: 0.06em; color: #a3a3a3;">SHELF · OFFICE</div>
+      <div style="position: absolute; left: 10px; top: 32px; width: 120px; height: 40px; box-sizing: border-box; padding: 0 8px; display: flex; align-items: center; gap: 6px; background: #262626; border: 2px solid #ff7a1a; border-radius: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ececec" stroke-width="1.6" aria-hidden="true"><rect x="3" y="9" width="18" height="7" rx="1.5"></rect><path d="M6 12.5h.01M5 19h3M16 19h3"></path></svg>
+        <span style="font-size: 12px; font-weight: 600;">pve1</span>
+        <span style="margin-left: auto; width: 7px; height: 7px; border-radius: 4px; background: #facc15; box-shadow: 0 0 5px #facc15;"></span>
+      </div>
+      <span style="position: absolute; left: 6px; right: 6px; bottom: 12px; height: 2px; background: #5c5c5c;"></span>
+    </div>
+
+    <!-- room -->
+    <div style="position: absolute; left: 212px; top: 284px; width: 162px; height: 76px; box-sizing: border-box; border: 1px dashed #5c5c5c; border-radius: 3px;">
+      <div style="height: 22px; padding: 0 8px; display: flex; align-items: center; font: 600 10px 'IBM Plex Mono', monospace; letter-spacing: 0.06em; color: #a3a3a3;">LIVING ROOM</div>
+      <span style="position: absolute; left: 10px; top: 28px; width: 76px; height: 26px; box-sizing: border-box; padding: 0 8px; display: flex; align-items: center; background: #262626; border: 1px solid #3a3a3a; border-radius: 13px; font-size: 11px; font-weight: 600;">ap-living</span>
+      <span style="position: absolute; left: 100px; top: 28px; width: 54px; height: 26px; box-sizing: border-box; padding: 0 6px; display: flex; align-items: center; background: #262626; border: 1px solid #3a3a3a; border-radius: 3px; font-size: 11px; font-weight: 600;">tv</span>
+    </div>
+
+    <!-- bottom sheet (read-only inspector) -->
+    <section aria-label="pve1 details" style="position: absolute; left: 0; bottom: 0; width: 390px; height: 400px; box-sizing: border-box; padding: 8px 16px 16px; background: #1c1c1c; border-top: 1px solid #3a3a3a; border-radius: 12px 12px 0 0; display: flex; flex-direction: column; gap: 14px;">
+      <span style="align-self: center; width: 36px; height: 4px; border-radius: 2px; background: #5c5c5c;"></span>
+      <div style="display: flex; align-items: flex-start; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <span style="font-size: 18px; font-weight: 600;">pve1</span>
+          <span style="color: #a3a3a3;">Lenovo M720q · Proxmox VE 8.3</span>
+        </div>
+        <span style="margin-left: auto; font: 600 10px 'IBM Plex Mono', monospace; color: #a3a3a3; border: 1px solid #3a3a3a; border-radius: 2px; padding: 2px 6px;">READ ONLY</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid #2e2e2e; border-radius: 3px;">
+        <span style="height: 44px; display: flex; align-items: center; justify-content: center; background: #2a2a2a; font-weight: 500; border-bottom: 2px solid #ff7a1a; box-sizing: border-box;">Capacity</span>
+        <span style="height: 44px; display: flex; align-items: center; justify-content: center; color: #a3a3a3;">Hardware</span>
+        <span style="height: 44px; display: flex; align-items: center; justify-content: center; color: #a3a3a3;">Software</span>
+        <span style="height: 44px; display: flex; align-items: center; justify-content: center; color: #a3a3a3;">Network</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span>CPU</span><span style="font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">5/24 vCPU</span></div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px;">
+          <span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span>Memory</span><span style="font: 12px 'IBM Plex Mono', monospace; color: #facc15;">22.4/28.8 GB</span></div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px;">
+          <span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #facc15;"></span><span style="height: 10px; background: #facc15;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span>local-lvm</span><span style="font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">310/900 GB</span></div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px;">
+          <span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span>
+        </div>
+      </div>
+      <button style="height: 44px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; border-radius: 3px; font: 500 13px 'IBM Plex Sans', sans-serif;">Test reachability from pve1</button>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

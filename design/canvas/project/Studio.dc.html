@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Studio direction</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4f46e5}a:hover{color:#3730a3}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #f4f4f5; color: #18181b; font-family: Geist, system-ui, sans-serif; font-size: 13px;">
+
+  <!-- top bar -->
+  <header style="position: absolute; left: 0; top: 0; width: 1280px; height: 52px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 14px; background: #ffffff; border-bottom: 1px solid #e4e4e7;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 26px; height: 26px; border-radius: 8px; background: #18181b; display: flex; align-items: center; justify-content: center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="2"></rect><rect x="3" y="14" width="18" height="6" rx="2"></rect></svg>
+      </div>
+      <span style="font-weight: 600; font-size: 14px;">Server Planner</span>
+    </div>
+    <span style="color: #a1a1aa;">/</span>
+    <span style="font-weight: 500;">Home lab</span>
+    <span style="font-size: 12px; color: #52525b;">Saved locally</span>
+    <nav style="display: flex; gap: 2px; margin-left: 20px; padding: 3px; background: #f4f4f5; border-radius: 8px;" aria-label="Views">
+      <a href="#" style="padding: 5px 12px; border-radius: 6px; background: #ffffff; color: #18181b; text-decoration: none; font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">Topology</a>
+      <a href="#" style="padding: 5px 12px; border-radius: 6px; color: #52525b; text-decoration: none;">Inventory</a>
+      <a href="#" style="padding: 5px 12px; border-radius: 6px; color: #52525b; text-decoration: none;">IP Plan</a>
+      <a href="#" style="padding: 5px 12px; border-radius: 6px; color: #52525b; text-decoration: none;">Access</a>
+    </nav>
+    <div style="flex-grow: 1;"></div>
+    <button style="height: 32px; padding: 0 12px; display: flex; align-items: center; gap: 6px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 8px; font: 500 13px Geist, sans-serif;">
+      <span style="width: 6px; height: 6px; border-radius: 3px; background: #dc2626;"></span>3 issues</button>
+    <button style="height: 32px; padding: 0 12px; background: #ffffff; color: #18181b; border: 1px solid #e4e4e7; border-radius: 8px; font: 500 13px Geist, sans-serif;">Export</button>
+    <button style="height: 32px; padding: 0 14px; display: flex; align-items: center; gap: 6px; background: #4f46e5; color: #ffffff; border: 0; border-radius: 8px; font: 500 13px Geist, sans-serif;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>Simulate</button>
+  </header>
+
+  <!-- library -->
+  <aside style="position: absolute; left: 12px; top: 64px; width: 216px; height: 724px; box-sizing: border-box; padding: 12px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; display: flex; flex-direction: column; gap: 12px;">
+    <label style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 12px; font-weight: 500; color: #52525b;">Library</span>
+      <input type="search" placeholder="Search devices, apps…" style="height: 32px; box-sizing: border-box; padding: 0 10px; background: #f4f4f5; border: 1px solid transparent; border-radius: 8px; color: #18181b; font: 13px Geist, sans-serif;">
+    </label>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;">
+      <div style="height: 64px; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.6" aria-hidden="true"><rect x="3" y="8" width="18" height="8" rx="2"></rect><path d="M7 12h.01M11 12h.01"></path></svg>Router</div>
+      <div style="height: 64px; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.6" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1.5"></rect><path d="M6 12h2M10 12h2M14 12h2"></path></svg>Switch</div>
+      <div style="height: 64px; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.6" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 7h8M8 11h8"></path></svg>Server</div>
+      <div style="height: 64px; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.6" aria-hidden="true"><rect x="4" y="8" width="16" height="9" rx="2"></rect></svg>Mini PC</div>
+      <div style="height: 64px; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.6" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 11h6M9 15h6"></path></svg>NAS</div>
+      <div style="height: 64px; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.6" aria-hidden="true"><path d="M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"></path><circle cx="12" cy="19" r="1"></circle></svg>Access point</div>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #e4e4e7;">
+      <span style="font-size: 12px; font-weight: 500; color: #52525b;">VLANs</span>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 5px; background: #7c3aed;"></span>Mgmt <span style="margin-left: auto; font: 12px 'Geist Mono', monospace; color: #52525b;">10</span></div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 5px; background: #2563eb;"></span>LAN <span style="margin-left: auto; font: 12px 'Geist Mono', monospace; color: #52525b;">20</span></div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 5px; background: #ea580c;"></span>IoT <span style="margin-left: auto; font: 12px 'Geist Mono', monospace; color: #52525b;">30</span></div>
+    </div>
+  </aside>
+
+  <!-- canvas -->
+  <main style="position: absolute; left: 240px; top: 52px; width: 728px; height: 748px; background-color: #f4f4f5; background-image: radial-gradient(#d4d4d8 1px, transparent 1px); background-size: 20px 20px;">
+    <svg width="728" height="748" style="position: absolute; left: 0; top: 0;" aria-hidden="true">
+      <path d="M370 84 V130" fill="none" stroke="#a1a1aa" stroke-width="1.5"></path>
+      <path d="M370 194 V250" fill="none" stroke="#52525b" stroke-width="2.5"></path>
+      <path d="M330 314 C330 360, 155 340, 155 390" fill="none" stroke="#52525b" stroke-width="2.5"></path>
+      <path d="M375 314 V410" fill="none" stroke="#2563eb" stroke-width="2"></path>
+      <path d="M420 314 C420 360, 575 340, 575 390" fill="none" stroke="#52525b" stroke-width="2.5"></path>
+      <path d="M585 454 V530" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="4 5"></path>
+    </svg>
+    <span style="position: absolute; left: 380px; top: 214px; padding: 1px 6px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 10px; font: 11px 'Geist Mono', monospace; color: #52525b;">trunk · 10, 20, 30</span>
+
+    <!-- simulation result -->
+    <div style="position: absolute; left: 16px; top: 16px; width: 260px; box-sizing: border-box; padding: 12px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; align-items: center; gap: 6px;"><span style="padding: 2px 8px; border-radius: 10px; background: #fef2f2; color: #b91c1c; font-size: 12px; font-weight: 500;">Blocked</span><span style="font-size: 12px; color: #52525b;">Reachability test</span></div>
+      <span style="font-weight: 500;">tv-salon → Jellyfin (8096/tcp)</span>
+      <span style="color: #52525b; font-size: 12px;">Stopped at gw-01 by rule #4: IoT → LAN deny</span>
+      <a href="#" style="font-size: 12px; font-weight: 500;">Add allow rule</a>
+    </div>
+
+    <!-- nodes -->
+    <div style="position: absolute; left: 310px; top: 44px; width: 120px; height: 40px; box-sizing: border-box; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; color: #3f3f46;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>Internet</div>
+
+    <div style="position: absolute; left: 295px; top: 130px; width: 150px; height: 64px; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #fca5a5; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-weight: 600;">gw-01</span>
+      <span style="font-size: 12px; color: #52525b;">Router · 192.168.10.1</span>
+    </div>
+    <div style="position: absolute; left: 435px; top: 122px; width: 18px; height: 18px; border-radius: 9px; background: #dc2626; border: 2px solid #ffffff; box-sizing: border-box;"></div>
+
+    <div style="position: absolute; left: 280px; top: 250px; width: 180px; height: 64px; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; justify-content: space-between;"><span style="font-weight: 600;">sw-core</span><span style="font-size: 12px; color: #52525b;">4 / 8 ports</span></div>
+      <div style="display: flex; gap: 3px;">
+        <span style="width: 15px; height: 8px; border-radius: 2px; background: #52525b;"></span><span style="width: 15px; height: 8px; border-radius: 2px; background: #52525b;"></span><span style="width: 15px; height: 8px; border-radius: 2px; background: #2563eb;"></span><span style="width: 15px; height: 8px; border-radius: 2px; background: #52525b;"></span>
+        <span style="width: 15px; height: 8px; border-radius: 2px; background: #e4e4e7;"></span><span style="width: 15px; height: 8px; border-radius: 2px; background: #e4e4e7;"></span><span style="width: 15px; height: 8px; border-radius: 2px; background: #e4e4e7;"></span><span style="width: 15px; height: 8px; border-radius: 2px; background: #e4e4e7;"></span>
+      </div>
+    </div>
+
+    <div style="position: absolute; left: 40px; top: 390px; width: 230px; box-sizing: border-box; background: #ffffff; border: 2px solid #4f46e5; border-radius: 12px; box-shadow: 0 8px 24px rgba(79,70,229,0.15);">
+      <div style="padding: 10px 12px; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 600;">pve1</span><span style="font-size: 12px; color: #52525b;">Proxmox VE 8.3</span></div>
+        <span style="padding: 2px 8px; border-radius: 10px; background: #fffbeb; color: #92400e; font-size: 11px; font-weight: 500;">RAM 78%</span>
+      </div>
+      <div style="padding: 0 8px 8px; display: flex; flex-direction: column; gap: 4px;">
+        <div style="padding: 6px 8px; background: #f4f4f5; border-radius: 8px; display: flex; flex-direction: column; gap: 3px;">
+          <div style="display: flex; justify-content: space-between;"><span style="font-weight: 500;">docker-vm</span><span style="font-size: 11px; color: #52525b;">VM · 2 vCPU · 8 GB</span></div>
+          <span style="font-size: 12px; color: #52525b;">Jellyfin, Pi-hole, Immich</span>
+        </div>
+        <div style="padding: 6px 8px; background: #f4f4f5; border-radius: 8px; display: flex; justify-content: space-between;"><span style="font-weight: 500;">home-assistant</span><span style="font-size: 11px; color: #52525b;">LXC · 4 GB</span></div>
+        <div style="padding: 6px 8px; background: #f4f4f5; border-radius: 8px; display: flex; justify-content: space-between;"><span style="font-weight: 500;">unifi</span><span style="font-size: 11px; color: #52525b;">LXC · 2 GB</span></div>
+      </div>
+    </div>
+
+    <div style="position: absolute; left: 300px; top: 410px; width: 150px; height: 64px; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-weight: 600;">nas-01</span>
+      <span style="font-size: 12px; color: #15803d;">tank · 41% used</span>
+    </div>
+
+    <div style="position: absolute; left: 500px; top: 390px; width: 150px; height: 64px; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-weight: 600;">ap-living</span>
+      <span style="font-size: 12px; color: #52525b;">Access point · 3 SSIDs</span>
+    </div>
+
+    <div style="position: absolute; left: 520px; top: 530px; width: 130px; height: 52px; box-sizing: border-box; padding: 8px 12px; background: #ffffff; border: 1px solid #fed7aa; border-radius: 12px; display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-weight: 600;">tv-salon</span>
+      <span style="font-size: 11px; color: #c2410c;">Client · IoT</span>
+    </div>
+
+    <!-- issues tray -->
+    <div style="position: absolute; left: 16px; bottom: 16px; width: 440px; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; gap: 8px; align-items: center;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #dc2626;"></span><span>VLAN 30 is not allowed on sw-core port 8</span><a href="#" style="margin-left: auto; font-size: 12px; font-weight: 500;">Fix</a></div>
+      <div style="display: flex; gap: 8px; align-items: center;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #dc2626;"></span><span>192.168.20.15 is assigned twice</span></div>
+      <div style="display: flex; gap: 8px; align-items: center;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #d97706;"></span><span>pve1 memory at 78%</span></div>
+    </div>
+
+    <div style="position: absolute; right: 16px; bottom: 16px; display: flex; gap: 2px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 10px; padding: 3px;">
+      <button aria-label="Zoom out" style="width: 28px; height: 28px; background: transparent; border: 0; border-radius: 6px; color: #3f3f46; font-size: 16px;">−</button>
+      <span style="width: 44px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #52525b;">100%</span>
+      <button aria-label="Zoom in" style="width: 28px; height: 28px; background: transparent; border: 0; border-radius: 6px; color: #3f3f46; font-size: 16px;">+</button>
+    </div>
+  </main>
+
+  <!-- inspector -->
+  <aside style="position: absolute; left: 980px; top: 64px; width: 288px; height: 724px; box-sizing: border-box; padding: 16px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 18px; font-weight: 600;">pve1</span>
+      <span style="color: #52525b;">Lenovo M720q · i5-8500T · 32 GB</span>
+    </div>
+    <div style="display: flex; gap: 2px; padding: 3px; background: #f4f4f5; border-radius: 8px;">
+      <span style="flex: 1; text-align: center; padding: 5px 0; border-radius: 6px; background: #ffffff; font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">Capacity</span>
+      <span style="flex: 1; text-align: center; padding: 5px 0; color: #52525b;">Hardware</span>
+      <span style="flex: 1; text-align: center; padding: 5px 0; color: #52525b;">Software</span>
+      <span style="flex: 1; text-align: center; padding: 5px 0; color: #52525b;">Network</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span style="font-weight: 500;">CPU</span><span style="color: #52525b;">5 of 24 vCPU</span></div>
+        <div style="height: 8px; background: #f4f4f5; border-radius: 4px;"><div style="width: 21%; height: 8px; background: #16a34a; border-radius: 4px;"></div></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span style="font-weight: 500;">Memory</span><span style="color: #92400e;">22.4 of 28.8 GB</span></div>
+        <div style="height: 8px; background: #f4f4f5; border-radius: 4px;"><div style="width: 78%; height: 8px; background: #d97706; border-radius: 4px;"></div></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span style="font-weight: 500;">local-lvm</span><span style="color: #52525b;">310 of 900 GB</span></div>
+        <div style="height: 8px; background: #f4f4f5; border-radius: 4px;"><div style="width: 34%; height: 8px; background: #16a34a; border-radius: 4px;"></div></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid #e4e4e7;">
+      <span style="font-size: 12px; font-weight: 500; color: #52525b;">Memory breakdown</span>
+      <div style="display: flex; justify-content: space-between;"><span>docker-vm</span><span style="color: #52525b;">8.0 GB</span></div>
+      <div style="display: flex; justify-content: space-between;"><span>home-assistant</span><span style="color: #52525b;">4.0 GB</span></div>
+      <div style="display: flex; justify-content: space-between;"><span>unifi</span><span style="color: #52525b;">2.0 GB</span></div>
+      <div style="display: flex; justify-content: space-between;"><span>ZFS ARC</span><span style="color: #52525b;">6.4 GB</span></div>
+      <div style="display: flex; justify-content: space-between;"><span>Proxmox overhead</span><span style="color: #52525b;">2.0 GB</span></div>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <div style="padding: 12px; background: #fffbeb; border-radius: 10px; color: #78350f; font-size: 12px; line-height: 1.5;">Memory is above 70%. Add 16 GB or move <strong>unifi</strong> to another host.</div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ff8a3d}a:hover{color:#ffb07a}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #141414; color: #ececec; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; display: flex; flex-direction: column;">
+
+  <header style="height: 52px; flex-shrink: 0; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 14px; background: #1c1c1c; border-bottom: 1px solid #2e2e2e;">
+    <div style="width: 28px; height: 28px; background: #ff7a1a; border-radius: 3px; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 6px; box-sizing: border-box;">
+      <span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span>
+    </div>
+    <span style="font-weight: 600; font-size: 14px;">Server Planner</span>
+    <div style="flex-grow: 1;"></div>
+    <a href="#" style="color: #a3a3a3; text-decoration: none;">Settings</a>
+    <a href="#" style="color: #a3a3a3; text-decoration: none;">About</a>
+  </header>
+
+  <main style="flex: 1; box-sizing: border-box; padding: 32px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600;">Projects</h1>
+      <div style="flex-grow: 1;"></div>
+      <button style="height: 32px; padding: 0 12px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; border-radius: 3px; font: 500 13px 'IBM Plex Sans', sans-serif;">From template</button>
+      <button style="height: 32px; padding: 0 12px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; border-radius: 3px; font: 500 13px 'IBM Plex Sans', sans-serif;">Import JSON</button>
+      <button style="height: 32px; padding: 0 14px; background: #ff7a1a; color: #141414; border: 0; border-radius: 3px; font: 600 13px 'IBM Plex Sans', sans-serif;">New project</button>
+    </div>
+
+    <div role="status" style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #2a2410; border: 1px solid #6b5a12; border-radius: 3px; color: #fde68a;">
+      <span style="width: 8px; height: 8px; border-radius: 4px; background: #facc15; box-shadow: 0 0 6px #facc15; flex-shrink: 0;"></span>
+      <span>Your projects are stored only in this browser. Last backup was 21 days ago.</span>
+      <div style="flex-grow: 1;"></div>
+      <button style="height: 28px; padding: 0 10px; background: transparent; color: #fde68a; border: 1px solid #6b5a12; border-radius: 3px; font: 500 12px 'IBM Plex Sans', sans-serif;">Keep data persistent</button>
+      <button style="height: 28px; padding: 0 10px; background: #facc15; color: #141414; border: 0; border-radius: 3px; font: 600 12px 'IBM Plex Sans', sans-serif;">Export all</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+
+      <!-- card 1 -->
+      <article style="background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 3px; overflow: hidden;">
+        <div style="height: 150px; position: relative; background-color: #171717; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 16px 16px; border-bottom: 1px solid #2e2e2e;">
+          <span style="position: absolute; left: 20px; top: 24px; width: 70px; height: 100px; background: #1b1b1b; border: 1px solid #5c5c5c; border-radius: 2px;"></span>
+          <span style="position: absolute; left: 26px; top: 34px; width: 58px; height: 8px; background: #262626; border: 1px solid #ff4d4d;"></span>
+          <span style="position: absolute; left: 26px; top: 45px; width: 58px; height: 8px; background: #262626; border: 1px solid #3a3a3a;"></span>
+          <span style="position: absolute; left: 26px; top: 59px; width: 58px; height: 16px; background: #262626; border: 1px solid #3a3a3a;"></span>
+          <span style="position: absolute; left: 110px; top: 24px; width: 120px; height: 64px; border: 1px dashed #5c5c5c; border-radius: 2px;"></span>
+          <span style="position: absolute; left: 118px; top: 38px; width: 64px; height: 36px; background: #262626; border: 1px solid #3a3a3a; border-radius: 4px;"></span>
+          <span style="position: absolute; left: 110px; top: 98px; width: 120px; height: 34px; border: 1px dashed #5c5c5c; border-radius: 2px;"></span>
+          <span style="position: absolute; left: 118px; top: 106px; width: 46px; height: 18px; background: #262626; border: 1px solid #3a3a3a; border-radius: 9px;"></span>
+        </div>
+        <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a href="#" style="color: #ececec; text-decoration: none; font-weight: 600;">Home lab</a>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 5px; font: 11px 'IBM Plex Mono', monospace; color: #ff6b6b;"><span style="width: 7px; height: 7px; border-radius: 4px; background: #ff4d4d; box-shadow: 0 0 5px #ff4d4d;"></span>2</span>
+            <button aria-label="Project actions" style="width: 28px; height: 28px; background: transparent; border: 0; color: #a3a3a3; font-size: 16px;">⋯</button>
+          </div>
+          <span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">8 devices · 3 locations</span>
+          <span style="font-size: 12px; color: #959595;">Edited 2 hours ago</span>
+        </div>
+      </article>
+
+      <!-- card 2 -->
+      <article style="background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 3px; overflow: hidden;">
+        <div style="height: 150px; position: relative; background-color: #171717; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 16px 16px; border-bottom: 1px solid #2e2e2e;">
+          <span style="position: absolute; left: 30px; top: 30px; width: 60px; height: 34px; background: #262626; border: 1px solid #3a3a3a; border-radius: 4px;"></span>
+          <span style="position: absolute; left: 110px; top: 30px; width: 60px; height: 34px; background: #262626; border: 1px solid #3a3a3a; border-radius: 4px;"></span>
+          <span style="position: absolute; left: 190px; top: 30px; width: 60px; height: 34px; background: #262626; border: 1px solid #3a3a3a; border-radius: 4px;"></span>
+          <span style="position: absolute; left: 90px; top: 100px; width: 100px; height: 12px; background: #262626; border: 1px solid #3a3a3a;"></span>
+        </div>
+        <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a href="#" style="color: #ececec; text-decoration: none; font-weight: 600;">Proxmox cluster plan</a>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 5px; font: 11px 'IBM Plex Mono', monospace; color: #4ade80;"><span style="width: 7px; height: 7px; border-radius: 4px; background: #4ade80; box-shadow: 0 0 5px #4ade80;"></span>0</span>
+            <button aria-label="Project actions" style="width: 28px; height: 28px; background: transparent; border: 0; color: #a3a3a3; font-size: 16px;">⋯</button>
+          </div>
+          <span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">5 devices · 1 location</span>
+          <span style="font-size: 12px; color: #959595;">Edited 3 days ago</span>
+        </div>
+      </article>
+
+      <!-- card 3 -->
+      <article style="background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 3px; overflow: hidden;">
+        <div style="height: 150px; position: relative; background-color: #171717; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 16px 16px; border-bottom: 1px solid #2e2e2e;">
+          <span style="position: absolute; left: 40px; top: 40px; width: 90px; height: 50px; background: #262626; border: 1px solid #3a3a3a; border-radius: 4px;"></span>
+          <span style="position: absolute; left: 160px; top: 60px; width: 70px; height: 30px; background: #262626; border: 1px solid #facc15; border-radius: 4px;"></span>
+        </div>
+        <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a href="#" style="color: #ececec; text-decoration: none; font-weight: 600;">IoT segmentation</a>
+            <span style="margin-left: auto; display: flex; align-items: center; gap: 5px; font: 11px 'IBM Plex Mono', monospace; color: #facc15;"><span style="width: 7px; height: 7px; border-radius: 4px; background: #facc15; box-shadow: 0 0 5px #facc15;"></span>3</span>
+            <button aria-label="Project actions" style="width: 28px; height: 28px; background: transparent; border: 0; color: #a3a3a3; font-size: 16px;">⋯</button>
+          </div>
+          <span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">3 devices · unplaced</span>
+          <span style="font-size: 12px; color: #959595;">Edited Oct 28</span>
+        </div>
+      </article>
+
+      <!-- new -->
+      <button style="background: transparent; border: 1px dashed #5c5c5c; border-radius: 3px; color: #a3a3a3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font: 500 13px 'IBM Plex Sans', sans-serif; min-height: 240px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        New project
+      </button>
+    </div>
+
+    <div style="flex-grow: 1;"></div>
+    <footer style="display: flex; align-items: center; gap: 16px; padding-top: 14px; border-top: 1px solid #2e2e2e; font: 12px 'IBM Plex Mono', monospace; color: #959595;">
+      <span>Stored in this browser · 3 projects · 412 KB</span>
+      <div style="flex-grow: 1;"></div>
+      <span>Catalog 2026.46 · updated 3 days ago</span>
+      <button style="height: 28px; padding: 0 10px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; border-radius: 3px; font: 500 12px 'IBM Plex Sans', sans-serif;">Check for updates</button>
+    </footer>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Main.dc.html": {
+      "h": 800,
+      "title": "A \u2014 Blueprint (dark, technical)",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "Rack.dc.html": {
+      "h": 800,
+      "title": "C \u2014 Rack (dark, hardware)",
+      "w": 1280,
+      "x": 2720,
+      "y": 0
+    },
+    "Studio.dc.html": {
+      "h": 800,
+      "title": "B \u2014 Studio (light, minimal)",
+      "w": 1280,
+      "x": 1360,
+      "y": 0
+    },
+    "RackMixed.dc.html": {
+      "x": 0,
+      "y": 1300,
+      "w": 1280,
+      "h": 800,
+      "title": "D \u2014 Rack + Standalone tiles (per-device form factor)"
+    },
+    "RackLocations.dc.html": {
+      "x": 1360,
+      "y": 1300,
+      "w": 1280,
+      "h": 800,
+      "title": "E \u2014 Locations (rack frame, shelf, room)"
+    },
+    "Final.dc.html": {
+      "x": 2720,
+      "y": 1300,
+      "w": 1280,
+      "h": 800,
+      "title": "Chosen \u2014 E canvas + D device inspector"
+    },
+    "EditorDark.dc.html": {
+      "x": 0,
+      "y": 2600,
+      "w": 1280,
+      "h": 800,
+      "title": "Editor \u2014 dark (corrected)"
+    },
+    "EditorLight.dc.html": {
+      "x": 1360,
+      "y": 2600,
+      "w": 1280,
+      "h": 800,
+      "title": "Editor \u2014 light"
+    },
+    "Projects.dc.html": {
+      "x": 2720,
+      "y": 2600,
+      "w": 1280,
+      "h": 800,
+      "title": "Projects"
+    },
+    "Simulation.dc.html": {
+      "x": 4080,
+      "y": 2600,
+      "w": 1280,
+      "h": 800,
+      "title": "Simulation \u2014 reachability"
+    },
+    "Mobile.dc.html": {
+      "x": 5440,
+      "y": 2600,
+      "w": 390,
+      "h": 844,
+      "title": "Mobile \u2014 view only"
+    },
+    "Sitemap.dc.html": {
+      "x": 0,
+      "y": 3864,
+      "w": 2800,
+      "h": 1400,
+      "title": "Sitemap"
+    },
+    "MvpDeviceCapacity.dc.html": {
+      "x": 0,
+      "y": 5764,
+      "w": 1280,
+      "h": 800,
+      "title": "I-02a Device \u203a Capacity"
+    },
+    "MvpDeviceSoftware.dc.html": {
+      "x": 1360,
+      "y": 5764,
+      "w": 1280,
+      "h": 800,
+      "title": "I-02c Device \u203a Software"
+    },
+    "MvpDeviceNetwork.dc.html": {
+      "x": 2720,
+      "y": 5764,
+      "w": 1280,
+      "h": 800,
+      "title": "I-02d Device \u203a Network (router)"
+    },
+    "MvpWorkload.dc.html": {
+      "x": 4080,
+      "y": 5764,
+      "w": 1280,
+      "h": 800,
+      "title": "I-03 Workload (VM)"
+    },
+    "MvpDrawerVlans.dc.html": {
+      "x": 0,
+      "y": 6684,
+      "w": 1280,
+      "h": 800,
+      "title": "S-01 VLANs & subnets"
+    },
+    "MvpDrawerFirewall.dc.html": {
+      "x": 1360,
+      "y": 6684,
+      "w": 1280,
+      "h": 800,
+      "title": "S-02 Firewall rules"
+    },
+    "MvpIssues.dc.html": {
+      "x": 2720,
+      "y": 6684,
+      "w": 1280,
+      "h": 800,
+      "title": "X-02 Issues panel"
+    },
+    "MvpAccess.dc.html": {
+      "x": 4080,
+      "y": 6684,
+      "w": 1280,
+      "h": 800,
+      "title": "X-01b Simulation \u203a Access overlays"
+    },
+    "MvpAppCatalog.dc.html": {
+      "x": 0,
+      "y": 7604,
+      "w": 1280,
+      "h": 800,
+      "title": "D-06 App catalog"
+    },
+    "MvpAddApp.dc.html": {
+      "x": 1360,
+      "y": 7604,
+      "w": 1280,
+      "h": 800,
+      "title": "D-07 Add app wizard (step 2)"
+    },
+    "MvpModelPicker.dc.html": {
+      "x": 2720,
+      "y": 7604,
+      "w": 1280,
+      "h": 800,
+      "title": "D-05 Device model picker"
+    },
+    "MvpEmptyCanvas.dc.html": {
+      "x": 0,
+      "y": 8524,
+      "w": 1280,
+      "h": 800,
+      "title": "T-02 Empty canvas"
+    },
+    "MvpFirstRun.dc.html": {
+      "x": 1360,
+      "y": 8524,
+      "w": 1280,
+      "h": 800,
+      "title": "T-01 First run"
+    },
+    "MvpNewProject.dc.html": {
+      "x": 2720,
+      "y": 8524,
+      "w": 1280,
+      "h": 800,
+      "title": "D-01 New project"
+    },
+    "MvpExport.dc.html": {
+      "x": 4080,
+      "y": 8524,
+      "w": 1280,
+      "h": 800,
+      "title": "D-04 Export"
+    },
+    "MvpSettings.dc.html": {
+      "x": 0,
+      "y": 9444,
+      "w": 1280,
+      "h": 800,
+      "title": "P-02d Settings \u203a Storage"
+    },
+    "MvpAbout.dc.html": {
+      "x": 1360,
+      "y": 9444,
+      "w": 1280,
+      "h": 800,
+      "title": "P-03b About \u203a Data sources"
+    },
+    "MvpMobileProjects.dc.html": {
+      "x": 2720,
+      "y": 9444,
+      "w": 390,
+      "h": 844,
+      "title": "M-01 Mobile \u203a Projects"
+    },
+    "MvpMobileReach.dc.html": {
+      "x": 3190,
+      "y": 9444,
+      "w": 390,
+      "h": 844,
+      "title": "M-03 Mobile \u203a Reachability"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-11T13:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "heading": {
+      "kind": "title1",
+      "maxW": 4000,
+      "text": "Server Planner \u2014 3 visual directions (same screen, same data)",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "heading2": {
+      "x": 0,
+      "y": 1000,
+      "text": "Direction C, round 2 \u2014 rack-mount vs standalone devices",
+      "kind": "title1",
+      "maxW": 2640
+    },
+    "heading3": {
+      "x": 0,
+      "y": 2300,
+      "text": "UI \u2014 key screens (docs/05-projekt-ui.md)",
+      "kind": "title1",
+      "maxW": 5830
+    },
+    "heading4": {
+      "x": 0,
+      "y": 3564,
+      "text": "Sitemap (docs/07-mapa-widokow.md)",
+      "kind": "title1",
+      "maxW": 2800
+    },
+    "heading5": {
+      "x": 0,
+      "y": 5464,
+      "text": "MVP mockups \u2014 docs/07 \u00a7 10 (rows = order 1\u20136)",
+      "kind": "title1",
+      "maxW": 5360
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Studio.dc.html",
+    "Rack.dc.html",
+    "RackMixed.dc.html",
+    "RackLocations.dc.html",
+    "Final.dc.html",
+    "EditorDark.dc.html",
+    "EditorLight.dc.html",
+    "Projects.dc.html",
+    "Simulation.dc.html",
+    "Mobile.dc.html",
+    "Sitemap.dc.html",
+    "MvpDeviceCapacity.dc.html",
+    "MvpDeviceSoftware.dc.html",
+    "MvpDeviceNetwork.dc.html",
+    "MvpWorkload.dc.html",
+    "MvpDrawerVlans.dc.html",
+    "MvpDrawerFirewall.dc.html",
+    "MvpIssues.dc.html",
+    "MvpAccess.dc.html",
+    "MvpAppCatalog.dc.html",
+    "MvpAddApp.dc.html",
+    "MvpModelPicker.dc.html",
+    "MvpEmptyCanvas.dc.html",
+    "MvpFirstRun.dc.html",
+    "MvpNewProject.dc.html",
+    "MvpExport.dc.html",
+    "MvpSettings.dc.html",
+    "MvpAbout.dc.html",
+    "MvpMobileProjects.dc.html",
+    "MvpMobileReach.dc.html"
+  ],
+  "pages": [],
+  "title": "Server Planner \u2014 visual directions"
+}

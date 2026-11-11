@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rack direction</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ff8a3d}a:hover{color:#ffb07a}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #141414; color: #ececec; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px;">
+
+  <!-- top bar -->
+  <header style="position: absolute; left: 0; top: 0; width: 1280px; height: 52px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 14px; background: #1c1c1c; border-bottom: 1px solid #2e2e2e;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 28px; height: 28px; background: #ff7a1a; border-radius: 3px; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 6px; box-sizing: border-box;">
+        <span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span>
+      </div>
+      <span style="font-weight: 600; font-size: 14px;">Server Planner</span>
+    </div>
+    <span style="font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3; padding: 3px 8px; border: 1px solid #2e2e2e; border-radius: 3px;">Home lab</span>
+    <nav style="display: flex; gap: 0; margin-left: 16px; border: 1px solid #2e2e2e; border-radius: 3px;" aria-label="Views">
+      <a href="#" style="padding: 6px 12px; background: #2a2a2a; color: #ececec; text-decoration: none; font-weight: 500; border-right: 1px solid #2e2e2e;">Topology</a>
+      <a href="#" style="padding: 6px 12px; color: #a3a3a3; text-decoration: none; border-right: 1px solid #2e2e2e;">Inventory</a>
+      <a href="#" style="padding: 6px 12px; color: #a3a3a3; text-decoration: none; border-right: 1px solid #2e2e2e;">IP Plan</a>
+      <a href="#" style="padding: 6px 12px; color: #a3a3a3; text-decoration: none;">Access</a>
+    </nav>
+    <div style="flex-grow: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 12px; font: 12px 'IBM Plex Mono', monospace;">
+      <span style="display: flex; align-items: center; gap: 6px; color: #ff6b6b;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #ff4d4d; box-shadow: 0 0 6px #ff4d4d;"></span>2</span>
+      <span style="display: flex; align-items: center; gap: 6px; color: #facc15;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #facc15; box-shadow: 0 0 6px #facc15;"></span>1</span>
+    </div>
+    <button style="height: 32px; padding: 0 12px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; border-radius: 3px; font: 500 13px 'IBM Plex Sans', sans-serif;">Export</button>
+    <button style="height: 32px; padding: 0 14px; display: flex; align-items: center; gap: 6px; background: #ff7a1a; color: #141414; border: 0; border-radius: 3px; font: 600 13px 'IBM Plex Sans', sans-serif;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>Simulate</button>
+  </header>
+
+  <!-- library -->
+  <aside style="position: absolute; left: 0; top: 52px; width: 232px; height: 748px; box-sizing: border-box; padding: 14px 12px; background: #1c1c1c; border-right: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 12px;">
+    <label style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font: 600 11px 'IBM Plex Mono', monospace; letter-spacing: 0.08em; color: #a3a3a3;">LIBRARY</span>
+      <input type="search" placeholder="Search devices, apps…" style="height: 32px; box-sizing: border-box; padding: 0 10px; background: #141414; border: 1px solid #3a3a3a; border-radius: 3px; color: #ececec; font: 13px 'IBM Plex Sans', sans-serif;">
+    </label>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="height: 34px; box-sizing: border-box; padding: 0 10px; display: flex; align-items: center; gap: 10px; background: #242424; border: 1px solid #333; border-radius: 3px;"><span style="width: 4px; height: 4px; border-radius: 2px; background: #4ade80;"></span>Router<span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">1U</span></div>
+      <div style="height: 34px; box-sizing: border-box; padding: 0 10px; display: flex; align-items: center; gap: 10px; background: #242424; border: 1px solid #333; border-radius: 3px;"><span style="width: 4px; height: 4px; border-radius: 2px; background: #4ade80;"></span>Switch<span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">1U</span></div>
+      <div style="height: 34px; box-sizing: border-box; padding: 0 10px; display: flex; align-items: center; gap: 10px; background: #242424; border: 1px solid #333; border-radius: 3px;"><span style="width: 4px; height: 4px; border-radius: 2px; background: #4ade80;"></span>Server<span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">2U</span></div>
+      <div style="height: 34px; box-sizing: border-box; padding: 0 10px; display: flex; align-items: center; gap: 10px; background: #242424; border: 1px solid #333; border-radius: 3px;"><span style="width: 4px; height: 4px; border-radius: 2px; background: #4ade80;"></span>Mini PC<span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">tiny</span></div>
+      <div style="height: 34px; box-sizing: border-box; padding: 0 10px; display: flex; align-items: center; gap: 10px; background: #242424; border: 1px solid #333; border-radius: 3px;"><span style="width: 4px; height: 4px; border-radius: 2px; background: #4ade80;"></span>NAS<span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">4 bay</span></div>
+      <div style="height: 34px; box-sizing: border-box; padding: 0 10px; display: flex; align-items: center; gap: 10px; background: #242424; border: 1px solid #333; border-radius: 3px;"><span style="width: 4px; height: 4px; border-radius: 2px; background: #4ade80;"></span>Access point<span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">PoE</span></div>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #2e2e2e;">
+      <span style="font: 600 11px 'IBM Plex Mono', monospace; letter-spacing: 0.08em; color: #a3a3a3;">VLANS</span>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 18px; height: 6px; border-radius: 1px; background: #c084fc;"></span>Mgmt<span style="margin-left: auto; font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">10</span></div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 18px; height: 6px; border-radius: 1px; background: #5eaefc;"></span>LAN<span style="margin-left: auto; font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">20</span></div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 18px; height: 6px; border-radius: 1px; background: #facc15;"></span>IoT<span style="margin-left: auto; font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">30</span></div>
+    </div>
+  </aside>
+
+  <!-- canvas -->
+  <main style="position: absolute; left: 232px; top: 52px; width: 744px; height: 748px; background-color: #171717; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 32px 32px;">
+    <svg width="744" height="748" style="position: absolute; left: 0; top: 0;" aria-hidden="true">
+      <path d="M370 74 V120" fill="none" stroke="#5c5c5c" stroke-width="2"></path>
+      <path d="M370 188 V240" fill="none" stroke="#d4d4d4" stroke-width="4"></path>
+      <path d="M318 312 V346 H155 V380" fill="none" stroke="#d4d4d4" stroke-width="4"></path>
+      <path d="M375 312 V410" fill="none" stroke="#5eaefc" stroke-width="3"></path>
+      <path d="M422 312 V346 H575 V380" fill="none" stroke="#d4d4d4" stroke-width="4"></path>
+      <path d="M585 448 V530" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="6 5"></path>
+    </svg>
+
+    <!-- simulation result -->
+    <div style="position: absolute; left: 16px; top: 16px; width: 260px; box-sizing: border-box; background: #1f1f1f; border: 1px solid #3a3a3a; border-radius: 3px;">
+      <div style="padding: 6px 10px; background: #3a1414; display: flex; align-items: center; gap: 8px; font: 600 11px 'IBM Plex Mono', monospace; color: #ff8080; letter-spacing: 0.06em;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #ff4d4d; box-shadow: 0 0 6px #ff4d4d;"></span>BLOCKED</div>
+      <div style="padding: 8px 10px; display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-weight: 500;">tv-salon → Jellyfin :8096</span>
+        <span style="color: #a3a3a3; font-size: 12px;">gw-01 · rule #4 IoT → LAN deny</span>
+      </div>
+    </div>
+
+    <!-- internet -->
+    <div style="position: absolute; left: 305px; top: 34px; width: 130px; height: 40px; box-sizing: border-box; border: 1px dashed #5c5c5c; border-radius: 3px; display: flex; align-items: center; justify-content: center; font: 500 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">INTERNET</div>
+
+    <!-- router faceplate -->
+    <div style="position: absolute; left: 280px; top: 120px; width: 180px; height: 68px; box-sizing: border-box; background: #262626; border: 1px solid #ff4d4d; border-radius: 3px; display: flex;">
+      <span style="width: 6px; background: #3a3a3a;"></span>
+      <div style="flex: 1; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 600;">gw-01</span><span style="width: 8px; height: 8px; border-radius: 4px; background: #ff4d4d; box-shadow: 0 0 6px #ff4d4d;"></span></div>
+        <div style="display: flex; gap: 4px;"><span style="width: 16px; height: 12px; background: #5c5c5c; border-radius: 1px;"></span><span style="width: 16px; height: 12px; background: #d4d4d4; border-radius: 1px;"></span><span style="width: 16px; height: 12px; background: #333; border-radius: 1px;"></span><span style="width: 16px; height: 12px; background: #333; border-radius: 1px;"></span><span style="margin-left: auto; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">.10.1</span></div>
+      </div>
+      <span style="width: 6px; background: #3a3a3a;"></span>
+    </div>
+
+    <!-- switch faceplate -->
+    <div style="position: absolute; left: 270px; top: 240px; width: 200px; height: 72px; box-sizing: border-box; background: #262626; border: 1px solid #3a3a3a; border-radius: 3px; display: flex;">
+      <span style="width: 6px; background: #3a3a3a;"></span>
+      <div style="flex: 1; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 600;">sw-core</span><span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">8 × 1G</span></div>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px;">
+          <span style="height: 14px; background: #d4d4d4; border-radius: 1px;"></span><span style="height: 14px; background: #d4d4d4; border-radius: 1px;"></span><span style="height: 14px; background: #5eaefc; border-radius: 1px;"></span><span style="height: 14px; background: #d4d4d4; border-radius: 1px;"></span>
+          <span style="height: 14px; background: #333; border-radius: 1px;"></span><span style="height: 14px; background: #333; border-radius: 1px;"></span><span style="height: 14px; background: #333; border-radius: 1px;"></span><span style="height: 14px; background: #333; border-radius: 1px; outline: 1px solid #ff4d4d;"></span>
+        </div>
+      </div>
+      <span style="width: 6px; background: #3a3a3a;"></span>
+    </div>
+
+    <!-- selected host -->
+    <div style="position: absolute; left: 36px; top: 380px; width: 238px; box-sizing: border-box; background: #262626; border: 2px solid #ff7a1a; border-radius: 3px;">
+      <div style="padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; background: #2e2e2e;">
+        <div style="display: flex; flex-direction: column; gap: 1px;"><span style="font-weight: 600;">pve1</span><span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">Proxmox VE 8.3</span></div>
+        <div style="display: flex; gap: 4px;">
+          <span style="width: 8px; height: 8px; border-radius: 4px; background: #4ade80; box-shadow: 0 0 5px #4ade80;"></span>
+          <span style="width: 8px; height: 8px; border-radius: 4px; background: #facc15; box-shadow: 0 0 5px #facc15;"></span>
+        </div>
+      </div>
+      <div style="padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+        <div style="display: flex; gap: 8px; align-items: center;"><span style="font: 600 10px 'IBM Plex Mono', monospace; color: #141414; background: #a3a3a3; padding: 1px 4px; border-radius: 2px;">VM</span><span style="font-weight: 500;">docker-vm</span><span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; color: #a3a3a3;">8G</span></div>
+        <div style="padding-left: 34px; color: #a3a3a3;">jellyfin · pihole · immich</div>
+        <div style="display: flex; gap: 8px; align-items: center;"><span style="font: 600 10px 'IBM Plex Mono', monospace; color: #141414; background: #a3a3a3; padding: 1px 4px; border-radius: 2px;">LXC</span><span style="font-weight: 500;">home-assistant</span><span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; color: #a3a3a3;">4G</span></div>
+        <div style="display: flex; gap: 8px; align-items: center;"><span style="font: 600 10px 'IBM Plex Mono', monospace; color: #141414; background: #a3a3a3; padding: 1px 4px; border-radius: 2px;">LXC</span><span style="font-weight: 500;">unifi</span><span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; color: #a3a3a3;">2G</span></div>
+        <div style="display: flex; flex-direction: column; gap: 3px; padding-top: 4px;">
+          <div style="display: flex; justify-content: space-between; font: 11px 'IBM Plex Mono', monospace;"><span style="color: #a3a3a3;">RAM</span><span style="color: #facc15;">78%</span></div>
+          <div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px;">
+            <span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #4ade80;"></span><span style="height: 5px; background: #facc15;"></span><span style="height: 5px; background: #333;"></span><span style="height: 5px; background: #333;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAS -->
+    <div style="position: absolute; left: 298px; top: 410px; width: 154px; height: 72px; box-sizing: border-box; background: #262626; border: 1px solid #3a3a3a; border-radius: 3px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; justify-content: space-between;"><span style="font-weight: 600;">nas-01</span><span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">RAIDZ1</span></div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px;">
+        <span style="height: 16px; background: #333; border-left: 3px solid #4ade80;"></span><span style="height: 16px; background: #333; border-left: 3px solid #4ade80;"></span><span style="height: 16px; background: #333; border-left: 3px solid #4ade80;"></span><span style="height: 16px; background: #333; border-left: 3px solid #4ade80;"></span>
+      </div>
+    </div>
+
+    <!-- AP -->
+    <div style="position: absolute; left: 500px; top: 380px; width: 150px; height: 68px; box-sizing: border-box; background: #262626; border: 1px solid #3a3a3a; border-radius: 34px; padding: 8px 18px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+      <span style="font-weight: 600;">ap-living</span>
+      <span style="font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">3 SSIDs · PoE</span>
+    </div>
+
+    <!-- TV -->
+    <div style="position: absolute; left: 520px; top: 530px; width: 130px; height: 52px; box-sizing: border-box; background: #262626; border: 1px solid #6b5a12; border-radius: 3px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-weight: 600;">tv-salon</span>
+      <span style="font: 11px 'IBM Plex Mono', monospace; color: #facc15;">client · IoT</span>
+    </div>
+
+    <div style="position: absolute; right: 16px; bottom: 16px; display: flex; background: #1f1f1f; border: 1px solid #3a3a3a; border-radius: 3px;">
+      <button aria-label="Zoom out" style="width: 30px; height: 30px; background: transparent; border: 0; border-right: 1px solid #3a3a3a; color: #ececec; font-size: 16px;">−</button>
+      <span style="width: 48px; display: flex; align-items: center; justify-content: center; font: 11px 'IBM Plex Mono', monospace; color: #a3a3a3;">100%</span>
+      <button aria-label="Zoom in" style="width: 30px; height: 30px; background: transparent; border: 0; border-left: 1px solid #3a3a3a; color: #ececec; font-size: 16px;">+</button>
+    </div>
+  </main>
+
+  <!-- inspector -->
+  <aside style="position: absolute; left: 976px; top: 52px; width: 304px; height: 748px; box-sizing: border-box; padding: 16px; background: #1c1c1c; border-left: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 18px; font-weight: 600;">pve1</span>
+      <span style="color: #a3a3a3;">Lenovo M720q · i5-8500T · 2 × 16 GB</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid #2e2e2e; border-radius: 3px;">
+      <span style="padding: 6px 0; text-align: center; background: #2a2a2a; font-weight: 500; border-bottom: 2px solid #ff7a1a;">Capacity</span>
+      <span style="padding: 6px 0; text-align: center; color: #a3a3a3;">Hardware</span>
+      <span style="padding: 6px 0; text-align: center; color: #a3a3a3;">Software</span>
+      <span style="padding: 6px 0; text-align: center; color: #a3a3a3;">Network</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span>CPU</span><span style="font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">5/24 vCPU</span></div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px;">
+          <span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span>Memory</span><span style="font: 12px 'IBM Plex Mono', monospace; color: #facc15;">22.4/28.8 GB</span></div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px;">
+          <span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #facc15;"></span><span style="height: 10px; background: #facc15;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between;"><span>local-lvm</span><span style="font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">310/900 GB</span></div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px;">
+          <span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #2e2e2e;">
+      <span style="font: 600 11px 'IBM Plex Mono', monospace; letter-spacing: 0.08em; color: #a3a3a3;">ISSUES</span>
+      <div style="display: flex; gap: 8px; align-items: flex-start;"><span style="margin-top: 5px; width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: #ff4d4d;"></span><span>VLAN 30 not allowed on sw-core port 8</span></div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;"><span style="margin-top: 5px; width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: #ff4d4d;"></span><span>192.168.20.15 assigned twice</span></div>
+      <div style="display: flex; gap: 8px; align-items: flex-start;"><span style="margin-top: 5px; width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: #facc15;"></span><span>pve1 memory at 78%</span></div>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <div style="padding: 10px 12px; background: #2a2410; border: 1px solid #6b5a12; border-radius: 3px; color: #fde68a; font-size: 12px; line-height: 1.5;">Memory above 70%. Both slots used — swap to 2 × 32 GB or move <strong>unifi</strong> to another host.</div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

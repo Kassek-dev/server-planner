@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ff8a3d}a:hover{color:#ffb07a}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #141414; color: #ececec; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; display: flex; flex-direction: column;">
+
+  <header style="height: 52px; flex-shrink: 0; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 14px; background: #1c1c1c; border-bottom: 1px solid #2e2e2e;">
+    <div style="width: 28px; height: 28px; background: #ff7a1a; border-radius: 3px; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 6px; box-sizing: border-box;">
+      <span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span><span style="height: 3px; background: #141414;"></span>
+    </div>
+    <span style="font-weight: 600; font-size: 14px;">Server Planner</span>
+    <div style="flex-grow: 1;"></div>
+    <a href="#" style="color: #a3a3a3; text-decoration: none;">Settings</a>
+    <a href="#" style="color: #a3a3a3; text-decoration: none;">About</a>
+  </header>
+
+  <main style="flex: 1; min-height: 0; display: flex;">
+    <nav aria-label="Settings" style="width: 240px; flex-shrink: 0; box-sizing: border-box; padding: 24px 16px; border-right: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-size: 18px; font-weight: 600; padding: 0 12px 12px;">Settings</span><a href="#" style="display: block; padding: 8px 12px; border-radius: 3px; text-decoration: none; color: #a3a3a3;">Appearance</a><a href="#" style="display: block; padding: 8px 12px; border-radius: 3px; text-decoration: none; color: #a3a3a3;">Catalog</a><a href="#" style="display: block; padding: 8px 12px; border-radius: 3px; text-decoration: none; color: #a3a3a3;">Units &amp; costs</a><a href="#" style="display: block; padding: 8px 12px; border-radius: 3px; text-decoration: none; background: #2a2a2a; color: #ececec; font-weight: 500; box-shadow: inset 2px 0 0 #ff7a1a;">Storage</a>
+    </nav>
+    <div style="flex: 1; box-sizing: border-box; padding: 32px 48px; display: flex; flex-direction: column; gap: 24px; max-width: 900px;"><h1 style="margin: 0; font-size: 24px; line-height: 32px;">Storage</h1><div style="display: flex; flex-direction: column; gap: 8px;"><div style="display: flex; align-items: center; gap: 8px;"><span>Browser storage used</span><div style="flex-grow: 1;"></div><span style="font: 12px 'IBM Plex Mono', monospace; color: #a3a3a3;">412 KB of ~2 GB available</span></div><div style="display: grid; grid-template-columns: repeat(40, minmax(0, 1fr)); gap: 2px;"><span style="height: 10px; background: #4ade80;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span><span style="height: 10px; background: #333;"></span></div></div><div style="display: flex; gap: 24px; align-items: center; padding: 16px; background: #1c1c1c; border: 1px solid #2e2e2e; border-radius: 3px;"><div style="display: flex; flex-direction: column; gap: 4px; flex: 1;"><b>Persistent storage</b><span style="color: #a3a3a3; font-size: 12px; line-height: 1.5;">Not granted. The browser may clear your projects when disk space runs low.</span></div><div style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 8px; background: #facc15; box-shadow: 0 0 5px #facc15;"></span><button style="height: 32px; padding: 0 12px; background: #ff7a1a; color: #141414; border: 0; font-weight: 600; border-radius: 3px; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; white-space: nowrap;">Request persistence</button></div></div><div style="display: flex; gap: 24px; align-items: center; padding: 16px; background: #1c1c1c; border: 1px solid #2e2e2e; border-radius: 3px;"><div style="display: flex; flex-direction: column; gap: 4px; flex: 1;"><b>Backups</b><span style="color: #a3a3a3; font-size: 12px; line-height: 1.5;">Last export 21 days ago · 3 projects. A JSON export is a complete backup of a project.</span></div><button style="height: 32px; padding: 0 12px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; font-weight: 500; border-radius: 3px; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; white-space: nowrap;">Export all projects</button></div><div style="display: flex; gap: 24px; align-items: center; padding: 16px; background: #1c1c1c; border: 1px solid #2e2e2e; border-radius: 3px;"><div style="display: flex; flex-direction: column; gap: 4px; flex: 1;"><b>Catalog cache</b><span style="color: #a3a3a3; font-size: 12px; line-height: 1.5;">Version 2026.46 and 2026.45 are kept for rollback · 2.1 MB.</span></div><button style="height: 32px; padding: 0 12px; background: transparent; color: #ececec; border: 1px solid #3a3a3a; font-weight: 500; border-radius: 3px; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; white-space: nowrap;">Clear older version</button></div><div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #7f1d1d; border-radius: 3px;"><span style="font: 600 11px 'IBM Plex Mono', monospace; letter-spacing: 0.08em; color: #a3a3a3;color: #ff6b6b;">DANGER ZONE</span><div style="display: flex; gap: 24px; align-items: center;"><span style="flex: 1; color: #a3a3a3; font-size: 12px;">Delete all projects, snapshots and settings from this browser. This cannot be undone.</span><button style="height: 32px; padding: 0 12px; background: transparent; color: #ff6b6b; border: 1px solid #7f1d1d; font-weight: 500; border-radius: 3px; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; white-space: nowrap;">Delete all data</button></div></div></div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
