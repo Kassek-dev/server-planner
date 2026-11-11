@@ -46,7 +46,7 @@ Przejścia: Projekty → (otwórz) → Edytor; logo w top barze → Projekty. Zm
 
 **Układ:** top bar (logo, Settings, About) · nagłówek „Projects” + przyciski **New project** (primary), **Import JSON**, **From template** · siatka kart projektów · stopka z informacją o miejscu przechowywania.
 
-- **Karta projektu** (PRJ‑02): miniatura canvasu (PNG generowany przy zamknięciu edytora), nazwa, „Edited 2 h ago”, liczba urządzeń, LED z najgorszym statusem problemów. Menu ⋯: Open, Rename, Duplicate, Export JSON, Delete.
+- **Karta projektu** (PRJ‑02): miniatura — schemat SVG lokalizacji i urządzeń liczony z układu przy każdym zapisie (bez zrzutu ekranu; zgodne z CSP, działa bez canvasu w DOM), nazwa, „Edited 2 h ago”, liczba urządzeń, LED z najgorszym statusem problemów. Menu ⋯: Open, Rename, Duplicate, Export JSON, Delete.
 - **New project**: dialog z nazwą i wyborem startu: _Empty_ / _Template_ (Mini PC + router, Proxmox 3‑node, IoT segmentation — PRJ‑08, P1). Po utworzeniu → edytor.
 - **Import**: wybór pliku lub przeciągnięcie na ekran; walidacja + migracja (`02` § 11); przy migracji informacja „Imported from schema v1, upgraded to v2”. Konflikt ID projektu → „Import as copy”.
 - **Ochrona danych** (PRJ‑05): pasek informacyjny nad siatką, gdy (a) przeglądarka nie przyznała trwałego przechowywania — „Your projects are stored only in this browser. [Keep data persistent] [Export all]”; (b) od ostatniego eksportu minęło ≥ 14 dni i ≥ 50 zmian — „Last backup 21 days ago. [Export]”.

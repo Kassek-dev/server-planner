@@ -360,7 +360,7 @@ interface Rack extends LocationBase {
 
 Zasady:
 
-- **Lokalizacja to dane domenowe** (walidacja U, zasilanie, eksport), a jej prostokąt na canvasie — dane układu (`layout.locations`, rozdz. 7).
+- **Lokalizacja to dane domenowe** (walidacja U, zasilanie, eksport), a jej prostokąt na canvasie — dane układu (`layout.locations`, rozdz. 7). Prostokąt lokalizacji zagnieżdżonej (`parentId`) jest **względny wobec rodzica**, tak jak pozycje urządzeń w lokalizacji.
 - **Przynależność wynika z `placement`, nie z geometrii.** Przeciągnięcie urządzenia do pojemnika to komenda `device.place`, która ustawia `placement`; samo położenie piksela niczego nie zmienia.
 - **W racku pozycja urządzenia jest wyliczana** z `u` i `formFactor.units` — nie trzymamy `x/y` w `layout.nodes`. W pomieszczeniu i na półce `x/y` jest względne wobec pojemnika.
 - Urządzenie rack‑mount może stać w pomieszczeniu lub na półce (dozwolone). Urządzenie standalone w racku wymaga `onShelf` i półki pod danym `u`.

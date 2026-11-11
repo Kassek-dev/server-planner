@@ -1,5 +1,4 @@
 import { createHashRouter, type RouteObject } from 'react-router';
-import { EditorPage } from '../features/editor/EditorPage';
 import { ProjectsPage } from '../features/projects/ProjectsPage';
 import { NotFoundPage } from './routes/NotFoundPage';
 import { PlaceholderPage } from './routes/PlaceholderPage';
@@ -21,7 +20,11 @@ export const routes: RouteObject[] = [
   { path: '/', Component: ProjectsPage },
   { path: '/settings/:section?', element: <PlaceholderPage titleKey="pages.settings" stage={8} /> },
   { path: '/about/:section?', element: <PlaceholderPage titleKey="pages.about" stage={8} /> },
-  { path: '/p/:projectId/*', Component: EditorPage },
+  {
+    // Editor (React Flow, engines later) loads on demand so the projects page stays light.
+    path: '/p/:projectId/*',
+    lazy: async () => ({ Component: (await import('../features/editor/EditorPage')).EditorPage }),
+  },
   ...devRoutes,
   { path: '*', Component: NotFoundPage },
 ];

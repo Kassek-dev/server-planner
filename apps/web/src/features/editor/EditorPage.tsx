@@ -1,8 +1,8 @@
-import { type Project, updateProject } from '@server-planner/model';
+import { updateProject } from '@server-planner/model';
 import { Download, Redo2, Undo2 } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import { downloadBlob } from '../../app/download';
 import { NotFoundPage } from '../../app/routes/NotFoundPage';
 import { useServices, useSession } from '../../app/services';
@@ -11,6 +11,9 @@ import { exportBlob, exportFileName } from '../../persistence/backup';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { Led, type LedStatus } from '../../ui/Led';
+import { CanvasWorkspace } from '../canvas/CanvasView';
+import { useSelection } from '../canvas/selection';
+import { SelectionPanel } from '../inspector/SelectionPanel';
 
 type LoadState = 'loading' | 'ready' | 'missing';
 
@@ -34,6 +37,7 @@ export function EditorPage() {
     });
     return () => {
       cancelled = true;
+      useSelection.getState().clear();
       void session.clear();
     };
   }, [projectId, repository, session]);
@@ -61,6 +65,32 @@ function Editor() {
   const canUndo = useSession((s) => s.past.length > 0);
   const canRedo = useSession((s) => s.future.length > 0);
   const saveState = useSession((s) => s.saveState);
+
+  // `?sel=` mirrors the selection so links reopen the same view (docs/07 § 0).
+  const [params, setParams] = useSearchParams();
+  // Read once on mount; afterwards the selection drives the URL.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: initial read only
+  useEffect(() => {
+    const ids = (params.get('sel') ?? '').split(',').filter(Boolean);
+    const current = session.getState().project;
+    if (!current) return;
+    useSelection.getState().set(
+      ids.filter((id) => current.devices[id] || current.locations[id]),
+      ids.filter((id) => current.links[id]),
+    );
+  }, []);
+  const selected = useSelection((s) => [...s.nodeIds, ...s.edgeIds].join(','));
+  useEffect(() => {
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (selected) next.set('sel', selected);
+        else next.delete('sel');
+        return next;
+      },
+      { replace: true },
+    );
+  }, [selected, setParams]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -117,13 +147,14 @@ function Editor() {
           {t('export')}
         </Button>
       </TopBar>
-      <main className="flex min-h-0 flex-1 items-start justify-center overflow-auto p-8">
-        {saveState === 'error' ? (
-          <div className="w-full max-w-130">
-            <Banner kind="error">{t('save.error')}</Banner>
-          </div>
-        ) : null}
-        <Summary project={project} />
+      {saveState === 'error' ? (
+        <div className="border-b border-error-border">
+          <Banner kind="error">{t('save.error')}</Banner>
+        </div>
+      ) : null}
+      <main className="flex min-h-0 flex-1">
+        <CanvasWorkspace />
+        <SelectionPanel />
       </main>
     </div>
   );
@@ -222,35 +253,5 @@ function IconButton({
     >
       {children}
     </button>
-  );
-}
-
-function Summary({ project }: { project: Project }) {
-  const { t } = useTranslation('editor');
-  const rows: [string, number][] = [
-    [
-      t('summary.devices'),
-      Object.values(project.devices).filter((d) => d.kind !== 'internet').length,
-    ],
-    [t('summary.locations'), Object.keys(project.locations).length],
-    [t('summary.vlans'), Object.keys(project.vlans).length],
-    [t('summary.workloads'), Object.keys(project.workloads).length],
-    [t('summary.apps'), Object.keys(project.apps).length],
-  ];
-  return (
-    <section className="flex w-full max-w-130 flex-col gap-3 rounded-md border border-border-default bg-panel p-5">
-      <h1 className="m-0 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
-        {t('summary.title')}
-      </h1>
-      <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-6 gap-y-2">
-        {rows.map(([label, value]) => (
-          <div key={label} className="contents">
-            <dt>{label}</dt>
-            <dd className="m-0 text-right font-mono text-data text-text-secondary">{value}</dd>
-          </div>
-        ))}
-      </dl>
-      <p className="m-0 text-body-sm text-text-muted">{t('summary.canvasLater')}</p>
-    </section>
   );
 }

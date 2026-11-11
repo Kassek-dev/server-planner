@@ -136,3 +136,34 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/* React Flow — only token-based overrides of its base stylesheet (docs/04 § 6.6–6.8). */
+.sp-canvas {
+  --xy-background-color: var(--sp-bg-canvas);
+  --xy-selection-background-color: color-mix(in srgb, var(--sp-selection) 10%, transparent);
+  --xy-selection-border: 1px dashed var(--sp-selection);
+  --xy-connectionline-stroke-default: var(--sp-selection);
+  --xy-connectionline-stroke-width-default: 2;
+}
+.sp-canvas .react-flow__edge.selected .react-flow__edge-path,
+.sp-canvas .react-flow__edge:focus-visible .react-flow__edge-path {
+  /* biome-ignore lint/complexity/noImportantStyles: React Flow sets the edge stroke inline; selection must win */
+  stroke: var(--sp-selection) !important;
+}
+.sp-canvas .react-flow__edge:hover .react-flow__edge-path {
+  filter: brightness(1.15);
+}
+.sp-canvas .react-flow__handle {
+  opacity: 0;
+  transition: opacity var(--sp-duration-fast) var(--sp-ease-out);
+}
+.sp-canvas .react-flow__node:hover .react-flow__handle,
+.sp-canvas .react-flow__node.selected .react-flow__handle,
+.sp-canvas.react-flow .react-flow__handle.connectingfrom,
+.sp-canvas .react-flow__handle.connectionindicator:hover {
+  opacity: 1;
+}
+.sp-canvas .react-flow__node:focus-visible {
+  outline: 2px solid var(--sp-focus-ring);
+  outline-offset: 2px;
+}

@@ -25,6 +25,7 @@ import { ImportResultDialog } from './dialogs/ImportResultDialog';
 import { NewProjectDialog, type NewProjectStart } from './dialogs/NewProjectDialog';
 import { RenameDialog } from './dialogs/RenameDialog';
 import { loadExampleProject } from './example';
+import { ProjectPreview } from './ProjectPreview';
 import { useProjectList } from './useProjectList';
 
 type DialogState =
@@ -300,16 +301,7 @@ function ProjectCard({
   const navigate = useNavigate();
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-md border border-border-default bg-panel">
-      {/* Canvas thumbnails arrive with the canvas (stage 3); until then a neutral grid. */}
-      <div
-        aria-hidden="true"
-        className="h-36 border-b border-border-subtle bg-canvas"
-        style={{
-          backgroundImage:
-            'linear-gradient(var(--sp-canvas-grid) 1px, transparent 1px), linear-gradient(90deg, var(--sp-canvas-grid) 1px, transparent 1px)',
-          backgroundSize: '16px 16px',
-        }}
-      />
+      <ProjectPreview preview={project.preview} />
       <div className="flex flex-col gap-1 p-3">
         <div className="flex items-center gap-2">
           <Link

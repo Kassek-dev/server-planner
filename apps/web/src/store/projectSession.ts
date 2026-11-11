@@ -45,6 +45,8 @@ export interface ProjectSession extends StoreApi<ProjectSessionState> {
   load(project: Project): void;
   clear(): Promise<void>;
   dispatch<P, R>(command: Command<P, R>, payload: P, options?: DispatchOptions): R;
+  /** Runs several commands as one undo step; nothing changes if any of them is rejected. */
+  transaction<T>(label: string, fn: (run: <P, R>(command: Command<P, R>, payload: P) => R) => T): T;
   undo(): boolean;
   redo(): boolean;
   /** Writes pending changes immediately (navigation, export, page hide). */
@@ -155,6 +157,41 @@ export function createProjectSession({
     return out.result;
   }
 
+  function transaction<T>(
+    label: string,
+    fn: (run: <P, R>(command: Command<P, R>, payload: P) => R) => T,
+  ): T {
+    const start = store.getState().project;
+    if (!start) throw new Error('No project loaded');
+    let working = start;
+    const patches: Patch[] = [];
+    let inversePatches: Patch[] = [];
+    let result: T;
+    try {
+      result = fn((command, payload) => {
+        const out = execute(working, command, payload, ctx);
+        working = out.project;
+        patches.push(...out.patches);
+        inversePatches = [...out.inversePatches, ...inversePatches];
+        return out.result;
+      });
+    } catch (error) {
+      if (error instanceof CommandError) store.setState({ lastError: error });
+      throw error;
+    }
+    if (patches.length === 0) return result;
+    mergeBlocked = false;
+    const { past } = store.getState();
+    store.setState({
+      project: working,
+      past: [...past, { label, patches, inversePatches, at: clock() }].slice(-historyLimit),
+      future: [],
+      lastError: null,
+    });
+    scheduleSave();
+    return result;
+  }
+
   return {
     ...store,
 
@@ -170,6 +207,7 @@ export function createProjectSession({
     },
 
     dispatch,
+    transaction,
 
     undo() {
       const { project, past, future } = store.getState();
