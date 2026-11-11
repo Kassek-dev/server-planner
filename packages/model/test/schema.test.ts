@@ -3,11 +3,15 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   ColorRefSchema,
+  CommandError,
   createProject,
+  deleteWorkload,
+  execute,
   ProjectFileError,
   ProjectSchema,
   parseProjectFile,
   sequentialContext,
+  updateWorkload,
 } from '../src';
 import { buildHomeLab } from './support/home-lab';
 import { homeLabFile } from './support/project-file';
@@ -71,5 +75,37 @@ describe('schemas', () => {
 
   it('an empty project is valid', () => {
     expect(ProjectSchema.safeParse(createProject('Empty', sequentialContext())).success).toBe(true);
+  });
+});
+
+describe('hosting cycles (untrusted imports)', () => {
+  function withCycle() {
+    const file = structuredClone(fixture);
+    const [a, b] = Object.values(file.project.workloads) as { id: string; host: unknown }[];
+    if (!a || !b) throw new Error('fixture');
+    a.host = { type: 'workload', id: b.id };
+    b.host = { type: 'workload', id: a.id };
+    return { file, a, b };
+  }
+
+  it('rejects projects whose workloads host each other', () => {
+    expectFileError(withCycle().file, 'INVALID_PROJECT');
+  });
+
+  it('commands terminate on cyclic data instead of looping', () => {
+    const { file, a } = withCycle();
+    const project = file.project;
+    expect(() => execute(project, deleteWorkload, { id: a.id }, sequentialContext())).not.toThrow();
+    const other = Object.values(project.workloads).find(
+      (w) => (w as { id: string }).id !== a.id,
+    ) as { id: string };
+    expect(() =>
+      execute(
+        project,
+        updateWorkload,
+        { id: other.id, changes: { host: { type: 'workload', id: a.id } } },
+        sequentialContext(),
+      ),
+    ).toThrow(CommandError);
   });
 });

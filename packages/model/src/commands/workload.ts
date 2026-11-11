@@ -18,9 +18,14 @@ function checkHost(draft: Project, host: HostRef, selfId?: string) {
   }
   getOrThrow(draft.workloads, host.id, 'workload');
   // A workload must not end up hosted (directly or indirectly) by itself.
+  // Visited set also guards against cycles already present in imported data.
+  const visited = new Set<string>();
   let current: HostRef | undefined = host;
   while (current?.type === 'workload') {
-    if (current.id === selfId) throw new CommandError('WORKLOAD_HOST_CYCLE', { id: current.id });
+    if (current.id === selfId || visited.has(current.id)) {
+      throw new CommandError('WORKLOAD_HOST_CYCLE', { id: current.id });
+    }
+    visited.add(current.id);
     current = draft.workloads[current.id]?.host;
   }
 }

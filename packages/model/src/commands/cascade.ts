@@ -37,8 +37,10 @@ export function removeApp(draft: Project, appId: string): void {
 }
 
 export function removeWorkload(draft: Project, workloadId: string): void {
-  removeHostedContent(draft, 'workload', workloadId);
+  // Delete first so a hosting cycle in (imported) data cannot recurse forever.
+  if (!draft.workloads[workloadId]) return;
   delete draft.workloads[workloadId];
+  removeHostedContent(draft, 'workload', workloadId);
 }
 
 export function removeDevice(draft: Project, deviceId: string): void {
