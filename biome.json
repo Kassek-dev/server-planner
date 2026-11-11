@@ -13,7 +13,8 @@
       "!design/canvas",
       "!**/*.dc.html",
       "!pnpm-lock.yaml",
-      "!**/*.md"
+      "!**/*.md",
+      "!fixtures"
     ]
   },
   "formatter": {

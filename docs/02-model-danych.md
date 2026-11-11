@@ -1,6 +1,6 @@
 # Server Planner — model danych (v0.3)
 
-> Status: **zaakceptowany, v0.3** (lokalizacje i forma urządzeń, rozdz. 4.3) · Data: 2026-11-11
+> Status: **zaakceptowany, v0.4** (v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5) · Data: 2026-11-11
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (decyzje D1–D9)
 > Notacja: typy w składni TypeScript — to opis struktury, nie decyzja o implementacji (ta zapadnie w `03-architektura.md`).
 
@@ -594,7 +594,7 @@ interface Link {
   id: Id;
   a: Id; // Interface
   b: Id; // Interface
-  medium: 'copper' | 'fiber' | 'dac' | 'wifi';
+  medium: 'copper' | 'fiber' | 'dac' | 'wifi' | 'virtual'; // 'virtual' = vNIC ↔ bridge (niepokazywane na canvasie)
   cable?: {
     label?: string;
     color?: HexColor;
@@ -1115,7 +1115,7 @@ interface CatalogOs {
 - `schemaVersion` projektu i katalogu są **niezależne**.
 - Każda zmiana niekompatybilna = nowa wersja + funkcja migracji `migrate_vN_to_vN+1(data)`; import uruchamia łańcuch migracji.
 - Plik z **nowszą** wersją niż obsługiwana → czytelny błąd „Update the app to open this file”.
-- Migracje pokryte testami na zapisanych przykładowych plikach (`fixtures/projects/v1/*.json`).
+- Migracje pokryte testami na zapisanych przykładowych plikach (`fixtures/schema/v1/*.json`, generowane przez `pnpm --filter @server-planner/model fixtures:write`).
 - Projekty w IndexedDB migrowane przy otwarciu (z kopią zapasową wersji sprzed migracji).
 
 ---
@@ -1364,3 +1364,4 @@ Pełny, poprawny przykład (z interfejsami i łączami) powstanie jako fixture t
 | M2  | Edycja łączy vNIC ↔ bridge                   | **Lista „Network devices” w inspectorze VM/LXC**, jak w Proxmoxie; łącza wirtualne nierysowane na canvasie (rozdz. 6.1).                 |
 | M3  | Wiele adresów IP na interfejsie              | **Model: tablica; UI w MVP: jeden adres.** VLANy na routerze obsługiwane przez sub‑interfejsy, każdy z własnym IP.                       |
 | M4  | Rack vs urządzenia wolnostojące (D9)         | **`Device.formFactor` + encja `Location` (room/shelf/rack) + `Device.placement`** (rozdz. 4.3). Zastępuje `Group` i `hardware.physical`. |
+| M5  | Rodzaj łącza vNIC ↔ bridge                   | **`Link.medium: 'virtual'`** — jawna wartość zamiast wnioskowania z typów interfejsów; ułatwia filtrowanie łączy na canvasie (etap 1, 2026-11-11). |

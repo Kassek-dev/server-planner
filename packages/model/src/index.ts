@@ -1,5 +1,15 @@
-export type { EntityType, Id, IdPrefix } from './ids';
+export * from './commands';
+export * from './defaults';
+export * from './factories';
+export type { EntityType, IdPrefix } from './ids';
 export { createId, entityTypeOf, ID_PREFIXES } from './ids';
-
+export * from './migrations';
 /** Current project file schema version — docs/02-model-danych.md § 11. */
-export const SCHEMA_VERSION = 1;
+export { CURRENT_SCHEMA_VERSION as SCHEMA_VERSION } from './migrations';
+export * from './schema/common';
+export * from './schema/device';
+export * from './schema/hardware';
+export * from './schema/location';
+export * from './schema/network';
+export * from './schema/project';
+export * from './schema/workload';
