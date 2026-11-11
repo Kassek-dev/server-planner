@@ -12,3 +12,6 @@ test-results/
 .idea/
 # design generator caches
 __pycache__/
+
+# Claude Code personal settings (permissions etc.)
+.claude/settings.local.json
