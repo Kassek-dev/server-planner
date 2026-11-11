@@ -10,7 +10,10 @@
       "vlan": "VLAN palette",
       "typography": "Typography",
       "buttons": "Buttons",
-      "leds": "LEDs"
+      "leds": "LEDs",
+      "fields": "Fields",
+      "banners": "Banners",
+      "overlays": "Dialogs and menus"
     },
     "sample": {
       "title": "Rack · closet",
@@ -32,6 +35,26 @@
       "error": "VLAN 30 not allowed on port 8",
       "info": "Catalog update available",
       "off": "Planned device"
+    },
+    "field": {
+      "label": "Project name",
+      "value": "Home lab",
+      "mono": "Subnet",
+      "monoValue": "192.168.30.0/24",
+      "error": "Enter a project name."
+    },
+    "banner": {
+      "warning": "Memory above 70% on pve1.",
+      "error": "Could not save to browser storage.",
+      "info": "Catalog update available."
+    },
+    "overlay": {
+      "openDialog": "Open dialog",
+      "dialogTitle": "Delete project",
+      "dialogBody": "Delete “Home lab” from this browser? This cannot be undone.",
+      "openMenu": "Open menu",
+      "itemOpen": "Open",
+      "itemDelete": "Delete"
     }
   }
 }

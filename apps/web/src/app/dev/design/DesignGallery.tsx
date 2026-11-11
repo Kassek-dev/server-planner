@@ -1,7 +1,11 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Banner } from '../../../ui/Banner';
 import { Button } from '../../../ui/Button';
+import { Dialog } from '../../../ui/Dialog';
 import { Led, type LedStatus } from '../../../ui/Led';
+import { Menu } from '../../../ui/Menu';
+import { TextField } from '../../../ui/TextField';
 
 /**
  * P-05 Component gallery (#/dev/design) — every component and state in both themes.
@@ -106,6 +110,34 @@ function ThemePane({ theme }: { theme: 'dark' | 'light' }) {
         </div>
       </Section>
 
+      <Section title={t('gallery.sections.fields')}>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <TextField label={t('gallery.field.label')} defaultValue={t('gallery.field.value')} />
+          <TextField
+            label={t('gallery.field.mono')}
+            mono
+            defaultValue={t('gallery.field.monoValue')}
+          />
+          <TextField
+            label={t('gallery.field.label')}
+            defaultValue=""
+            error={t('gallery.field.error')}
+          />
+        </div>
+      </Section>
+
+      <Section title={t('gallery.sections.banners')}>
+        <div className="flex flex-col gap-2">
+          <Banner kind="warning">{t('gallery.banner.warning')}</Banner>
+          <Banner kind="error">{t('gallery.banner.error')}</Banner>
+          <Banner kind="info">{t('gallery.banner.info')}</Banner>
+        </div>
+      </Section>
+
+      <Section title={t('gallery.sections.overlays')}>
+        <Overlays />
+      </Section>
+
       <Section title={t('gallery.sections.leds')}>
         <div className="flex flex-col gap-2">
           {statuses.map((status) => (
@@ -127,6 +159,39 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
         {title}
       </h2>
       {children}
+    </div>
+  );
+}
+
+function Overlays() {
+  const { t } = useTranslation('dev');
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button onClick={() => setOpen(true)}>{t('gallery.overlay.openDialog')}</Button>
+      <Menu
+        align="start"
+        trigger={<Button>{t('gallery.overlay.openMenu')}</Button>}
+        items={[
+          { label: t('gallery.overlay.itemOpen'), onSelect: () => {} },
+          { label: t('gallery.overlay.itemDelete'), onSelect: () => {}, danger: true },
+        ]}
+      />
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title={t('gallery.overlay.dialogTitle')}
+        description={t('gallery.overlay.dialogBody')}
+        closeLabel={t('gallery.buttons.secondary')}
+        footer={
+          <>
+            <Button onClick={() => setOpen(false)}>{t('gallery.buttons.secondary')}</Button>
+            <Button variant="danger" onClick={() => setOpen(false)}>
+              {t('gallery.buttons.danger')}
+            </Button>
+          </>
+        }
+      />
     </div>
   );
 }

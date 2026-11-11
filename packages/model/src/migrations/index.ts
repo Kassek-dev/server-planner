@@ -1,6 +1,11 @@
 import type { z } from 'zod';
 import { clone } from '../clone';
-import { PROJECT_FILE_FORMAT, type ProjectFile, ProjectFileSchema } from '../schema/project';
+import {
+  PROJECT_FILE_FORMAT,
+  type Project,
+  type ProjectFile,
+  ProjectFileSchema,
+} from '../schema/project';
 
 /** Project file versioning and migrations — docs/02-model-danych.md § 11 (Z8). */
 
@@ -71,7 +76,28 @@ export function parseProjectFile(raw: unknown): ParsedProjectFile {
       result.error.issues,
     );
   }
+  const cycle = findHostingCycle(result.data.project);
+  if (cycle) throw new ProjectFileError('INVALID_PROJECT', { count: 1, cycleAt: cycle });
+
   return version < CURRENT_SCHEMA_VERSION
     ? { file: result.data, migratedFrom: version }
     : { file: result.data };
+}
+
+/** Returns a workload ID that is part of a hosting cycle, or `undefined`. Linear in workload count. */
+export function findHostingCycle(project: Project): string | undefined {
+  const state = new Map<string, 'visiting' | 'done'>();
+  for (const start of Object.keys(project.workloads)) {
+    const path: string[] = [];
+    let id: string | undefined = start;
+    while (id !== undefined && state.get(id) !== 'done') {
+      if (state.get(id) === 'visiting') return id;
+      state.set(id, 'visiting');
+      path.push(id);
+      const host: Project['workloads'][string]['host'] | undefined = project.workloads[id]?.host;
+      id = host?.type === 'workload' ? host.id : undefined;
+    }
+    for (const visited of path) state.set(visited, 'done');
+  }
+  return undefined;
 }

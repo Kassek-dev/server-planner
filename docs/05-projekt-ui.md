@@ -295,6 +295,7 @@ Otwierany z liczników w top barze lub `Ctrl Shift M`. Zastępuje inspector.
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | Projekt otwarty w innej karcie (PRJ‑06, P1)  | Baner `warning`: „This project is open in another tab. Edits here may overwrite it.” [Take over] [Open read‑only] |
 | Brak miejsca w IndexedDB                     | Baner `error` + Export; zapis wstrzymany, edycja dozwolona                                                        |
+| Zamknięcie / przeładowanie karty w trakcie zapisu | Zapis natychmiast przy ukryciu karty (`visibilitychange`); gdy zapis wciąż trwa — standardowe pytanie przeglądarki o opuszczenie strony (autozapis co 1 s, docs/03 § 6) |
 | Nieudana aktualizacja katalogu               | Toast `warning` „Catalog update failed — using version 2026.45”; szczegóły w Settings                             |
 | Nowa wersja katalogu dla pozycji w projekcie | Kropka `info` przy modelu w inspectorze + akcja „Review changes” (diff pól)                                       |
 | Import pliku z nowszego `schemaVersion`      | Dialog: „This file was created by a newer version of Server Planner. Update the app (reload).”                    |
