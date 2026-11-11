@@ -25,7 +25,6 @@ export const ID_PREFIXES = {
 
 export type EntityType = keyof typeof ID_PREFIXES;
 export type IdPrefix = (typeof ID_PREFIXES)[EntityType];
-export type Id = `${IdPrefix}_${string}`;
 
 /** Web Crypto exists in browsers, workers and Node; the model package has no DOM/Node typings. */
 const webCrypto = () => (globalThis as unknown as { crypto: { randomUUID(): string } }).crypto;

@@ -7,6 +7,12 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.test.json",
+    "fixtures:write": "tsx scripts/write-fixtures.ts"
+  },
+  "dependencies": {
+    "immer": "11.2.10",
+    "ipaddr.js": "2.5.0",
+    "zod": "4.6.7"
   }
 }

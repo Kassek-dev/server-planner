@@ -1,0 +1,1183 @@
+{
+  "format": "server-planner/project",
+  "schemaVersion": 1,
+  "appVersion": "0.0.0",
+  "exportedAt": "2026-11-11T12:00:00.000Z",
+  "project": {
+    "id": "prj_0001",
+    "name": "Home lab",
+    "createdAt": "2026-11-11T12:00:00.000Z",
+    "updatedAt": "2026-11-11T12:00:00.000Z",
+    "catalogVersion": "builtin",
+    "settings": {
+      "capacityThresholds": {
+        "warning": 0.7,
+        "critical": 0.9
+      },
+      "defaultOvercommit": {
+        "cpu": 4,
+        "memory": 1
+      },
+      "storageFreeReserve": 0.1,
+      "currency": "EUR"
+    },
+    "devices": {
+      "dev_0015": {
+        "id": "dev_0015",
+        "kind": "internet",
+        "name": "Internet",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        }
+      },
+      "dev_0017": {
+        "id": "dev_0017",
+        "kind": "router",
+        "name": "gw-01",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "rack",
+          "units": 1,
+          "width": "10in"
+        },
+        "switching": {
+          "layer": 3,
+          "managed": true
+        },
+        "firewall": {
+          "defaultAction": "deny",
+          "rules": [
+            {
+              "enabled": true,
+              "action": "allow",
+              "protocol": "any",
+              "source": {
+                "type": "zone",
+                "id": "zon_0007"
+              },
+              "destination": {
+                "type": "any"
+              },
+              "id": "fwr_0050"
+            },
+            {
+              "enabled": true,
+              "action": "allow",
+              "protocol": "udp",
+              "source": {
+                "type": "zone",
+                "id": "zon_0008"
+              },
+              "destination": {
+                "type": "device",
+                "id": "dev_0031"
+              },
+              "ports": [
+                {
+                  "from": 53,
+                  "to": 53
+                }
+              ],
+              "id": "fwr_0051"
+            },
+            {
+              "enabled": true,
+              "action": "allow",
+              "protocol": "any",
+              "source": {
+                "type": "zone",
+                "id": "zon_0006"
+              },
+              "destination": {
+                "type": "any"
+              },
+              "id": "fwr_0052"
+            },
+            {
+              "enabled": true,
+              "action": "deny",
+              "protocol": "any",
+              "source": {
+                "type": "zone",
+                "id": "zon_0008"
+              },
+              "destination": {
+                "type": "zone",
+                "id": "zon_0007"
+              },
+              "description": "IoT → LAN",
+              "id": "fwr_0053"
+            },
+            {
+              "enabled": true,
+              "action": "allow",
+              "protocol": "tcp",
+              "source": {
+                "type": "zone",
+                "id": "zon_0008"
+              },
+              "destination": {
+                "type": "internet"
+              },
+              "ports": [
+                {
+                  "from": 443,
+                  "to": 443
+                }
+              ],
+              "id": "fwr_0054"
+            }
+          ],
+          "nat": [
+            {
+              "kind": "masquerade",
+              "outInterfaceId": "if_0018",
+              "id": "nat_0055"
+            }
+          ],
+          "stateful": true
+        },
+        "placement": {
+          "locationId": "loc_0002",
+          "u": 12
+        }
+      },
+      "dev_0022": {
+        "id": "dev_0022",
+        "kind": "switch",
+        "name": "sw-core",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "rack",
+          "units": 1,
+          "width": "10in"
+        },
+        "switching": {
+          "layer": 2,
+          "managed": true
+        },
+        "placement": {
+          "locationId": "loc_0002",
+          "u": 11
+        }
+      },
+      "dev_0031": {
+        "id": "dev_0031",
+        "kind": "sbc",
+        "name": "pi-dns",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "standalone",
+          "shape": "sbc"
+        },
+        "placement": {
+          "locationId": "loc_0002",
+          "u": 10,
+          "onShelf": true
+        }
+      },
+      "dev_0033": {
+        "id": "dev_0033",
+        "kind": "nas",
+        "name": "nas-01",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "rack",
+          "units": 2,
+          "width": "10in"
+        },
+        "placement": {
+          "locationId": "loc_0002",
+          "u": 8
+        }
+      },
+      "dev_0036": {
+        "id": "dev_0036",
+        "kind": "mini-pc",
+        "name": "pve1",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [
+            {
+              "model": "Intel Core i5-8500T",
+              "cores": 6,
+              "threads": 6,
+              "arch": "amd64",
+              "perf": {
+                "score": 100,
+                "source": "blender-opendata"
+              }
+            }
+          ],
+          "memory": {
+            "type": "DDR4",
+            "slotsTotal": 2,
+            "modules": [
+              {
+                "sizeBytes": 17179869184,
+                "count": 2
+              }
+            ]
+          },
+          "disks": [
+            {
+              "id": "dsk_0044",
+              "name": "nvme0",
+              "type": "ssd-nvme",
+              "sizeBytes": 1000204886016
+            }
+          ],
+          "pools": [
+            {
+              "id": "pool_0045",
+              "name": "local-lvm",
+              "layout": "single",
+              "diskIds": [
+                "dsk_0044"
+              ],
+              "filesystem": "lvm-thin"
+            }
+          ],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "standalone",
+          "shape": "mini-pc"
+        },
+        "placement": {
+          "locationId": "loc_0003"
+        },
+        "hostname": "pve1",
+        "os": {
+          "osId": "proxmox-ve",
+          "version": "8.3"
+        }
+      },
+      "dev_0038": {
+        "id": "dev_0038",
+        "kind": "access-point",
+        "name": "ap-living",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "standalone",
+          "shape": "ceiling"
+        },
+        "wifi": {
+          "ssids": [
+            {
+              "id": "ssid-home",
+              "name": "Home",
+              "vlanId": "vln_0010",
+              "bands": [
+                "2.4",
+                "5"
+              ],
+              "clientIsolation": false,
+              "security": "wpa3"
+            },
+            {
+              "id": "ssid-iot",
+              "name": "Home-IoT",
+              "vlanId": "vln_0011",
+              "bands": [
+                "2.4"
+              ],
+              "clientIsolation": true,
+              "security": "wpa2"
+            }
+          ]
+        },
+        "placement": {
+          "locationId": "loc_0004"
+        }
+      },
+      "dev_0041": {
+        "id": "dev_0041",
+        "kind": "client",
+        "name": "tv-salon",
+        "tagIds": [],
+        "hardware": {
+          "cpus": [],
+          "disks": [],
+          "pools": [],
+          "gpus": []
+        },
+        "formFactor": {
+          "mount": "standalone",
+          "shape": "other"
+        },
+        "clientType": "tv",
+        "placement": {
+          "locationId": "loc_0004"
+        }
+      }
+    },
+    "interfaces": {
+      "if_0016": {
+        "id": "if_0016",
+        "owner": {
+          "type": "device",
+          "id": "dev_0015"
+        },
+        "name": "wan",
+        "kind": "wan",
+        "index": 0,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0018": {
+        "id": "if_0018",
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "wan0",
+        "kind": "wan",
+        "index": 0,
+        "speedMbps": 1000,
+        "addresses": [
+          {
+            "mode": "dhcp"
+          }
+        ],
+        "enabled": true,
+        "zoneId": "zon_0005"
+      },
+      "if_0019": {
+        "id": "if_0019",
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "lan0",
+        "kind": "rj45",
+        "index": 1,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "switchport": {
+          "mode": "trunk",
+          "allowedVlanIds": [
+            "vln_0009",
+            "vln_0010",
+            "vln_0011"
+          ]
+        }
+      },
+      "if_0020": {
+        "id": "if_0020",
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "lan1",
+        "kind": "rj45",
+        "index": 2,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0021": {
+        "id": "if_0021",
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "lan2",
+        "kind": "rj45",
+        "index": 3,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0023": {
+        "id": "if_0023",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 1",
+        "kind": "rj45",
+        "index": 0,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "switchport": {
+          "mode": "trunk",
+          "allowedVlanIds": [
+            "vln_0009",
+            "vln_0010",
+            "vln_0011"
+          ]
+        }
+      },
+      "if_0024": {
+        "id": "if_0024",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 2",
+        "kind": "rj45",
+        "index": 1,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "switchport": {
+          "mode": "trunk",
+          "nativeVlanId": "vln_0009",
+          "allowedVlanIds": [
+            "vln_0010"
+          ]
+        }
+      },
+      "if_0025": {
+        "id": "if_0025",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 3",
+        "kind": "rj45",
+        "index": 2,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "switchport": {
+          "mode": "access",
+          "accessVlanId": "vln_0010"
+        }
+      },
+      "if_0026": {
+        "id": "if_0026",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 4",
+        "kind": "rj45",
+        "index": 3,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "switchport": {
+          "mode": "access",
+          "accessVlanId": "vln_0010"
+        }
+      },
+      "if_0027": {
+        "id": "if_0027",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 5",
+        "kind": "rj45",
+        "index": 4,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0028": {
+        "id": "if_0028",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 6",
+        "kind": "rj45",
+        "index": 5,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0029": {
+        "id": "if_0029",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 7",
+        "kind": "rj45",
+        "index": 6,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0030": {
+        "id": "if_0030",
+        "owner": {
+          "type": "device",
+          "id": "dev_0022"
+        },
+        "name": "Port 8",
+        "kind": "rj45",
+        "index": 7,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "switchport": {
+          "mode": "trunk",
+          "nativeVlanId": "vln_0009",
+          "allowedVlanIds": [
+            "vln_0010"
+          ]
+        }
+      },
+      "if_0032": {
+        "id": "if_0032",
+        "owner": {
+          "type": "device",
+          "id": "dev_0031"
+        },
+        "name": "eth0",
+        "kind": "rj45",
+        "index": 0,
+        "speedMbps": 1000,
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.20.2",
+            "subnetId": "sub_0013"
+          }
+        ],
+        "enabled": true
+      },
+      "if_0034": {
+        "id": "if_0034",
+        "owner": {
+          "type": "device",
+          "id": "dev_0033"
+        },
+        "name": "eth0",
+        "kind": "rj45",
+        "index": 0,
+        "speedMbps": 1000,
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.20.15",
+            "subnetId": "sub_0013"
+          }
+        ],
+        "enabled": true
+      },
+      "if_0035": {
+        "id": "if_0035",
+        "owner": {
+          "type": "device",
+          "id": "dev_0033"
+        },
+        "name": "eth1",
+        "kind": "rj45",
+        "index": 1,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0037": {
+        "id": "if_0037",
+        "owner": {
+          "type": "device",
+          "id": "dev_0036"
+        },
+        "name": "eth0",
+        "kind": "rj45",
+        "index": 0,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true,
+        "parentId": "if_0046"
+      },
+      "if_0039": {
+        "id": "if_0039",
+        "owner": {
+          "type": "device",
+          "id": "dev_0038"
+        },
+        "name": "eth0",
+        "kind": "rj45",
+        "index": 0,
+        "speedMbps": 1000,
+        "poe": {
+          "role": "pd",
+          "standard": "at"
+        },
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0040": {
+        "id": "if_0040",
+        "owner": {
+          "type": "device",
+          "id": "dev_0038"
+        },
+        "name": "wlan0",
+        "kind": "wifi-radio",
+        "index": 1,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0042": {
+        "id": "if_0042",
+        "owner": {
+          "type": "device",
+          "id": "dev_0041"
+        },
+        "name": "eth0",
+        "kind": "rj45",
+        "index": 0,
+        "speedMbps": 1000,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0043": {
+        "id": "if_0043",
+        "owner": {
+          "type": "device",
+          "id": "dev_0041"
+        },
+        "name": "wlan0",
+        "kind": "wifi-radio",
+        "index": 1,
+        "addresses": [],
+        "enabled": true
+      },
+      "if_0046": {
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.10.5",
+            "subnetId": "sub_0012"
+          }
+        ],
+        "enabled": true,
+        "owner": {
+          "type": "device",
+          "id": "dev_0036"
+        },
+        "name": "vmbr0",
+        "kind": "bridge",
+        "switchport": {
+          "mode": "trunk",
+          "allowedVlanIds": "all"
+        },
+        "id": "if_0046"
+      },
+      "if_0047": {
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.10.1",
+            "subnetId": "sub_0012"
+          }
+        ],
+        "enabled": true,
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "lan0.10",
+        "kind": "vlan",
+        "parentId": "if_0019",
+        "vlanTag": 10,
+        "zoneId": "zon_0006",
+        "id": "if_0047"
+      },
+      "if_0048": {
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.20.1",
+            "subnetId": "sub_0013"
+          }
+        ],
+        "enabled": true,
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "lan0.20",
+        "kind": "vlan",
+        "parentId": "if_0019",
+        "vlanTag": 20,
+        "zoneId": "zon_0007",
+        "id": "if_0048"
+      },
+      "if_0049": {
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.30.1",
+            "subnetId": "sub_0014"
+          }
+        ],
+        "enabled": true,
+        "owner": {
+          "type": "device",
+          "id": "dev_0017"
+        },
+        "name": "lan0.30",
+        "kind": "vlan",
+        "parentId": "if_0019",
+        "vlanTag": 30,
+        "zoneId": "zon_0008",
+        "id": "if_0049"
+      },
+      "if_0064": {
+        "addresses": [
+          {
+            "mode": "static",
+            "address": "192.168.20.15",
+            "subnetId": "sub_0013"
+          }
+        ],
+        "enabled": true,
+        "owner": {
+          "type": "workload",
+          "id": "wl_0063"
+        },
+        "name": "net0",
+        "kind": "vnic",
+        "vlanTag": 20,
+        "id": "if_0064"
+      }
+    },
+    "links": {
+      "lnk_0056": {
+        "id": "lnk_0056",
+        "a": "if_0016",
+        "b": "if_0018",
+        "medium": "copper",
+        "tagIds": []
+      },
+      "lnk_0057": {
+        "id": "lnk_0057",
+        "a": "if_0019",
+        "b": "if_0023",
+        "medium": "copper",
+        "tagIds": []
+      },
+      "lnk_0058": {
+        "id": "lnk_0058",
+        "a": "if_0024",
+        "b": "if_0037",
+        "medium": "copper",
+        "tagIds": []
+      },
+      "lnk_0059": {
+        "id": "lnk_0059",
+        "a": "if_0025",
+        "b": "if_0034",
+        "medium": "copper",
+        "tagIds": []
+      },
+      "lnk_0060": {
+        "id": "lnk_0060",
+        "a": "if_0026",
+        "b": "if_0032",
+        "medium": "copper",
+        "tagIds": []
+      },
+      "lnk_0061": {
+        "id": "lnk_0061",
+        "a": "if_0030",
+        "b": "if_0039",
+        "medium": "copper",
+        "tagIds": []
+      },
+      "lnk_0062": {
+        "id": "lnk_0062",
+        "a": "if_0040",
+        "b": "if_0043",
+        "medium": "wifi",
+        "tagIds": [],
+        "ssidId": "ssid-iot"
+      },
+      "lnk_0065": {
+        "id": "lnk_0065",
+        "a": "if_0064",
+        "b": "if_0046",
+        "medium": "virtual",
+        "tagIds": []
+      }
+    },
+    "workloads": {
+      "wl_0063": {
+        "kind": "vm",
+        "name": "docker-vm",
+        "host": {
+          "type": "device",
+          "id": "dev_0036"
+        },
+        "tagIds": [],
+        "resources": {
+          "cpu": 2,
+          "memoryBytes": 8589934592,
+          "disks": [
+            {
+              "poolId": "pool_0045",
+              "sizeBytes": 137438953472
+            }
+          ]
+        },
+        "guestOs": {
+          "osId": "debian",
+          "version": "12"
+        },
+        "docker": {
+          "enabled": true,
+          "networkIds": [
+            "dnet_0066"
+          ]
+        },
+        "id": "wl_0063"
+      },
+      "wl_0067": {
+        "kind": "container",
+        "name": "jellyfin",
+        "host": {
+          "type": "workload",
+          "id": "wl_0063"
+        },
+        "tagIds": [],
+        "image": "lscr.io/linuxserver/jellyfin",
+        "tag": "latest",
+        "network": {
+          "mode": "docker-network",
+          "dockerNetworkId": "dnet_0066"
+        },
+        "portMappings": [
+          {
+            "hostPort": 8096,
+            "containerPort": 8096,
+            "protocol": "tcp"
+          }
+        ],
+        "volumes": [
+          {
+            "name": "jellyfin-config",
+            "containerPath": "/config",
+            "type": "named",
+            "poolId": "pool_0045",
+            "sizeBytes": 2147483648
+          }
+        ],
+        "id": "wl_0067"
+      },
+      "wl_0069": {
+        "kind": "lxc",
+        "name": "home-assistant",
+        "host": {
+          "type": "device",
+          "id": "dev_0036"
+        },
+        "tagIds": [],
+        "template": "debian-12",
+        "unprivileged": true,
+        "resources": {
+          "cpu": 2,
+          "memoryBytes": 4294967296,
+          "disks": [
+            {
+              "poolId": "pool_0045",
+              "sizeBytes": 17179869184
+            }
+          ]
+        },
+        "id": "wl_0069"
+      },
+      "wl_0070": {
+        "kind": "lxc",
+        "name": "unifi",
+        "host": {
+          "type": "device",
+          "id": "dev_0036"
+        },
+        "tagIds": [],
+        "template": "debian-12",
+        "unprivileged": true,
+        "resources": {
+          "cpu": 1,
+          "memoryBytes": 2147483648,
+          "disks": [
+            {
+              "poolId": "pool_0045",
+              "sizeBytes": 17179869184
+            }
+          ]
+        },
+        "id": "wl_0070"
+      }
+    },
+    "stacks": {},
+    "dockerNetworks": {
+      "dnet_0066": {
+        "host": {
+          "type": "workload",
+          "id": "wl_0063"
+        },
+        "name": "bridge",
+        "driver": "bridge",
+        "subnet": "172.17.0.0/16",
+        "id": "dnet_0066"
+      }
+    },
+    "apps": {
+      "app_0068": {
+        "name": "Jellyfin",
+        "runsOn": {
+          "type": "workload",
+          "id": "wl_0067"
+        },
+        "role": "app",
+        "tagIds": [],
+        "listeners": [
+          {
+            "port": 8096,
+            "protocol": "tcp",
+            "purpose": "web-ui"
+          }
+        ],
+        "requirements": {
+          "min": {
+            "cpu": 1,
+            "memoryBytes": 1073741824,
+            "diskBytes": 2147483648
+          },
+          "recommended": {
+            "cpu": 2,
+            "memoryBytes": 2147483648,
+            "diskBytes": 10737418240
+          }
+        },
+        "dependencies": [
+          {
+            "capability": "media-storage",
+            "optional": true
+          }
+        ],
+        "trafficPatterns": [
+          {
+            "id": "web",
+            "direction": "inbound",
+            "peer": {
+              "kind": "lan-clients"
+            },
+            "protocol": "tcp",
+            "port": 8096,
+            "purpose": "web-ui",
+            "required": true
+          },
+          {
+            "id": "metadata",
+            "direction": "outbound",
+            "peer": {
+              "kind": "internet"
+            },
+            "protocol": "tcp",
+            "port": 443,
+            "purpose": "metadata-fetch",
+            "required": false
+          }
+        ],
+        "confidence": "curated",
+        "id": "app_0068"
+      }
+    },
+    "vlans": {
+      "vln_0009": {
+        "vid": 10,
+        "name": "Mgmt",
+        "color": "violet",
+        "id": "vln_0009"
+      },
+      "vln_0010": {
+        "vid": 20,
+        "name": "LAN",
+        "color": "sky",
+        "id": "vln_0010"
+      },
+      "vln_0011": {
+        "vid": 30,
+        "name": "IoT",
+        "color": "pink",
+        "id": "vln_0011"
+      }
+    },
+    "subnets": {
+      "sub_0012": {
+        "cidr": "192.168.10.0/24",
+        "vlanId": "vln_0009",
+        "zoneId": "zon_0006",
+        "gateway": "192.168.10.1",
+        "id": "sub_0012"
+      },
+      "sub_0013": {
+        "cidr": "192.168.20.0/24",
+        "vlanId": "vln_0010",
+        "zoneId": "zon_0007",
+        "gateway": "192.168.20.1",
+        "dhcp": {
+          "enabled": true,
+          "rangeStart": "192.168.20.100",
+          "rangeEnd": "192.168.20.199"
+        },
+        "id": "sub_0013"
+      },
+      "sub_0014": {
+        "cidr": "192.168.30.0/24",
+        "vlanId": "vln_0011",
+        "zoneId": "zon_0008",
+        "gateway": "192.168.30.1",
+        "dhcp": {
+          "enabled": true,
+          "rangeStart": "192.168.30.100",
+          "rangeEnd": "192.168.30.250"
+        },
+        "id": "sub_0014"
+      }
+    },
+    "zones": {
+      "zon_0005": {
+        "name": "WAN",
+        "kind": "wan",
+        "color": "sand",
+        "intraZone": "deny",
+        "id": "zon_0005"
+      },
+      "zon_0006": {
+        "name": "Mgmt",
+        "kind": "internal",
+        "color": "violet",
+        "intraZone": "allow",
+        "id": "zon_0006"
+      },
+      "zon_0007": {
+        "name": "LAN",
+        "kind": "internal",
+        "color": "sky",
+        "intraZone": "allow",
+        "id": "zon_0007"
+      },
+      "zon_0008": {
+        "name": "IoT",
+        "kind": "internal",
+        "color": "pink",
+        "intraZone": "allow",
+        "id": "zon_0008"
+      }
+    },
+    "routes": {},
+    "tags": {},
+    "assertions": {},
+    "locations": {
+      "loc_0002": {
+        "kind": "rack",
+        "name": "Closet rack",
+        "units": 12,
+        "width": "10in",
+        "shelves": [
+          {
+            "u": 10,
+            "units": 1
+          }
+        ],
+        "id": "loc_0002"
+      },
+      "loc_0003": {
+        "kind": "shelf",
+        "name": "Office shelf",
+        "id": "loc_0003"
+      },
+      "loc_0004": {
+        "kind": "room",
+        "name": "Living room",
+        "id": "loc_0004"
+      }
+    },
+    "layout": {
+      "nodes": {
+        "dev_0015": {
+          "x": 8,
+          "y": 0
+        },
+        "dev_0036": {
+          "x": 1,
+          "y": 2
+        },
+        "dev_0038": {
+          "x": 1,
+          "y": 2
+        },
+        "dev_0041": {
+          "x": 11,
+          "y": 2
+        }
+      },
+      "links": {},
+      "locations": {
+        "loc_0002": {
+          "rect": {
+            "x": 2,
+            "y": 6,
+            "w": 18,
+            "h": 22
+          }
+        },
+        "loc_0003": {
+          "rect": {
+            "x": 24,
+            "y": 6,
+            "w": 20,
+            "h": 14
+          }
+        },
+        "loc_0004": {
+          "rect": {
+            "x": 24,
+            "y": 24,
+            "w": 20,
+            "h": 9
+          }
+        }
+      },
+      "groupByLocation": true,
+      "notes": {}
+    }
+  }
+}
