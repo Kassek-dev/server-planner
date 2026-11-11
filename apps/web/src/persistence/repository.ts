@@ -1,4 +1,5 @@
 import { defaultContext, type ModelContext, type Project } from '@server-planner/model';
+import { projectPreview } from '../features/canvas/preview';
 import type { AppDatabase, BackupState, ProjectMeta } from './db';
 
 /** Project storage (PRJ-01…03). Writes data and list metadata in one transaction. */
@@ -90,6 +91,7 @@ export class ProjectRepository {
 }
 
 export function toMeta(project: Project): ProjectMeta {
+  const preview = projectPreview(project);
   return {
     id: project.id,
     name: project.name,
@@ -98,5 +100,6 @@ export function toMeta(project: Project): ProjectMeta {
     deviceCount: Object.values(project.devices).filter((d) => d.kind !== 'internet').length,
     locationCount: Object.keys(project.locations).length,
     sizeBytes: new TextEncoder().encode(JSON.stringify(project)).length,
+    ...(preview ? { preview } : {}),
   };
 }

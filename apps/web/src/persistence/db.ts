@@ -1,5 +1,6 @@
 import type { Project } from '@server-planner/model';
 import { type DBSchema, type IDBPDatabase, openDB } from 'idb';
+import type { ProjectPreview } from '../features/canvas/preview';
 
 /** IndexedDB layout — docs/02-model-danych.md § 10. Bump DB_VERSION and extend `upgrade` on changes. */
 
@@ -15,6 +16,8 @@ export interface ProjectMeta {
   deviceCount: number;
   locationCount: number;
   sizeBytes: number;
+  /** Card thumbnail; absent for empty projects and rows saved before stage 3. */
+  preview?: ProjectPreview;
 }
 
 export interface BackupState {

@@ -1,6 +1,9 @@
+import { clone } from '../clone';
 import { createDevice } from '../factories';
 import type { Device, DeviceKind } from '../schema/device';
 import type { Placement } from '../schema/location';
+import type { Interface } from '../schema/network';
+import type { Project } from '../schema/project';
 import { removeDevice } from './cascade';
 import { applyChanges, CommandError, defineCommand, getOrThrow } from './core';
 
@@ -87,5 +90,86 @@ export const unplaceDevice = defineCommand(
     const device = getOrThrow(draft.devices, id, 'device');
     delete device.placement;
     if (position) draft.layout.nodes[id] = { ...position };
+  },
+);
+
+/** `pve1` → `pve2`, `nas` → `nas-2`: next free name derived from the original. */
+export function nextCopyName(project: Project, name: string): string {
+  const taken = new Set(Object.values(project.devices).map((d) => d.name));
+  const match = /^(.*?)(\d+)$/.exec(name);
+  const base = match ? (match[1] ?? '') : `${name}-`;
+  let n = match ? Number(match[2]) + 1 : 2;
+  while (taken.has(`${base}${n}`)) n += 1;
+  return `${base}${n}`;
+}
+
+/**
+ * `device.duplicate` (CAN-03): copies the device with its ports and hardware but without
+ * cables, IP addresses, workloads or apps. Copies of rack devices are placed next to the rack.
+ */
+export const duplicateDevice = defineCommand(
+  'device.duplicate',
+  (
+    draft,
+    { id, offset = { x: 2, y: 2 } }: { id: string; offset?: { x: number; y: number } },
+    ctx,
+  ): string => {
+    const source = getOrThrow(draft.devices, id, 'device');
+    if (source.kind === 'internet') throw new CommandError('INTERNET_EXISTS');
+    const copyId = ctx.createId('device');
+    const diskIds = new Map(
+      source.hardware.disks.map((d) => [d.id, ctx.createId('disk')] as const),
+    );
+    const copy: Device = {
+      ...clone(source),
+      id: copyId,
+      name: nextCopyName(draft, source.name),
+      hardware: {
+        ...clone(source.hardware),
+        disks: source.hardware.disks.map((d) => ({ ...clone(d), id: diskIds.get(d.id) ?? d.id })),
+        pools: source.hardware.pools.map((p) => ({
+          ...clone(p),
+          id: ctx.createId('storagePool'),
+          diskIds: p.diskIds.map((d) => diskIds.get(d) ?? d),
+        })),
+      },
+    };
+    delete copy.hostname;
+    const inRack =
+      source.placement && draft.locations[source.placement.locationId]?.kind === 'rack';
+    if (inRack) delete copy.placement;
+    draft.devices[copyId] = copy;
+
+    const interfaceIds = new Map<string, string>();
+    const owned = Object.values(draft.interfaces).filter(
+      (i) => i.owner.type === 'device' && i.owner.id === id,
+    );
+    for (const iface of owned) interfaceIds.set(iface.id, ctx.createId('interface'));
+    for (const iface of owned) {
+      const newId = interfaceIds.get(iface.id) ?? iface.id;
+      const next: Interface = {
+        ...clone(iface),
+        id: newId,
+        owner: { type: 'device', id: copyId },
+        addresses: [],
+      };
+      if (iface.parentId !== undefined) {
+        const parent = interfaceIds.get(iface.parentId);
+        if (parent) next.parentId = parent;
+        else delete next.parentId;
+      }
+      delete next.mac;
+      draft.interfaces[newId] = next;
+    }
+
+    const rackRect =
+      inRack && source.placement
+        ? draft.layout.locations[source.placement.locationId]?.rect
+        : undefined;
+    const base = rackRect
+      ? { x: rackRect.x + rackRect.w + 2, y: rackRect.y }
+      : (draft.layout.nodes[id] ?? { x: 0, y: 0 });
+    draft.layout.nodes[copyId] = { x: base.x + offset.x, y: base.y + offset.y };
+    return copyId;
   },
 );

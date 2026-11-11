@@ -20,7 +20,6 @@
     "locations": "Locations",
     "vlans": "VLANs",
     "workloads": "Workloads",
-    "apps": "Apps",
-    "canvasLater": "The canvas arrives in MVP stage 3. Projects are already saved, versioned and exportable."
+    "apps": "Apps"
   }
 }

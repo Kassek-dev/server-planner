@@ -125,3 +125,31 @@ describe('project session', () => {
     expect(session.getState().saveState).toBe('error');
   });
 });
+
+describe('transactions', () => {
+  it('records several commands as one undo step', () => {
+    const { session, project } = setup();
+    session.transaction('canvas.add', (run) => {
+      run(addDevice, { kind: 'switch' });
+      run(addDevice, { kind: 'router' });
+    });
+    expect(session.getState().past.map((e) => e.label)).toEqual(['canvas.add']);
+    expect(Object.keys(session.getState().project?.devices ?? {})).toHaveLength(2);
+    session.undo();
+    expect(session.getState().project?.devices).toEqual(project.devices);
+  });
+
+  it('changes nothing when a step is rejected', () => {
+    const { session } = setup();
+    session.dispatch(addVlan, { vlan: { vid: 10, name: 'Mgmt', color: 'violet' } });
+    const before = session.getState().project;
+    expect(() =>
+      session.transaction('batch', (run) => {
+        run(addDevice, { kind: 'switch' });
+        run(addVlan, { vlan: { vid: 10, name: 'Dup', color: 'teal' } });
+      }),
+    ).toThrow(CommandError);
+    expect(session.getState().project).toBe(before);
+    expect(session.getState().past).toHaveLength(1);
+  });
+});

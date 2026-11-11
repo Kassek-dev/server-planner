@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import ICU from 'i18next-icu';
 import { initReactI18next } from 'react-i18next';
+import canvas from './locales/en/canvas.json';
 import common from './locales/en/common.json';
 import dev from './locales/en/dev.json';
 import editor from './locales/en/editor.json';
@@ -9,10 +10,10 @@ import projects from './locales/en/projects.json';
 /** i18n setup — docs/01 § 7. Only `en` for now; add a language by copying locales/en. */
 export const DEFAULT_LANGUAGE = 'en';
 export const SUPPORTED_LANGUAGES = ['en'] as const;
-export const NAMESPACES = ['common', 'projects', 'editor', 'dev'] as const;
+export const NAMESPACES = ['common', 'projects', 'editor', 'canvas', 'dev'] as const;
 
 export const resources = {
-  en: { common, projects, editor, dev },
+  en: { common, projects, editor, canvas, dev },
 } as const;
 
 export async function initI18n(): Promise<void> {

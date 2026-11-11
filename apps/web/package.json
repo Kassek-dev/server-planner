@@ -17,6 +17,7 @@
     "@radix-ui/react-dropdown-menu": "2.2.1",
     "@server-planner/engine": "workspace:*",
     "@server-planner/model": "workspace:*",
+    "@xyflow/react": "12.12.1",
     "i18next": "27.1.1",
     "i18next-icu": "2.7.0",
     "idb": "8.0.4",
