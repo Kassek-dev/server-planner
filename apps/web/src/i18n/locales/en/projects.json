@@ -1,0 +1,9 @@
+{
+  "firstRun": {
+    "title": "Plan your home lab",
+    "description": "Draw your devices and network, check if your hardware can run your apps, and see what can reach what. Everything stays in this browser.",
+    "import": "Import JSON",
+    "example": "Try example project",
+    "create": "New project"
+  }
+}

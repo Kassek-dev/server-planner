@@ -1,0 +1,37 @@
+{
+  "gallery": {
+    "title": "Component gallery",
+    "description": "Every component and state in both themes. Development builds only.",
+    "theme": "Theme",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "sections": {
+      "colors": "Colors",
+      "vlan": "VLAN palette",
+      "typography": "Typography",
+      "buttons": "Buttons",
+      "leds": "LEDs"
+    },
+    "sample": {
+      "title": "Rack · closet",
+      "body": "Memory above 70%. Both slots used.",
+      "data": "192.168.20.15 · 22.4/28.8 GB",
+      "label": "Form factor",
+      "badge": "VM"
+    },
+    "buttons": {
+      "primary": "Simulate",
+      "secondary": "Export",
+      "ghost": "Save as assertion",
+      "danger": "Delete all data",
+      "disabled": "Disabled"
+    },
+    "led": {
+      "ok": "Healthy",
+      "warning": "Memory at 78%",
+      "error": "VLAN 30 not allowed on port 8",
+      "info": "Catalog update available",
+      "off": "Planned device"
+    }
+  }
+}

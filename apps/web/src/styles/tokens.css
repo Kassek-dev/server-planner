@@ -1,0 +1,175 @@
+/*
+ * Design tokens — docs/04-design-system.md § 2–4, § 7.
+ * Components use semantic tokens only (via Tailwind utilities mapped in index.css).
+ * Default theme: dark. `data-theme` on <html> is set by src/app/theme.ts.
+ */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* surfaces */
+  --sp-bg-app: #141414;
+  --sp-bg-panel: #1c1c1c;
+  --sp-bg-canvas: #171717;
+  --sp-canvas-grid: rgb(255 255 255 / 0.035);
+  --sp-bg-raised: #1f1f1f;
+  --sp-bg-tile: #262626;
+  --sp-bg-tile-header: #2e2e2e;
+  --sp-bg-inset: #141414;
+  --sp-bg-container: #1b1b1b;
+
+  /* borders */
+  --sp-border-subtle: #2e2e2e;
+  --sp-border-default: #3a3a3a;
+  --sp-border-strong: #6b6b6b;
+
+  /* text */
+  --sp-text-primary: #ececec;
+  --sp-text-secondary: #a3a3a3;
+  --sp-text-muted: #959595;
+
+  /* accent */
+  --sp-accent: #ff7a1a;
+  --sp-accent-hover: #ff8a3d;
+  --sp-on-accent: #141414;
+  --sp-accent-text: #ff8a3d;
+  --sp-accent-subtle: #2e2218;
+  --sp-focus-ring: #ff8a3d;
+  --sp-selection: #ff7a1a;
+
+  /* status: fill (LED) / text / message background / message border */
+  --sp-status-ok: #4ade80;
+  --sp-status-ok-text: #4ade80;
+  --sp-status-warning: #facc15;
+  --sp-status-warning-text: #facc15;
+  --sp-status-warning-bg: #2a2410;
+  --sp-status-warning-border: #6b5a12;
+  --sp-status-error: #ff4d4d;
+  --sp-status-error-text: #ff6b6b;
+  --sp-status-error-bg: #3a1414;
+  --sp-status-error-border: #7f1d1d;
+  --sp-status-info: #5eaefc;
+  --sp-status-info-text: #5eaefc;
+  --sp-status-info-bg: #13233a;
+  --sp-status-info-border: #1e3a5f;
+  --sp-status-off: #333333;
+  --sp-status-off-text: #959595;
+
+  /* VLAN / zone / tag palette (stored as keys, never hex) */
+  --sp-vlan-violet: #c084fc;
+  --sp-vlan-sky: #5eaefc;
+  --sp-vlan-teal: #2dd4bf;
+  --sp-vlan-pink: #f472b6;
+  --sp-vlan-indigo: #818cf8;
+  --sp-vlan-sand: #d6b88a;
+  --sp-vlan-lime: #a3e635;
+  --sp-vlan-cyan: #67e8f9;
+
+  /* hardware */
+  --sp-port-empty: #333333;
+  --sp-port-trunk: #d4d4d4;
+  --sp-port-wan: #6b6b6b;
+  --sp-rack-ear: #333333;
+  --sp-rack-screw: #141414;
+  --sp-device-foot: #3a3a3a;
+  --sp-led-glow-size: 6px;
+
+  /* elevation */
+  --sp-shadow-raised: none;
+  --sp-shadow-overlay: none;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --sp-bg-app: #f4f4f4;
+  --sp-bg-panel: #ffffff;
+  --sp-bg-canvas: #fafafa;
+  --sp-canvas-grid: rgb(0 0 0 / 0.05);
+  --sp-bg-raised: #ffffff;
+  --sp-bg-tile: #ffffff;
+  --sp-bg-tile-header: #f0f0f0;
+  --sp-bg-inset: #f4f4f4;
+  --sp-bg-container: #f7f7f7;
+
+  --sp-border-subtle: #e5e5e5;
+  --sp-border-default: #d4d4d4;
+  --sp-border-strong: #8a8a8a;
+
+  --sp-text-primary: #171717;
+  --sp-text-secondary: #525252;
+  --sp-text-muted: #6b6b6b;
+
+  --sp-accent: #ff7a1a;
+  --sp-accent-hover: #f06a0a;
+  --sp-on-accent: #141414;
+  --sp-accent-text: #c2410c;
+  --sp-accent-subtle: #fff1e6;
+  --sp-focus-ring: #c2410c;
+  --sp-selection: #ea580c;
+
+  --sp-status-ok: #16a34a;
+  --sp-status-ok-text: #15803d;
+  --sp-status-warning: #b88a00;
+  --sp-status-warning-text: #a16207;
+  --sp-status-warning-bg: #fefce8;
+  --sp-status-warning-border: #fde047;
+  --sp-status-error: #ef4444;
+  --sp-status-error-text: #b91c1c;
+  --sp-status-error-bg: #fef2f2;
+  --sp-status-error-border: #fca5a5;
+  --sp-status-info: #3b82f6;
+  --sp-status-info-text: #2563eb;
+  --sp-status-info-bg: #eff6ff;
+  --sp-status-info-border: #93c5fd;
+  --sp-status-off: #d4d4d4;
+  --sp-status-off-text: #6b6b6b;
+
+  --sp-vlan-violet: #9333ea;
+  --sp-vlan-sky: #0284c7;
+  --sp-vlan-teal: #0d9488;
+  --sp-vlan-pink: #db2777;
+  --sp-vlan-indigo: #4f46e5;
+  --sp-vlan-sand: #a37b45;
+  --sp-vlan-lime: #4d7c0f;
+  --sp-vlan-cyan: #0891b2;
+
+  --sp-port-empty: #e5e5e5;
+  --sp-port-trunk: #404040;
+  --sp-port-wan: #8a8a8a;
+  --sp-rack-ear: #e5e5e5;
+  --sp-rack-screw: #a3a3a3;
+  --sp-device-foot: #d4d4d4;
+  --sp-led-glow-size: 0px;
+
+  --sp-shadow-raised: 0 1px 2px rgb(0 0 0 / 0.06);
+  --sp-shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+:root {
+  /* typography */
+  --sp-font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --sp-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* canvas & rack geometry */
+  --sp-grid-unit: 16px;
+  --sp-rack-u-height: 26px;
+  --sp-rack-rail-width: 24px;
+  --sp-rack-header-height: 28px;
+
+  /* motion */
+  --sp-duration-fast: 120ms;
+  --sp-duration-base: 200ms;
+  --sp-duration-slow: 320ms;
+  --sp-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --sp-ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --sp-duration-fast: 1ms;
+    --sp-duration-base: 1ms;
+    --sp-duration-slow: 1ms;
+  }
+}

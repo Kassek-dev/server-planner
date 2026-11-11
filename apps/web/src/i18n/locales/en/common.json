@@ -1,0 +1,21 @@
+{
+  "appName": "Server Planner",
+  "nav": {
+    "settings": "Settings",
+    "about": "About",
+    "backToProjects": "Back to projects"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "projectTitle": "Project not found",
+    "description": "The address {path} does not match any page."
+  },
+  "placeholder": {
+    "description": "This view arrives in MVP stage {stage}."
+  },
+  "pages": {
+    "settings": "Settings",
+    "about": "About",
+    "editor": "Project editor"
+  }
+}

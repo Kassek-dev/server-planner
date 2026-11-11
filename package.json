@@ -1,0 +1,29 @@
+{
+  "name": "server-planner",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @server-planner/web dev",
+    "build": "pnpm -r build",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit -p . && pnpm -r typecheck",
+    "test": "vitest run",
+    "test:e2e": "pnpm --filter @server-planner/web test:e2e",
+    "i18n:check": "tsx scripts/i18n-check.ts",
+    "tokens:check": "tsx scripts/tokens-check.ts",
+    "catalog:validate": "pnpm --filter @server-planner/catalog-builder validate",
+    "catalog:build": "pnpm --filter @server-planner/catalog-builder build:catalog"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.6",
+    "@types/node": "26.6.6",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}

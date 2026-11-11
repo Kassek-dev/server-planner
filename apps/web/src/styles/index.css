@@ -1,0 +1,138 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/*
+ * Tailwind theme = design tokens only (docs/04 § 1).
+ * Default Tailwind palette, radii, shadows and fonts are removed so raw values cannot be used.
+ */
+@theme {
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+}
+
+@theme inline {
+  --color-app: var(--sp-bg-app);
+  --color-panel: var(--sp-bg-panel);
+  --color-canvas: var(--sp-bg-canvas);
+  --color-raised: var(--sp-bg-raised);
+  --color-tile: var(--sp-bg-tile);
+  --color-tile-header: var(--sp-bg-tile-header);
+  --color-inset: var(--sp-bg-inset);
+  --color-container: var(--sp-bg-container);
+
+  --color-border-subtle: var(--sp-border-subtle);
+  --color-border-default: var(--sp-border-default);
+  --color-border-strong: var(--sp-border-strong);
+
+  --color-text-primary: var(--sp-text-primary);
+  --color-text-secondary: var(--sp-text-secondary);
+  --color-text-muted: var(--sp-text-muted);
+
+  --color-accent: var(--sp-accent);
+  --color-accent-hover: var(--sp-accent-hover);
+  --color-on-accent: var(--sp-on-accent);
+  --color-accent-text: var(--sp-accent-text);
+  --color-accent-subtle: var(--sp-accent-subtle);
+  --color-focus-ring: var(--sp-focus-ring);
+  --color-selection: var(--sp-selection);
+
+  --color-ok: var(--sp-status-ok);
+  --color-ok-text: var(--sp-status-ok-text);
+  --color-warning: var(--sp-status-warning);
+  --color-warning-text: var(--sp-status-warning-text);
+  --color-warning-bg: var(--sp-status-warning-bg);
+  --color-warning-border: var(--sp-status-warning-border);
+  --color-error: var(--sp-status-error);
+  --color-error-text: var(--sp-status-error-text);
+  --color-error-bg: var(--sp-status-error-bg);
+  --color-error-border: var(--sp-status-error-border);
+  --color-info: var(--sp-status-info);
+  --color-info-text: var(--sp-status-info-text);
+  --color-info-bg: var(--sp-status-info-bg);
+  --color-info-border: var(--sp-status-info-border);
+  --color-off: var(--sp-status-off);
+  --color-off-text: var(--sp-status-off-text);
+
+  --color-vlan-violet: var(--sp-vlan-violet);
+  --color-vlan-sky: var(--sp-vlan-sky);
+  --color-vlan-teal: var(--sp-vlan-teal);
+  --color-vlan-pink: var(--sp-vlan-pink);
+  --color-vlan-indigo: var(--sp-vlan-indigo);
+  --color-vlan-sand: var(--sp-vlan-sand);
+  --color-vlan-lime: var(--sp-vlan-lime);
+  --color-vlan-cyan: var(--sp-vlan-cyan);
+
+  --color-port-empty: var(--sp-port-empty);
+  --color-port-trunk: var(--sp-port-trunk);
+  --color-port-wan: var(--sp-port-wan);
+  --color-rack-ear: var(--sp-rack-ear);
+  --color-device-foot: var(--sp-device-foot);
+  --color-transparent: transparent;
+
+  --font-sans: var(--sp-font-sans);
+  --font-mono: var(--sp-font-mono);
+
+  /* type scale — docs/04 § 3 */
+  --text-badge: 10px;
+  --text-badge--line-height: 12px;
+  --text-label: 11px;
+  --text-label--line-height: 14px;
+  --text-data-sm: 11px;
+  --text-data-sm--line-height: 14px;
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 16px;
+  --text-data: 12px;
+  --text-data--line-height: 16px;
+  --text-body: 13px;
+  --text-body--line-height: 18px;
+  --text-body-strong: 14px;
+  --text-body-strong--line-height: 20px;
+  --text-title: 18px;
+  --text-title--line-height: 24px;
+  --text-title-lg: 24px;
+  --text-title-lg--line-height: 32px;
+
+  /* radii — docs/04 § 4.4 (shape encodes form factor) */
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 6px;
+  --radius-pill: 999px;
+
+  --shadow-raised: var(--sp-shadow-raised);
+  --shadow-overlay: var(--sp-shadow-overlay);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--sp-bg-app);
+    color: var(--sp-text-primary);
+    font-family: var(--sp-font-sans);
+    font-size: 13px;
+    line-height: 18px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sp-focus-ring);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: var(--sp-accent-text);
+  }
+
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+}

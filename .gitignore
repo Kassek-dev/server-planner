@@ -1,0 +1,14 @@
+node_modules/
+dist/
+!catalog/dist/
+coverage/
+*.tsbuildinfo
+.vite/
+playwright-report/
+test-results/
+.env
+.env.*
+.DS_Store
+.idea/
+# design generator caches
+__pycache__/

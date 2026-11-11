@@ -1,0 +1,14 @@
+{
+  "name": "@server-planner/catalog-builder",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "validate": "tsx src/validate.ts",
+    "build:catalog": "tsx src/build.ts"
+  },
+  "dependencies": {
+    "@server-planner/model": "workspace:*"
+  }
+}
