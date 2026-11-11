@@ -317,6 +317,23 @@ export const addNatRule = defineCommand(
   },
 );
 
+export const updateNatRule = defineCommand(
+  'nat.update',
+  (
+    draft,
+    {
+      deviceId,
+      ruleId,
+      rule,
+    }: { deviceId: string; ruleId: string; rule: DistributiveOmit<NatRule, 'id'> },
+  ) => {
+    const firewall = firewallOf(draft, deviceId);
+    const index = firewall.nat.findIndex((r) => r.id === ruleId);
+    if (index < 0) throw new CommandError('NOT_FOUND', { entity: 'natRule', id: ruleId });
+    firewall.nat[index] = { ...rule, id: ruleId } as NatRule;
+  },
+);
+
 export const deleteNatRule = defineCommand(
   'nat.delete',
   (draft, { deviceId, ruleId }: { deviceId: string; ruleId: string }) => {

@@ -32,6 +32,7 @@ import {
   placeDevice,
   updateApp,
   updateDevice,
+  updateNatRule,
   updateWorkload,
 } from '../src';
 import { buildHomeLab } from './support/home-lab';
@@ -432,5 +433,30 @@ describe('tags', () => {
     const { project } = run(tagged.project, deleteTag, { id: tag.result });
     expect(project.devices[nas.id]?.tagIds).toEqual([]);
     expect(project.tags[tag.result]).toBeUndefined();
+  });
+});
+
+describe('NAT', () => {
+  it('updates a NAT rule in place, keeping its id', () => {
+    const gw = byName(lab, 'gw-01');
+    const nat = gw.firewall?.nat[0];
+    if (!nat) throw new Error('fixture');
+    const wan = ifaceOf(lab, 'gw-01', 'wan0');
+    const { project } = run(lab, updateNatRule, {
+      deviceId: gw.id,
+      ruleId: nat.id,
+      rule: {
+        kind: 'port-forward',
+        inInterfaceId: wan.id,
+        protocol: 'tcp',
+        externalPort: 443,
+        target: { ip: '192.168.20.10', port: 443 },
+      },
+    });
+    expect(project.devices[gw.id]?.firewall?.nat[0]).toMatchObject({
+      id: nat.id,
+      kind: 'port-forward',
+      externalPort: 443,
+    });
   });
 });

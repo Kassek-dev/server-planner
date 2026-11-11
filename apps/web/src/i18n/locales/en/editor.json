@@ -18,8 +18,12 @@
     "title": "This project",
     "devices": "Devices",
     "locations": "Locations",
-    "vlans": "VLANs",
+    "vlans": "VLANs & subnets",
     "workloads": "Workloads",
-    "apps": "Apps"
+    "apps": "Apps",
+    "manage": "Manage",
+    "firewall": "Firewall · {name}",
+    "tags": "Tags",
+    "settings": "Project settings"
   }
 }

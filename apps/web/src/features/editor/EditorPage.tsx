@@ -13,6 +13,7 @@ import { Button } from '../../ui/Button';
 import { Led, type LedStatus } from '../../ui/Led';
 import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
+import { DrawerHost } from '../drawers/DrawerHost';
 import { SelectionPanel } from '../inspector/SelectionPanel';
 
 type LoadState = 'loading' | 'ready' | 'missing';
@@ -156,6 +157,7 @@ function Editor() {
         <CanvasWorkspace />
         <SelectionPanel />
       </main>
+      <DrawerHost />
     </div>
   );
 }

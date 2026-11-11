@@ -19,8 +19,10 @@ import {
   updateRoute,
 } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Select } from '../../../ui/Select';
+import { useDrawer } from '../../drawers/useDrawer';
 import {
   AddButton,
   Card,
@@ -339,6 +341,7 @@ function RoutingSection({
 }) {
   const { t } = useTranslation('inspector');
   const run = useCommand();
+  const { open: openDrawer } = useDrawer();
   const routes = Object.values(project.routes).filter((r) => r.deviceId === device.id);
   const wan = interfaces.find((i) => i.kind === 'wan');
   const firewall = device.firewall;
@@ -397,6 +400,9 @@ function RoutingSection({
       </Section>
       {firewall ? (
         <Section title={t('network.firewall')}>
+          <Button onClick={() => openDrawer({ kind: 'firewall', deviceId: device.id })}>
+            {t('network.openFirewall')}
+          </Button>
           <Row
             label={t('network.rules')}
             value={t('network.ruleSummary', {
