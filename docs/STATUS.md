@@ -140,8 +140,9 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 11 — Rozbudowa katalogu aplikacji do ~200
 
-- [ ] Przegląd popularnych aplikacji home lab (awesome‑selfhosted, LinuxServer, Community Scripts, popularność) → lista ~200
-- [ ] Kurowane wpisy (obrazy, porty, wolumeny, wymagania, wzorce ruchu, przepływy) dla nowych aplikacji; reszta jako `imported` z buildera
+- [x] Przegląd popularnych aplikacji home lab (2026-11-12): ranking 766 aplikacji z awesome‑selfhosted (Docker) po gwiazdkach GitHuba + porównanie z katalogiem; ranking faworyzuje narzędzia deweloperskie/biznesowe, więc wybór filtrowany pod kątem home labów
+- [x] 63 nowe wpisy kurowane (AI, notatki, zakładki, dashboardy, powiadomienia, SSO, VPN, DNS, monitoring, Docker, media, pliki, backup, finanse, komunikacja, automatyka domowa, Git) → 122 kurowane
+- [x] Import odchudzony: bez aplikacji desktopowych w przeglądarce (KasmVNC „desktop gui”, 92 obrazy) i bez obrazów tylko z LinuxServer.io poniżej 10 000 pobrań/mies. → 73 importowane; razem **195 aplikacji**; flaga `--accept-drop` dla zamierzonych spadków
 
 ### Etap 12 — Przepływy ruchu (pakiet 1): FLW‑01…05
 
@@ -178,5 +179,6 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 9c: eksport CSV (inwentarz, plan IP, BOM), Markdown, docker-compose — etap 9 zamknięty; unit 189, E2E 33 | #20, #21 |
 | 2026-11-12 | Etap 10a/10b: builder katalogu z 4 adapterami, bezpiecznikami i blokadą | #22 |
 | 2026-11-12 | Etap 10c: workflow `catalog-update.yml`, pierwszy `dist` od bota (`chore(catalog): 2026.46`), zabezpieczenie rozpakowywania archiwów | #23 |
-| 2026-11-12 | Etap 10d: katalog efektywny w aplikacji (243 aplikacje), aktualizacje CAT‑04, Settings › Catalog, źródła w About, PERF w D‑05 — etap 10 zamknięty; unit 205, E2E 33 | — |
+| 2026-11-12 | Etap 10d: katalog efektywny w aplikacji (243 aplikacje), aktualizacje CAT‑04, Settings › Catalog, źródła w About, PERF w D‑05 — etap 10 zamknięty; unit 205, E2E 33 | #24 |
+| 2026-11-12 | Etap 11: skan popularnych aplikacji, 63 nowe kurowane, filtry importu → 195 aplikacji | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |

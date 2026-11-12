@@ -1,0 +1,45 @@
+id: loki
+name: Grafana Loki
+description: { en: Log aggregation system designed to work with Grafana. }
+categories: [monitoring]
+website: "https://grafana.com/oss/loki/"
+repository: "https://github.com/grafana/loki"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: loki
+      role: app
+      image: grafana/loki
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3100, protocol: tcp, purpose: logs }]
+      defaultPortMappings: [{ hostPort: 3100, containerPort: 3100, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /loki, purpose: data, defaultSizeBytes: 20 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 5 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 50 GB }
+dependencies: []
+provides: [log-store]
+trafficPatterns:
+  - id: logs-tcp-3100
+    direction: inbound
+    peer: { kind: dependency, capability: log-store }
+    protocol: tcp
+    port: 3100
+    purpose: logs
+    required: true
+flows:
+  - id: loki.push
+    name: { en: Agent ships logs }
+    roles:
+      - key: agent
+        name: { en: Log shipper }
+        selector: { kind: dependency, capability: log-store }
+        userPicks: true
+      - { key: server, name: { en: Loki }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: agent, to: server, protocol: tcp, port: 3100 }]

@@ -10,6 +10,10 @@ on:
         description: Ignore the 7-day lock
         type: boolean
         default: false
+      accept_drop:
+        description: Accept an intentional drop of imported apps (after changing the heuristics)
+        type: boolean
+        default: false
 
 permissions:
   contents: write # commit catalog/dist
@@ -38,7 +42,7 @@ jobs:
         id: build
         run: |
           set +e
-          pnpm catalog:build -- ${{ inputs.force && '--force' || '' }} 2>&1 | tee build.log
+          pnpm catalog:build -- ${{ inputs.force && '--force' || '' }} ${{ inputs.accept_drop && '--accept-drop' || '' }} 2>&1 | tee build.log
           code=${PIPESTATUS[0]}
           echo "code=$code" >> "$GITHUB_OUTPUT"
           if [ "$code" = "1" ]; then exit 1; fi

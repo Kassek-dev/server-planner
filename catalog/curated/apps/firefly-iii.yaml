@@ -1,0 +1,62 @@
+id: firefly-iii
+name: Firefly III
+description: { en: "Personal finance manager with budgets, categories and reports." }
+categories: [finance]
+website: "https://www.firefly-iii.org"
+repository: "https://github.com/firefly-iii/firefly-iii"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: firefly-iii
+      role: app
+      image: fireflyiii/core
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8092, containerPort: 8080, protocol: tcp }]
+      volumes:
+        - name: upload
+          containerPath: /var/www/html/storage/upload
+          purpose: data
+          defaultSizeBytes: 1 GB
+    - key: db
+      name: mariadb
+      role: database
+      image: mariadb
+      defaultTag: "11"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3306, protocol: tcp, purpose: mysql }]
+      volumes: [{ name: db, containerPath: /var/lib/mysql, purpose: data, defaultSizeBytes: 2 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 2 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 5 GB }
+dependencies: [{ capability: mysql, optional: false, providedByComponent: db }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: db-mysql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 3306
+    purpose: mysql
+    required: true
+flows:
+  - id: firefly-iii.open-ui
+    name: { en: Open Firefly III }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Firefly III }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

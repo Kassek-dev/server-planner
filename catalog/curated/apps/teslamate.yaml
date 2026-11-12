@@ -1,0 +1,80 @@
+id: teslamate
+name: TeslaMate
+description: { en: Data logger for Tesla vehicles with Grafana dashboards. }
+categories: [home-automation]
+website: "https://docs.teslamate.org"
+repository: "https://github.com/teslamate-org/teslamate"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: teslamate
+      role: app
+      image: teslamate/teslamate
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 4000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 4000, containerPort: 4000, protocol: tcp }]
+      volumes: []
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 5 GB,
+          }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 10 GB }
+dependencies:
+  - { capability: postgresql, optional: false, providedByComponent: db }
+  - { capability: mqtt, optional: true }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-4000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 4000
+    purpose: web-ui
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: tesla
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: true
+  - id: mqtt
+    direction: outbound
+    peer: { kind: dependency, capability: mqtt }
+    protocol: tcp
+    port: 1883
+    purpose: mqtt
+    required: false
+flows:
+  - id: teslamate.open-ui
+    name: { en: Open TeslaMate }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: TeslaMate }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

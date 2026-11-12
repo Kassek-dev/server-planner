@@ -16,4 +16,11 @@ defaultRequirements:
 cpuReference: intel core i5-8500t
 
 # LinuxServer.io images that are build or system helpers, not apps to plan.
-excludeImages: [qemu-static]
+excludeImages: [qemu-static, ffmpeg, mullvad-browser, vscodium-web]
+
+# Desktop apps streamed to the browser (KasmVNC "desktop gui") are not home lab services.
+excludeDesktopApps: true
+
+# Images known only to LinuxServer.io (no awesome-selfhosted or Community Scripts entry)
+# need at least this many monthly pulls to be listed.
+minMonthlyPullsAlone: 10000

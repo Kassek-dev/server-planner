@@ -66,7 +66,8 @@
 
 ### 2.5 Warstwa kurowana
 
-- **Wzorce ruchu i przepływy** (D4): ręcznie dla top ~30–50 aplikacji; reszta generowana z portów z `confidence: estimated` (01 § 5.2).
+- **Wzorce ruchu i przepływy** (D4): ręcznie dla aplikacji kurowanych (122 na 2026-11-12); dla importowanych generowane z portów (`confidence: estimated` / `imported`, 01 § 5.2).
+- **Filtry importu** (`heuristics.yml`): pomijane są aplikacje desktopowe w przeglądarce (porty LinuxServer.io opisane jako „desktop gui”), obrazy pomocnicze z listy `excludeImages` oraz obrazy znane tylko z LinuxServer.io z mniej niż `minMonthlyPullsAlone` pobraniami miesięcznie. Zamierzony spadek liczby aplikacji przy zmianie reguł wymaga `--accept-drop` (opcja w ręcznym uruchomieniu workflowu).
 - **Poprawki wymagań**: nadpisania dla aplikacji, gdzie dane importowane są mylące (np. Immich ML, Jellyfin z transkodowaniem).
 - **Mapowanie tożsamości** (`catalog/curated/app-aliases.yml`): łączenie rekordów z różnych źródeł po slugach (`jellyfin` ↔ `linuxserver/jellyfin` ↔ `jellyfin/jellyfin`).
 

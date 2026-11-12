@@ -39,6 +39,8 @@ export interface AppRecord {
     arch: ('amd64' | 'arm64')[];
     ports: SourcePort[];
     volumes: { path: string; description: string; optional: boolean }[];
+    /** A desktop application streamed to the browser (KasmVNC "desktop gui"), not a service. */
+    desktop?: boolean;
   };
   /** LXC resources (Community Scripts) — scaled for Docker by the heuristics. */
   lxc?: { cpu: number; ramMb: number; diskGb: number; port?: number };

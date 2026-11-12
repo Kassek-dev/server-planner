@@ -1,0 +1,111 @@
+id: authentik
+name: authentik
+description:
+  { en: "Identity provider with SSO (OIDC, SAML, LDAP proxy) and a forward-auth outpost." }
+categories: [security]
+website: "https://goauthentik.io"
+repository: "https://github.com/goauthentik/authentik"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: server
+      name: authentik-server
+      role: app
+      image: ghcr.io/goauthentik/server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [
+          { port: 9000, protocol: tcp, purpose: web-ui },
+          { port: 9443, protocol: tcp, purpose: https },
+        ]
+      defaultPortMappings:
+        - { hostPort: 9000, containerPort: 9000, protocol: tcp }
+        - { hostPort: 9443, containerPort: 9443, protocol: tcp }
+      volumes: [{ name: media, containerPath: /media, purpose: data, defaultSizeBytes: 1 GB }]
+    - key: worker
+      name: authentik-worker
+      role: worker
+      image: ghcr.io/goauthentik/server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes: [{ name: certs, containerPath: /certs, purpose: config, defaultSizeBytes: 10 MiB }]
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: 16-alpine
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          }
+    - key: redis
+      name: redis
+      role: cache
+      image: redis
+      defaultTag: alpine
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6379, protocol: tcp, purpose: redis }]
+      volumes: []
+requirements:
+  min: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 3 GiB, diskBytes: 10 GB }
+dependencies:
+  - { capability: postgresql, optional: false, providedByComponent: db }
+  - { capability: redis, optional: false, providedByComponent: redis }
+provides: [sso]
+trafficPatterns:
+  - id: web-ui-tcp-9000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9000
+    purpose: web-ui
+    required: true
+  - id: https-tcp-9443
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9443
+    purpose: https
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: redis-redis
+    direction: outbound
+    peer: { kind: self-component, key: redis }
+    protocol: tcp
+    port: 6379
+    purpose: redis
+    required: true
+flows:
+  - id: authentik.login
+    name: { en: User signs in to an app }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: authentik }, selector: { kind: self }, userPicks: false }
+      - key: db
+        name: { en: Database }
+        selector: { kind: self-component, key: db }
+        userPicks: false
+    steps:
+      - { from: client, to: server, protocol: tcp, port: 9443, resolveDns: true }
+      - { from: server, to: db, protocol: tcp, port: 5432 }

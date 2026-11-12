@@ -1,0 +1,104 @@
+id: rustdesk-server
+name: RustDesk Server
+description: { en: Self-hosted ID and relay server for RustDesk remote desktop. }
+categories: [networking]
+website: "https://rustdesk.com"
+repository: "https://github.com/rustdesk/rustdesk-server"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: hbbs
+      name: hbbs
+      role: app
+      image: rustdesk/rustdesk-server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 21115, protocol: tcp, purpose: nat-test }
+        - { port: 21116, protocol: tcp, purpose: id }
+        - { port: 21116, protocol: udp, purpose: id }
+        - { port: 21118, protocol: tcp, purpose: websocket }
+      defaultPortMappings:
+        - { hostPort: 21115, containerPort: 21115, protocol: tcp }
+        - { hostPort: 21116, containerPort: 21116, protocol: tcp }
+        - { hostPort: 21116, containerPort: 21116, protocol: udp }
+        - { hostPort: 21118, containerPort: 21118, protocol: tcp }
+      volumes: [{ name: data, containerPath: /root, purpose: data, defaultSizeBytes: 100 MiB }]
+    - key: hbbr
+      name: hbbr
+      role: worker
+      image: rustdesk/rustdesk-server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 21117, protocol: tcp, purpose: relay }
+        - { port: 21119, protocol: tcp, purpose: relay-websocket }
+      defaultPortMappings:
+        - { hostPort: 21117, containerPort: 21117, protocol: tcp }
+        - { hostPort: 21119, containerPort: 21119, protocol: tcp }
+      volumes: []
+requirements:
+  min: { cpu: 0.25, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 1, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: nat-test-tcp-21115
+    direction: inbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 21115
+    purpose: nat-test
+    required: true
+  - id: id-tcp-21116
+    direction: inbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 21116
+    purpose: id
+    required: true
+  - id: id-udp-21116
+    direction: inbound
+    peer: { kind: internet }
+    protocol: udp
+    port: 21116
+    purpose: id
+    required: true
+  - id: websocket-tcp-21118
+    direction: inbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 21118
+    purpose: websocket
+    required: true
+  - id: hbbr-relay
+    direction: outbound
+    peer: { kind: self-component, key: hbbr }
+    protocol: tcp
+    port: 21117
+    purpose: relay
+    required: true
+  - id: hbbr-relay-websocket
+    direction: outbound
+    peer: { kind: self-component, key: hbbr }
+    protocol: tcp
+    port: 21119
+    purpose: relay-websocket
+    required: true
+flows:
+  - id: rustdesk-server.connect
+    name: { en: Client registers with the ID server }
+    roles:
+      - {
+          key: client,
+          name: { en: RustDesk client },
+          selector: { kind: lan-clients },
+          userPicks: true,
+        }
+      - { key: server, name: { en: RustDesk Server }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 21116 }]

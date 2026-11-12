@@ -1,0 +1,56 @@
+id: open-webui
+name: Open WebUI
+description: { en: ChatGPT-style web interface for Ollama and OpenAI-compatible models. }
+categories: [ai]
+website: "https://openwebui.com"
+repository: "https://github.com/open-webui/open-webui"
+license: BSD-3-Clause
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: open-webui
+      role: app
+      image: ghcr.io/open-webui/open-webui
+      defaultTag: main
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3000, containerPort: 8080, protocol: tcp }]
+      volumes:
+        [{ name: data, containerPath: /app/backend/data, purpose: data, defaultSizeBytes: 5 GB }]
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 10 GB }
+dependencies: [{ capability: llm-api, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: llm
+    direction: outbound
+    peer: { kind: dependency, capability: llm-api }
+    protocol: tcp
+    port: 11434
+    purpose: api
+    required: true
+flows:
+  - id: open-webui.chat
+    name: { en: Ask a question in the chat }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Open WebUI }, selector: { kind: self }, userPicks: false }
+      - key: llm
+        name: { en: Model server }
+        selector: { kind: dependency, capability: llm-api }
+        userPicks: true
+    steps:
+      - { from: client, to: server, protocol: tcp, port: 3000, resolveDns: true }
+      - { from: server, to: llm, protocol: tcp, port: 11434 }

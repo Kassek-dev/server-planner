@@ -1,0 +1,57 @@
+id: anythingllm
+name: AnythingLLM
+description: { en: Chat with your documents using local or hosted models (RAG). }
+categories: [ai, documents]
+website: "https://anythingllm.com"
+repository: "https://github.com/Mintplex-Labs/anything-llm"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: anythingllm
+      role: app
+      image: mintplexlabs/anythingllm
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3001, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3001, containerPort: 3001, protocol: tcp }]
+      volumes:
+        [
+          {
+            name: storage,
+            containerPath: /app/server/storage,
+            purpose: data,
+            defaultSizeBytes: 10 GB,
+          },
+        ]
+requirements:
+  min: { cpu: 1, memoryBytes: 2 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 20 GB }
+dependencies: [{ capability: llm-api, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3001
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3001
+    purpose: web-ui
+    required: true
+  - id: llm
+    direction: outbound
+    peer: { kind: dependency, capability: llm-api }
+    protocol: tcp
+    port: 11434
+    purpose: api
+    required: false
+flows:
+  - id: anythingllm.open-ui
+    name: { en: Open AnythingLLM }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: AnythingLLM }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

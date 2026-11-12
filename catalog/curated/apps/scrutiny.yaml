@@ -1,0 +1,63 @@
+id: scrutiny
+name: Scrutiny
+description:
+  { en: Hard drive S.M.A.R.T. monitoring with historical trends and failure predictions. }
+categories: [monitoring]
+repository: "https://github.com/AnalogJ/scrutiny"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: scrutiny
+      role: app
+      image: ghcr.io/analogj/scrutiny
+      defaultTag: master-omnibus
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8080, protocol: tcp, purpose: web-ui }
+        - { port: 8086, protocol: tcp, purpose: influxdb }
+      defaultPortMappings: [{ hostPort: 8087, containerPort: 8080, protocol: tcp }]
+      volumes:
+        - {
+            name: config,
+            containerPath: /opt/scrutiny/config,
+            purpose: config,
+            defaultSizeBytes: 10 MiB,
+          }
+        - {
+            name: influxdb,
+            containerPath: /opt/scrutiny/influxdb,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 5 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: influxdb-tcp-8086
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8086
+    purpose: influxdb
+    required: true
+flows:
+  - id: scrutiny.open-ui
+    name: { en: Open Scrutiny }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Scrutiny }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

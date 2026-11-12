@@ -1,0 +1,98 @@
+id: outline
+name: Outline
+description: { en: "Fast, collaborative knowledge base for teams." }
+categories: [documents]
+website: "https://www.getoutline.com"
+repository: "https://github.com/outline/outline"
+license: BSL-1.1
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: outline
+      role: app
+      image: outlinewiki/outline
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3000, containerPort: 3000, protocol: tcp }]
+      volumes:
+        [
+          {
+            name: data,
+            containerPath: /var/lib/outline/data,
+            purpose: data,
+            defaultSizeBytes: 5 GB,
+          },
+        ]
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          }
+    - key: redis
+      name: redis
+      role: cache
+      image: redis
+      defaultTag: "7"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6379, protocol: tcp, purpose: redis }]
+      volumes: []
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 10 GB }
+dependencies:
+  - { capability: postgresql, optional: false, providedByComponent: db }
+  - { capability: redis, optional: false, providedByComponent: redis }
+  - { capability: sso, optional: false }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: web-ui
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: redis-redis
+    direction: outbound
+    peer: { kind: self-component, key: redis }
+    protocol: tcp
+    port: 6379
+    purpose: redis
+    required: true
+  - id: sso
+    direction: outbound
+    peer: { kind: dependency, capability: sso }
+    protocol: tcp
+    port: 443
+    purpose: auth
+    required: true
+flows:
+  - id: outline.open-ui
+    name: { en: Open Outline }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Outline }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

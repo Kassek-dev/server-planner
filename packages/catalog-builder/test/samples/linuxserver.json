@@ -9,7 +9,14 @@
           "category": "Music,Downloaders",
           "deprecated": false,
           "monthly_pulls": 1000,
-          "architectures": [{ "arch": "x86_64" }, { "arch": "arm64" }],
+          "architectures": [
+            {
+              "arch": "x86_64"
+            },
+            {
+              "arch": "arm64"
+            }
+          ],
           "config": {
             "ports": [
               {
@@ -20,26 +27,107 @@
               }
             ],
             "volumes": [
-              { "path": "/config", "desc": "Configuration files.", "optional": false },
-              { "path": "/music", "desc": "Music files.", "optional": false }
+              {
+                "path": "/config",
+                "desc": "Configuration files.",
+                "optional": false
+              },
+              {
+                "path": "/music",
+                "desc": "Music files.",
+                "optional": false
+              }
             ]
+          }
+        },
+        {
+          "name": "gimp",
+          "category": "Image Editor",
+          "monthly_pulls": 99999,
+          "architectures": [
+            {
+              "arch": "x86_64"
+            }
+          ],
+          "config": {
+            "ports": [
+              {
+                "external": "3000",
+                "internal": "3000",
+                "desc": "GIMP desktop gui HTTP, must be proxied.",
+                "optional": false
+              }
+            ],
+            "volumes": []
+          }
+        },
+        {
+          "name": "tinyapp",
+          "category": "Network",
+          "monthly_pulls": 10,
+          "architectures": [
+            {
+              "arch": "x86_64"
+            }
+          ],
+          "config": {
+            "ports": [
+              {
+                "external": "8080",
+                "internal": "8080",
+                "desc": "Web UI",
+                "optional": false
+              }
+            ],
+            "volumes": []
           }
         },
         {
           "name": "jellyfin",
           "category": "Media Servers",
           "deprecated": false,
-          "architectures": [{ "arch": "x86_64" }],
+          "architectures": [
+            {
+              "arch": "x86_64"
+            }
+          ],
           "config": {
             "ports": [
-              { "external": "8096", "internal": "8096", "desc": "Http webUI.", "optional": false },
-              { "external": "7359", "internal": "7359/udp", "desc": "Discovery", "optional": true }
+              {
+                "external": "8096",
+                "internal": "8096",
+                "desc": "Http webUI.",
+                "optional": false
+              },
+              {
+                "external": "7359",
+                "internal": "7359/udp",
+                "desc": "Discovery",
+                "optional": true
+              }
             ],
-            "volumes": [{ "path": "/config", "desc": "", "optional": false }]
+            "volumes": [
+              {
+                "path": "/config",
+                "desc": "",
+                "optional": false
+              }
+            ]
           }
         },
-        { "name": "old-thing", "deprecated": true, "config": null },
-        { "name": "qemu-static", "category": "Docker", "config": { "ports": [], "volumes": [] } }
+        {
+          "name": "old-thing",
+          "deprecated": true,
+          "config": null
+        },
+        {
+          "name": "qemu-static",
+          "category": "Docker",
+          "config": {
+            "ports": [],
+            "volumes": []
+          }
+        }
       ]
     }
   }

@@ -20,6 +20,8 @@ async function* linesOf(path: string) {
 }
 const heuristics = {
   excludeImages: ['qemu-static'],
+  excludeDesktopApps: true,
+  minMonthlyPullsAlone: 500,
   lxcToDocker: { memoryFactor: 0.75, cpuFactor: 1, osDiskGb: 2, minDiskGb: 1 },
   defaultRequirements: {
     min: { cpu: 0.25, memoryBytes: 256 * 1024 ** 2, diskBytes: 1e9 },
@@ -50,8 +52,15 @@ describe('source adapters (offline samples)', () => {
     const records = (await linuxserverSource.normalize(
       JSON.parse(await text('linuxserver.json')),
     )) as AppRecord[];
-    expect(records.map((r) => r.key)).toEqual(['lidarr', 'jellyfin', 'qemustatic']);
-    expect(records[1]?.image?.ports[1]).toEqual({
+    expect(records.map((r) => r.key)).toEqual([
+      'lidarr',
+      'gimp',
+      'tinyapp',
+      'jellyfin',
+      'qemustatic',
+    ]);
+    expect(records[1]?.image?.desktop).toBe(true);
+    expect(records[3]?.image?.ports[1]).toEqual({
       container: 7359,
       host: 7359,
       protocol: 'udp',
@@ -233,5 +242,35 @@ describe('buildCatalog', () => {
       }),
     ).toBe(2);
     expect(lines.join('\n')).toMatch(/SAFEGUARD: linuxserver dropped from 100 to 10/);
+  });
+
+  it('accepts an intentional drop of imported apps only when asked', async () => {
+    const dir = await tempCatalog();
+    await mkdir(join(dir, 'dist'), { recursive: true });
+    await writeFile(
+      join(dir, 'dist/apps.json'),
+      JSON.stringify(Array.from({ length: 10 }, (_, i) => ({ id: `old-${i}` }))),
+    );
+    const records = await sampleRecords();
+    const sources = [
+      fake('linuxserver', () => records.filter((r) => r.source === 'linuxserver')),
+      fake('awesome-selfhosted', () => records.filter((r) => r.source === 'awesome-selfhosted')),
+      fake('community-scripts', () => records.filter((r) => r.source === 'community-scripts')),
+    ];
+    const lines: string[] = [];
+    expect(
+      await buildCatalog({ catalogDir: dir, sources, now, force: true, log: (l) => lines.push(l) }),
+    ).toBe(2);
+    expect(lines.join('\n')).toMatch(/--accept-drop/);
+    expect(
+      await buildCatalog({
+        catalogDir: dir,
+        sources,
+        now,
+        force: true,
+        acceptDrop: true,
+        log: () => {},
+      }),
+    ).toBe(0);
   });
 });

@@ -1,0 +1,53 @@
+id: borgmatic
+name: borgmatic
+description: { en: "Scheduled BorgBackup with retention, checks and hooks." }
+categories: [backup]
+website: "https://torsion.org/borgmatic/"
+repository: "https://github.com/borgmatic-collective/docker-borgmatic"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: job
+      name: borgmatic
+      role: app
+      image: ghcr.io/borgmatic-collective/borgmatic
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes:
+        - {
+            name: config,
+            containerPath: /etc/borgmatic.d,
+            purpose: config,
+            defaultSizeBytes: 10 MiB,
+          }
+        - { name: source, containerPath: /mnt/source, purpose: data, defaultSizeBytes: 100 GB }
+        - { name: cache, containerPath: /root/.cache/borg, purpose: cache, defaultSizeBytes: 5 GB }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 5 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 10 GB }
+dependencies: [{ capability: backup-storage, optional: true }]
+provides: []
+trafficPatterns:
+  - id: repo
+    direction: outbound
+    peer: { kind: dependency, capability: backup-storage }
+    protocol: tcp
+    port: 22
+    purpose: ssh
+    required: false
+    bandwidth: { typicalMbps: 50, peakMbps: 500 }
+flows:
+  - id: borgmatic.nightly
+    name: { en: Nightly backup over SSH }
+    roles:
+      - { key: job, name: { en: borgmatic }, selector: { kind: self }, userPicks: false }
+      - key: repo
+        name: { en: Backup repository }
+        selector: { kind: dependency, capability: backup-storage }
+        userPicks: true
+    steps: [{ from: job, to: repo, protocol: tcp, port: 22, bandwidthMbps: 300 }]

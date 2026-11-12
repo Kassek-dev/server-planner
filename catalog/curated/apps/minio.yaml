@@ -1,0 +1,52 @@
+id: minio
+name: MinIO
+description: { en: S3-compatible object storage server. }
+categories: [files, database]
+website: "https://min.io"
+repository: "https://github.com/minio/minio"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: minio
+      role: app
+      image: minio/minio
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [{ port: 9000, protocol: tcp, purpose: s3 }, { port: 9001, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings:
+        - { hostPort: 9000, containerPort: 9000, protocol: tcp }
+        - { hostPort: 9001, containerPort: 9001, protocol: tcp }
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 500 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 10 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 100 GB }
+dependencies: []
+provides: [s3]
+trafficPatterns:
+  - id: s3-tcp-9000
+    direction: inbound
+    peer: { kind: dependency, capability: s3 }
+    protocol: tcp
+    port: 9000
+    purpose: s3
+    required: true
+  - id: web-ui-tcp-9001
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9001
+    purpose: web-ui
+    required: true
+flows:
+  - id: minio.open-ui
+    name: { en: Open MinIO }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: MinIO }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

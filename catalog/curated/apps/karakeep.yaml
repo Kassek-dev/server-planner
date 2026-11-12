@@ -1,0 +1,89 @@
+id: karakeep
+name: Karakeep
+description:
+  { en: Bookmark-everything app with AI tagging and full-text search (formerly Hoarder). }
+categories: [news, productivity]
+website: "https://karakeep.app"
+repository: "https://github.com/karakeep-app/karakeep"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: web
+      name: karakeep
+      role: app
+      image: ghcr.io/karakeep-app/karakeep
+      defaultTag: release
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3000, containerPort: 3000, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 5 GB }]
+    - key: search
+      name: meilisearch
+      role: database
+      image: getmeili/meilisearch
+      defaultTag: v1.13
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 7700, protocol: tcp, purpose: search }]
+      volumes: [{ name: meili, containerPath: /meili_data, purpose: data, defaultSizeBytes: 2 GB }]
+    - key: chrome
+      name: chrome
+      role: worker
+      image: gcr.io/zenika-hub/alpine-chrome
+      defaultTag: "124"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 9222, protocol: tcp, purpose: browser }]
+      volumes: []
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 10 GB }
+dependencies: [{ capability: llm-api, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: web-ui
+    required: true
+  - id: search-search
+    direction: outbound
+    peer: { kind: self-component, key: search }
+    protocol: tcp
+    port: 7700
+    purpose: search
+    required: true
+  - id: chrome-browser
+    direction: outbound
+    peer: { kind: self-component, key: chrome }
+    protocol: tcp
+    port: 9222
+    purpose: browser
+    required: true
+  - id: fetch
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: true
+  - id: llm
+    direction: outbound
+    peer: { kind: dependency, capability: llm-api }
+    protocol: tcp
+    port: 11434
+    purpose: api
+    required: false
+flows:
+  - id: karakeep.open-ui
+    name: { en: Open Karakeep }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Karakeep }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

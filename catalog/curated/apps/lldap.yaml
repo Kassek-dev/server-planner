@@ -1,0 +1,54 @@
+id: lldap
+name: LLDAP
+description: { en: Light LDAP server for user management with a simple web UI. }
+categories: [security]
+repository: "https://github.com/lldap/lldap"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: lldap
+      role: app
+      image: lldap/lldap
+      defaultTag: stable
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [
+          { port: 17170, protocol: tcp, purpose: web-ui },
+          { port: 3890, protocol: tcp, purpose: ldap },
+        ]
+      defaultPortMappings:
+        - { hostPort: 17170, containerPort: 17170, protocol: tcp }
+        - { hostPort: 3890, containerPort: 3890, protocol: tcp }
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 100 MiB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 32 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: [ldap]
+trafficPatterns:
+  - id: web-ui-tcp-17170
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 17170
+    purpose: web-ui
+    required: true
+  - id: ldap-tcp-3890
+    direction: inbound
+    peer: { kind: dependency, capability: ldap }
+    protocol: tcp
+    port: 3890
+    purpose: ldap
+    required: true
+flows:
+  - id: lldap.open-ui
+    name: { en: Open LLDAP }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: LLDAP }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

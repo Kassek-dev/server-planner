@@ -1,0 +1,50 @@
+id: dashy
+name: Dashy
+description: { en: Highly customizable home lab dashboard with status checks and widgets. }
+categories: [dashboard]
+website: "https://dashy.to"
+repository: "https://github.com/Lissy93/dashy"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: dashy
+      role: app
+      image: lissy93/dashy
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 4000, containerPort: 8080, protocol: tcp }]
+      volumes:
+        [{ name: config, containerPath: /app/user-data, purpose: config, defaultSizeBytes: 50 MiB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: status
+    direction: outbound
+    peer: { kind: dependency, capability: web-backend }
+    protocol: tcp
+    port: 443
+    purpose: health-check
+    required: false
+flows:
+  - id: dashy.open-ui
+    name: { en: Open Dashy }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Dashy }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

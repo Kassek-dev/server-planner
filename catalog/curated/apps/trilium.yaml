@@ -1,0 +1,49 @@
+id: trilium
+name: Trilium Notes
+description: { en: Hierarchical note taking for large personal knowledge bases (TriliumNext). }
+categories: [documents]
+repository: "https://github.com/TriliumNext/Trilium"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: trilium
+      role: app
+      image: triliumnext/trilium
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8080, containerPort: 8080, protocol: tcp }]
+      volumes:
+        [
+          {
+            name: data,
+            containerPath: /home/node/trilium-data,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          },
+        ]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 5 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+flows:
+  - id: trilium.open-ui
+    name: { en: Open Trilium Notes }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Trilium Notes }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

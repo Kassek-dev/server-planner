@@ -1,0 +1,60 @@
+id: tailscale
+name: Tailscale
+description:
+  en: WireGuard-based mesh VPN; the container joins your tailnet as a subnet router or exit node.
+categories: [vpn, networking]
+website: "https://tailscale.com"
+repository: "https://github.com/tailscale/tailscale"
+license: BSD-3-Clause
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: node
+      name: tailscale
+      role: app
+      image: tailscale/tailscale
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes:
+        [
+          {
+            name: state,
+            containerPath: /var/lib/tailscale,
+            purpose: data,
+            defaultSizeBytes: 50 MiB,
+          },
+        ]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 200 MiB }
+dependencies: []
+provides: [vpn]
+trafficPatterns:
+  - id: control
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: vpn
+    required: true
+  - id: wireguard
+    direction: outbound
+    peer: { kind: internet }
+    protocol: udp
+    port: 41641
+    purpose: vpn
+    required: false
+flows:
+  - id: tailscale.connect
+    name: { en: Node connects to the tailnet }
+    roles:
+      - { key: node, name: { en: Tailscale }, selector: { kind: self }, userPicks: false }
+      - key: control
+        name: { en: Coordination server }
+        selector: { kind: internet }
+        userPicks: false
+    steps: [{ from: node, to: control, protocol: tcp, port: 443, resolveDns: true }]

@@ -1,0 +1,89 @@
+id: ghostfolio
+name: Ghostfolio
+description: { en: "Wealth management dashboard for stocks, ETFs and crypto." }
+categories: [finance]
+website: "https://ghostfol.io"
+repository: "https://github.com/ghostfolio/ghostfolio"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: ghostfolio
+      role: app
+      image: ghostfolio/ghostfolio
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3333, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3333, containerPort: 3333, protocol: tcp }]
+      volumes: []
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 1 GB,
+          }
+    - key: redis
+      name: redis
+      role: cache
+      image: redis
+      defaultTag: "7"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6379, protocol: tcp, purpose: redis }]
+      volumes: []
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 2 GB }
+dependencies:
+  - { capability: postgresql, optional: false, providedByComponent: db }
+  - { capability: redis, optional: false, providedByComponent: redis }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3333
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3333
+    purpose: web-ui
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: redis-redis
+    direction: outbound
+    peer: { kind: self-component, key: redis }
+    protocol: tcp
+    port: 6379
+    purpose: redis
+    required: true
+  - id: quotes
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: true
+flows:
+  - id: ghostfolio.open-ui
+    name: { en: Open Ghostfolio }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Ghostfolio }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

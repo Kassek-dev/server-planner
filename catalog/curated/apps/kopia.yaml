@@ -1,0 +1,53 @@
+id: kopia
+name: Kopia
+description: { en: "Fast, encrypted, deduplicated backups to local disks, S3 or cloud storage." }
+categories: [backup]
+website: "https://kopia.io"
+repository: "https://github.com/kopia/kopia"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: kopia
+      role: app
+      image: kopia/kopia
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 51515, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 51515, containerPort: 51515, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /app/config, purpose: config, defaultSizeBytes: 50 MiB }
+        - { name: cache, containerPath: /app/cache, purpose: cache, defaultSizeBytes: 5 GB }
+        - { name: source, containerPath: /data, purpose: data, defaultSizeBytes: 100 GB }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 1 GiB, diskBytes: 10 GB }
+dependencies: [{ capability: backup-storage, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-51515
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 51515
+    purpose: web-ui
+    required: true
+  - id: repo
+    direction: outbound
+    peer: { kind: dependency, capability: backup-storage }
+    protocol: tcp
+    port: 443
+    purpose: backup-upload
+    required: false
+    bandwidth: { typicalMbps: 50, peakMbps: 500 }
+flows:
+  - id: kopia.open-ui
+    name: { en: Open Kopia }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Kopia }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

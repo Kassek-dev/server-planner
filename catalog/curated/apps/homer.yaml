@@ -1,0 +1,49 @@
+id: homer
+name: Homer
+description: { en: "Static start page for your services, configured in YAML." }
+categories: [dashboard]
+repository: "https://github.com/bastienwirtz/homer"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: homer
+      role: app
+      image: b4bz/homer
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8089, containerPort: 8080, protocol: tcp }]
+      volumes:
+        [{ name: config, containerPath: /www/assets, purpose: config, defaultSizeBytes: 50 MiB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: status
+    direction: outbound
+    peer: { kind: dependency, capability: web-backend }
+    protocol: tcp
+    port: 443
+    purpose: health-check
+    required: false
+flows:
+  - id: homer.open-ui
+    name: { en: Open Homer }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Homer }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

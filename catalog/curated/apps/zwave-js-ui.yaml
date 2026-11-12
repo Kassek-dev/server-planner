@@ -1,0 +1,60 @@
+id: zwave-js-ui
+name: Z-Wave JS UI
+description: { en: Z-Wave control panel and MQTT gateway (needs a USB controller). }
+categories: [home-automation]
+repository: "https://github.com/zwave-js/zwave-js-ui"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: zwave-js-ui
+      role: app
+      image: zwavejs/zwave-js-ui
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8091, protocol: tcp, purpose: web-ui }
+        - { port: 3000, protocol: tcp, purpose: websocket }
+      defaultPortMappings:
+        - { hostPort: 8091, containerPort: 8091, protocol: tcp }
+        - { hostPort: 3000, containerPort: 3000, protocol: tcp }
+      volumes:
+        [{ name: store, containerPath: /usr/src/app/store, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: [{ capability: mqtt, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8091
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8091
+    purpose: web-ui
+    required: true
+  - id: websocket-tcp-3000
+    direction: inbound
+    peer: { kind: dependency, capability: home-automation }
+    protocol: tcp
+    port: 3000
+    purpose: websocket
+    required: true
+  - id: mqtt
+    direction: outbound
+    peer: { kind: dependency, capability: mqtt }
+    protocol: tcp
+    port: 1883
+    purpose: mqtt
+    required: false
+flows:
+  - id: zwave-js-ui.open-ui
+    name: { en: Open Z-Wave JS UI }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Z-Wave JS UI }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]
