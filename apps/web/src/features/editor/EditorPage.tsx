@@ -2,7 +2,7 @@ import { updateProject } from '@server-planner/model';
 import { Download, Play, Redo2, Undo2 } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useSearchParams } from 'react-router';
+import { Link, useParams, useSearchParams } from 'react-router';
 import { NotFoundPage } from '../../app/routes/NotFoundPage';
 import { useServices, useSession } from '../../app/services';
 import { TopBar } from '../../app/shell/TopBar';
@@ -16,6 +16,8 @@ import { useSelection } from '../canvas/selection';
 import { DrawerHost } from '../drawers/DrawerHost';
 import { useExportDialog } from '../export/store';
 import { SelectionPanel } from '../inspector/SelectionPanel';
+import { InventoryView } from '../inventory/InventoryView';
+import { IpPlanView } from '../ipplan/IpPlanView';
 import { IssueCounters } from '../issues/IssueCounters';
 import { describeCommit } from '../toasts/describe';
 import { useToasts } from '../toasts/store';
@@ -85,8 +87,47 @@ function EditorLoading() {
   );
 }
 
+type View = 'topology' | 'inventory' | 'ip';
+const VIEWS: { id: View; path: string }[] = [
+  { id: 'topology', path: '' },
+  { id: 'inventory', path: 'inventory' },
+  { id: 'ip', path: 'ip' },
+];
+
+function useView(): View {
+  const rest = useParams()['*'] ?? '';
+  return VIEWS.find((v) => v.path && rest.startsWith(v.path))?.id ?? 'topology';
+}
+
+/** Topology | Inventory | IP Plan (docs/05 § 3); the selection and `?panel` survive the switch. */
+function ViewTabs() {
+  const { t } = useTranslation('editor');
+  const { projectId = '' } = useParams();
+  const view = useView();
+  const [params] = useSearchParams();
+  const search = params.toString();
+  return (
+    <nav aria-label={t('views.label')} className="ml-4 flex rounded-md border border-border-subtle">
+      {VIEWS.map((v) => (
+        <Link
+          key={v.id}
+          to={{
+            pathname: `/p/${projectId}${v.path ? `/${v.path}` : ''}`,
+            search: search ? `?${search}` : '',
+          }}
+          aria-current={v.id === view ? 'page' : undefined}
+          className={`px-3 py-1.5 no-underline ${v.id === view ? 'bg-tile-header font-medium text-text-primary' : 'text-text-secondary hover:text-text-primary'}`}
+        >
+          {t(`views.${v.id}`)}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
 function Editor() {
   const { t } = useTranslation('editor');
+  const view = useView();
   const { session } = useServices();
   const project = useSession((s) => s.project);
   const canUndo = useSession((s) => s.past.length > 0);
@@ -156,14 +197,7 @@ function Editor() {
       <TopBar nav={false}>
         <ProjectName name={project.name} />
         <SaveIndicator state={saveState} />
-        <nav
-          aria-label={t('views.label')}
-          className="ml-4 flex rounded-md border border-border-subtle"
-        >
-          <span aria-current="page" className="bg-tile-header px-3 py-1.5 font-medium">
-            {t('views.topology')}
-          </span>
-        </nav>
+        <ViewTabs />
         <div className="grow" />
         <IssueCounters />
         <div className="flex items-center gap-1">
@@ -203,7 +237,13 @@ function Editor() {
         </div>
       ) : null}
       <main className="flex min-h-0 flex-1">
-        <CanvasWorkspace />
+        {view === 'inventory' ? (
+          <InventoryView />
+        ) : view === 'ip' ? (
+          <IpPlanView />
+        ) : (
+          <CanvasWorkspace />
+        )}
         <SelectionPanel />
       </main>
       <DrawerHost />

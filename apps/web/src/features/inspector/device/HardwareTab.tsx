@@ -3,9 +3,7 @@ import {
   createId,
   type Device,
   type Hardware,
-  nearestFreeU,
   type Project,
-  placeDevice,
   STANDALONE_SHAPES,
   type StandaloneShape,
   unplaceDevice,
@@ -30,9 +28,9 @@ import {
   Row,
   Section,
   useCommand,
-  useInspectorError,
   useTransaction,
 } from '../parts';
+import { useMoveDevice } from './moveDevice';
 
 const GiB = 1024 ** 3;
 const DISK_TYPES = ['ssd-nvme', 'ssd-sata', 'hdd', 'emmc', 'sd'] as const;
@@ -580,30 +578,9 @@ function FormFactorSection({ project, device }: { project: Project; device: Devi
 
 function LocationSection({ project, device }: { project: Project; device: Device }) {
   const { t } = useTranslation('inspector');
-  const run = useCommand();
+  const moveDevice = useMoveDevice();
   const location = device.placement ? project.locations[device.placement.locationId] : undefined;
-  const move = (locationId: string) => {
-    if (!locationId) {
-      run(unplaceDevice, { id: device.id, position: { x: 2, y: 2 } });
-      return;
-    }
-    const target = project.locations[locationId];
-    if (target?.kind !== 'rack') {
-      run(placeDevice, { id: device.id, locationId });
-      return;
-    }
-    const u = nearestFreeU(project, device.id, locationId, target.units);
-    if (u === undefined) {
-      useInspectorError.getState().set({ code: 'RACK_FULL', params: { rack: target.name } });
-      return;
-    }
-    run(placeDevice, {
-      id: device.id,
-      locationId,
-      u,
-      ...(device.formFactor?.mount === 'standalone' ? { onShelf: true } : {}),
-    });
-  };
+  const move = (locationId: string) => moveDevice(project, device, locationId);
   return (
     <Section title={t('hardware.location')}>
       <Select

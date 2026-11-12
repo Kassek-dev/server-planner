@@ -1,7 +1,9 @@
 {
   "views": {
     "label": "Views",
-    "topology": "Topology"
+    "topology": "Topology",
+    "inventory": "Inventory",
+    "ip": "IP Plan"
   },
   "rename": "Rename project",
   "save": {

@@ -10,7 +10,7 @@ const node = (page: Page, name: string) =>
   page.locator('.react-flow__node', { has: page.getByText(name, { exact: true }) }).first();
 const library = (page: Page) => page.getByRole('complementary', { name: 'Library' });
 
-async function optionLabel(page: Page, select: ReturnType<Page['getByRole']>, pattern: RegExp) {
+async function optionLabel(select: ReturnType<Page['getByRole']>, pattern: RegExp) {
   return (await select.locator('option', { hasText: pattern }).first().textContent()) ?? '';
 }
 
@@ -99,7 +99,7 @@ test('path B — will my hardware cope?', async ({ page }) => {
     await catalog.getByRole('checkbox', { name: `Select ${name}` }).check();
   }
   const target = catalog.getByRole('combobox', { name: 'Target host' });
-  await target.selectOption({ label: await optionLabel(page, target, /^target: pve1$/) });
+  await target.selectOption({ label: await optionLabel(target, /^target: pve1$/) });
   await catalog.getByRole('button', { name: 'Add 4 apps' }).click();
   await expect(page.getByText(/Apps added \(\d+ containers\)/)).toBeVisible();
 

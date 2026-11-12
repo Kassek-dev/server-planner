@@ -120,6 +120,41 @@
 - Poza MVP (P1, wersja 1.1): builder katalogu i aktualizacje (CAT‑03/04), Settings › Catalog/Units, PWA/offline, Inventory/IP Plan/Access, asercje, przepływy (FLW)
 - Katalog: dane kurowane zostają `curated`; użytkownik przejrzy je później (2026-11-12)
 
+## Wersja 1.1 — plan (2026-11-12)
+
+Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa katalogu (11); dalsza kolejność do decyzji. Funkcje częściowo zrobione w MVP: LOC‑05/07, CAP‑04 (per projekt), LIB‑02, SW‑10, HW‑08 (pole w modelu).
+
+### Etap 9 — Widoki tabelaryczne i eksporty (pakiet 3)
+
+- [x] 9a: przełącznik widoków w top barze (Topology / Inventory / IP Plan) z trasami `#/p/:id/inventory`, `#/p/:id/ip`; inspector i szuflady wspólne dla widoków
+- [x] 9a: Inventory (V‑03, VIEW‑02): TanStack Table — urządzenia / workloady / aplikacje, sortowanie, filtr, grupowanie po lokalizacji, edycja inline (nazwa, lokalizacja, tagi), kolumny Internet i Capacity z silników, zaznaczenie wiersza = zaznaczenie w projekcie (tagi: edycja w inspektorze)
+- [x] 9b: IP Plan (V‑04, VIEW‑03, NET‑04): karty podsieci z pulą DHCP, tabela adresów (IP, host, interfejs, typ, konflikt), wolne zakresy
+- [ ] 9c: eksporty w D‑04: CSV inwentarza i planu IP (EXP‑04), BOM do CSV (EXP‑03), dokumentacja do Markdown (EXP‑05), `docker-compose.yml` per stos / host (EXP‑06, SW‑13)
+
+### Etap 10 — Katalog „żywy” (pakiet 4)
+
+- [ ] 10a: `catalog-builder`: interfejs `SourceAdapter`, blokada 7 dni (`catalog/state.json`), scalanie (curated > źródła), bezpieczniki (spadek > 20%), `catalog/dist` + `manifest.json` z SHA‑256, `CHANGELOG.json`
+- [ ] 10b: adaptery: awesome‑selfhosted‑data (lista, opisy, licencje), LinuxServer.io API (porty, wolumeny, architektury), Proxmox VE Community Scripts (zasoby), Blender Open Data (wydajność CPU, aliasy)
+- [ ] 10c: workflow `catalog-update.yml` (cron 1×/tydzień, ręczne uruchomienie, commit `chore(catalog): RRRR.TT`, Issue przy awarii)
+- [ ] 10d: aplikacja: katalog efektywny = bazowy + pobrany (IndexedDB, 2 wersje), sprawdzenie przy starcie max 1×/7 dni, Settings › Catalog (wersja, źródła, Check now, Roll back), About › Data sources z datami pobrania; kolumna PERF w D‑05
+
+### Etap 11 — Rozbudowa katalogu aplikacji do ~200
+
+- [ ] Przegląd popularnych aplikacji home lab (awesome‑selfhosted, LinuxServer, Community Scripts, popularność) → lista ~200
+- [ ] Kurowane wpisy (obrazy, porty, wolumeny, wymagania, wzorce ruchu, przepływy) dla nowych aplikacji; reszta jako `imported` z buildera
+
+### Etap 12 — Przepływy ruchu (pakiet 1): FLW‑01…05
+
+### Etap 13 — Dostęp i bezpieczeństwo sieci (pakiet 2): SIM‑04/05/06, NET‑10/11, widok Access (V‑05)
+
+### Etap 14 — Zasilanie i koszty (pakiet 5): HW‑06, CAP‑07/08/09, VAL‑12, SET‑02, Dashboard (V‑02)
+
+### Etap 15 — Planowanie wydajności (pakiet 6): SW‑08/09, CAP‑05/06, HW‑05
+
+### Etap 16 — Projekty i wygoda (pakiet 7): PRJ‑06/07/08, CAN‑07/08/09, LIB‑04, LBL‑03
+
+### Etap 17 — Offline i mobile (pakiet 8): PWA (`vite-plugin-pwa`), widoki M‑01…03
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -139,4 +174,5 @@
 | 2026-11-12 | Decyzje UI1–UI3 (`docs/05` § 15, v0.2); etap 8a: toasty z Undo, auto‑Internet, Settings, About; unit 176, E2E 27 | #15 |
 | 2026-11-12 | Etap 8b: eksport D‑04 (PNG/SVG/JSON), E2E ścieżek A i B — **MVP ukończone**; unit 176, E2E 30 | #16 |
 | 2026-11-12 | Poprawka: łącza między urządzeniami jednego racka prowadzone prawą stroną (nie przez kolumnę U) | #17 |
+| 2026-11-12 | Plan wersji 1.1 (etapy 9–17); etap 9a/9b: Inventory i IP Plan (TanStack Table 9) | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |

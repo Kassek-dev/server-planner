@@ -12,6 +12,7 @@ import issues from './locales/en/issues.json';
 import pages from './locales/en/pages.json';
 import projects from './locales/en/projects.json';
 import simulation from './locales/en/simulation.json';
+import views from './locales/en/views.json';
 
 /** i18n setup — docs/01 § 7. Only `en` for now; add a language by copying locales/en. */
 export const DEFAULT_LANGUAGE = 'en';
@@ -27,6 +28,7 @@ export const NAMESPACES = [
   'drawers',
   'issues',
   'simulation',
+  'views',
   'dev',
 ] as const;
 
@@ -42,6 +44,7 @@ export const resources = {
     drawers,
     issues,
     simulation,
+    views,
     dev,
   },
 } as const;
