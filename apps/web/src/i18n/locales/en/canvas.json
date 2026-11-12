@@ -87,6 +87,11 @@
     "memory": "Memory {percent}%"
   },
   "overlay": {
+    "groupBy": "Group by",
+    "groupOptions": {
+      "location": "Location",
+      "none": "None (topology only)"
+    },
     "links": "Links by",
     "devices": "Devices by",
     "linkOptions": {
@@ -112,5 +117,8 @@
     "label": "Note: {text}",
     "empty": "empty",
     "placeholder": "Double-click to write a note"
+  },
+  "link": {
+    "waypoint": "Bend point {index} of {count}: drag or use arrow keys to move, Delete to remove"
   }
 }

@@ -1,13 +1,31 @@
+import { setGroupByLocation } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
+import { useServices, useSession } from '../../app/services';
 import { Select } from '../../ui/Select';
 import { type DeviceColoring, type LinkColoring, SPEED_CLASSES, useCanvasView } from './overlays';
 
-/** O-11 canvas controls: "Color by" for links and devices (CAN-06) with a legend for speeds. */
+/**
+ * O-11 canvas controls: "Group by" location or none (LOC-08, stored in the project layout) and
+ * "Color by" for links and devices (CAN-06) with a legend for speeds.
+ */
 export function OverlayControls() {
   const { t } = useTranslation('canvas');
   const { links, devices, set } = useCanvasView();
+  const { session } = useServices();
+  const grouped = useSession((s) => s.project?.layout.groupByLocation ?? true);
   return (
     <div className="absolute top-4 right-4 flex w-52 flex-col gap-2 rounded-md border border-border-default bg-raised p-2.5">
+      <Select
+        label={t('overlay.groupBy')}
+        value={grouped ? 'location' : 'none'}
+        onChange={(e) =>
+          session.dispatch(setGroupByLocation, { enabled: e.target.value === 'location' })
+        }
+        options={(['location', 'none'] as const).map((v) => ({
+          value: v,
+          label: t(`overlay.groupOptions.${v}`),
+        }))}
+      />
       <Select
         label={t('overlay.links')}
         value={links}

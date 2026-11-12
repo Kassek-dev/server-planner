@@ -30,6 +30,8 @@ import {
   type Project,
   ProjectSchema,
   placeDevice,
+  setLinkRouting,
+  setLinkWaypoints,
   updateApp,
   updateDevice,
   updateNatRule,
@@ -294,6 +296,48 @@ describe('links', () => {
     );
     const linked = run(added.project, connectInterfaces, { a: added.result, b: bridge });
     expect(linked.project.links[linked.result]?.medium).toBe('virtual');
+  });
+});
+
+describe('link drawing (CAN-08)', () => {
+  const firstLink = (project: Project) => {
+    const link = Object.values(project.links).find((l) => l.medium !== 'virtual');
+    if (!link) throw new Error('no link');
+    return link.id;
+  };
+
+  it('stores rounded bend points and keeps them when the routing changes', () => {
+    const id = firstLink(lab);
+    const bent = run(lab, setLinkWaypoints, {
+      id,
+      waypoints: [
+        { x: 4.4, y: 2 },
+        { x: 9, y: 7.6 },
+      ],
+    });
+    expect(bent.project.layout.links[id]).toEqual({
+      routing: 'orthogonal',
+      waypoints: [
+        { x: 4, y: 2 },
+        { x: 9, y: 8 },
+      ],
+    });
+    const straight = run(bent.project, setLinkRouting, { id, routing: 'straight' });
+    const back = run(straight.project, setLinkRouting, { id, routing: 'orthogonal' });
+    expect(back.project.layout.links[id]?.waypoints).toHaveLength(2);
+  });
+
+  it('drops the layout entry when the cable is back to automatic routing', () => {
+    const id = firstLink(lab);
+    const bent = run(lab, setLinkWaypoints, { id, waypoints: [{ x: 1, y: 1 }] });
+    const cleared = run(bent.project, setLinkWaypoints, { id, waypoints: [] });
+    expect(cleared.project.layout.links[id]).toBeUndefined();
+  });
+
+  it('rejects too many bend points', () => {
+    const id = firstLink(lab);
+    const many = Array.from({ length: 17 }, (_, i) => ({ x: i, y: i }));
+    expectRejected(lab, setLinkWaypoints, { id, waypoints: many }, 'TOO_MANY_WAYPOINTS');
   });
 });
 

@@ -15,6 +15,7 @@ import {
   ReactFlowProvider,
   useReactFlow,
   useStore,
+  ViewportPortal,
 } from '@xyflow/react';
 import { Map as MapIcon, Maximize, Minus, Plus } from 'lucide-react';
 import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -34,6 +35,7 @@ import {
   dropNodes,
   duplicateSelection,
 } from './actions';
+import { LinkEdge } from './edges/LinkEdge';
 import { GRID } from './geometry';
 import { type CanvasNode, type LinkEdgeData, toFlowEdges, toFlowNodes } from './graph';
 import { itemLabel, Library } from './Library';
@@ -44,8 +46,10 @@ import { NoteNode } from './nodes/NoteNode';
 import { OverlayControls } from './OverlayControls';
 import { decorateEdges, decorateNodes, useCanvasView } from './overlays';
 import { useSelection } from './selection';
+import { alignmentGuides, type Guide, type Rect } from './waypoints';
 
 const nodeTypes = { device: DeviceNode, location: LocationNode, note: NoteNode };
+const edgeTypes = { link: LinkEdge };
 
 /** V-01 canvas (docs/05 § 4): library + React Flow; the project store stays the source of truth. */
 export function CanvasWorkspace() {
@@ -143,8 +147,31 @@ function Workspace() {
     set(nodeIds, [...next]);
   }, []);
 
+  // CAN-08 guides: what a single dragged node lines up with (edges and centres of other nodes).
+  const [guides, setGuides] = useState<Guide[]>([]);
+  const absoluteRect = useCallback(
+    (n: Node): Rect => {
+      const abs = flow.getInternalNode(n.id)?.internals.positionAbsolute ?? n.position;
+      const size = (n.data as { size: { w: number; h: number } }).size;
+      return { x: abs.x, y: abs.y, w: size.w, h: size.h };
+    },
+    [flow],
+  );
+  const onNodeDrag = useCallback(
+    (_event: unknown, node: Node, dragged: Node[]) => {
+      if (dragged.length !== 1) return setGuides([]);
+      const others = flow
+        .getNodes()
+        .filter((n) => n.id !== node.id && n.parentId !== node.id)
+        .map(absoluteRect);
+      setGuides(alignmentGuides(absoluteRect(node), others));
+    },
+    [absoluteRect, flow],
+  );
+
   const onNodeDragStop = useCallback(
     (_event: unknown, _node: Node, dragged: Node[]) => {
+      setGuides([]);
       const items: DraggedNode[] = dragged.map((n) => {
         const internal = flow.getInternalNode(n.id);
         const abs = internal?.internals.positionAbsolute ?? n.position;
@@ -319,8 +346,10 @@ function Workspace() {
           nodes={shownNodes}
           edges={shownEdges}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
           // A click on an already selected tile leaves a workload/app detail and shows the device.
           onNodeClick={(_event, clicked) => {
@@ -338,6 +367,8 @@ function Workspace() {
           nodesConnectable={!readOnly}
           // Layers from graph.ts: locations 0 < links 1 < devices 2 (docs/04 § 6.6), also inside racks.
           zIndexMode="manual"
+          // Double-click belongs to notes and cables (edit, bend point), not to zooming.
+          zoomOnDoubleClick={false}
           snapToGrid
           snapGrid={[GRID, GRID]}
           minZoom={0.1}
@@ -356,6 +387,20 @@ function Workspace() {
             gap={GRID * 2}
             color="var(--sp-canvas-grid)"
           />
+          <ViewportPortal>
+            {guides.map((g) => (
+              <div
+                key={g.axis}
+                aria-hidden="true"
+                className="pointer-events-none absolute bg-selection"
+                style={
+                  g.axis === 'x'
+                    ? { left: g.at, top: g.from, width: 1, height: g.to - g.from }
+                    : { left: g.from, top: g.at, width: g.to - g.from, height: 1 }
+                }
+              />
+            ))}
+          </ViewportPortal>
           {minimap ? (
             <MiniMap
               ariaLabel={t('minimap')}
