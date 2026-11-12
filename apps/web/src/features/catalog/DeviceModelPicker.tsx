@@ -124,16 +124,19 @@ export function DeviceModelPicker({
             className="h-8 shrink-0 rounded-md border border-border-default bg-inset px-2.5 text-body text-text-primary outline-none focus:border-accent"
           />
           <span className="font-mono text-data-sm text-text-muted" role="status">
-            {t('models.results', { count: results.length })}
+            {t('models.results', { count: results.length })} · {t('models.perfHint')}
           </span>
           <table className="w-full border-collapse text-left">
             <thead>
               <tr className="font-mono text-label tracking-[0.08em] text-text-secondary uppercase">
-                <th className="py-1.5 font-semibold">{t('models.columns.model')}</th>
-                <th className="py-1.5 font-semibold">{t('models.columns.cpu')}</th>
-                <th className="py-1.5 font-semibold">{t('models.columns.ram')}</th>
-                <th className="py-1.5 font-semibold">{t('models.columns.nic')}</th>
-                <th className="py-1.5 font-semibold">{t('models.columns.idle')}</th>
+                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.model')}</th>
+                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.cpu')}</th>
+                <th className="py-1.5 pr-3 font-semibold" title={t('models.perfHint')}>
+                  {t('models.columns.perf')}
+                </th>
+                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.ram')}</th>
+                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.nic')}</th>
+                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.idle')}</th>
               </tr>
             </thead>
             <tbody>
@@ -166,6 +169,12 @@ export function DeviceModelPicker({
                       {cpu
                         ? `${cpu.model.replace(/^(Intel|AMD) /, '')} · ${cpu.cores}C/${cpu.threads}T${d.hardware.cpus.length > 1 ? ` × ${d.hardware.cpus.length}` : ''}`
                         : '—'}
+                    </td>
+                    <td className="py-2 pr-3">
+                      <PerfCell
+                        cpus={d.hardware.cpus}
+                        label={t('models.perfLabel', { model: modelName(d) })}
+                      />
                     </td>
                     <td className="py-2 pr-3 font-mono text-data">
                       {mem?.maxBytes
@@ -207,4 +216,25 @@ export function portSummary(speeds: (number | undefined)[]): string {
         `${n} × ${speed === 0 ? '?' : speed >= 1000 ? `${speed / 1000}G` : `${speed}M`}`,
     )
     .join(' · ');
+}
+
+/** Relative multi-core performance (Blender Open Data, i5-8500T = 100); several CPUs add up. */
+function PerfCell({ cpus, label }: { cpus: CatalogDevice['hardware']['cpus']; label: string }) {
+  const scores = cpus.map((c) => c.perf?.score).filter((s): s is number => s !== undefined);
+  if (scores.length === 0 || scores.length !== cpus.length)
+    return <span className="font-mono text-data text-text-muted">—</span>;
+  const score = Math.round(scores.reduce((a, b) => a + b, 0));
+  return (
+    <span className="flex items-center gap-1.5">
+      <span aria-hidden="true" className="relative inline-block h-1.5 w-12 bg-port-empty">
+        <span
+          className="absolute inset-y-0 left-0 bg-ok"
+          style={{ width: `${Math.min(100, (score / 300) * 100)}%` }}
+        />
+      </span>
+      <span role="img" aria-label={`${label}: ${score}`} className="font-mono text-data">
+        {score}
+      </span>
+    </span>
+  );
 }

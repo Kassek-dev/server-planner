@@ -1,4 +1,5 @@
 export * from './addressing';
+export * from './catalog';
 export * from './commands';
 export * from './connect';
 export * from './defaults';

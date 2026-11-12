@@ -10,25 +10,23 @@ type Section = (typeof SECTIONS)[number];
 
 const REPO = 'https://github.com/Kassek-dev/server-planner';
 
-/** Catalog sources (docs/06 § 1, § 5). In the MVP only the curated layer ships; the rest come with 1.1. */
+/** Catalog sources (docs/06 § 1, § 5); status and dates of builder sources come from the manifest. */
 const SOURCES = [
-  { id: 'curated', url: `${REPO}/tree/main/catalog/curated`, license: 'CC BY-SA 4.0', used: true },
+  { id: 'curated', url: `${REPO}/tree/main/catalog/curated`, license: 'CC BY-SA 4.0' },
   {
     id: 'awesome-selfhosted',
     url: 'https://github.com/awesome-selfhosted/awesome-selfhosted-data',
     license: 'CC BY-SA 3.0',
-    used: false,
   },
   {
     id: 'community-scripts',
     url: 'https://github.com/community-scripts/ProxmoxVE',
     license: 'MIT',
-    used: false,
   },
-  { id: 'linuxserver', url: 'https://www.linuxserver.io', license: 'facts', used: false },
-  { id: 'docker-hub', url: 'https://hub.docker.com', license: 'facts', used: false },
-  { id: 'blender', url: 'https://opendata.blender.org', license: 'facts', used: false },
-  { id: 'wikidata', url: 'https://www.wikidata.org', license: 'CC0 1.0', used: false },
+  { id: 'linuxserver', url: 'https://www.linuxserver.io', license: 'facts' },
+  { id: 'docker-hub', url: 'https://hub.docker.com', license: 'facts' },
+  { id: 'blender', url: 'https://opendata.blender.org', license: 'CC0 1.0' },
+  { id: 'wikidata', url: 'https://www.wikidata.org', license: 'CC0 1.0' },
 ] as const;
 
 /** P-03 About (docs/07): overview, catalog data sources with licenses, open-source licenses. */
@@ -102,6 +100,15 @@ function DataSources() {
   useEffect(() => {
     void useCatalog.getState().load();
   }, []);
+  const status = (id: string) => {
+    if (id === 'curated') return t('about.sources.inUse');
+    const source = catalog?.sources?.find((x) => x.id === id);
+    if (!source) return t('about.sources.planned');
+    const date = source.fetchedAt ? new Date(source.fetchedAt).toLocaleDateString('en') : '—';
+    return source.status === 'failed'
+      ? t('about.sources.failed', { date })
+      : t('about.sources.fetched', { date });
+  };
   return (
     <>
       <PageTitle>{t('about.sections.data-sources')}</PageTitle>
@@ -129,9 +136,7 @@ function DataSources() {
               <td className="py-2.5 pr-4 font-mono text-data">
                 {s.license === 'facts' ? t('about.sources.facts') : s.license}
               </td>
-              <td className="py-2.5 font-mono text-data">
-                {s.used ? t('about.sources.inUse') : t('about.sources.planned')}
-              </td>
+              <td className="py-2.5 font-mono text-data">{status(s.id)}</td>
             </tr>
           ))}
         </tbody>

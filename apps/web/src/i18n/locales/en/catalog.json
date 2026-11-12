@@ -126,7 +126,10 @@
       "cpu": "CPU",
       "ram": "RAM max · slots",
       "nic": "NIC",
-      "idle": "Idle"
-    }
+      "idle": "Idle",
+      "perf": "Perf"
+    },
+    "perfHint": "perf: Blender Open Data, i5-8500T = 100",
+    "perfLabel": "Relative multi-core performance of {model}"
   }
 }

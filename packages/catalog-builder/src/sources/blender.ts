@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
+import { normalizeCpuName } from '@server-planner/model';
 import type { CpuPerfRecord, SourceAdapter } from './types';
 
 /**
@@ -11,20 +12,8 @@ export const SCENES = ['monster', 'junkshop', 'classroom'] as const;
 /** Fewer results than this → not published (too noisy). */
 export const MIN_SAMPLES = 5;
 
-/** "Intel(R) Core(TM) i5-8500T CPU @ 2.10GHz" → "intel core i5-8500t". */
-export function normalizeCpuName(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\((r|tm)\)/g, ' ')
-    .replace(/\b\d+(st|nd|rd|th) gen\b/g, ' ')
-    .replace(/\bcpu\b/g, ' ')
-    .replace(/@.*$/, ' ')
-    .replace(/\bwith radeon.*$/, ' ')
-    .replace(/\b\d+-core processor\b/g, ' ')
-    .replace(/\bprocessor\b/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+/** Shared with the app, which matches project CPUs to the published scores. */
+export { normalizeCpuName };
 
 const median = (values: number[]) => {
   const s = [...values].sort((a, b) => a - b);

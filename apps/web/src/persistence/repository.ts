@@ -75,6 +75,15 @@ export class ProjectRepository {
     return (await this.db.getKey('projects', id)) !== undefined;
   }
 
+  /** Small app-wide values in the `settings` store (catalog updates, …). */
+  async getSetting<T>(key: string): Promise<T | undefined> {
+    return (await this.db.get('settings', key)) as T | undefined;
+  }
+
+  async setSetting(key: string, value: unknown): Promise<void> {
+    await this.db.put('settings', value, key);
+  }
+
   async getBackupState(): Promise<BackupState> {
     return (
       ((await this.db.get('settings', 'backup')) as BackupState | undefined) ?? {

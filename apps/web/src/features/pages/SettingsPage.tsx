@@ -6,12 +6,21 @@ import { formatSize } from '../../app/format';
 import { useServices } from '../../app/services';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../../app/theme';
 import { useCatalog } from '../../catalog/store';
+import {
+  type CatalogUpdateState,
+  type CheckResult,
+  checkForUpdate,
+  readUpdateState,
+  rollBack,
+  setAutoCheck,
+} from '../../catalog/updates';
 import { exportBlob, exportFileName } from '../../persistence/backup';
 import {
   getStorageStatus,
   requestPersistence,
   type StorageStatus,
 } from '../../persistence/storage';
+import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { Dialog } from '../../ui/Dialog';
 import { Led } from '../../ui/Led';
@@ -67,10 +76,28 @@ function Appearance() {
 
 function CatalogInfo() {
   const { t } = useTranslation('pages');
+  const { repository } = useServices();
   const catalog = useCatalog((s) => s.catalog);
+  const downloaded = useCatalog((s) => s.downloaded);
+  const [state, setState] = useState<CatalogUpdateState | null>(null);
+  const [result, setResult] = useState<CheckResult | null>(null);
+  const [checking, setChecking] = useState(false);
+  const refresh = async () => setState(await readUpdateState(repository));
+  // biome-ignore lint/correctness/useExhaustiveDependencies: load once on mount
   useEffect(() => {
     void useCatalog.getState().load();
+    void refresh();
   }, []);
+
+  const check = async () => {
+    setChecking(true);
+    setResult(await checkForUpdate(repository));
+    setChecking(false);
+    await refresh();
+  };
+  const date = (iso?: string) => (iso ? new Date(iso).toLocaleDateString('en') : '—');
+  const sources = catalog?.sources ?? [];
+
   return (
     <>
       <PageTitle>{t('settings.sections.catalog')}</PageTitle>
@@ -80,9 +107,87 @@ function CatalogInfo() {
           apps: catalog?.apps.length ?? 0,
           devices: catalog?.devices.length ?? 0,
           cpus: catalog?.cpus.length ?? 0,
+          date: date(catalog?.generatedAt),
         })}
-      />
-      <p className="m-0 text-text-secondary">{t('settings.catalog.updates')}</p>
+      >
+        <span className="flex gap-2">
+          {downloaded ? (
+            <Button
+              onClick={async () => {
+                await rollBack(repository);
+                setResult(null);
+                await refresh();
+              }}
+            >
+              {t('settings.catalog.rollBack')}
+            </Button>
+          ) : null}
+          <Button variant="primary" disabled={checking} onClick={() => void check()}>
+            {checking ? t('settings.catalog.checking') : t('settings.catalog.checkNow')}
+          </Button>
+        </span>
+      </SettingCard>
+      {result ? (
+        <Banner kind={result === 'updated' || result === 'up-to-date' ? 'info' : 'warning'}>
+          {t(`settings.catalog.result.${result}`)}
+        </Banner>
+      ) : null}
+      <SettingCard
+        title={t('settings.catalog.autoCheck')}
+        description={t('settings.catalog.autoCheckDescription', { last: date(state?.lastCheckAt) })}
+      >
+        <Segmented
+          label={t('settings.catalog.autoCheck')}
+          value={state?.autoCheck === false ? 'off' : 'on'}
+          onChange={async (v) => {
+            await setAutoCheck(repository, v === 'on');
+            await refresh();
+          }}
+          options={[
+            { value: 'on', label: t('settings.catalog.on') },
+            { value: 'off', label: t('settings.catalog.off') },
+          ]}
+        />
+      </SettingCard>
+      <section className="flex flex-col gap-2">
+        <h2 className="m-0 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+          {t('settings.catalog.sources')}
+        </h2>
+        {sources.length === 0 ? (
+          <p className="m-0 text-text-secondary">{t('settings.catalog.curatedOnly')}</p>
+        ) : (
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="font-mono text-label tracking-[0.08em] text-text-secondary uppercase">
+                <th className="py-2 font-semibold">{t('settings.catalog.columns.source')}</th>
+                <th className="py-2 font-semibold">{t('settings.catalog.columns.status')}</th>
+                <th className="py-2 font-semibold">{t('settings.catalog.columns.records')}</th>
+                <th className="py-2 font-semibold">{t('settings.catalog.columns.fetched')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sources.map((s) => (
+                <tr key={s.id} className="border-t border-border-subtle">
+                  <td className="py-2 pr-4">{s.name}</td>
+                  <td className="py-2 pr-4">
+                    <span className="flex items-center gap-1.5">
+                      <Led
+                        status={
+                          s.status === 'ok' ? 'ok' : s.status === 'stale' ? 'warning' : 'error'
+                        }
+                        size={7}
+                      />
+                      {t(`settings.catalog.status.${s.status}`)}
+                    </span>
+                  </td>
+                  <td className="py-2 pr-4 font-mono text-data">{s.records}</td>
+                  <td className="py-2 font-mono text-data">{date(s.fetchedAt)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
     </>
   );
 }

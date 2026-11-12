@@ -16,8 +16,34 @@
     },
     "catalog": {
       "version": "Catalog {version}",
-      "description": "Built into the app: {apps} apps, {devices} device models, {cpus} CPUs. Works offline.",
-      "updates": "Weekly catalog updates, source status and rollback arrive with version 1.1."
+      "description": "{apps} apps, {devices} device models, {cpus} CPUs · data from {date}. Works offline.",
+      "checkNow": "Check now",
+      "checking": "Checking…",
+      "rollBack": "Roll back",
+      "result": {
+        "updated": "Catalog updated to the latest published version.",
+        "up-to-date": "The catalog is up to date.",
+        "needs-newer-app": "A newer catalog needs a newer app version — reload the page after the app updates.",
+        "unavailable": "The catalog could not be reached. The app keeps working with the catalog it has.",
+        "invalid": "The downloaded catalog failed its checks and was not used."
+      },
+      "autoCheck": "Check automatically",
+      "autoCheckDescription": "At most once a week, when the app starts. Last check: {last}.",
+      "on": "On",
+      "off": "Off",
+      "sources": "Sources of this catalog",
+      "curatedOnly": "This catalog is the curated layer only.",
+      "columns": {
+        "source": "Source",
+        "status": "Status",
+        "records": "Records",
+        "fetched": "Fetched"
+      },
+      "status": {
+        "ok": "OK",
+        "stale": "Previous data",
+        "failed": "Failed"
+      }
     },
     "units": {
       "description": "Currency, energy price and default capacity thresholds for new projects arrive with version 1.1. Until then, set thresholds and overcommit per project in Project settings."
@@ -65,7 +91,7 @@
       "open": "Open selfh.st"
     },
     "sources": {
-      "description": "Catalog {version}. The catalog as a whole is licensed CC BY-SA 4.0. In this version it consists of the curated layer maintained in the repository; automatic weekly imports from the other sources arrive with version 1.1.",
+      "description": "Catalog {version}. The catalog as a whole is licensed CC BY-SA 4.0 and includes data from awesome-selfhosted (CC BY-SA 3.0, see its AUTHORS file). A GitHub Actions workflow rebuilds it from these sources at most once a week; curated entries always take precedence.",
       "columns": {
         "source": "Source",
         "usedFor": "Used for",
@@ -74,7 +100,7 @@
       },
       "facts": "facts only",
       "inUse": "in use",
-      "planned": "planned (1.1)",
+      "planned": "planned",
       "items": {
         "curated": {
           "name": "Curated layer (this project)",
@@ -104,7 +130,9 @@
           "name": "Wikidata",
           "usedFor": "CPU specifications"
         }
-      }
+      },
+      "fetched": "in use · fetched {date}",
+      "failed": "last fetch failed · data from {date}"
     },
     "licenses": {
       "description": "{count, plural, one {# open-source package ships} other {# open-source packages ship}} with the app. The list is generated when the app is built.",

@@ -15,6 +15,7 @@
   },
   "exports": {
     "./curated": "./src/curated.ts",
-    "./vite": "./src/vite.ts"
+    "./vite": "./src/vite.ts",
+    "./dist": "./src/dist.ts"
   }
 }
