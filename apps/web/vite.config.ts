@@ -2,6 +2,7 @@ import { catalogPlugin } from '@server-planner/catalog-builder/vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import { licensesPlugin } from './plugins/licenses';
 
 /**
@@ -40,6 +41,34 @@ export default defineConfig({
     catalogPlugin(),
     licensesPlugin(import.meta.dirname),
     contentSecurityPolicy(),
+    // Offline (docs/03 § 3): the app shell and the built-in catalog are precached. Catalog update
+    // files (`catalog/*.json`) stay on the network so update checks see new versions (CAT-04).
+    VitePWA({
+      registerType: 'prompt',
+      injectRegister: false,
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'Server Planner',
+        short_name: 'Server Planner',
+        description: 'Plan your home lab: devices, network, capacity and traffic — in the browser.',
+        start_url: './',
+        scope: './',
+        display: 'standalone',
+        background_color: '#141414',
+        theme_color: '#141414',
+        icons: [
+          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'pwa-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globIgnores: ['catalog/**'],
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        cleanupOutdatedCaches: true,
+      },
+    }),
   ],
   server: { port: 5173, strictPort: true },
   preview: { port: 4173, strictPort: true },

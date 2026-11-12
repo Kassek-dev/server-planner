@@ -255,6 +255,8 @@ function Workspace() {
   const capacity = useResults((s) => s.result?.capacity);
   const highlight = useSimulation((s) => s.highlight);
   const minimap = useCanvasView((s) => s.minimap);
+  // Phones are view-only (docs/05 § 12): pan, pinch and tap; no dragging or cabling.
+  const readOnly = useSession((s) => s.readOnly);
   const shownNodes = useMemo(
     () =>
       project
@@ -285,20 +287,22 @@ function Workspace() {
 
   return (
     <div className="flex min-h-0 flex-1">
-      <Library
-        onAdd={addAtCenter}
-        onAddModel={(device, catalogVersion) =>
-          report(
-            addItemAt(
-              session,
-              { type: 'device', kind: device.kind, meta: '' },
-              viewportCenter(),
-              defaultName,
-              { device, catalogVersion },
-            ),
-          )
-        }
-      />
+      {readOnly ? null : (
+        <Library
+          onAdd={addAtCenter}
+          onAddModel={(device, catalogVersion) =>
+            report(
+              addItemAt(
+                session,
+                { type: 'device', kind: device.kind, meta: '' },
+                viewportCenter(),
+                defaultName,
+                { device, catalogVersion },
+              ),
+            )
+          }
+        />
+      )}
       <section
         ref={wrapper}
         aria-label={t('canvas')}
@@ -330,6 +334,8 @@ function Workspace() {
             project.devices[c.target] !== undefined
           }
           connectionMode={ConnectionMode.Loose}
+          nodesDraggable={!readOnly}
+          nodesConnectable={!readOnly}
           // Layers from graph.ts: locations 0 < links 1 < devices 2 (docs/04 § 6.6), also inside racks.
           zIndexMode="manual"
           snapToGrid
@@ -365,8 +371,8 @@ function Workspace() {
           ) : null}
         </ReactFlow>
 
-        {empty ? <EmptyCanvas onAdd={addAtCenter} /> : null}
-        {empty ? null : <OverlayControls />}
+        {empty && !readOnly ? <EmptyCanvas onAdd={addAtCenter} /> : null}
+        {empty || readOnly ? null : <OverlayControls />}
         <SimulationCanvasLayer />
         <ZoomControls />
         {message ? (

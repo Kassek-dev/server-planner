@@ -13,5 +13,10 @@
   "actions": {
     "cancel": "Cancel",
     "close": "Close"
+  },
+  "update": {
+    "available": "New version available",
+    "reload": "Reload",
+    "later": "Later"
   }
 }

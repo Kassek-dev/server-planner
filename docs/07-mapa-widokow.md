@@ -219,9 +219,9 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 
 | ID   | Odpowiednik | Zawartość                                                           | Prio | Makieta |
 | ---- | ----------- | ------------------------------------------------------------------- | ---- | ------- |
-| M-01 | P‑01        | Lista jednokolumnowa, otwarcie pliku do podglądu                    | P0   | ✅      |
-| M-02 | V‑01 + I‑*  | Canvas na pełny ekran + dolny arkusz z inspectorem tylko do odczytu | P0   | ✅      |
-| M-03 | X‑01a       | Reachability z wyborem z list                                       | P0   | ✅      |
+| M-01 | P‑01        | Lista jednokolumnowa, otwarcie pliku do podglądu (✅ kod, etap 17)  | P0   | ✅      |
+| M-02 | V‑01 + I‑*  | Canvas na pełny ekran + dolny arkusz z inspectorem tylko do odczytu (✅ kod, etap 17) | P0   | ✅      |
+| M-03 | X‑01a       | Reachability z wyborem z list (✅ kod, etap 17)                     | P0   | ✅      |
 | M-04 | X‑02        | Lista problemów (pełny ekran)                                       | P0   | —       |
 | M-05 | V‑02…05     | Karty zamiast tabel / macierzy                                      | P1   | —       |
 | M-06 | P‑02, P‑03  | Strony jednokolumnowe                                               | P0   | —       |

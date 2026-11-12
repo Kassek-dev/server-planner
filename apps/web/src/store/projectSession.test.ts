@@ -48,6 +48,23 @@ describe('project session', () => {
     expect(session.redo()).toBe(false);
   });
 
+  it('refuses every change while read-only (mobile view)', () => {
+    const { session, project } = setup();
+    session.dispatch(addDevice, { kind: 'switch' });
+    session.setReadOnly(true);
+    expect(() => session.dispatch(addDevice, { kind: 'router' })).toThrow(CommandError);
+    expect(() =>
+      session.transaction('x', (run) => run(updateProject, { changes: { name: 'X' } })),
+    ).toThrow(CommandError);
+    expect(session.getState().lastError?.code).toBe('READ_ONLY');
+    expect(session.undo()).toBe(false);
+    expect(Object.keys(session.getState().project?.devices ?? {})).toHaveLength(
+      Object.keys(project.devices).length + 1,
+    );
+    session.setReadOnly(false);
+    expect(session.undo()).toBe(true);
+  });
+
   it('a new command clears the redo stack', () => {
     const { session } = setup();
     session.dispatch(addDevice, { kind: 'switch' });

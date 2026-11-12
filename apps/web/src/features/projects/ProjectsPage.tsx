@@ -134,7 +134,12 @@ export function ProjectsPage() {
               <h1 className="m-0 text-title-lg font-semibold">{t('title')}</h1>
               <div className="grow" />
               <Button onClick={() => fileInput.current?.click()}>{t('actions.importJson')}</Button>
-              <Button variant="primary" onClick={() => setDialog({ kind: 'new', start: 'empty' })}>
+              {/* Phones are view-only (docs/05 § 12): import to look at a plan, create on desktop. */}
+              <Button
+                variant="primary"
+                className="max-md:hidden"
+                onClick={() => setDialog({ kind: 'new', start: 'empty' })}
+              >
                 {t('actions.newProject')}
               </Button>
             </div>
@@ -191,11 +196,11 @@ export function ProjectsPage() {
                   />
                 </li>
               ))}
-              <li>
+              <li className="max-md:hidden">
                 <button
                   type="button"
                   onClick={() => setDialog({ kind: 'new', start: 'empty' })}
-                  className="flex h-full min-h-60 w-full flex-col items-center justify-center gap-2.5 rounded-md border border-dashed border-border-strong text-text-secondary hover:bg-tile"
+                  className="flex h-full min-h-60 w-full flex-col items-center justify-center gap-2.5 rounded-md border border-dashed border-border-strong text-text-secondary hover:bg-tile max-md:hidden"
                 >
                   <Plus size={28} aria-hidden="true" />
                   {t('actions.newProject')}
@@ -280,7 +285,7 @@ function FirstRun({
         <div className="flex flex-wrap justify-center gap-2">
           <Button onClick={onImport}>{t('firstRun.import')}</Button>
           <Button onClick={onExample}>{t('firstRun.example')}</Button>
-          <Button variant="primary" onClick={onCreate}>
+          <Button variant="primary" className="max-md:hidden" onClick={onCreate}>
             {t('firstRun.create')}
           </Button>
         </div>
