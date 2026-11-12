@@ -915,7 +915,7 @@ interface CatalogManifest {
 
 ### 9.1a Katalog efektywny w aplikacji
 
-Schematy Zod wszystkich typów katalogu: `packages/model/src/schema/catalog.ts`. Aplikacja pracuje na `Catalog { format: 'server-planner/catalog'; catalogVersion; generatedAt; apps; devices; cpus; os }` — w MVP to warstwa kurowana (YAML) zbudowana w czasie builda; w 1.0 scalana z pobranym `catalog/dist`. Komponenty `role` jak `AppInstance['role']` (`app | database | cache | worker | proxy | dns | other`); `trafficPatterns[].id` i `flows[].id` unikalne w aplikacji.
+Schematy Zod wszystkich typów katalogu: `packages/model/src/schema/catalog.ts`. Aplikacja pracuje na `Catalog { format: 'server-planner/catalog'; catalogVersion; generatedAt; apps; devices; cpus; os }` — w MVP to warstwa kurowana (YAML) zbudowana w czasie builda; w wersji 1.1 scalana z pobranym `catalog/dist`. Komponenty `role` jak `AppInstance['role']` (`app | database | cache | worker | proxy | dns | other`); `trafficPatterns[].id` i `flows[].id` unikalne w aplikacji.
 
 Wstawianie do projektu (kopia z `catalogRef`): `device.applyModel` (D‑05) i `app.addFromCatalog` (D‑06/D‑07) w `packages/model/src/commands/catalog.ts`. Aplikacja ze stosu = kontener na komponent + `AppInstance` na komponent; główna instancja niesie wymagania całej aplikacji, wzorce ruchu i zależności (`satisfiedBy` → instancja komponentu z `providedByComponent`).
 

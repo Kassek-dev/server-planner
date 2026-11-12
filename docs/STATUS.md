@@ -106,18 +106,18 @@
 - [x] 7b: D‑05 wybór modelu (filtry typ/producent, wyszukiwarka, tabela CPU/RAM/NIC/pobór) — z biblioteki (nowe urządzenie) i z Hardware › Model
 - [x] 7b: D‑06 katalog aplikacji (kategorie, wyszukiwarka, multi‑select, szczegóły: stos, wymagania, ruch, źródła; wiele naraz → wybrany host) — z Software › Add app from catalog i z biblioteki
 - [x] 7b: D‑07 kreator Where / Ports & storage / Network (konflikty portów z propozycją wolnego, pule i rozmiary wolumenów, sieć Docker; ostrzeżenie o Dockerze na Proxmoksie)
-- Uwagi: toast „… added · Undo” (O‑12) jeszcze nie istnieje — cofnięcie przez Ctrl+Z działa jednym krokiem; kolumna PERF w D‑05 dojdzie z danymi Blender Open Data (builder 1.0)
+- Uwagi: toast „… added · Undo” (O‑12) jeszcze nie istnieje — cofnięcie przez Ctrl+Z działa jednym krokiem; kolumna PERF w D‑05 dojdzie z danymi Blender Open Data (builder, wersja 1.1)
 
 ## Etap 8 — Eksport i szlif
 
 - [x] 8a: toasty z Undo (O‑12) — sesja zgłasza zatwierdzone kroki (`onCommit`), `describeCommit` wybiera: usunięcia (UI3, z nazwami), auto‑Internet (UI2), aplikacje z katalogu; Undo tylko gdy krok jest wciąż ostatni
 - [x] 8a: UI2 — pierwszy router/firewall bez węzła Internet dostaje Internet podłączony do WAN (osobny krok `canvas.addInternet`)
-- [x] 8a: Settings (P‑02): Appearance (motyw System/Dark/Light), Storage (zużycie, persist, eksport wszystkich, usunięcie wszystkich danych z potwierdzeniem); Catalog i Units — informacyjnie (P1 w 1.0)
-- [x] 8a: About (P‑03): Overview, Data sources (warstwa kurowana w użyciu, pozostałe źródła „planned 1.0”), Licenses — lista zależności generowana przy buildzie (`apps/web/plugins/licenses.ts`, `virtual:licenses`)
+- [x] 8a: Settings (P‑02): Appearance (motyw System/Dark/Light), Storage (zużycie, persist, eksport wszystkich, usunięcie wszystkich danych z potwierdzeniem); Catalog i Units — informacyjnie (P1 w 1.1)
+- [x] 8a: About (P‑03): Overview, Data sources (warstwa kurowana w użyciu, pozostałe źródła „planned 1.1”), Licenses — lista zależności generowana przy buildzie (`apps/web/plugins/licenses.ts`, `virtual:licenses`)
 - [x] 8b: D‑04 Export — PNG (2×) / SVG / JSON, zakres cały canvas / zaznaczenie, tło Dark/Light niezależne od motywu UI (`html-to-image`, viewport React Flow)
 - [x] 8b: E2E ścieżek A (nowy lab od zera) i B („czy mój sprzęt to uciągnie?”) z `docs/05` § 6; przycisk „Add apps from catalog” w zakładce Capacity
 - [x] 8b: kliknięcie w zaznaczony kafelek wraca ze szczegółów aplikacji/workloadu do inspektora urządzenia
-- Poza MVP (P1, wersja 1.0): builder katalogu i aktualizacje (CAT‑03/04), Settings › Catalog/Units, PWA/offline, Inventory/IP Plan/Access, asercje, przepływy (FLW)
+- Poza MVP (P1, wersja 1.1): builder katalogu i aktualizacje (CAT‑03/04), Settings › Catalog/Units, PWA/offline, Inventory/IP Plan/Access, asercje, przepływy (FLW)
 - Katalog: dane kurowane zostają `curated`; użytkownik przejrzy je później (2026-11-12)
 
 ## Dziennik
@@ -138,4 +138,5 @@
 | 2026-11-12 | Etap 7b: D‑05/D‑06/D‑07, komendy `device.applyModel` i `app.addFromCatalog` — etap 7 zamknięty; unit 172, E2E 23 | #14 |
 | 2026-11-12 | Decyzje UI1–UI3 (`docs/05` § 15, v0.2); etap 8a: toasty z Undo, auto‑Internet, Settings, About; unit 176, E2E 27 | #15 |
 | 2026-11-12 | Etap 8b: eksport D‑04 (PNG/SVG/JSON), E2E ścieżek A i B — **MVP ukończone**; unit 176, E2E 30 | #16 |
-| 2026-11-12 | Poprawka: łącza między urządzeniami jednego racka prowadzone prawą stroną (nie przez kolumnę U) | — |
+| 2026-11-12 | Poprawka: łącza między urządzeniami jednego racka prowadzone prawą stroną (nie przez kolumnę U) | #17 |
+| 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |

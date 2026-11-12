@@ -9,7 +9,7 @@ Deploy: `deploy.yml` buduje i publikuje `apps/web` na GitHub Pages po każdym pu
 
 ## Wersjonowanie
 
-- SemVer; `0.x` do wydania MVP (`01` § 6), `1.0.0` = MVP gotowe.
+- SemVer; `1.0.0` = MVP gotowe (D10, wydane 2026-11-12); funkcje P1 → `1.1.0`, dalej `1.x`.
 - `minor` — nowe funkcje; `patch` — poprawki; zmiana `schemaVersion` projektu w `0.x` → `minor`, po 1.0 → `major` tylko gdy brak automatycznej migracji (z migracją: `minor`).
 - Wersja w `apps/web/package.json` (źródło `appVersion` w eksporcie i `minAppVersion` katalogu).
 

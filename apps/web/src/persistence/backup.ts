@@ -8,11 +8,13 @@ import {
   parseProjectFile,
   SCHEMA_VERSION,
 } from '@server-planner/model';
+import { version } from '../../package.json';
 import type { BackupState } from './db';
 
 /** Export / import of project files — PRJ-04, EXP-02, D-02; docs/03 § 6, § 10. */
 
-export const APP_VERSION = '0.1.0';
+/** App version from apps/web/package.json (the release skill bumps it there). */
+export const APP_VERSION: string = version;
 /** Import size limit (docs/03 § 10). */
 export const MAX_IMPORT_BYTES = 20 * 1024 * 1024;
 

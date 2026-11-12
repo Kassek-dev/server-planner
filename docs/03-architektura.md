@@ -396,7 +396,7 @@ Silniki to serce produktu — tu celujemy w najwyższe pokrycie. Każdy zgłoszo
 | 7. Katalog         | `catalog/curated` (~50 aplikacji, typy urządzeń, OS), warstwa bazowa w aplikacji      | CAT‑01/02, LIB‑01                                 |
 | 8. Eksport i szlif | PNG/SVG, ustawienia, motyw, testy E2E                                                 | MVP gotowe                                        |
 
-Builder katalogu i workflow tygodniowy (CAT‑03/04) — pierwszy etap wersji 1.0.
+Builder katalogu i workflow tygodniowy (CAT‑03/04) — pierwszy etap wersji 1.1 (MVP = wydanie 1.0.0, D10).
 
 ---
 

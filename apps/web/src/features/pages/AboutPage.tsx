@@ -10,7 +10,7 @@ type Section = (typeof SECTIONS)[number];
 
 const REPO = 'https://github.com/Kassek-dev/server-planner';
 
-/** Catalog sources (docs/06 § 1, § 5). In the MVP only the curated layer ships; the rest come with 1.0. */
+/** Catalog sources (docs/06 § 1, § 5). In the MVP only the curated layer ships; the rest come with 1.1. */
 const SOURCES = [
   { id: 'curated', url: `${REPO}/tree/main/catalog/curated`, license: 'CC BY-SA 4.0', used: true },
   {
