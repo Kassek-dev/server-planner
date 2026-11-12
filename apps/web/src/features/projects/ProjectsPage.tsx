@@ -74,6 +74,7 @@ export function ProjectsPage() {
       const known = new Set(list.projects.map((p) => p.id));
       const result = prepareImport(await file.text(), (id) => known.has(id));
       await repository.save(result.project);
+      await repository.importSnapshots(result.project.id, result.snapshots);
       await list.refresh();
       setDialog({ kind: 'import', result });
     } catch (error) {

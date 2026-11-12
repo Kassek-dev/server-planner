@@ -9,11 +9,13 @@
       "standalone": "Standalone",
       "clients": "Clients",
       "locations": "Locations",
-      "catalog": "Catalog"
+      "catalog": "Catalog",
+      "templates": "My templates"
     },
     "browseDevices": "Browse device models",
     "browseApps": "Browse apps",
-    "note": "Note"
+    "note": "Note",
+    "removeTemplate": "Remove template “{name}”"
   },
   "deviceKind": {
     "internet": "Internet",

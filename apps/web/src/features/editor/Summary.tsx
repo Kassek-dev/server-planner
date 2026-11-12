@@ -1,6 +1,6 @@
 import type { Project } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
 import { Led } from '../../ui/Led';
@@ -10,6 +10,8 @@ import { useDrawer } from '../drawers/useDrawer';
 export function Summary({ project }: { project: Project }) {
   const { t } = useTranslation('editor');
   const { open } = useDrawer();
+  const navigate = useNavigate();
+  const { projectId = '' } = useParams();
   const routers = Object.values(project.devices).filter((d) => d.firewall);
   const rows: [string, number][] = [
     [
@@ -47,6 +49,9 @@ export function Summary({ project }: { project: Project }) {
         ))}
         <Button onClick={() => open({ kind: 'tags' })}>{t('summary.tags')}</Button>
         <Button onClick={() => open({ kind: 'settings' })}>{t('summary.settings')}</Button>
+        <Button onClick={() => navigate(`/p/${projectId}/snapshots`)}>
+          {t('summary.snapshots')}
+        </Button>
       </div>
     </section>
   );

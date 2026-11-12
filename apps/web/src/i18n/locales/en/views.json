@@ -192,5 +192,42 @@
     "upsUsage": "Load of {name}: {percent}",
     "wattsOf": "{used} / {total} W",
     "runtime": "≈ {minutes} min on battery"
+  },
+  "snapshots": {
+    "title": "Snapshots",
+    "create": "Create snapshot",
+    "list": "Snapshots",
+    "empty": "No snapshots yet. Save the current state before a bigger change.",
+    "current": "Current state",
+    "from": "Compare",
+    "to": "With",
+    "pick": "Create a snapshot to compare versions.",
+    "restore": "Restore “{name}”",
+    "delete": "Delete “{name}”",
+    "beforeRestore": "Before restoring “{name}”",
+    "same": "No differences.",
+    "summary": "+{added} added · −{removed} removed · ~{changed} changed",
+    "collections": {
+      "devices": "Devices",
+      "locations": "Locations",
+      "links": "Cables",
+      "workloads": "VMs and containers",
+      "apps": "Apps",
+      "vlans": "VLANs",
+      "subnets": "Subnets",
+      "zones": "Zones",
+      "assertions": "Assertions"
+    },
+    "change": {
+      "added": "Added",
+      "removed": "Removed",
+      "changed": "Changed"
+    },
+    "dialogTitle": "Create snapshot",
+    "dialogDescription": "Saves the current state of the project under a name. Snapshots stay in this browser and can be compared or restored.",
+    "name": "Name",
+    "defaultName": "Snapshot {date}",
+    "save": "Create",
+    "cancel": "Cancel"
   }
 }

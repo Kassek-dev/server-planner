@@ -301,7 +301,11 @@
     "label": "Label",
     "delete": "Delete link",
     "color": "Cable color",
-    "generateLabel": "Generate label (SW1-P05 ↔ PVE1-ETH0)"
+    "generateLabel": "Generate label (SW1-P05 ↔ PVE1-ETH0)",
+    "drawing": "On the canvas",
+    "routing": "Cable routing",
+    "orthogonal": "Orthogonal",
+    "straight": "Straight"
   },
   "location": {
     "name": "Name",
@@ -318,7 +322,18 @@
   },
   "multi": {
     "title": "{count} selected",
-    "delete": "Delete selected"
+    "delete": "Delete selected",
+    "align": "Align",
+    "alignModes": {
+      "left": "Align left",
+      "center": "Align centers horizontally",
+      "right": "Align right",
+      "top": "Align top",
+      "middle": "Align centers vertically",
+      "bottom": "Align bottom",
+      "row": "Space evenly in a row",
+      "column": "Space evenly in a column"
+    }
   },
   "errors": {
     "generic": "That change is not possible ({code}).",
@@ -372,5 +387,14 @@
     "cores": "{count} cores",
     "expectedNote": "Expected use: apps at their load profile, VMs and LXCs at what runs inside them, against the physical hardware (no overcommit).",
     "forecast": "Grows {growth}/month — full in about {months, plural, =0 {less than a month} one {# month} other {# months}}."
+  },
+  "template": {
+    "save": "Save as template",
+    "saved": "Saved — find it in the library under My templates.",
+    "title": "Save as template",
+    "description": "Keeps hardware, OS, form factor and ports in this browser so you can add the same device again from the library.",
+    "name": "Template name",
+    "confirm": "Save template",
+    "cancel": "Cancel"
   }
 }

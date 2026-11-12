@@ -5,7 +5,8 @@
     "inventory": "Inventory",
     "ip": "IP Plan",
     "access": "Access",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "snapshots": "Snapshots"
   },
   "rename": "Rename project",
   "save": {
@@ -31,7 +32,8 @@
     "settings": "Project settings",
     "issues": "Issues",
     "issueCount": "{errors, plural, =0 {No errors} one {# error} other {# errors}}, {warnings, plural, =0 {no warnings} one {# warning} other {# warnings}}",
-    "showIssues": "Show"
+    "showIssues": "Show",
+    "snapshots": "Snapshots"
   },
   "simulate": "Simulate",
   "toasts": {
@@ -85,7 +87,8 @@
     "composeScope": "Containers of",
     "composeHost": "{name} ({count, plural, one {# container} other {# containers}})",
     "composeStack": "Stack {name} ({count, plural, one {# container} other {# containers}})",
-    "noContainers": "There are no containers in this project yet."
+    "noContainers": "There are no containers in this project yet.",
+    "withSnapshots": "Include snapshots"
   },
   "otherTab": "This project is also open in another tab. Both save automatically, so the last change wins — keep editing in one tab only.",
   "palette": {

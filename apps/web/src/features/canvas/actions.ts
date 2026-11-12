@@ -3,6 +3,7 @@ import {
   addLocation,
   addNote,
   applyDeviceModel,
+  applyDeviceTemplate,
   type CatalogDevice,
   CommandError,
   checkRackFit,
@@ -137,11 +138,16 @@ export function addItemAt(
       return { ok: true, selectId: id };
     }
 
+    // An own template (LIB-04) adds a device of its kind and then applies the template.
+    const template = item.type === 'template' ? item.template : undefined;
+    const kind = item.type === 'template' ? item.template.device.kind : item.kind;
+    const clientType = item.type === 'template' ? item.template.device.clientType : item.clientType;
     // Size and units of the new device come from its defaults; probe placement on a dry run.
-    const formFactor = model?.device.formFactor ?? DEFAULT_FORM_FACTOR[item.kind];
+    const formFactor =
+      template?.device.formFactor ?? model?.device.formFactor ?? DEFAULT_FORM_FACTOR[kind];
     const draftDevice = {
       id: 'dev_probe',
-      kind: item.kind,
+      kind,
       ...(formFactor ? { formFactor } : {}),
     } as Device;
     const size = deviceSize(draftDevice);
@@ -161,21 +167,22 @@ export function addItemAt(
     const target = resolveTarget(project, draftDevice, topLeft, size, probe);
     if (isResult(target)) return target;
 
-    const name = item.clientType
+    const base = template ? template.name.toLowerCase().replace(/\s+/g, '-') : clientType;
+    const name = base
       ? nextName(
-          item.clientType,
+          base,
           Object.values(project.devices).map((d) => d.name),
         )
       : undefined;
     const id = session.transaction('canvas.addDevice', (run) => {
       const { deviceId } = run(addDevice, {
-        kind: item.kind,
+        kind,
         ...(name ? { name } : {}),
         ...(target.placement ? { placement: target.placement } : {}),
         ...(target.position ? { position: target.position } : {}),
       });
-      if (item.clientType)
-        run(updateDevice, { id: deviceId, changes: { clientType: item.clientType } });
+      if (clientType) run(updateDevice, { id: deviceId, changes: { clientType } });
+      if (template) run(applyDeviceTemplate, { id: deviceId, template });
       if (model)
         run(applyDeviceModel, {
           id: deviceId,
@@ -185,7 +192,7 @@ export function addItemAt(
       return deviceId;
     });
     const hasInternet = Object.values(project.devices).some((d) => d.kind === 'internet');
-    if ((item.kind === 'router' || item.kind === 'firewall') && !hasInternet)
+    if ((kind === 'router' || kind === 'firewall') && !hasInternet)
       addInternetFor(session, id, {
         x: toGrid(topLeft.x),
         y: Math.max(0, toGrid(topLeft.y) - 6),
@@ -341,5 +348,95 @@ export function duplicateSelection(session: ProjectSession, nodeIds: string[]): 
       devices.map((id) => run(duplicateDevice, { id })),
     );
     return { ok: true, ...(ids[0] ? { selectId: ids[0] } : {}) };
+  });
+}
+
+export type AlignMode =
+  | 'left'
+  | 'center'
+  | 'right'
+  | 'top'
+  | 'middle'
+  | 'bottom'
+  | 'row'
+  | 'column';
+
+/**
+ * CAN-08: aligns or evenly spaces the selected free-standing devices (not rack rows). Only devices
+ * sharing one parent move, since positions inside a location are relative to it.
+ */
+export function alignSelection(
+  session: ProjectSession,
+  nodeIds: string[],
+  mode: AlignMode,
+): ActionResult {
+  const project = session.getState().project;
+  if (!project) return fail('NO_PROJECT');
+  const items = nodeIds.flatMap((id) => {
+    const device = project.devices[id];
+    const at = project.layout.nodes[id];
+    if (!device || !at) return [];
+    if (device.placement && project.locations[device.placement.locationId]?.kind === 'rack')
+      return [];
+    const size = deviceSize(device);
+    return [
+      {
+        id,
+        parent: device.placement?.locationId ?? '',
+        x: at.x,
+        y: at.y,
+        w: toGrid(size.w),
+        h: toGrid(size.h),
+      },
+    ];
+  });
+  const parent = items[0]?.parent;
+  const group = items.filter((i) => i.parent === parent);
+  if (group.length < 2) return { ok: true };
+  const left = Math.min(...group.map((i) => i.x));
+  const right = Math.max(...group.map((i) => i.x + i.w));
+  const top = Math.min(...group.map((i) => i.y));
+  const bottom = Math.max(...group.map((i) => i.y + i.h));
+  const next = new Map<string, { x: number; y: number }>();
+  if (mode === 'row' || mode === 'column') {
+    // Even gaps between neighbours, in their current order.
+    const horizontal = mode === 'row';
+    const sorted = [...group].sort((a, b) => (horizontal ? a.x - b.x : a.y - b.y));
+    const total = sorted.reduce((s, i) => s + (horizontal ? i.w : i.h), 0);
+    const gap = Math.max(
+      1,
+      Math.round(((horizontal ? right - left : bottom - top) - total) / (sorted.length - 1)),
+    );
+    let at = horizontal ? left : top;
+    for (const i of sorted) {
+      next.set(i.id, horizontal ? { x: at, y: i.y } : { x: i.x, y: at });
+      at += (horizontal ? i.w : i.h) + gap;
+    }
+  } else {
+    for (const i of group) {
+      const x =
+        mode === 'left'
+          ? left
+          : mode === 'right'
+            ? right - i.w
+            : mode === 'center'
+              ? Math.round((left + right - i.w) / 2)
+              : i.x;
+      const y =
+        mode === 'top'
+          ? top
+          : mode === 'bottom'
+            ? bottom - i.h
+            : mode === 'middle'
+              ? Math.round((top + bottom - i.h) / 2)
+              : i.y;
+      next.set(i.id, { x, y });
+    }
+  }
+  return guard(() => {
+    session.transaction('canvas.align', (run) => {
+      for (const [id, p] of next) run(moveNode, { id, ...p });
+    });
+    return { ok: true };
   });
 }

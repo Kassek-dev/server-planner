@@ -1,15 +1,17 @@
-import type { ClientType, DeviceKind, LocationKind } from '@server-planner/model';
+import type { ClientType, DeviceKind, DeviceTemplate, LocationKind } from '@server-planner/model';
 
 /** Library items (docs/05 § 6.13, LIB-01): generic devices per kind and location containers. */
 
 export type LibraryItem =
   | { type: 'device'; kind: DeviceKind; clientType?: ClientType; meta: string }
   | { type: 'location'; kind: LocationKind; meta: string }
-  | { type: 'note'; meta: string };
+  | { type: 'note'; meta: string }
+  /** LIB-04 own device template from this browser. */
+  | { type: 'template'; template: DeviceTemplate; meta: string };
 
 export const LIBRARY: {
   section: 'rack' | 'standalone' | 'clients' | 'locations';
-  items: LibraryItem[];
+  items: Exclude<LibraryItem, { type: 'template' }>[];
 }[] = [
   {
     section: 'rack',

@@ -7,6 +7,7 @@ import {
   ProjectFileError,
   parseProjectFile,
   SCHEMA_VERSION,
+  type Snapshot,
 } from '@server-planner/model';
 import { version } from '../../package.json';
 import type { BackupState } from './db';
@@ -18,13 +19,18 @@ export const APP_VERSION: string = version;
 /** Import size limit (docs/03 § 10). */
 export const MAX_IMPORT_BYTES = 20 * 1024 * 1024;
 
-export function toProjectFile(project: Project, now: string = defaultContext.now()): ProjectFile {
+export function toProjectFile(
+  project: Project,
+  now: string = defaultContext.now(),
+  snapshots: Snapshot[] = [],
+): ProjectFile {
   return {
     format: PROJECT_FILE_FORMAT,
     schemaVersion: SCHEMA_VERSION as 1,
     appVersion: APP_VERSION,
     exportedAt: now,
     project,
+    ...(snapshots.length > 0 ? { snapshots } : {}),
   };
 }
 
@@ -41,8 +47,8 @@ export function exportFileName(project: Project, now: string = defaultContext.no
   return `${slug}-${now.slice(0, 10)}.json`;
 }
 
-export function exportBlob(project: Project, now?: string): Blob {
-  return new Blob([`${JSON.stringify(toProjectFile(project, now), null, 2)}\n`], {
+export function exportBlob(project: Project, now?: string, snapshots: Snapshot[] = []): Blob {
+  return new Blob([`${JSON.stringify(toProjectFile(project, now, snapshots), null, 2)}\n`], {
     type: 'application/json',
   });
 }
@@ -65,6 +71,8 @@ export interface ImportResult {
   /** A project with the same ID existed — imported as a copy with a new ID. */
   asCopy: boolean;
   snapshotCount: number;
+  /** PRJ-07 snapshots included in the file (D-04 "include snapshots"). */
+  snapshots: Snapshot[];
 }
 
 /** Validates and prepares an imported file. Never trusts the input (Zod, size limit, no eval). */
@@ -89,6 +97,7 @@ export function prepareImport(
       project,
       asCopy,
       snapshotCount: file.snapshots?.length ?? 0,
+      snapshots: file.snapshots ?? [],
       ...(migratedFrom !== undefined ? { migratedFrom } : {}),
     };
   } catch (error) {

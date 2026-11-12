@@ -9,6 +9,7 @@ import { exportBlob, exportFileName } from '../../persistence/backup';
 import { useResults } from '../../store/results';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
+import { Checkbox } from '../../ui/Checkbox';
 import { Dialog } from '../../ui/Dialog';
 import { Segmented } from '../../ui/Segmented';
 import { Select } from '../../ui/Select';
@@ -49,6 +50,7 @@ export function ExportDialog() {
   const [theme, setTheme] = useState<ExportTheme>(() => resolveTheme(getThemePreference()));
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [withSnapshots, setWithSnapshots] = useState(false);
   if (!project) return null;
 
   const effectiveScope: Scope = selected.length > 0 ? scope : 'all';
@@ -117,7 +119,10 @@ export function ExportDialog() {
       await session.flush();
       const current = session.getState().project;
       if (!current) return;
-      downloadBlob(exportBlob(current), exportFileName(current));
+      const snapshots = withSnapshots
+        ? (await repository.listSnapshots(current.id)).map(({ projectId: _, ...s }) => s)
+        : [];
+      downloadBlob(exportBlob(current, undefined, snapshots), exportFileName(current));
       await repository.recordExport();
     } else if (format === 'csv') {
       const csv =
@@ -224,6 +229,13 @@ export function ExportDialog() {
             />
           </Field>
         </>
+      ) : null}
+      {format === 'json' ? (
+        <Checkbox
+          label={t('exportDialog.withSnapshots')}
+          checked={withSnapshots}
+          onChange={(e) => setWithSnapshots(e.target.checked)}
+        />
       ) : null}
       {format === 'csv' ? (
         <Field label={t('exportDialog.dataset')}>

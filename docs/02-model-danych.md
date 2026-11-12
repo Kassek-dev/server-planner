@@ -1125,8 +1125,8 @@ interface CatalogOs {
 | `snapshots`   | `id` (indeks `projectId`) | `Snapshot`                                                                   |
 | `history`     | `projectId`               | stos undo/redo (opcjonalnie — przetrwanie odświeżenia strony)                |
 | `catalog`     | `catalogVersion`          | pliki katalogu; trzymane 2 ostatnie wersje (cofnięcie)                       |
-| `settings`    | klucz                     | ustawienia aplikacji (motyw, język, data ostatniego sprawdzenia katalogu, …) |
-| `locks`       | `projectId`               | znacznik otwartej karty (PRJ‑06)                                             |
+| `settings`    | klucz                     | ustawienia aplikacji (motyw, język, data ostatniego sprawdzenia katalogu, …); `deviceTemplates` — własne szablony urządzeń (LIB‑04, `DeviceTemplateSchema`) |
+| `locks`       | —                         | niepotrzebny: PRJ‑06 wykrywa drugą kartę przez `BroadcastChannel` (ostrzeżenie, bez blokady) |
 
 ---
 
