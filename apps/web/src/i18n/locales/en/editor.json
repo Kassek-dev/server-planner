@@ -114,5 +114,12 @@
       "settings": "Project settings",
       "labelCables": "Label all cables"
     }
+  },
+  "mobile": {
+    "notice": "Editing is available on desktop. On a phone you can view the plan, inspect elements and run reachability checks.",
+    "dismiss": "Got it",
+    "expand": "Expand details",
+    "collapse": "Collapse details",
+    "close": "Close details"
   }
 }

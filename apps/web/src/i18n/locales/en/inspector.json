@@ -366,7 +366,8 @@
     "MODEL_KIND_MISMATCH": "This model is a {model}, not a {kind}.",
     "APP_HOST_IS_CONTAINER": "Apps from the catalog go on a host, VM or LXC, not inside a container.",
     "NETWORK_ON_OTHER_HOST": "That Docker network belongs to another host.",
-    "range": "Enter a whole number from {min} to {max}."
+    "range": "Enter a whole number from {min} to {max}.",
+    "READ_ONLY": "Editing is available on desktop — on a phone the project is view-only."
   },
   "capacity": {
     "title": "Capacity",

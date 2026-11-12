@@ -7,11 +7,15 @@ import {
   AlignStartHorizontal,
   AlignStartVertical,
   AlignVerticalSpaceAround,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices, useSession } from '../../app/services';
+import { useIsMobile } from '../../app/useIsMobile';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { type AlignMode, alignSelection, deleteSelection } from '../canvas/actions';
@@ -29,8 +33,11 @@ import { WorkloadInspector } from './WorkloadInspector';
 /** Right column (304 px, docs/04 § 4.2): the inspector for the current selection (docs/05 § 5). */
 export function SelectionPanel() {
   const { t } = useTranslation('inspector');
+  const { t: tm } = useTranslation('editor');
   const { session } = useServices();
   const project = useSession((s) => s.project);
+  const mobile = useIsMobile();
+  const [expanded, setExpanded] = useState(false);
   const { nodeIds, edgeIds, detail } = useSelection();
   const error = useInspectorError((s) => s.error);
   const [params, setParams] = useSearchParams();
@@ -82,6 +89,56 @@ export function SelectionPanel() {
   else if (device) body = <DeviceInspector project={project} device={device} />;
   else if (location) body = <LocationInspector project={project} location={location} />;
   else if (link) body = <LinkInspector project={project} link={link} />;
+
+  // Phones (docs/05 § 12): a bottom sheet, 40 % or 90 % high, only while something is open.
+  if (mobile) {
+    const open = count > 0 || !!detail || issuesOpen || simOpen;
+    if (!open) return null;
+    return (
+      <aside
+        aria-label={t('title')}
+        className={`fixed inset-x-0 bottom-0 z-40 flex flex-col rounded-t-lg border-t border-border-default bg-panel shadow-overlay ${expanded ? 'h-[90dvh]' : 'h-[40dvh]'}`}
+      >
+        <div className="flex shrink-0 items-center justify-between border-b border-border-subtle px-2">
+          <Button
+            size="touch"
+            variant="ghost"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((e) => !e)}
+          >
+            {expanded ? (
+              <ChevronDown size={18} aria-hidden="true" />
+            ) : (
+              <ChevronUp size={18} aria-hidden="true" />
+            )}
+            {expanded ? tm('mobile.collapse') : tm('mobile.expand')}
+          </Button>
+          <Button
+            size="touch"
+            variant="ghost"
+            aria-label={tm('mobile.close')}
+            onClick={() => {
+              useSelection.getState().clear();
+              if (issuesOpen || simOpen) closePanel();
+            }}
+          >
+            <X size={18} aria-hidden="true" />
+          </Button>
+        </div>
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-4">
+          {error ? (
+            <Banner kind="error">
+              {t(`errors.${error.code}`, {
+                defaultValue: t('errors.generic', { code: error.code }),
+                ...error.params,
+              })}
+            </Banner>
+          ) : null}
+          {body}
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <aside

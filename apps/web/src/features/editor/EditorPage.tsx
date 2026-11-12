@@ -2,15 +2,17 @@ import { updateProject } from '@server-planner/model';
 import { Download, Play, Redo2, Undo2 } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams, useSearchParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { NotFoundPage } from '../../app/routes/NotFoundPage';
 import { useServices, useSession } from '../../app/services';
 import { TopBar } from '../../app/shell/TopBar';
+import { useIsMobile } from '../../app/useIsMobile';
 import { engineOptions, useCatalog } from '../../catalog/store';
 import { connectResults } from '../../store/results';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { Led, type LedStatus } from '../../ui/Led';
+import { Select } from '../../ui/Select';
 import { AccessView } from '../access/AccessView';
 import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
@@ -135,6 +137,64 @@ function ViewTabs() {
   );
 }
 
+/** Views as a select on phones, where the tab strip does not fit (docs/05 § 12). */
+function ViewSelect() {
+  const { t } = useTranslation('editor');
+  const { projectId = '' } = useParams();
+  const view = useView();
+  const navigate = useNavigate();
+  return (
+    <div className="w-32">
+      <Select
+        label={t('views.label')}
+        hideLabel
+        value={view}
+        onChange={(e) => {
+          const next = VIEWS.find((v) => v.id === e.target.value);
+          navigate(`/p/${projectId}${next?.path ? `/${next.path}` : ''}`);
+        }}
+        options={VIEWS.map((v) => ({ value: v.id, label: t(`views.${v.id}`) }))}
+      />
+    </div>
+  );
+}
+
+const MOBILE_NOTICE_KEY = 'server-planner:mobile-notice';
+
+/** One-time banner on phones: the editor is view-only there. */
+function MobileNotice() {
+  const { t } = useTranslation('editor');
+  const [shown, setShown] = useState(() => {
+    try {
+      return localStorage.getItem(MOBILE_NOTICE_KEY) !== 'dismissed';
+    } catch {
+      return true;
+    }
+  });
+  if (!shown) return null;
+  return (
+    <div className="flex items-center gap-2 border-b border-info-border bg-info-bg pr-2">
+      <div className="flex-1">
+        <Banner kind="info">{t('mobile.notice')}</Banner>
+      </div>
+      <Button
+        size="touch"
+        variant="ghost"
+        onClick={() => {
+          try {
+            localStorage.setItem(MOBILE_NOTICE_KEY, 'dismissed');
+          } catch {
+            // Private mode: the banner simply comes back next time.
+          }
+          setShown(false);
+        }}
+      >
+        {t('mobile.dismiss')}
+      </Button>
+    </div>
+  );
+}
+
 function Editor() {
   const { t } = useTranslation('editor');
   const view = useView();
@@ -144,6 +204,8 @@ function Editor() {
   const canRedo = useSession((s) => s.future.length > 0);
   const saveState = useSession((s) => s.saveState);
   const otherTab = useOtherTabs(project?.id ?? '');
+  const mobile = useIsMobile();
+  useEffect(() => session.setReadOnly(mobile), [mobile, session]);
 
   // `?sel=` mirrors the selection so links reopen the same view (docs/07 § 0).
   const [params, setParams] = useSearchParams();
@@ -207,11 +269,11 @@ function Editor() {
     <div className="flex h-full flex-col bg-app text-text-primary">
       <TopBar nav={false}>
         <ProjectName name={project.name} />
-        <SaveIndicator state={saveState} />
-        <ViewTabs />
+        {mobile ? <ViewSelect /> : <SaveIndicator state={saveState} />}
+        {mobile ? null : <ViewTabs />}
         <div className="grow" />
         <IssueCounters />
-        <div className="flex items-center gap-1">
+        <div className={`flex items-center gap-1 ${mobile ? 'hidden' : ''}`}>
           <IconButton label={t('undo')} disabled={!canUndo} onClick={() => session.undo()}>
             <Undo2 size={16} aria-hidden="true" />
           </IconButton>
@@ -219,12 +281,14 @@ function Editor() {
             <Redo2 size={16} aria-hidden="true" />
           </IconButton>
         </div>
-        <Button
-          icon={<Download size={14} aria-hidden="true" />}
-          onClick={() => useExportDialog.getState().setOpen(true)}
-        >
-          {t('export')}
-        </Button>
+        {mobile ? null : (
+          <Button
+            icon={<Download size={14} aria-hidden="true" />}
+            onClick={() => useExportDialog.getState().setOpen(true)}
+          >
+            {t('export')}
+          </Button>
+        )}
         <Button
           variant="primary"
           icon={<Play size={14} aria-hidden="true" />}
@@ -239,9 +303,10 @@ function Editor() {
             })
           }
         >
-          {t('simulate')}
+          <span className={mobile ? 'sr-only' : undefined}>{t('simulate')}</span>
         </Button>
       </TopBar>
+      {mobile ? <MobileNotice /> : null}
       {otherTab ? (
         <div className="border-b border-warning-border">
           <Banner kind="warning">{t('otherTab')}</Banner>

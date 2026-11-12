@@ -35,6 +35,8 @@ export interface ProjectSessionState {
   future: HistoryEntry[];
   saveState: SaveState;
   lastError: CommandError | null;
+  /** Mobile is view-only (docs/05 § 12, A1): every change is refused with `READ_ONLY`. */
+  readOnly: boolean;
 }
 
 export interface DispatchOptions {
@@ -56,6 +58,7 @@ export interface ProjectSession extends StoreApi<ProjectSessionState> {
    * before the change — used for toasts like "Deleted pve1 · Undo" (O-12).
    */
   onCommit(listener: (entry: HistoryEntry, before: Project) => void): () => void;
+  setReadOnly(readOnly: boolean): void;
 }
 
 export interface ProjectSessionOptions {
@@ -81,6 +84,7 @@ export function createProjectSession({
     future: [],
     saveState: 'saved',
     lastError: null,
+    readOnly: false,
   }));
   let timer: ReturnType<typeof setTimeout> | undefined;
   let saving: Promise<void> = Promise.resolve();
@@ -123,9 +127,17 @@ export function createProjectSession({
     for (const listener of commitListeners) listener(entry, before);
   };
 
+  const refuseWhenReadOnly = () => {
+    if (!store.getState().readOnly) return;
+    const error = new CommandError('READ_ONLY');
+    store.setState({ lastError: error });
+    throw error;
+  };
+
   function dispatch<P, R>(command: Command<P, R>, payload: P, options: DispatchOptions = {}): R {
     const { project, past } = store.getState();
     if (!project) throw new Error('No project loaded');
+    refuseWhenReadOnly();
     let out: CommandResult<R>;
     try {
       out = execute(project, command, payload, ctx);
@@ -173,6 +185,7 @@ export function createProjectSession({
   ): T {
     const start = store.getState().project;
     if (!start) throw new Error('No project loaded');
+    refuseWhenReadOnly();
     let working = start;
     const patches: Patch[] = [];
     let inversePatches: Patch[] = [];
@@ -225,7 +238,12 @@ export function createProjectSession({
       return () => commitListeners.delete(listener);
     },
 
+    setReadOnly(readOnly) {
+      store.setState({ readOnly });
+    },
+
     undo() {
+      if (store.getState().readOnly) return false;
       const { project, past, future } = store.getState();
       const entry = past.at(-1);
       if (!project || !entry) return false;
@@ -240,6 +258,7 @@ export function createProjectSession({
     },
 
     redo() {
+      if (store.getState().readOnly) return false;
       const { project, past, future } = store.getState();
       const entry = future.at(-1);
       if (!project || !entry) return false;

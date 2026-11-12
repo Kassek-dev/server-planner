@@ -80,7 +80,7 @@
 | **TanStack Table** (P1)                   | Inventory, IP Plan                                          | `features/*/views/`                     | sortowanie, filtry, edycja inline                                                                                                                   |
 | **@tanstack/react-table** 9 | tabele Inventory / IP Plan | `features/inventory/` | v9: `tableFeatures({ rowSortingFeature, sortedRowModel: createSortedRowModel(), … })` w zasięgu modułu, `useTable`; kolumny i dane stabilne (`useMemo`) |
 | **html-to-image**                         | eksport PNG/SVG                                             | `features/export/`                      | metoda zalecana przez React Flow; motyw eksportu niezależny od UI                                                                                   |
-| **vite-plugin-pwa** (P1)                  | offline, aktualizacja aplikacji                             | `vite.config.ts`                        | precache aplikacji i katalogu bazowego; toast „New version available”                                                                               |
+| **vite-plugin-pwa** 2 (+ `workbox-window`) | offline, aktualizacja aplikacji                            | `vite.config.ts`, `app/UpdatePrompt.tsx` | `registerType: 'prompt'`, `injectRegister: false` (bez skryptu inline — CSP); precache aplikacji z katalogiem bazowym, bez `catalog/*.json` (sprawdzanie aktualizacji CAT‑04 idzie do sieci); komunikat „New version available · Reload” |
 
 ---
 

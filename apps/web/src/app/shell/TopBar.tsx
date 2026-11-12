@@ -9,7 +9,9 @@ export function TopBar({ children, nav = true }: { children?: ReactNode; nav?: b
     <header className="flex h-13 shrink-0 items-center gap-3.5 border-b border-border-subtle bg-panel px-4">
       <Link to="/" className="flex items-center gap-2.5 text-text-primary no-underline">
         <Logo />
-        <span className="text-body-strong font-semibold">{t('appName')}</span>
+        <span className={`text-body-strong font-semibold ${nav ? '' : 'max-md:sr-only'}`}>
+          {t('appName')}
+        </span>
       </Link>
       {children}
       {nav ? <div className="grow" /> : null}

@@ -192,6 +192,13 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 17 — Offline i mobile (pakiet 8): PWA (`vite-plugin-pwa`), widoki M‑01…03
 
+- [x] PWA: `vite-plugin-pwa` 2 (manifest, ikony 192/512/maskable, apple-touch-icon), service worker z precache aplikacji i katalogu bazowego (bez `catalog/*.json` — aktualizacje katalogu z sieci), `registerType: 'prompt'` bez skryptu inline (CSP), komunikat „New version available · Reload”
+- [x] Tryb tylko‑do‑odczytu w sesji (`setReadOnly`, błąd `READ_ONLY`, bez undo/redo) włączany < 768 px (A1)
+- [x] M‑01 projekty: jedna kolumna, bez „New project” (import i przykład zostają)
+- [x] M‑02 edytor: skrócony top bar (widoki w selekcie, bez Undo/Redo/Export, Simulate jako ikona), bez biblioteki i nakładek kolorowania, bez przeciągania i łączenia; dolny arkusz z inspectorem 40 % / 90 % z zamykaniem; jednorazowy baner „Editing is available on desktop”
+- [x] M‑03 Reachability w arkuszu (wybór z list)
+- Pozostałe: M‑04 (pełnoekranowa lista problemów) i M‑05 (karty zamiast tabel) — kolejne iteracje
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -223,4 +230,6 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | #28 |
 | 2026-11-12 | Etap 15: profile obciążenia, tryb Expected, prognoza storage, GPU; unit 227, E2E 40 | #29 |
 | 2026-11-12 | Etap 16a: szablony, druga karta, minimapa, paleta Ctrl+K, notatki, etykiety kabli; unit 233, E2E 43 | #30 |
-| 2026-11-12 | Etap 16b: snapshoty z diffem i przywracaniem, własne szablony urządzeń, wyrównywanie, routing łączy; unit 239, E2E 45 | — |
+| 2026-11-12 | Etap 16b: snapshoty z diffem i przywracaniem, własne szablony urządzeń, wyrównywanie, routing łączy; unit 239, E2E 45 | #31 |
+| 2026-11-12 | Poprawka bezpieczeństwa: walidacja snapshotów przy imporcie i przywracaniu | #32 |
+| 2026-11-12 | Etap 17: PWA (offline, aktualizacja), tryb mobilny tylko do odczytu (M‑01…03); unit 241, E2E 47 | — |
