@@ -97,3 +97,18 @@ describe('robustness against bad data', () => {
     expect(usedUnits([{ from: -5, to: 1_000_000_000 }], 12).size).toBe(12);
   });
 });
+
+describe('links inside a rack', () => {
+  it('leave and return on the right side, away from the unit column', () => {
+    const edges = toFlowEdges(lab, nodes);
+    const sw = deviceByName(lab, 'sw-core').id;
+    const dns = deviceByName(lab, 'pi-dns').id;
+    const inRack = edges.find(
+      (e) => (e.source === sw && e.target === dns) || (e.source === dns && e.target === sw),
+    );
+    expect(inRack).toMatchObject({ sourceHandle: 'r', targetHandle: 'r' });
+    const pve = deviceByName(lab, 'pve1').id;
+    const out = edges.find((e) => e.source === pve || e.target === pve);
+    expect(out?.sourceHandle).not.toBe(out?.targetHandle);
+  });
+});
