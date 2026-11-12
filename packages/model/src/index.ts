@@ -6,6 +6,7 @@ export * from './defaults';
 export * from './factories';
 export type { EntityType, IdPrefix } from './ids';
 export { createId, entityTypeOf, ID_PREFIXES } from './ids';
+export * from './labels';
 export * from './migrations';
 /** Current project file schema version — docs/02-model-danych.md § 11. */
 export { CURRENT_SCHEMA_VERSION as SCHEMA_VERSION } from './migrations';
@@ -18,3 +19,4 @@ export * from './schema/location';
 export * from './schema/network';
 export * from './schema/project';
 export * from './schema/workload';
+export * from './templates';

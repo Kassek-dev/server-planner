@@ -1,4 +1,12 @@
-import type { ColorRef, Device, Interface, Link, Location, Project } from '@server-planner/model';
+import type {
+  ColorRef,
+  Device,
+  Interface,
+  Link,
+  Location,
+  Note,
+  Project,
+} from '@server-planner/model';
 import type { Edge, Node } from '@xyflow/react';
 import {
   deviceSize,
@@ -37,7 +45,15 @@ export interface PortView {
   color?: string;
 }
 
-export type CanvasNode = Node<DeviceNodeData, 'device'> | Node<LocationNodeData, 'location'>;
+export interface NoteNodeData extends Record<string, unknown> {
+  note: Note;
+  size: Size;
+}
+
+export type CanvasNode =
+  | Node<DeviceNodeData, 'device'>
+  | Node<LocationNodeData, 'location'>
+  | Node<NoteNodeData, 'note'>;
 
 export const colorOf = (color: ColorRef | undefined): string | undefined =>
   color === undefined ? undefined : color.startsWith('#') ? color : `var(--sp-vlan-${color})`;
@@ -193,6 +209,19 @@ export function toFlowNodes(project: Project): CanvasNode[] {
       data: { device, variant: 'tile', ports, size },
       style: { width: size.w, height: size.h },
       zIndex: 2,
+    });
+  }
+
+  // CAN-07: notes float above everything.
+  for (const note of Object.values(project.layout.notes)) {
+    const size = { w: toPx(note.rect.w), h: toPx(note.rect.h) };
+    nodes.push({
+      id: note.id,
+      type: 'note',
+      position: { x: toPx(note.rect.x), y: toPx(note.rect.y) },
+      data: { note, size },
+      style: { width: size.w, height: size.h },
+      zIndex: 3,
     });
   }
   return nodes;

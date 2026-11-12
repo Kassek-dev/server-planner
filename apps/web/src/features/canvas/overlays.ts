@@ -16,12 +16,15 @@ export type DeviceColoring = 'none' | 'zone' | 'tag' | 'capacity';
 export interface CanvasViewState {
   links: LinkColoring;
   devices: DeviceColoring;
+  /** CAN-09 minimap in the corner of the canvas. */
+  minimap: boolean;
   set(changes: Partial<Pick<CanvasViewState, 'links' | 'devices'>>): void;
 }
 
 export const useCanvasView = create<CanvasViewState>((set) => ({
   links: 'type',
   devices: 'none',
+  minimap: false,
   set: (changes) => set(changes),
 }));
 

@@ -1,5 +1,7 @@
 import {
+  cableLabel,
   connectInterfaces,
+  DEFAULT_CABLE_COLOR,
   deleteLink,
   isInterfaceFree,
   type Link,
@@ -127,7 +129,37 @@ export function LinkInspector({ project, link }: { project: Project; link: Link 
                 })
               }
             />
+            <label className="flex flex-col gap-1.5">
+              <span className="font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+                {t('link.color')}
+              </span>
+              <input
+                type="color"
+                value={link.cable?.color ?? DEFAULT_CABLE_COLOR}
+                onChange={(e) =>
+                  run(
+                    updateLink,
+                    { id: link.id, changes: { cable: { ...link.cable, color: e.target.value } } },
+                    { mergeKey: `cable-color:${link.id}` },
+                  )
+                }
+                className="h-8 w-full cursor-pointer rounded-md border border-border-default bg-tile"
+              />
+            </label>
           </Grid>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="self-start"
+            onClick={() =>
+              run(updateLink, {
+                id: link.id,
+                changes: { cable: { ...link.cable, label: cableLabel(project, link) } },
+              })
+            }
+          >
+            {t('link.generateLabel')}
+          </Button>
         </Section>
       ) : null}
       <Button

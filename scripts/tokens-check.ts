@@ -34,7 +34,7 @@ const contrast = (a: string, b: string) => {
   return (l1 + 0.05) / (l2 + 0.05);
 };
 
-const surfaces = ['bg-app', 'bg-panel', 'bg-tile', 'bg-tile-header', 'bg-raised'];
+const surfaces = ['bg-app', 'bg-panel', 'bg-tile', 'bg-tile-header', 'bg-raised', 'bg-note'];
 const textPairs: [string, string][] = [
   ...['text-primary', 'text-secondary', 'text-muted'].flatMap((t) =>
     surfaces.map((s) => [t, s] as [string, string]),

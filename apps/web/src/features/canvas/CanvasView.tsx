@@ -8,6 +8,7 @@ import {
   ConnectionMode,
   type Edge,
   type EdgeChange,
+  MiniMap,
   type Node,
   type NodeChange,
   ReactFlow,
@@ -15,7 +16,7 @@ import {
   useReactFlow,
   useStore,
 } from '@xyflow/react';
-import { Maximize, Minus, Plus } from 'lucide-react';
+import { Map as MapIcon, Maximize, Minus, Plus } from 'lucide-react';
 import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useServices, useSession } from '../../app/services';
@@ -39,11 +40,12 @@ import { itemLabel, Library } from './Library';
 import { DRAG_MIME, type LibraryItem } from './library';
 import { DeviceNode } from './nodes/DeviceNode';
 import { LocationNode } from './nodes/LocationNode';
+import { NoteNode } from './nodes/NoteNode';
 import { OverlayControls } from './OverlayControls';
 import { decorateEdges, decorateNodes, useCanvasView } from './overlays';
 import { useSelection } from './selection';
 
-const nodeTypes = { device: DeviceNode, location: LocationNode };
+const nodeTypes = { device: DeviceNode, location: LocationNode, note: NoteNode };
 
 /** V-01 canvas (docs/05 § 4): library + React Flow; the project store stays the source of truth. */
 export function CanvasWorkspace() {
@@ -149,7 +151,7 @@ function Workspace() {
         const size = (n.data as { size: { w: number; h: number } }).size;
         return {
           id: n.id,
-          type: n.type === 'location' ? 'location' : 'device',
+          type: n.type === 'location' || n.type === 'note' ? n.type : 'device',
           x: abs.x,
           y: abs.y,
           relative: n.position,
@@ -252,6 +254,7 @@ function Workspace() {
   const deviceColoring = useCanvasView((s) => s.devices);
   const capacity = useResults((s) => s.result?.capacity);
   const highlight = useSimulation((s) => s.highlight);
+  const minimap = useCanvasView((s) => s.minimap);
   const shownNodes = useMemo(
     () =>
       project
@@ -347,6 +350,19 @@ function Workspace() {
             gap={GRID * 2}
             color="var(--sp-canvas-grid)"
           />
+          {minimap ? (
+            <MiniMap
+              ariaLabel={t('minimap')}
+              position="bottom-right"
+              pannable
+              zoomable
+              bgColor="var(--sp-bg-raised)"
+              nodeColor="var(--sp-bg-tile-header)"
+              nodeStrokeColor="var(--sp-border-strong)"
+              maskColor="color-mix(in srgb, var(--sp-bg-app) 60%, transparent)"
+              className="mb-12! rounded-md border border-border-default"
+            />
+          ) : null}
         </ReactFlow>
 
         {empty ? <EmptyCanvas onAdd={addAtCenter} /> : null}
@@ -400,6 +416,7 @@ const zoomSelector = (s: { transform: [number, number, number] }) => s.transform
 function ZoomControls() {
   const { t } = useTranslation('canvas');
   const flow = useReactFlow();
+  const minimap = useCanvasView((s) => s.minimap);
   const zoom = useStore(zoomSelector);
   const button = 'flex size-7.5 items-center justify-center text-text-primary hover:bg-tile-header';
   return (
@@ -430,6 +447,15 @@ function ZoomControls() {
         onClick={() => void flow.fitView({ padding: 0.2, maxZoom: 1 })}
       >
         <Maximize size={14} aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        aria-label={t('zoom.minimap')}
+        aria-pressed={minimap}
+        className={`${button} border-l border-border-default ${minimap ? 'bg-accent-subtle' : ''}`}
+        onClick={() => useCanvasView.setState({ minimap: !minimap })}
+      >
+        <MapIcon size={14} aria-hidden="true" />
       </button>
     </div>
   );

@@ -1,5 +1,5 @@
 import { type CatalogDevice, DEFAULT_FORM_FACTOR } from '@server-planner/model';
-import { Boxes, Server } from 'lucide-react';
+import { Boxes, Server, StickyNote } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSession } from '../../app/services';
@@ -60,7 +60,9 @@ export function Library({
                 ].join(' ')}
               >
                 <span className="text-text-secondary">
-                  {item.type === 'location' ? (
+                  {item.type === 'note' ? (
+                    <StickyNote size={18} aria-hidden="true" />
+                  ) : item.type === 'location' ? (
                     <Silhouette name={item.kind} size={18} />
                   ) : (
                     <DeviceIcon
@@ -121,6 +123,7 @@ const CATALOG_BUTTON =
   'flex h-8.5 items-center gap-2.5 rounded-md border border-border-subtle bg-tile px-2.5 text-left text-body text-text-primary hover:border-border-strong';
 
 export function itemLabel(t: (key: string) => string, item: LibraryItem): string {
+  if (item.type === 'note') return t('library.note');
   if (item.type === 'location') return t(`locationKind.${item.kind}`);
   return item.clientType ? t(`clientType.${item.clientType}`) : t(`deviceKind.${item.kind}`);
 }

@@ -1,4 +1,4 @@
-import { createProject, type Project } from '@server-planner/model';
+import { createFromTemplate, createProject, type Project } from '@server-planner/model';
 import { MoreHorizontal, Plus } from 'lucide-react';
 import { type DragEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -59,7 +59,11 @@ export function ProjectsPage() {
 
   const create = async (name: string, start: NewProjectStart) => {
     const project: Project =
-      start === 'example' ? await loadExampleProject(name) : createProject(name);
+      start === 'example'
+        ? await loadExampleProject(name)
+        : start === 'empty'
+          ? createProject(name)
+          : createFromTemplate(start, name);
     await repository.save(project);
     setDialog({ kind: 'none' });
     navigate(`/p/${project.id}`);

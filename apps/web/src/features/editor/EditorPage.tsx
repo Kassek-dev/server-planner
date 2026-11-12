@@ -25,6 +25,8 @@ import { IssueCounters } from '../issues/IssueCounters';
 import { describeCommit } from '../toasts/describe';
 import { useToasts } from '../toasts/store';
 import { Toaster } from '../toasts/Toaster';
+import { CommandPalette } from './CommandPalette';
+import { useOtherTabs } from './otherTabs';
 
 type LoadState = 'loading' | 'ready' | 'missing';
 
@@ -138,6 +140,7 @@ function Editor() {
   const canUndo = useSession((s) => s.past.length > 0);
   const canRedo = useSession((s) => s.future.length > 0);
   const saveState = useSession((s) => s.saveState);
+  const otherTab = useOtherTabs(project?.id ?? '');
 
   // `?sel=` mirrors the selection so links reopen the same view (docs/07 § 0).
   const [params, setParams] = useSearchParams();
@@ -236,6 +239,11 @@ function Editor() {
           {t('simulate')}
         </Button>
       </TopBar>
+      {otherTab ? (
+        <div className="border-b border-warning-border">
+          <Banner kind="warning">{t('otherTab')}</Banner>
+        </div>
+      ) : null}
       {saveState === 'error' ? (
         <div className="border-b border-error-border">
           <Banner kind="error">{t('save.error')}</Banner>
@@ -257,6 +265,7 @@ function Editor() {
       </main>
       <DrawerHost />
       <ExportDialog />
+      <CommandPalette project={project} />
       <Toaster />
     </div>
   );

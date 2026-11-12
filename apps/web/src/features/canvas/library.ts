@@ -4,7 +4,8 @@ import type { ClientType, DeviceKind, LocationKind } from '@server-planner/model
 
 export type LibraryItem =
   | { type: 'device'; kind: DeviceKind; clientType?: ClientType; meta: string }
-  | { type: 'location'; kind: LocationKind; meta: string };
+  | { type: 'location'; kind: LocationKind; meta: string }
+  | { type: 'note'; meta: string };
 
 export const LIBRARY: {
   section: 'rack' | 'standalone' | 'clients' | 'locations';
@@ -47,6 +48,7 @@ export const LIBRARY: {
       { type: 'location', kind: 'room', meta: '' },
       { type: 'location', kind: 'shelf', meta: '' },
       { type: 'location', kind: 'rack', meta: '12U' },
+      { type: 'note', meta: '' },
     ],
   },
 ];
