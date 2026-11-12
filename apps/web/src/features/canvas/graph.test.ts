@@ -34,6 +34,30 @@ describe('toFlowNodes', () => {
     expect(node('Internet')?.parentId).toBeUndefined();
   });
 
+  it('hides location frames when not grouped by location (LOC-08)', () => {
+    const flat = { ...lab, layout: { ...lab.layout, groupByLocation: false } };
+    const ungrouped = toFlowNodes(flat);
+    expect(ungrouped.some((n) => n.type === 'location')).toBe(false);
+    expect(ungrouped.every((n) => n.parentId === undefined)).toBe(true);
+    const gw = ungrouped.find((n) => n.id === deviceByName(lab, 'gw-01').id);
+    expect(gw?.data.variant).toBe('tile');
+    expect(gw?.draggable).toBe(false);
+    // Rack devices stack without overlapping.
+    const inRack = ungrouped
+      .filter(
+        (n) =>
+          n.type === 'device' &&
+          deviceByName(lab, String(n.data.device.name)).placement?.locationId === rack?.id,
+      )
+      .map((n) => ({ y: n.position.y, h: n.data.size.h }))
+      .sort((a, b) => a.y - b.y);
+    for (let i = 1; i < inRack.length; i += 1)
+      expect(inRack[i]?.y).toBeGreaterThanOrEqual(
+        (inRack[i - 1]?.y ?? 0) + (inRack[i - 1]?.h ?? 0),
+      );
+    expect(locationAt(flat, { x: 0, y: 0 })).toBeUndefined();
+  });
+
   it('reports free rack units', () => {
     const rackNode = nodes.find((n) => n.id === rack?.id);
     expect(rackNode?.type === 'location' && rackNode.data.freeUnits).toBe(7);

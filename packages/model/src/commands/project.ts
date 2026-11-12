@@ -107,8 +107,32 @@ export const setLinkRouting = defineCommand(
   'layout.setLinkRouting',
   (draft, { id, routing }: { id: string; routing: 'straight' | 'orthogonal' }) => {
     getOrThrow(draft.links, id, 'link');
-    if (routing === 'orthogonal') delete draft.layout.links[id];
+    const waypoints = draft.layout.links[id]?.waypoints;
+    if (routing === 'orthogonal' && !waypoints?.length) delete draft.layout.links[id];
     else draft.layout.links[id] = { ...draft.layout.links[id], routing };
+  },
+);
+
+/** Most bend points a cable keeps; more is noise on a home lab plan and bounds bad input. */
+export const MAX_WAYPOINTS = 16;
+
+/** CAN-08: bend points of a cable in absolute grid units; an empty list restores auto routing. */
+export const setLinkWaypoints = defineCommand(
+  'layout.setLinkWaypoints',
+  (draft, { id, waypoints }: { id: string; waypoints: { x: number; y: number }[] }) => {
+    getOrThrow(draft.links, id, 'link');
+    if (waypoints.length > MAX_WAYPOINTS)
+      throw new CommandError('TOO_MANY_WAYPOINTS', { max: MAX_WAYPOINTS });
+    const routing = draft.layout.links[id]?.routing ?? 'orthogonal';
+    if (waypoints.length === 0) {
+      if (routing === 'orthogonal') delete draft.layout.links[id];
+      else draft.layout.links[id] = { routing };
+      return;
+    }
+    draft.layout.links[id] = {
+      routing,
+      waypoints: waypoints.map((p) => ({ x: Math.round(p.x), y: Math.round(p.y) })),
+    };
   },
 );
 

@@ -110,6 +110,50 @@ function sortedLocations(project: Project): Location[] {
 }
 
 export function toFlowNodes(project: Project): CanvasNode[] {
+  const grouped = groupedNodes(project);
+  return project.layout.groupByLocation ? grouped : ungroupedNodes(grouped);
+}
+
+/**
+ * LOC-08 "Group by: None": location frames are hidden and every device is a tile at its absolute
+ * position; rack-mounted devices stack where their rack is. Placed devices stay put (they move
+ * between locations in the grouped view), so only free-standing devices are draggable.
+ */
+function ungroupedNodes(grouped: CanvasNode[]): CanvasNode[] {
+  const origin = absoluteOrigin(grouped);
+  const byId = new Map(grouped.map((n) => [n.id, n]));
+  const stackTop = new Map<string, number>();
+  const nodes: CanvasNode[] = [];
+  for (const node of grouped) {
+    if (node.type === 'location') continue;
+    if (node.type !== 'device' || !node.parentId) {
+      nodes.push(node);
+      continue;
+    }
+    const { device, variant } = node.data;
+    const parent = byId.get(node.parentId);
+    const at = origin(node);
+    let position = at;
+    let size = node.data.size;
+    if (variant !== 'tile' && parent) {
+      size = deviceSize(device);
+      const top = stackTop.get(parent.id) ?? origin(parent).y;
+      position = { x: origin(parent).x, y: top };
+      stackTop.set(parent.id, top + size.h + GRID);
+    }
+    const { parentId: _, ...rest } = node;
+    nodes.push({
+      ...rest,
+      position,
+      draggable: false,
+      data: { ...node.data, variant: 'tile', size },
+      style: { width: size.w, height: size.h },
+    });
+  }
+  return nodes;
+}
+
+function groupedNodes(project: Project): CanvasNode[] {
   const nodes: CanvasNode[] = [];
   const linked = linkedInterfaces(project);
   const sizes = new Map<string, Size>();
@@ -229,6 +273,9 @@ export function toFlowNodes(project: Project): CanvasNode[] {
 
 export interface LinkEdgeData extends Record<string, unknown> {
   link: Link;
+  routing: 'straight' | 'orthogonal';
+  /** CAN-08 bend points in absolute grid units. */
+  waypoints: { x: number; y: number }[];
 }
 
 /** Physical links only — vNIC ↔ bridge links are edited in the inspector (docs/02 § 6.1). */
@@ -243,6 +290,7 @@ export function toFlowEdges(
     const a = project.interfaces[link.a];
     const b = project.interfaces[link.b];
     if (!a || !b || a.owner.type !== 'device' || b.owner.type !== 'device') continue;
+    const drawing = project.layout.links[link.id];
     edges.push({
       id: link.id,
       source: a.owner.id,
@@ -251,9 +299,13 @@ export function toFlowEdges(
         ? // Inside one rack the cable leaves on the right and comes back, clear of the U column.
           { sourceHandle: 'r', targetHandle: 'r' }
         : facingHandles(centers.get(a.owner.id), centers.get(b.owner.id))),
-      // CAN-08: orthogonal by default, straight when chosen for the cable.
-      type: project.layout.links[link.id]?.routing === 'straight' ? 'straight' : 'step',
-      data: { link },
+      // CAN-08: orthogonal by default, straight when chosen, optionally through bend points.
+      type: 'link',
+      data: {
+        link,
+        routing: drawing?.routing ?? 'orthogonal',
+        waypoints: drawing?.waypoints ?? [],
+      },
       style: edgeStyle(project, link, a, b),
       zIndex: 1,
     });

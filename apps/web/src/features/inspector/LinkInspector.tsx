@@ -7,6 +7,7 @@ import {
   type Link,
   type Project,
   setLinkRouting,
+  setLinkWaypoints,
   updateLink,
 } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ export function LinkInspector({ project, link }: { project: Project; link: Link 
   const run = useCommand();
   const transaction = useTransaction();
   const ends = [link.a, link.b] as const;
+  const waypoints = project.layout.links[link.id]?.waypoints?.length ?? 0;
 
   const rewire = (which: 0 | 1, interfaceId: string) => {
     const other = ends[which === 0 ? 1 : 0];
@@ -175,6 +177,16 @@ export function LinkInspector({ project, link }: { project: Project; link: Link 
             { value: 'straight', label: t('link.straight') },
           ]}
         />
+        <div className="flex items-center gap-2">
+          <span className="flex-1 text-body-sm text-text-secondary">
+            {t('link.waypoints', { count: waypoints })}
+          </span>
+          {waypoints > 0 ? (
+            <Button size="sm" onClick={() => run(setLinkWaypoints, { id: link.id, waypoints: [] })}>
+              {t('link.clearWaypoints')}
+            </Button>
+          ) : null}
+        </div>
       </Section>
       <Button
         variant="danger"

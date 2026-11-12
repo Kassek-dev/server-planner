@@ -199,6 +199,40 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 - [x] M‑03 Reachability w arkuszu (wybór z list)
 - Pozostałe: M‑04 (pełnoekranowa lista problemów) i M‑05 (karty zamiast tabel) — kolejne iteracje
 
+## Wersja 1.2 — plan (2026-11-12)
+
+Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Kolejność: najpierw bez zmiany formatu projektu, potem schemat v2 (jedna migracja dla wszystkich nowych pól).
+
+### Etap 18 — Canvas: kable i układ (CAN‑08, LOC‑08)
+
+- [x] Punkty pośrednie kabli: komenda `layout.setLinkWaypoints` (bezwzględne jednostki siatki, max 16, pusta lista = automatyczny przebieg), `layout.setLinkRouting` zachowuje punkty; krawędź `LinkEdge` (ortogonalna lub prosta przez punkty), dwuklik na kablu dodaje punkt, przeciąganie / strzałki / `Delete` na zaznaczonym kablu, licznik i „Remove bend points” w inspectorze
+- [x] Prowadnice przy przeciąganiu: wyrównanie krawędzi i środków z innymi elementami (`alignmentGuides`)
+- [x] Group by: Location / None w kontrolkach canvasu (O‑11) — ramki ukryte, urządzenia z racka ułożone kafelkami, urządzenia z lokalizacją bez przeciągania; `layout.groupByLocation` z cofaniem
+- Bez zmiany schematu — pola `waypoints` i `groupByLocation` były w modelu
+
+### Etap 19 — Software: przenoszenie, zgodność, aktualizacje specyfikacji (SW‑11, SW‑12, LIB‑03)
+
+- [ ] SW‑11 przeniesienie workloadu na inny host (drzewo w inspectorze, z kaskadą vNIC/mostów)
+- [ ] SW‑12 architektura obrazu (amd64/arm64) vs CPU hosta — reguła walidacji
+- [ ] LIB‑03 „dostępna nowsza specyfikacja” dla pozycji z katalogu
+
+### Etap 20 — Sieć i etykiety, schemat v2 (NET‑11, NET‑14, LBL‑03)
+
+- [ ] Schemat v2 + migracja v1→v2 + fixture
+- [ ] NET‑11 reverse proxy (domena → aplikacja), ekspozycja i symulacja przez proxy
+- [ ] NET‑14 lokalne rekordy DNS
+- [ ] LBL‑03 własny wzorzec etykiet kabli w ustawieniach projektu
+
+### Etap 21 — Ustawienia, lokalizacje, katalog sprzętu (SET‑02, LOC‑06, LIB‑02)
+
+- [ ] SET‑02 domyślne ustawienia nowych projektów (Settings › Units & costs)
+- [ ] LOC‑06 inspector lokalizacji: zajętość U, lista urządzeń, pobór mocy racka vs budżet UPS
+- [ ] LIB‑02 filtry katalogu sprzętu (CPU, RAM, porty, pobór mocy)
+
+### Etap 22 — Telefon (M‑04, M‑05)
+
+- [ ] M‑04 pełnoekranowa lista problemów, M‑05 karty zamiast tabel
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -234,3 +268,4 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Poprawka bezpieczeństwa: walidacja snapshotów przy imporcie i przywracaniu | #32 |
 | 2026-11-12 | Etap 17: PWA (offline, aktualizacja), tryb mobilny tylko do odczytu (M‑01…03); unit 241, E2E 47 | #33 |
 | 2026-11-12 | **Wydanie v1.1.0** (etapy 9–17; format projektu bez zmian, schemat v1), `CHANGELOG.md`, wersja w `apps/web/package.json` (spełnia `minAppVersion` katalogu) | tag `v1.1.0` |
+| 2026-11-12 | Plan wersji 1.2 (etapy 18–22); etap 18: punkty pośrednie kabli, prowadnice, Group by | — |

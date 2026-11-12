@@ -305,7 +305,9 @@
     "drawing": "On the canvas",
     "routing": "Cable routing",
     "orthogonal": "Orthogonal",
-    "straight": "Straight"
+    "straight": "Straight",
+    "waypoints": "{count, plural, =0 {No bend points. Double-click the cable to add one.} one {# bend point} other {# bend points}}",
+    "clearWaypoints": "Remove bend points"
   },
   "location": {
     "name": "Name",

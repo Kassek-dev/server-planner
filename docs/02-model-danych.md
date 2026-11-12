@@ -755,7 +755,7 @@ interface Assertion {
 interface Layout {
   viewport?: { x: number; y: number; zoom: number };
   nodes: Record<Id, NodeLayout>; // klucz: Device / Note (urządzenia w racku — bez wpisu, pozycja z U)
-  links: Record<Id, { routing: 'straight' | 'orthogonal'; waypoints?: { x: number; y: number }[] }>;
+  links: Record<Id, { routing: 'straight' | 'orthogonal'; waypoints?: { x: number; y: number }[] }>; // CAN-08: punkty w bezwzględnych jednostkach siatki, max 16; brak wpisu = ortogonalny bez punktów
   locations: Record<
     Id,
     { rect: { x: number; y: number; w: number; h: number }; collapsed?: boolean }
