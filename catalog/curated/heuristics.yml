@@ -1,0 +1,19 @@
+# Builder heuristics (docs/06 § 2.2, § 3.1). Values are deliberate estimates — tune here, not in code.
+
+# Community Scripts resources describe a whole LXC with its OS; a Docker container needs less.
+lxcToDocker:
+  memoryFactor: 0.75
+  cpuFactor: 1
+  osDiskGb: 2
+  minDiskGb: 1
+
+# Requirements for imported apps without Community Scripts data.
+defaultRequirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+
+# CPU performance reference (score 100) — a typical home lab mini PC.
+cpuReference: intel core i5-8500t
+
+# LinuxServer.io images that are build or system helpers, not apps to plan.
+excludeImages: [qemu-static]

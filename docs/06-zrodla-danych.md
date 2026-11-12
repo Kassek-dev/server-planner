@@ -1,6 +1,6 @@
 # Server Planner — źródła danych katalogu (v0.1)
 
-> Status: **zaakceptowany kierunek, szczegóły adapterów do weryfikacji przy implementacji** · Data: 2026-11-11
+> Status: **zaakceptowany, adaptery zweryfikowane na żywo (v0.2)** · Data: 2026-11-12
 > Podstawa: `01-funkcjonalnosci.md` rozdz. 5 (D3, D6, D7), `02-model-danych.md` rozdz. 9, `03-architektura.md` (catalog builder, `SourceAdapter`)
 > Zamyka otwarte kwestie z `01` rozdz. 8: licencje źródeł i źródło wydajności CPU.
 
@@ -24,7 +24,7 @@
 | **Proxmox VE Community Scripts**           | domyślne CPU / RAM / dysk, port interfejsu, kategorie                                   | **MIT**                                                                        | JSON metadanych skryptów (lokalizacja do potwierdzenia, § 2.2)     | ✅ główne źródło wymagań zasobowych                                  |
 | **LinuxServer.io API**                     | obrazy, architektury, **porty, wolumeny**, wersje                                       | brak opublikowanej licencji; oficjalne publiczne API                           | `GET https://api.linuxserver.io/api/v1/images?include_config=true` | ✅ tylko dane techniczne (fakty), z atrybucją                        |
 | **Docker Hub API**                         | tagi, architektury, rozmiar obrazu, data aktualizacji                                   | warunki Docker Hub; limit **100 zapytań / 6 h / IP** bez logowania             | `hub.docker.com/v2/repositories/{ns}/{repo}/tags`                  | ✅ tylko dla obrazów z katalogu                                      |
-| **Blender Open Data**                      | **wydajność CPU i GPU** z wyników użytkowników                                          | „license‑free” — dane bez praw autorskich                                      | codzienny zrzut JSON / eksport CSV                                 | ✅ automatyczne źródło `perf`                                        |
+| **Blender Open Data**                      | **wydajność CPU i GPU** z wyników użytkowników                                          | **CC0 1.0** (plik licencji w zrzucie)                                           | codzienny zrzut JSON / eksport CSV                                 | ✅ automatyczne źródło `perf`                                        |
 | **Wikidata**                               | specyfikacje CPU (rdzenie, wątki, taktowanie, TDP — pokrycie nierówne)                  | **CC0**                                                                        | SPARQL (`query.wikidata.org`)                                      | ✅ uzupełniająco, do weryfikacji pokrycia                            |
 | **Warstwa kurowana (nasza)**               | wzorce ruchu, przepływy, poprawki wymagań, modele mini PC / NAS / sieci, CPU homelabowe | CC‑BY‑SA 4.0                                                                   | YAML w `catalog/curated/`                                          | ✅                                                                   |
 | selfh.st                                   | katalog aplikacji                                                                       | brak licencji danych i API („©2026 selfh.st”)                                  | —                                                                  | ❌ nie pobieramy; link w README i na stronie About                   |
@@ -50,7 +50,7 @@
 
 - **Co bierzemy:** `install_methods[].resources` (`cpu`, `ram` w MB, `hdd` w GB, `os`, `version`) → `requirements.recommended` z `confidence: imported`; port interfejsu WWW → listener `web-ui`; kategorie.
 - **Uwaga — LXC, nie Docker:** zasoby dotyczą kontenera LXC z całym systemem; dla kontenera Docker przyjmujemy je jako górne oszacowanie (RAM × 0.75, dysk bez systemu bazowego). Współczynniki w `catalog/curated/heuristics.yml`.
-- **Lokalizacja danych — do potwierdzenia:** historycznie `frontend/public/json/*.json` w repo; README podaje obecnie, że metadane są zarządzane na stronie (`community-scripts.org`, API `api.community-scripts.org`). Adapter implementuje oba warianty i wybiera działający.
+- **Lokalizacja danych (zweryfikowane 2026-11-12):** JSON-y frontendu przeniesiono do archiwalnego repo (`ProxmoxVE-Frontend-Archive`, ostatnio 2026-03), a `api.community-scripts.org` zwracało 503. Adapter czyta więc **bieżące skrypty `ct/*.sh`** z archiwum gałęzi `main` repo `ProxmoxVE` (jedno pobranie ~1 MB): `APP`, `var_cpu`, `var_ram` (MB), `var_disk` (GB), `var_tags`. Portu interfejsu w skryptach nie ma — porty pochodzą z LinuxServer.io.
 - **Atrybucja:** licencja MIT, link do projektu.
 
 ### 2.3 LinuxServer.io
@@ -79,7 +79,7 @@
 Odpowiedź na wymaganie: **automatycznie, z wyników użytkowników, bez ręcznego wpisywania.**
 
 - **Źródło:** `opendata.blender.org` — wyniki Blender Benchmark przesyłane przez użytkowników, CPU i GPU. Dane deklarowane jako wolne od praw autorskich; dostępny **codzienny zrzut surowych danych JSON**.
-- **Co liczymy:** dla każdej nazwy urządzenia — **mediana** wyniku (samples/min) z trzech scen benchmarku (`monster`, `junkshop`, `classroom`), z ostatnich 2 głównych wersji Blendera, tylko urządzenia z **≥ 5 wynikami**; odrzucenie wartości poza 1.5 IQR.
+- **Co liczymy:** dla każdej nazwy urządzenia — **mediana** wyniku (samples/min) per scena (`monster`, `junkshop`, `classroom`) ze **wszystkich wersji Blendera od 3.0** (benchmark v3), tylko urządzenia z **≥ 5 wynikami**. Zmiana względem planu (2026-11-12): wyników z ostatnich 2 wersji jest za mało (np. i5‑8500T ma łącznie 21 wyników), a mediana jest odporna na wartości odstające, więc osobne odcinanie 1.5 IQR pominięto. Wynik = suma median scen wspólnych z CPU referencyjnym. Zrzut ma licencję **CC0** (`LICENSE.txt` w archiwum).
 - **Normalizacja:** `score = 100 × wynik / wynik(CPU referencyjny)`. Referencja: **Intel Core i5‑8500T** (typowy mini PC homelabowy) = 100. Dzięki temu UI może mówić „~2.4× pve1”.
 - **Dopasowanie nazw:** normalizator nazw CPU (usuwa „CPU @ 2.10GHz”, „(R)”, „(TM)”, liczbę rdzeni w nazwie AMD) + słownik aliasów `catalog/curated/cpu-aliases.yml`. Niedopasowane nazwy trafiają do raportu w `CHANGELOG.json` (lista do uzupełnienia aliasów).
 - **Rozmiar:** zrzut jest duży — workflow pobiera go strumieniowo i agreguje w locie; do repo trafiają tylko zagregowane wyniki (`dist/perf.json`, kilkaset KB).

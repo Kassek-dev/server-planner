@@ -1,0 +1,46 @@
+{
+  "status": "OK",
+  "data": {
+    "repositories": {
+      "linuxserver": [
+        {
+          "name": "lidarr",
+          "project_url": "https://github.com/Lidarr/Lidarr",
+          "category": "Music,Downloaders",
+          "deprecated": false,
+          "monthly_pulls": 1000,
+          "architectures": [{ "arch": "x86_64" }, { "arch": "arm64" }],
+          "config": {
+            "ports": [
+              {
+                "external": "8686",
+                "internal": "8686",
+                "desc": "The port for the Lidarr webinterface",
+                "optional": false
+              }
+            ],
+            "volumes": [
+              { "path": "/config", "desc": "Configuration files.", "optional": false },
+              { "path": "/music", "desc": "Music files.", "optional": false }
+            ]
+          }
+        },
+        {
+          "name": "jellyfin",
+          "category": "Media Servers",
+          "deprecated": false,
+          "architectures": [{ "arch": "x86_64" }],
+          "config": {
+            "ports": [
+              { "external": "8096", "internal": "8096", "desc": "Http webUI.", "optional": false },
+              { "external": "7359", "internal": "7359/udp", "desc": "Discovery", "optional": true }
+            ],
+            "volumes": [{ "path": "/config", "desc": "", "optional": false }]
+          }
+        },
+        { "name": "old-thing", "deprecated": true, "config": null },
+        { "name": "qemu-static", "category": "Docker", "config": { "ports": [], "volumes": [] } }
+      ]
+    }
+  }
+}

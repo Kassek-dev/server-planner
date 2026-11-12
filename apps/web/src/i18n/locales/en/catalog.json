@@ -33,7 +33,11 @@
     "productivity": "Productivity",
     "reverse-proxy": "Reverse proxy",
     "security": "Security",
-    "vpn": "VPN"
+    "vpn": "VPN",
+    "desktop": "Desktop apps",
+    "ai": "AI & science",
+    "games": "Games",
+    "other": "Other"
   },
   "apps": {
     "title": "App catalog",
