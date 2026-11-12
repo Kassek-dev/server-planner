@@ -1,4 +1,9 @@
-import type { EntityRef, ReachabilityResult, ServiceVisibility } from '@server-planner/engine';
+import type {
+  EntityRef,
+  FlowRunResult,
+  ReachabilityResult,
+  ServiceVisibility,
+} from '@server-planner/engine';
 import type { Project } from '@server-planner/model';
 import { create } from 'zustand';
 
@@ -20,6 +25,10 @@ export interface SimulationState {
     services: ServiceVisibility[];
     byDevice: Record<string, Coverage>;
   } | null;
+  /** FLW-04/05: the run being played on the canvas, step by step. */
+  flow: { run: FlowRunResult; labels: string[]; index: number; playing: boolean } | null;
+  /** Shows hop `index` of the current flow on the canvas. */
+  showHop(index: number, playing?: boolean): void;
   reset(): void;
 }
 
@@ -27,7 +36,17 @@ export const useSimulation = create<SimulationState>((set) => ({
   highlight: null,
   internetOverlay: false,
   visible: null,
-  reset: () => set({ highlight: null, internetOverlay: false, visible: null }),
+  flow: null,
+  showHop: (index, playing) =>
+    set((s) => {
+      if (!s.flow) return {};
+      const hop = s.flow.run.hops[index];
+      return {
+        flow: { ...s.flow, index, playing: playing ?? s.flow.playing },
+        highlight: hop?.result ?? null,
+      };
+    }),
+  reset: () => set({ highlight: null, internetOverlay: false, visible: null, flow: null }),
 }));
 
 /** Physical device that ultimately runs an app or workload (cycle-safe). */

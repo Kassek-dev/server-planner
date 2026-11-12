@@ -15,10 +15,11 @@ import { TextField } from '../../ui/TextField';
 import { useSelection } from '../canvas/selection';
 import { endpointName, endpointOptions, refFor, type Target, targetFor } from './entities';
 import { FixDialog } from './FixDialog';
+import { FlowsTab } from './FlowsTab';
 import { reason, StepList, stepSentence, verdictLed } from './Steps';
 import { coverageByDevice, useSimulation } from './store';
 
-type Mode = 'reach' | 'access';
+type Mode = 'reach' | 'access' | 'flows';
 const PROTOCOLS: Protocol[] = ['tcp', 'udp', 'icmp', 'any'];
 
 /** Query params of the simulation panel (docs/07 § 0). */
@@ -52,7 +53,8 @@ export function SimulationPanel({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation('simulation');
   const project = useSession((s) => s.project);
   const { params, update } = useSimParams();
-  const mode: Mode = params.get('sim') === 'access' ? 'access' : 'reach';
+  const sim = params.get('sim');
+  const mode: Mode = sim === 'access' || sim === 'flows' ? sim : 'reach';
 
   // Overlays and highlights belong to the open panel.
   useEffect(() => () => useSimulation.getState().reset(), []);
@@ -92,9 +94,12 @@ export function SimulationPanel({ onClose }: { onClose: () => void }) {
         tabs={[
           { value: 'reach', label: t('modes.reach') },
           { value: 'access', label: t('modes.access') },
+          { value: 'flows', label: t('modes.flows') },
         ]}
       >
-        {mode === 'reach' ? <ReachTab project={project} /> : <AccessTab project={project} />}
+        {mode === 'reach' ? <ReachTab project={project} /> : null}
+        {mode === 'access' ? <AccessTab project={project} /> : null}
+        {mode === 'flows' ? <FlowsTab project={project} /> : null}
       </Tabs>
     </>
   );
