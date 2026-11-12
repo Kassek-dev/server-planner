@@ -19,7 +19,10 @@ import { Maximize, Minus, Plus } from 'lucide-react';
 import { type DragEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useServices, useSession } from '../../app/services';
+import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
+import { SimulationCanvasLayer } from '../simulation/CanvasLayer';
+import { useSimulation } from '../simulation/store';
 import {
   type ActionResult,
   addItemAt,
@@ -35,6 +38,8 @@ import { itemLabel, Library } from './Library';
 import { DRAG_MIME, type LibraryItem } from './library';
 import { DeviceNode } from './nodes/DeviceNode';
 import { LocationNode } from './nodes/LocationNode';
+import { OverlayControls } from './OverlayControls';
+import { decorateEdges, decorateNodes, useCanvasView } from './overlays';
 import { useSelection } from './selection';
 
 const nodeTypes = { device: DeviceNode, location: LocationNode };
@@ -233,6 +238,35 @@ function Workspace() {
     );
   }, [selection.nodeIds, selection.edgeIds]);
 
+  // Overlays (CAN-06) and the simulation path decorate what React Flow draws, not the state.
+  const linkColoring = useCanvasView((s) => s.links);
+  const deviceColoring = useCanvasView((s) => s.devices);
+  const capacity = useResults((s) => s.result?.capacity);
+  const highlight = useSimulation((s) => s.highlight);
+  const shownNodes = useMemo(
+    () =>
+      project
+        ? decorateNodes(nodes, {
+            project,
+            view: { links: linkColoring, devices: deviceColoring },
+            capacity,
+            highlight,
+          })
+        : nodes,
+    [nodes, project, linkColoring, deviceColoring, capacity, highlight],
+  );
+  const shownEdges = useMemo(
+    () =>
+      project
+        ? decorateEdges(edges, {
+            project,
+            view: { links: linkColoring, devices: deviceColoring },
+            highlight,
+          })
+        : edges,
+    [edges, project, linkColoring, deviceColoring, highlight],
+  );
+
   if (!project) return null;
   const empty =
     Object.keys(project.devices).length === 0 && Object.keys(project.locations).length === 0;
@@ -253,8 +287,8 @@ function Workspace() {
         onDrop={onDrop}
       >
         <ReactFlow<CanvasNode, Edge<LinkEdgeData>>
-          nodes={nodes}
-          edges={edges}
+          nodes={shownNodes}
+          edges={shownEdges}
           nodeTypes={nodeTypes}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
@@ -289,6 +323,8 @@ function Workspace() {
         </ReactFlow>
 
         {empty ? <EmptyCanvas onAdd={addAtCenter} /> : null}
+        {empty ? null : <OverlayControls />}
+        <SimulationCanvasLayer />
         <ZoomControls />
         {message ? (
           <div

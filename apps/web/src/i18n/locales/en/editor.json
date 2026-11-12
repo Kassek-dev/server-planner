@@ -28,5 +28,6 @@
     "issues": "Issues",
     "issueCount": "{errors, plural, =0 {No errors} one {# error} other {# errors}}, {warnings, plural, =0 {no warnings} one {# warning} other {# warnings}}",
     "showIssues": "Show"
-  }
+  },
+  "simulate": "Simulate"
 }

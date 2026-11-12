@@ -6,6 +6,7 @@ import { DeviceIcon } from '../../../icons/devices';
 import { useResults } from '../../../store/results';
 import { Led } from '../../../ui/Led';
 import { SegmentBar } from '../../../ui/SegmentBar';
+import { type Coverage, useSimulation } from '../../simulation/store';
 import type { DeviceNodeData, PortView } from '../graph';
 
 /** DeviceTile — docs/04 § 6.7. Shape encodes form factor; selection = 2 px `selection` border. */
@@ -108,6 +109,51 @@ function MemoryBar({ id }: { id: string }) {
   );
 }
 
+const COVERAGE_MARK: Record<Coverage, string> = { full: '✓', partial: '◐', none: '✕' };
+const COVERAGE_CLASS: Record<Coverage, string> = {
+  full: 'border-ok text-ok-text',
+  partial: 'border-warning-border text-warning-text',
+  none: 'border-error-border text-error-text',
+};
+
+function CoverageChip({ coverage, label }: { coverage: Coverage; label: string }) {
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      title={label}
+      className={`flex h-4 min-w-4 shrink-0 items-center justify-center rounded-xs border bg-raised px-0.5 text-body-sm leading-none ${COVERAGE_CLASS[coverage]}`}
+    >
+      {COVERAGE_MARK[coverage]}
+    </span>
+  );
+}
+
+/** O-09 access badges: internet access and services visible from the viewpoint (SIM-02/03). */
+function AccessBadges({ id }: { id: string }) {
+  const { t } = useTranslation('simulation');
+  const internetOn = useSimulation((s) => s.internetOverlay);
+  const visible = useSimulation((s) => s.visible?.byDevice[id]);
+  const internet = useResults((s) => (internetOn ? s.result?.internet[id] : undefined));
+  if (!internet && !visible) return null;
+  return (
+    <span className="flex gap-1">
+      {internet ? (
+        <CoverageChip
+          coverage={internet}
+          label={t('simulation:badge.internet', { state: internet })}
+        />
+      ) : null}
+      {visible ? (
+        <CoverageChip
+          coverage={visible}
+          label={t('simulation:badge.visible', { state: visible })}
+        />
+      ) : null}
+    </span>
+  );
+}
+
 export const DeviceNode = memo(function DeviceNode({
   data,
   selected,
@@ -137,6 +183,7 @@ export const DeviceNode = memo(function DeviceNode({
       <div className={`flex h-full items-center gap-2 rounded-sm bg-tile px-2 ${border}`}>
         {handles}
         <StatusLed id={device.id} size={7} />
+        <AccessBadges id={device.id} />
         <span className="truncate text-body-sm font-semibold">{device.name}</span>
         {detailed ? (
           <span className="truncate font-mono text-data-sm text-text-secondary">{meta}</span>
@@ -174,6 +221,7 @@ export const DeviceNode = memo(function DeviceNode({
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-2.5">
           <div className="flex items-center gap-2">
             <StatusLed id={device.id} />
+            <AccessBadges id={device.id} />
             <span className="truncate font-semibold">{device.name}</span>
             <span className="truncate font-mono text-data-sm text-text-secondary">{`${ff.units}U · ${meta}`}</span>
           </div>
@@ -201,7 +249,8 @@ export const DeviceNode = memo(function DeviceNode({
               <span className="truncate font-mono text-data-sm text-text-secondary">{meta}</span>
             ) : null}
           </span>
-          <span className="ml-auto pl-1">
+          <span className="ml-auto flex items-center gap-1.5 pl-1">
+            <AccessBadges id={device.id} />
             <StatusLed id={device.id} />
           </span>
         </div>

@@ -1,4 +1,5 @@
 import type { Id } from '@server-planner/model';
+import type { InternetAccess } from './simulation/access';
 
 /** Engine results (never stored) — docs/02-model-danych.md § 8. */
 
@@ -67,5 +68,7 @@ export interface AnalysisResult {
   capacity: Record<Id, CapacityReport>;
   /** Worst state per device: issues on it, its ports, workloads and apps, and its capacity. */
   deviceStatus: Record<Id, DeviceStatus>;
+  /** Internet access per device and VM/LXC with an address (SIM-02). */
+  internet: Record<Id, InternetAccess>;
   durationMs: number;
 }

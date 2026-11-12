@@ -6,6 +6,7 @@
  */
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
+import { SIM_CODES } from '../packages/engine/src/simulation/reach';
 import { ISSUE_CODES } from '../packages/engine/src/validation/rules';
 
 const ROOT = join(import.meta.dirname, '..');
@@ -97,6 +98,12 @@ for (const code of ISSUE_CODES) {
     if (!base.has(`issues:${code}.${part}`))
       errors.push(`engine issue ${code} has no "issues:${code}.${part}"`);
   }
+}
+
+// 3b. every simulation step code has a sentence (docs/03 § 5.3)
+for (const code of SIM_CODES) {
+  if (!base.has(`simulation:steps.${code}`))
+    errors.push(`simulation step ${code} has no "simulation:steps.${code}"`);
 }
 
 // 4. other languages match en

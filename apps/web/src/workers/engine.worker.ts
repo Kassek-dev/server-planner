@@ -1,12 +1,11 @@
-import { analyze } from '@server-planner/engine';
-import type { Project } from '@server-planner/model';
+import { analyze, simulateReach, simulateVisibleFrom } from '@server-planner/engine';
 import { expose } from 'comlink';
 
-/** Engine worker (docs/03 § 5.5): analyses run off the UI thread. */
+/** Engine worker (docs/03 § 5.5): analyses and on-demand simulation queries run off the UI thread. */
 const api = {
-  analyze(project: Project) {
-    return analyze(project);
-  },
+  analyze,
+  reach: simulateReach,
+  visibleFrom: simulateVisibleFrom,
 };
 
 export type EngineWorkerApi = typeof api;

@@ -1,5 +1,5 @@
 import { updateProject } from '@server-planner/model';
-import { Download, Redo2, Undo2 } from 'lucide-react';
+import { Download, Play, Redo2, Undo2 } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';
@@ -101,8 +101,19 @@ function Editor() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target?.closest('input, textarea, [contenteditable="true"]')) return;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
       const mod = event.ctrlKey || event.metaKey;
+      // `S` opens / closes the simulation panel (docs/07 X-01).
+      if (!mod && !event.altKey && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        setParams((prev) => {
+          const next = new URLSearchParams(prev);
+          if (next.get('panel') === 'sim') next.delete('panel');
+          else next.set('panel', 'sim');
+          return next;
+        });
+        return;
+      }
       if (!mod) return;
       const key = event.key.toLowerCase();
       if (key === 'z' && !event.shiftKey) {
@@ -115,7 +126,7 @@ function Editor() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [session]);
+  }, [session, setParams]);
 
   if (!project) return null;
 
@@ -152,6 +163,22 @@ function Editor() {
         </div>
         <Button icon={<Download size={14} aria-hidden="true" />} onClick={() => void exportJson()}>
           {t('export')}
+        </Button>
+        <Button
+          variant="primary"
+          icon={<Play size={14} aria-hidden="true" />}
+          aria-pressed={params.get('panel') === 'sim'}
+          aria-keyshortcuts="S"
+          onClick={() =>
+            setParams((prev) => {
+              const next = new URLSearchParams(prev);
+              if (next.get('panel') === 'sim') next.delete('panel');
+              else next.set('panel', 'sim');
+              return next;
+            })
+          }
+        >
+          {t('simulate')}
         </Button>
       </TopBar>
       {saveState === 'error' ? (
