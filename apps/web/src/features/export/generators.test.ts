@@ -1,0 +1,79 @@
+import { analyze } from '@server-planner/engine';
+import { updateDevice } from '@server-planner/model';
+import { describe, expect, it } from 'vitest';
+import { deviceByName, homeLab, sessionWith } from '../canvas/testSupport';
+import { deviceRows } from '../inventory/rows';
+import { ipPlan } from '../ipplan/plan';
+import { containersOf, dockerCompose } from './compose';
+import { bomCsv, devicesCsv, ipPlanCsv, toCsv } from './csv';
+import { projectMarkdown } from './markdown';
+
+const lab = homeLab();
+
+describe('CSV', () => {
+  it('quotes commas, quotes and line breaks', () => {
+    expect(
+      toCsv(
+        ['a', 'b'],
+        [
+          ['x, y', 'say "hi"'],
+          ['line\nbreak', 3],
+        ],
+      ),
+    ).toBe('a,b\r\n"x, y","say ""hi"""\r\n"line\nbreak",3\r\n');
+  });
+
+  it('exports devices and the IP plan', () => {
+    const devices = devicesCsv(deviceRows(lab, null, analyze(lab))).split('\r\n');
+    expect(devices[0]).toMatch(/^Name,Kind,Location/);
+    expect(devices.some((l) => l.startsWith('pve1,mini-pc,Office shelf'))).toBe(true);
+    const ip = ipPlanCsv(ipPlan(lab));
+    expect(ip).toContain('192.168.20.0/24,20 · LAN,LAN,192.168.20.15,nas-01,eth0,static,duplicate');
+    expect(ip).toContain('192.168.20.100-192.168.20.199,,,dhcp pool,100 addresses');
+  });
+
+  it('totals the bill of materials for items to buy', () => {
+    const session = sessionWith(lab);
+    session.dispatch(updateDevice, {
+      id: deviceByName(lab, 'nas-01').id,
+      changes: { purchase: { status: 'to-buy', price: 499, currency: 'EUR' } },
+    });
+    const bom = bomCsv(session.getState().project ?? lab, null);
+    expect(bom).toContain('nas-01,nas,,to-buy,499,EUR,');
+    expect(bom).toContain('Total to buy,,,,499,EUR,');
+  });
+});
+
+describe('docker-compose.yml', () => {
+  it('lists the containers of a host with ports, networks and volumes', () => {
+    const vm = Object.values(lab.workloads).find((w) => w.name === 'docker-vm');
+    const yml = dockerCompose(
+      lab,
+      containersOf(lab, { host: { type: 'workload', id: vm?.id ?? '' } }),
+      'docker-vm',
+    );
+    expect(yml).toContain(
+      'services:\n  jellyfin:\n    image: "lscr.io/linuxserver/jellyfin:latest"',
+    );
+    expect(yml).toContain('    ports:\n      - "8096:8096"');
+    expect(yml).toContain('networks:\n  bridge:\n    driver: bridge');
+    expect(yml).toMatch(/volumes:\n {2}jellyfin-config: \{\}/);
+  });
+});
+
+describe('Markdown documentation', () => {
+  it('covers devices, networks, firewall, IP plan and issues', () => {
+    const md = projectMarkdown(lab, null, analyze(lab), (i) => `issue ${i.code}`, '2026-11-12');
+    for (const heading of [
+      '# Home lab',
+      '## Devices',
+      '## Networks',
+      '## Firewall · gw-01',
+      '## IP plan',
+      '## Issues',
+    ])
+      expect(md).toContain(heading);
+    expect(md).toContain('| 4 | deny | IoT | LAN | any | IoT → LAN |');
+    expect(md).toContain('issue VAL_01');
+  });
+});

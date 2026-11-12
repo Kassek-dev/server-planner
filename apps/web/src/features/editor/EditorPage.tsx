@@ -14,6 +14,7 @@ import { Led, type LedStatus } from '../../ui/Led';
 import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
 import { DrawerHost } from '../drawers/DrawerHost';
+import { ExportDialog } from '../export/ExportDialog';
 import { useExportDialog } from '../export/store';
 import { SelectionPanel } from '../inspector/SelectionPanel';
 import { InventoryView } from '../inventory/InventoryView';
@@ -247,6 +248,7 @@ function Editor() {
         <SelectionPanel />
       </main>
       <DrawerHost />
+      <ExportDialog />
       <Toaster />
     </div>
   );

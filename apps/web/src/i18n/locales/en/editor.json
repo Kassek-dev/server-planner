@@ -54,11 +54,35 @@
     "hint": {
       "png": "Image at 2× resolution — for documentation and chats.",
       "svg": "Scalable image — sharp at any zoom; text stays selectable in browsers.",
-      "json": "Complete backup of the project — import it here or in another browser."
+      "json": "Complete backup of the project — import it here or in another browser.",
+      "csv": "Spreadsheet-friendly table — devices, workloads, apps, the IP plan or a bill of materials.",
+      "md": "Readable documentation of the whole project: inventory, networks, firewall, IP plan and issues.",
+      "compose": "docker-compose.yml with the containers of one host or one stack, ready to adapt."
     },
     "export": "Export {format}",
     "working": "Exporting…",
     "cancel": "Cancel",
-    "failed": "The image could not be created. Try a smaller area or the other format."
+    "failed": "The image could not be created. Try a smaller area or the other format.",
+    "formats": {
+      "png": "PNG",
+      "svg": "SVG",
+      "json": "JSON",
+      "csv": "CSV",
+      "md": "Markdown",
+      "compose": "Compose"
+    },
+    "dataset": "Table",
+    "datasets": {
+      "devices": "Devices",
+      "workloads": "Workloads",
+      "apps": "Apps",
+      "ip": "IP plan",
+      "bom": "BOM"
+    },
+    "needsCanvas": "Images are made from the canvas — switch to Topology to export PNG or SVG.",
+    "composeScope": "Containers of",
+    "composeHost": "{name} ({count, plural, one {# container} other {# containers}})",
+    "composeStack": "Stack {name} ({count, plural, one {# container} other {# containers}})",
+    "noContainers": "There are no containers in this project yet."
   }
 }

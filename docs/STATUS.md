@@ -129,7 +129,7 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 - [x] 9a: przełącznik widoków w top barze (Topology / Inventory / IP Plan) z trasami `#/p/:id/inventory`, `#/p/:id/ip`; inspector i szuflady wspólne dla widoków
 - [x] 9a: Inventory (V‑03, VIEW‑02): TanStack Table — urządzenia / workloady / aplikacje, sortowanie, filtr, grupowanie po lokalizacji, edycja inline (nazwa, lokalizacja, tagi), kolumny Internet i Capacity z silników, zaznaczenie wiersza = zaznaczenie w projekcie (tagi: edycja w inspektorze)
 - [x] 9b: IP Plan (V‑04, VIEW‑03, NET‑04): karty podsieci z pulą DHCP, tabela adresów (IP, host, interfejs, typ, konflikt), wolne zakresy
-- [ ] 9c: eksporty w D‑04: CSV inwentarza i planu IP (EXP‑04), BOM do CSV (EXP‑03), dokumentacja do Markdown (EXP‑05), `docker-compose.yml` per stos / host (EXP‑06, SW‑13)
+- [x] 9c: eksporty w D‑04 (dialog dostępny w każdym widoku; obraz wymaga Topology): CSV inwentarza i planu IP (EXP‑04), BOM do CSV (EXP‑03), dokumentacja do Markdown (EXP‑05), `docker-compose.yml` per stos / host (EXP‑06, SW‑13)
 
 ### Etap 10 — Katalog „żywy” (pakiet 4)
 
@@ -174,5 +174,6 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Decyzje UI1–UI3 (`docs/05` § 15, v0.2); etap 8a: toasty z Undo, auto‑Internet, Settings, About; unit 176, E2E 27 | #15 |
 | 2026-11-12 | Etap 8b: eksport D‑04 (PNG/SVG/JSON), E2E ścieżek A i B — **MVP ukończone**; unit 176, E2E 30 | #16 |
 | 2026-11-12 | Poprawka: łącza między urządzeniami jednego racka prowadzone prawą stroną (nie przez kolumnę U) | #17 |
-| 2026-11-12 | Plan wersji 1.1 (etapy 9–17); etap 9a/9b: Inventory i IP Plan (TanStack Table 9) | — |
+| 2026-11-12 | Plan wersji 1.1 (etapy 9–17); etap 9a/9b: Inventory i IP Plan (TanStack Table 9) | #19 |
+| 2026-11-12 | Etap 9c: eksport CSV (inwentarz, plan IP, BOM), Markdown, docker-compose — etap 9 zamknięty; unit 189, E2E 33 | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |

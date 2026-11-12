@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
@@ -65,4 +66,46 @@ test('IP plan: subnets, conflicts, DHCP pool and free ranges', async ({ page }) 
   await expect(lan.getByText('192.168.20.3 – 192.168.20.14 · free (12 addresses)')).toBeVisible();
   await lan.getByRole('button', { name: 'docker-vm' }).click();
   await expect(inspector(page).getByRole('heading', { name: 'docker-vm' })).toBeVisible();
+});
+
+test('exports from any view: CSV, Markdown and docker-compose (EXP-03…06)', async ({ page }) => {
+  await openExample(page);
+  await page.getByRole('link', { name: 'Inventory' }).click();
+  const open = async () => {
+    await page.getByRole('button', { name: 'Export', exact: true }).click();
+    return page.getByRole('dialog', { name: 'Export' });
+  };
+
+  let dialog = await open();
+  await dialog.getByText('PNG', { exact: true }).click();
+  await expect(dialog.getByText('switch to Topology', { exact: false })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Export PNG' })).toBeDisabled();
+
+  await dialog.getByText('CSV', { exact: true }).click();
+  await dialog.getByText('IP plan', { exact: true }).click();
+  let download = page.waitForEvent('download');
+  await dialog.getByRole('button', { name: 'Export CSV' }).click();
+  let file = await download;
+  expect(file.suggestedFilename()).toMatch(/^home-lab-.*-ip\.csv$/);
+  expect(await readFile(await file.path(), 'utf8')).toContain('192.168.20.15,nas-01');
+
+  dialog = await open();
+  await dialog.getByText('Markdown', { exact: true }).click();
+  download = page.waitForEvent('download');
+  await dialog.getByRole('button', { name: 'Export Markdown' }).click();
+  file = await download;
+  expect(await readFile(await file.path(), 'utf8')).toContain('## Firewall · gw-01');
+
+  dialog = await open();
+  await dialog.getByText('Compose', { exact: true }).click();
+  await expect(dialog.getByRole('combobox', { name: 'Containers of' })).toHaveValue(
+    /^host:workload:/,
+  );
+  download = page.waitForEvent('download');
+  await dialog.getByRole('button', { name: 'Export Compose' }).click();
+  file = await download;
+  expect(file.suggestedFilename()).toBe('docker-vm-docker-compose.yml');
+  expect(await readFile(await file.path(), 'utf8')).toContain(
+    'image: "lscr.io/linuxserver/jellyfin:latest"',
+  );
 });

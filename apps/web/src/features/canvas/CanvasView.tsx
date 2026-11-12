@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useServices, useSession } from '../../app/services';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
-import { ExportDialog } from '../export/ExportDialog';
+import { useExportDialog } from '../export/store';
 import { SimulationCanvasLayer } from '../simulation/CanvasLayer';
 import { useSimulation } from '../simulation/store';
 import {
@@ -65,6 +65,14 @@ function Workspace() {
     params?: Record<string, string | number>;
   } | null>(null);
   const selection = useSelection();
+
+  // Image export (D-04) reads the rendered nodes while this view is mounted.
+  useEffect(() => {
+    useExportDialog.setState({
+      canvas: { getNodes: () => flow.getNodes(), getNodesBounds: (n) => flow.getNodesBounds(n) },
+    });
+    return () => useExportDialog.setState({ canvas: null });
+  }, [flow]);
 
   const derivedNodes = useMemo(() => (project ? toFlowNodes(project) : []), [project]);
   const derivedEdges = useMemo(
@@ -345,7 +353,6 @@ function Workspace() {
         {empty ? null : <OverlayControls />}
         <SimulationCanvasLayer />
         <ZoomControls />
-        <ExportDialog />
         {message ? (
           <div
             role="status"
