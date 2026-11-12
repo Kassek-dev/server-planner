@@ -3,12 +3,10 @@ import { Download, Play, Redo2, Undo2 } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';
-import { downloadBlob } from '../../app/download';
 import { NotFoundPage } from '../../app/routes/NotFoundPage';
 import { useServices, useSession } from '../../app/services';
 import { TopBar } from '../../app/shell/TopBar';
 import { engineOptions, useCatalog } from '../../catalog/store';
-import { exportBlob, exportFileName } from '../../persistence/backup';
 import { connectResults } from '../../store/results';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
@@ -16,6 +14,7 @@ import { Led, type LedStatus } from '../../ui/Led';
 import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
 import { DrawerHost } from '../drawers/DrawerHost';
+import { useExportDialog } from '../export/store';
 import { SelectionPanel } from '../inspector/SelectionPanel';
 import { IssueCounters } from '../issues/IssueCounters';
 import { describeCommit } from '../toasts/describe';
@@ -88,7 +87,7 @@ function EditorLoading() {
 
 function Editor() {
   const { t } = useTranslation('editor');
-  const { session, repository } = useServices();
+  const { session } = useServices();
   const project = useSession((s) => s.project);
   const canUndo = useSession((s) => s.past.length > 0);
   const canRedo = useSession((s) => s.future.length > 0);
@@ -152,14 +151,6 @@ function Editor() {
 
   if (!project) return null;
 
-  const exportJson = async () => {
-    await session.flush();
-    const current = session.getState().project;
-    if (!current) return;
-    downloadBlob(exportBlob(current), exportFileName(current));
-    await repository.recordExport();
-  };
-
   return (
     <div className="flex h-full flex-col bg-app text-text-primary">
       <TopBar nav={false}>
@@ -183,7 +174,10 @@ function Editor() {
             <Redo2 size={16} aria-hidden="true" />
           </IconButton>
         </div>
-        <Button icon={<Download size={14} aria-hidden="true" />} onClick={() => void exportJson()}>
+        <Button
+          icon={<Download size={14} aria-hidden="true" />}
+          onClick={() => useExportDialog.getState().setOpen(true)}
+        >
           {t('export')}
         </Button>
         <Button

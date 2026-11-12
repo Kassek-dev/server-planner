@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useServices, useSession } from '../../app/services';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
+import { ExportDialog } from '../export/ExportDialog';
 import { SimulationCanvasLayer } from '../simulation/CanvasLayer';
 import { useSimulation } from '../simulation/store';
 import {
@@ -306,6 +307,11 @@ function Workspace() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeDragStop={onNodeDragStop}
+          // A click on an already selected tile leaves a workload/app detail and shows the device.
+          onNodeClick={(_event, clicked) => {
+            const { detail, nodeIds, set } = useSelection.getState();
+            if (detail && nodeIds.length === 1 && nodeIds[0] === clicked.id) set([clicked.id]);
+          }}
           onConnect={onConnect}
           isValidConnection={(c) =>
             c.source !== c.target &&
@@ -339,6 +345,7 @@ function Workspace() {
         {empty ? null : <OverlayControls />}
         <SimulationCanvasLayer />
         <ZoomControls />
+        <ExportDialog />
         {message ? (
           <div
             role="status"

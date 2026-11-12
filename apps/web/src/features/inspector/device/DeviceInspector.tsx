@@ -1,4 +1,5 @@
 import { COMPUTE_KINDS, type Device, type Project, updateDevice } from '@server-planner/model';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices } from '../../../app/services';
@@ -8,8 +9,9 @@ import { Checkbox } from '../../../ui/Checkbox';
 import { Tabs } from '../../../ui/Tabs';
 import { deleteSelection } from '../../canvas/actions';
 import { useSelection } from '../../canvas/selection';
+import { AppCatalogDialog } from '../../catalog/AppCatalogDialog';
 import { CapacityMeters } from '../CapacityMeters';
-import { CommitField, useCommand } from '../parts';
+import { AddButton, CommitField, useCommand } from '../parts';
 import { HardwareTab } from './HardwareTab';
 import { NetworkTab } from './NetworkTab';
 import { SoftwareTab } from './SoftwareTab';
@@ -73,7 +75,10 @@ export function DeviceInspector({ project, device }: { project: Project; device:
       ) : (
         <Tabs label={t('tabs.label')} value={tab} tabs={tabs} onChange={setTab}>
           {tab === 'capacity' && report ? (
-            <CapacityMeters project={project} report={report} />
+            <>
+              <CapacityMeters project={project} report={report} />
+              <AddAppsButton project={project} deviceId={device.id} />
+            </>
           ) : null}
           {tab === 'hardware' ? <HardwareTab project={project} device={device} /> : null}
           {tab === 'software' ? <SoftwareTab project={project} device={device} /> : null}
@@ -122,5 +127,24 @@ function TagPicker({ project, device }: { project: Project; device: Device }) {
         />
       ))}
     </fieldset>
+  );
+}
+
+/** Path B (docs/05 § 6.2): "will my hardware cope?" — add apps from the catalog, watch the bars. */
+function AddAppsButton({ project, deviceId }: { project: Project; deviceId: string }) {
+  const { t } = useTranslation('inspector');
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <AddButton label={t('capacity.addApps')} onClick={() => setOpen(true)} />
+      {open ? (
+        <AppCatalogDialog
+          project={project}
+          host={{ type: 'device', id: deviceId }}
+          open
+          onOpenChange={setOpen}
+        />
+      ) : null}
+    </>
   );
 }

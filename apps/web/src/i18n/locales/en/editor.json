@@ -12,7 +12,7 @@
   },
   "undo": "Undo",
   "redo": "Redo",
-  "export": "Export JSON",
+  "export": "Export",
   "loading": "Loading project…",
   "summary": {
     "title": "This project",
@@ -39,5 +39,24 @@
     "internetAdded": "Internet added and connected to {router} WAN",
     "appAdded": "{name} added ({count, plural, one {# container} other {# containers}})",
     "appsAdded": "Apps added ({count, plural, one {# container} other {# containers}})"
+  },
+  "exportDialog": {
+    "title": "Export",
+    "format": "Format",
+    "scope": "Area",
+    "background": "Background",
+    "all": "Whole canvas",
+    "selection": "Selection ({count})",
+    "dark": "Dark",
+    "light": "Light",
+    "hint": {
+      "png": "Image at 2× resolution — for documentation and chats.",
+      "svg": "Scalable image — sharp at any zoom; text stays selectable in browsers.",
+      "json": "Complete backup of the project — import it here or in another browser."
+    },
+    "export": "Export {format}",
+    "working": "Exporting…",
+    "cancel": "Cancel",
+    "failed": "The image could not be created. Try a smaller area or the other format."
   }
 }
