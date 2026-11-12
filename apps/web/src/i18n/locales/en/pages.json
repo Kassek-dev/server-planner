@@ -46,7 +46,7 @@
       }
     },
     "units": {
-      "description": "Currency, energy price and default capacity thresholds for new projects arrive with version 1.1. Until then, set thresholds and overcommit per project in Project settings."
+      "description": "Defaults for new projects (currency, energy price, capacity thresholds) come in a later version. Until then, set them per project in Project settings."
     },
     "storage": {
       "used": "Browser storage used",

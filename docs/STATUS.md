@@ -120,7 +120,7 @@
 - Poza MVP (P1, wersja 1.1): builder katalogu i aktualizacje (CAT‑03/04), Settings › Catalog/Units, PWA/offline, Inventory/IP Plan/Access, asercje, przepływy (FLW)
 - Katalog: dane kurowane zostają `curated`; użytkownik przejrzy je później (2026-11-12)
 
-## Wersja 1.1 — plan (2026-11-12)
+## Wersja 1.1 — plan (2026-11-12), wydana jako v1.1.0
 
 Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa katalogu (11); dalsza kolejność do decyzji. Funkcje częściowo zrobione w MVP: LOC‑05/07, CAP‑04 (per projekt), LIB‑02, SW‑10, HW‑08 (pole w modelu).
 
@@ -224,7 +224,7 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 10c: workflow `catalog-update.yml`, pierwszy `dist` od bota (`chore(catalog): 2026.46`), zabezpieczenie rozpakowywania archiwów | #23 |
 | 2026-11-12 | Etap 10d: katalog efektywny w aplikacji (243 aplikacje), aktualizacje CAT‑04, Settings › Catalog, źródła w About, PERF w D‑05 — etap 10 zamknięty; unit 205, E2E 33 | #24 |
 | 2026-11-12 | Etap 11: skan popularnych aplikacji, 63 nowe kurowane, filtry importu → 195 aplikacji | #25 |
-| 2026-11-12 | Etap 12: przepływy aplikacji (FLW‑01…05), oś kroków na canvasie; unit 211, E2E 34 | — |
+| 2026-11-12 | Etap 12: przepływy aplikacji (FLW‑01…05), oś kroków na canvasie; unit 211, E2E 34 | #26 |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |
 | 2026-11-12 | Etap 13: Access (macierz, ekspozycja, asercje), Save as assertion, kreator segmentacji; unit 218, E2E 37 | #27 |
 | 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | #28 |
@@ -232,4 +232,5 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 16a: szablony, druga karta, minimapa, paleta Ctrl+K, notatki, etykiety kabli; unit 233, E2E 43 | #30 |
 | 2026-11-12 | Etap 16b: snapshoty z diffem i przywracaniem, własne szablony urządzeń, wyrównywanie, routing łączy; unit 239, E2E 45 | #31 |
 | 2026-11-12 | Poprawka bezpieczeństwa: walidacja snapshotów przy imporcie i przywracaniu | #32 |
-| 2026-11-12 | Etap 17: PWA (offline, aktualizacja), tryb mobilny tylko do odczytu (M‑01…03); unit 241, E2E 47 | — |
+| 2026-11-12 | Etap 17: PWA (offline, aktualizacja), tryb mobilny tylko do odczytu (M‑01…03); unit 241, E2E 47 | #33 |
+| 2026-11-12 | **Wydanie v1.1.0** (etapy 9–17; format projektu bez zmian, schemat v1), `CHANGELOG.md`, wersja w `apps/web/package.json` (spełnia `minAppVersion` katalogu) | tag `v1.1.0` |
