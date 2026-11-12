@@ -29,9 +29,11 @@ const folder = (name: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9_-]+/g, '-')
     .replace(/^-+|-+$/g, '') || 'data';
-/** Comments carry user text: keep it on one line. */
-// biome-ignore lint/suspicious/noControlCharactersInRegex: stripping control characters is the point
-const CONTROL = /[\u0000-\u001f\u007f\u2028\u2029]+/g;
+/**
+ * Comments carry user text: keep it on one line. Strips every Unicode control/format character
+ * (incl. NEL U+0085, a YAML 1.1 line break) and the line/paragraph separators.
+ */
+const CONTROL = /[\p{C}\p{Zl}\p{Zp}]+/gu;
 const oneLine = (text: string) => text.replace(CONTROL, ' ');
 /** Double-quoted YAML scalar (JSON strings are valid YAML). */
 const q = (value: string) => JSON.stringify(value);
