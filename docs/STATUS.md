@@ -133,8 +133,8 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 10 — Katalog „żywy” (pakiet 4)
 
-- [ ] 10a: `catalog-builder`: interfejs `SourceAdapter`, blokada 7 dni (`catalog/state.json`), scalanie (curated > źródła), bezpieczniki (spadek > 20%), `catalog/dist` + `manifest.json` z SHA‑256, `CHANGELOG.json`
-- [ ] 10b: adaptery: awesome‑selfhosted‑data (lista, opisy, licencje), LinuxServer.io API (porty, wolumeny, architektury), Proxmox VE Community Scripts (zasoby), Blender Open Data (wydajność CPU, aliasy)
+- [x] 10a: `catalog-builder`: interfejs `SourceAdapter`, blokada 7 dni (`catalog/state.json`), scalanie (curated > źródła), bezpieczniki (spadek > 20%), `catalog/dist` + `manifest.json` z SHA‑256, `CHANGELOG.json`
+- [x] 10b: adaptery (zweryfikowane na żywo 2026-11-12: 203 obrazy LSIO, 766 aplikacji ASD z Dockerem, 648 skryptów CS, 1313 CPU z Blendera → 184 aplikacje importowane): awesome‑selfhosted‑data (lista, opisy, licencje), LinuxServer.io API (porty, wolumeny, architektury), Proxmox VE Community Scripts (zasoby), Blender Open Data (wydajność CPU, aliasy)
 - [ ] 10c: workflow `catalog-update.yml` (cron 1×/tydzień, ręczne uruchomienie, commit `chore(catalog): RRRR.TT`, Issue przy awarii)
 - [ ] 10d: aplikacja: katalog efektywny = bazowy + pobrany (IndexedDB, 2 wersje), sprawdzenie przy starcie max 1×/7 dni, Settings › Catalog (wersja, źródła, Check now, Roll back), About › Data sources z datami pobrania; kolumna PERF w D‑05
 
@@ -175,5 +175,6 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 8b: eksport D‑04 (PNG/SVG/JSON), E2E ścieżek A i B — **MVP ukończone**; unit 176, E2E 30 | #16 |
 | 2026-11-12 | Poprawka: łącza między urządzeniami jednego racka prowadzone prawą stroną (nie przez kolumnę U) | #17 |
 | 2026-11-12 | Plan wersji 1.1 (etapy 9–17); etap 9a/9b: Inventory i IP Plan (TanStack Table 9) | #19 |
-| 2026-11-12 | Etap 9c: eksport CSV (inwentarz, plan IP, BOM), Markdown, docker-compose — etap 9 zamknięty; unit 189, E2E 33 | — |
+| 2026-11-12 | Etap 9c: eksport CSV (inwentarz, plan IP, BOM), Markdown, docker-compose — etap 9 zamknięty; unit 189, E2E 33 | #20, #21 |
+| 2026-11-12 | Etap 10a/10b: builder katalogu z 4 adapterami, bezpiecznikami i blokadą | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |

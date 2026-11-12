@@ -1,0 +1,21 @@
+# Identity of curated apps across sources (docs/06 § 2.5): curated id → keys used by the sources
+# (LinuxServer image names, awesome-selfhosted names, Community Scripts app names), already
+# normalised (lowercase letters and digits). Curated entries always win; matching sources only
+# add attribution.
+adguard-home: [adguardhome, adguard]
+home-assistant: [homeassistant, homeassistantcore, homeassistantos]
+nginx-proxy-manager: [nginxproxymanager, npm]
+unifi-network-application: [unifinetworkapplication, unifi, unificontroller]
+uptime-kuma: [uptimekuma]
+wg-easy: [wgeasy, wireguardeasy]
+cloudflared: [cloudflaretunnel]
+paperless-ngx: [paperlessngx, paperless]
+code-server: [codeserver]
+actual-budget: [actualbudget, actual, actualserver]
+calibre-web: [calibreweb]
+it-tools: [ittools]
+node-exporter: [nodeexporter, prometheusnodeexporter]
+node-red: [nodered]
+portainer: [portainerce]
+postgres: [postgresql]
+mongodb: [mongo]

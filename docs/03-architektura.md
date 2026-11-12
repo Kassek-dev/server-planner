@@ -316,6 +316,8 @@ Kroki uruchomienia:
 5. **Bezpieczniki**: spadek liczby rekordów źródła > 20% lub odsetek błędów > progu → przerwanie z kodem błędu (workflow zakłada Issue).
 6. Zapis `dist/*.json`, `manifest.json` (SHA‑256), `CHANGELOG.json`, aktualizacja `state.json`.
 
+Implementacja (2026-11-12): `packages/catalog-builder/src/build.ts` (CLI `--force`, `--only <id>`, `--dry-run`; kody wyjścia 0 / 1 / 2 = bezpiecznik), adaptery w `src/sources/`, scalanie w `src/merge.ts`. `catalog/dist` zawiera **tylko dane z buildera**: `apps.json` (aplikacje importowane — obraz z LinuxServer.io wzbogacony opisem z awesome‑selfhosted i zasobami z Community Scripts; aplikacje kurowane zawsze wygrywają i nie trafiają do `dist`), `perf.json` (ranking CPU), `manifest.json`, `CHANGELOG.json`; blokada w `catalog/state.json`. Przy awarii któregokolwiek źródła aplikacji zostaje poprzednie `apps.json` (status `stale`). Heurystyki i aliasy: `catalog/curated/heuristics.yml`, `app-aliases.yml`.
+
 ### 7.2 Workflow `catalog-update.yml`
 
 ```yaml
