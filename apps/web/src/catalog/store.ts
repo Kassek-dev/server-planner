@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 /**
  * catalogStore (docs/03 § 4.2): the effective catalog. For the MVP it is the base layer built
- * into the app (CAT-01) and loaded as a lazy chunk; downloaded updates (CAT-04) come with 1.0.
+ * into the app (CAT-01) and loaded as a lazy chunk; downloaded updates (CAT-04) come with 1.1.
  */
 export interface CatalogState {
   catalog: Catalog | null;

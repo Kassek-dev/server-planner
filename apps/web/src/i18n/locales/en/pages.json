@@ -17,10 +17,10 @@
     "catalog": {
       "version": "Catalog {version}",
       "description": "Built into the app: {apps} apps, {devices} device models, {cpus} CPUs. Works offline.",
-      "updates": "Weekly catalog updates, source status and rollback arrive with version 1.0."
+      "updates": "Weekly catalog updates, source status and rollback arrive with version 1.1."
     },
     "units": {
-      "description": "Currency, energy price and default capacity thresholds for new projects arrive with version 1.0. Until then, set thresholds and overcommit per project in Project settings."
+      "description": "Currency, energy price and default capacity thresholds for new projects arrive with version 1.1. Until then, set thresholds and overcommit per project in Project settings."
     },
     "storage": {
       "used": "Browser storage used",
@@ -65,7 +65,7 @@
       "open": "Open selfh.st"
     },
     "sources": {
-      "description": "Catalog {version}. The catalog as a whole is licensed CC BY-SA 4.0. In this version it consists of the curated layer maintained in the repository; automatic weekly imports from the other sources arrive with version 1.0.",
+      "description": "Catalog {version}. The catalog as a whole is licensed CC BY-SA 4.0. In this version it consists of the curated layer maintained in the repository; automatic weekly imports from the other sources arrive with version 1.1.",
       "columns": {
         "source": "Source",
         "usedFor": "Used for",
@@ -74,7 +74,7 @@
       },
       "facts": "facts only",
       "inUse": "in use",
-      "planned": "planned (1.0)",
+      "planned": "planned (1.1)",
       "items": {
         "curated": {
           "name": "Curated layer (this project)",

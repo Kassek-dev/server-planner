@@ -1,6 +1,6 @@
 # Server Planner — specyfikacja funkcjonalna (v0.4)
 
-> Status: **zaakceptowany zakres, v0.4** (dodane lokalizacje i forma urządzeń) · Ostatnia zmiana: 2026-11-11
+> Status: **zaakceptowany zakres, v0.5** (D10: numeracja wydań) · Ostatnia zmiana: 2026-11-12
 > Kolejne dokumenty: `02-model-danych.md`, `03-architektura.md`, `04-design-system.md`, `05-projekt-ui.md`
 > Dokumentacja prowadzona po polsku; interfejs aplikacji i kod — po angielsku.
 
@@ -19,6 +19,7 @@
 | D7  | **Zero własnych serwerów.** Dane katalogu zbiera workflow **GitHub Actions** w publicznym repo (**maksymalnie raz na tydzień**) i **publikuje automatycznie** jako pliki statyczne. Aplikacja pobiera je przy starcie (max 1×/tydzień) lub przyciskiem i trzyma lokalnie. Aplikacja hostowana na GitHub Pages (lub uruchamiana lokalnie). | Brak kosztów; dowolne źródła (nie tylko CORS). Brak ręcznego przeglądu → walidacja, bezpieczniki i progi anomalii (rozdz. 5.1). Dane kurowane (m.in. wzorce ruchu) w repo i wbudowane w aplikację jako zapas offline.                                         |
 | D8  | **Router/firewall tylko jako generyczne urządzenie** — bez modelowania routera jako VM (np. OPNsense na Proxmoxie).                                                                                                                                                                                                                       | Poza zakresem na teraz; możliwe w przyszłości.                                                                                                                                                                                                                |
 | D9  | **Fizyczne rozmieszczenie na canvasie: lokalizacje + forma urządzenia.** Każde urządzenie jest **rack‑mount** (kafelek‑front z uszami, wysokość w U) albo **standalone** (karta z sylwetką: tower, mini PC, desktop, NAS, ściana, sufit, SBC). Na canvasie są pojemniki **Pomieszczenie / Półka / Rack**; rack ma szynę U i sloty.        | Lab „bez szafy” i lab w szafie wyglądają naturalnie. Lokalizacja to dane domenowe (walidacja U, zasilanie), nie tylko rysunek. Zastępuje dawne „Grupy” i osobny widok Rack. Wybrany kierunek wizualny: C „Rack”, wariant E (canvas) + inspector z wariantu D. |
+| D10 | **Ukończone MVP = wydanie 1.0.0** (SemVer); funkcje P1 trafiają do wersji **1.1**, kolejne do 1.x. | „1.0” nie oznacza już fazy po MVP — teksty UI i dokumentacja mówią o wersji 1.1. Zmiana `schemaVersion` po 1.0: z automatyczną migracją → `minor`, bez → `major` (skill `release`). Decyzja z 2026-11-12. |
 
 ---
 
@@ -106,7 +107,7 @@ Każdy poziom **konsumuje** zasoby rodzica i **udostępnia** je dzieciom. Capaci
 
 ## 3. Moduły funkcjonalne
 
-Priorytety: **P0** = MVP · **P1** = wersja 1.0 · **P2** = później.
+Priorytety: **P0** = MVP (wydanie **1.0.0**) · **P1** = wersja **1.1** · **P2** = później (D10).
 
 ### M1. Projekty i przechowywanie danych
 
@@ -496,7 +497,7 @@ Cel MVP: **narysować lab, opisać sprzęt i aplikacje, sprawdzić capacity oraz
 | M12 Ustawienia         | SET‑01                       |
 | Katalog                | CAT‑01, CAT‑02               |
 
-**Wersja 1.0** dokłada: symulację przepływów aplikacji z animacją (FLW‑01…05), macierz dostępności i asercje, ekspozycję z internetu, workflow i aktualizacje katalogu, katalog sprzętu, zasilanie/UPS/PoE, widoki Inventory/IP Plan/Access, snapshoty, BOM, `docker-compose.yml`, dokumentację.
+**Wersja 1.1** dokłada: symulację przepływów aplikacji z animacją (FLW‑01…05), macierz dostępności i asercje, ekspozycję z internetu, workflow i aktualizacje katalogu, katalog sprzętu, zasilanie/UPS/PoE, widoki Inventory/IP Plan/Access, snapshoty, BOM, `docker-compose.yml`, dokumentację.
 
 ---
 

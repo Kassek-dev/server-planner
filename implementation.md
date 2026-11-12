@@ -136,7 +136,7 @@
 - **Biblioteki:** `yaml` (parsowanie warstwy kurowanej), `stream-json` (strumieniowe parsowanie zrzutu Blender Open Data), natywny `fetch` Node, Zod z `packages/model`, `node:crypto` (SHA‑256 do manifestu).
 - **Elementy:** `SourceAdapter` (`fetch` + `normalize`) per źródło, scalanie wg priorytetu (`curated` > źródła), generowanie wzorców ruchu `estimated`, bezpieczniki (spadek > 20% → przerwanie + Issue), blokada 7 dni (`catalog/state.json`).
 - **Warstwa kurowana w MVP:** `src/curated.ts` (`loadCurated`: YAML → jednostki → referencje CPU → Zod), `src/validate.ts` (`pnpm catalog:validate`), `src/vite.ts` (wtyczka `virtual:catalog` dla aplikacji). Zależności: `yaml`, `zod`.
-- **Komendy:** `pnpm catalog:validate`, `pnpm catalog:build [-- --force] [-- --only <id>] [-- --dry-run]` (builder ze źródłami — wersja 1.0).
+- **Komendy:** `pnpm catalog:validate`, `pnpm catalog:build [-- --force] [-- --only <id>] [-- --dry-run]` (builder ze źródłami — wersja 1.1).
 - **Nowe źródło:** skill `add-source-adapter` (najpierw licencja).
 
 ### Źródła (szczegóły i licencje: `docs/06` § 1)
@@ -249,4 +249,4 @@ Minimum przed zapisem pracy: `pnpm lint && pnpm typecheck && pnpm test`.
 | 6 Silniki II      | (silniki) + animacje SVG przepływu                                                                                                                                                                              |
 | 7 Katalog         | `yaml`, `catalog:validate`, warstwa bazowa                                                                                                                                                                      |
 | 8 Eksport i szlif | html-to-image, Playwright E2E, (P1) vite-plugin-pwa, TanStack Table                                                                                                                                             |
-| 1.0               | catalog-builder z adapterami, `stream-json`, `catalog-update.yml`                                                                                                                                               |
+| 1.1               | catalog-builder z adapterami, `stream-json`, `catalog-update.yml`                                                                                                                                               |
