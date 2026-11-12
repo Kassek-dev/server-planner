@@ -1,0 +1,72 @@
+id: qbittorrent
+name: qBittorrent
+description: { en: BitTorrent client with a web interface. }
+categories: [downloads]
+website: "https://www.qbittorrent.org"
+repository: "https://github.com/qbittorrent/qBittorrent"
+license: GPL-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: qbittorrent
+      role: app
+      image: lscr.io/linuxserver/qbittorrent
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8080, protocol: tcp, purpose: web-ui }
+        - { port: 6881, protocol: tcp, purpose: peer }
+        - { port: 6881, protocol: udp, purpose: peer }
+      defaultPortMappings:
+        - { hostPort: 8080, containerPort: 8080, protocol: tcp }
+        - { hostPort: 6881, containerPort: 6881, protocol: tcp }
+        - { hostPort: 6881, containerPort: 6881, protocol: udp }
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: downloads, containerPath: /downloads, purpose: data, defaultSizeBytes: 500 GB }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 2, memoryBytes: 1 GiB, diskBytes: 2 GB }
+dependencies: []
+provides: [download-client]
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: peer-tcp-6881
+    direction: inbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 6881
+    purpose: peer
+    required: true
+  - id: peer-udp-6881
+    direction: inbound
+    peer: { kind: internet }
+    protocol: udp
+    port: 6881
+    purpose: peer
+    required: true
+  - id: peers
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 6881
+    purpose: peer
+    required: false
+    bandwidth: { typicalMbps: 20, peakMbps: 300 }
+flows:
+  - id: qbittorrent.open-ui
+    name: { en: Open qBittorrent }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: qBittorrent }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

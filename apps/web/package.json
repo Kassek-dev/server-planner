@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vite --configLoader runner",
+    "build": "vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
     "typecheck": "tsc --noEmit -p .",
     "test:e2e": "playwright test"
   },
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",
+    "@server-planner/catalog-builder": "workspace:*",
     "@tailwindcss/vite": "4.3.5",
     "@testing-library/react": "16.3.3",
     "@types/react": "19.3.0",

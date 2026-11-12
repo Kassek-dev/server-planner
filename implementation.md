@@ -58,6 +58,7 @@
 - **Po co:** dev server i build SPA; obsługa workerów (`new Worker(new URL(...), { type: 'module' })`).
 - **Konfiguracja:** `apps/web/vite.config.ts` — `base: '/server-planner/'` (GitHub Pages), plugin React, plugin PWA, import katalogu bazowego jako leniwy chunk.
 - **Komendy:** `pnpm dev` (http://localhost:5173/server-planner/), `pnpm build`, `pnpm --filter web preview`.
+- **`--configLoader runner`** (w skryptach `dev`/`build`/`preview` i w `pnpm test`): config importuje wtyczkę katalogu z pakietu workspace w TypeScripcie (`@server-planner/catalog-builder/vite`); domyślny loader oddaje takie importy natywnemu Node, który nie rozwiązuje importów bez rozszerzeń. Loader `runner` transformuje je jak resztę kodu.
 
 ---
 
@@ -133,7 +134,8 @@
 - **Po co:** zbiera dane ze źródeł, normalizuje, scala z warstwą kurowaną, waliduje i publikuje `catalog/dist/` (`docs/03` § 7, `docs/06`).
 - **Biblioteki:** `yaml` (parsowanie warstwy kurowanej), `stream-json` (strumieniowe parsowanie zrzutu Blender Open Data), natywny `fetch` Node, Zod z `packages/model`, `node:crypto` (SHA‑256 do manifestu).
 - **Elementy:** `SourceAdapter` (`fetch` + `normalize`) per źródło, scalanie wg priorytetu (`curated` > źródła), generowanie wzorców ruchu `estimated`, bezpieczniki (spadek > 20% → przerwanie + Issue), blokada 7 dni (`catalog/state.json`).
-- **Komendy:** `pnpm catalog:validate`, `pnpm catalog:build [-- --force] [-- --only <id>] [-- --dry-run]`.
+- **Warstwa kurowana w MVP:** `src/curated.ts` (`loadCurated`: YAML → jednostki → referencje CPU → Zod), `src/validate.ts` (`pnpm catalog:validate`), `src/vite.ts` (wtyczka `virtual:catalog` dla aplikacji). Zależności: `yaml`, `zod`.
+- **Komendy:** `pnpm catalog:validate`, `pnpm catalog:build [-- --force] [-- --only <id>] [-- --dry-run]` (builder ze źródłami — wersja 1.0).
 - **Nowe źródło:** skill `add-source-adapter` (najpierw licencja).
 
 ### Źródła (szczegóły i licencje: `docs/06` § 1)

@@ -1,0 +1,41 @@
+id: it-tools
+name: IT-Tools
+description: { en: "Collection of handy online tools for developers, running locally." }
+categories: [development]
+repository: "https://github.com/CorentinTh/it-tools"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: it-tools
+      role: app
+      image: corentinth/it-tools
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8086, containerPort: 80, protocol: tcp }]
+      volumes: []
+requirements:
+  min: { cpu: 0.05, memoryBytes: 32 MiB, diskBytes: 50 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+flows:
+  - id: it-tools.open-ui
+    name: { en: Open IT-Tools }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: IT-Tools }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,0 +1,44 @@
+id: mongodb
+name: MongoDB
+description: { en: Document database (used e.g. by the UniFi Network Application). }
+categories: [database]
+website: "https://www.mongodb.com"
+license: SSPL-1.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: mongo
+      role: database
+      image: mongo
+      defaultTag: "7.0"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 27017, protocol: tcp, purpose: mongodb }]
+      defaultPortMappings: [{ hostPort: 27017, containerPort: 27017, protocol: tcp }]
+      volumes: [{ name: db, containerPath: /data/db, purpose: data, defaultSizeBytes: 5 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 2 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+dependencies: []
+provides: [mongodb]
+trafficPatterns:
+  - id: mongodb-tcp-27017
+    direction: inbound
+    peer: { kind: dependency, capability: mongodb }
+    protocol: tcp
+    port: 27017
+    purpose: mongodb
+    required: true
+flows:
+  - id: mongodb.query
+    name: { en: App runs a query }
+    roles:
+      - key: client
+        name: { en: App }
+        selector: { kind: dependency, capability: mongodb }
+        userPicks: true
+      - { key: server, name: { en: MongoDB }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 27017 }]

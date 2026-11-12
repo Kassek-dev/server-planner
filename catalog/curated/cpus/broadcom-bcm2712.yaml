@@ -1,0 +1,10 @@
+id: broadcom-bcm2712
+vendor: arm
+model: Broadcom BCM2712 (Cortex-A76)
+cores: 4
+threads: 4
+boostGhz: 2.4
+tdpW: 7
+arch: arm64
+source: [curated]
+confidence: curated

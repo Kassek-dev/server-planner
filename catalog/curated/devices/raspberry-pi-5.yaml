@@ -1,0 +1,18 @@
+id: raspberry-pi-5
+kind: sbc
+vendor: Raspberry Pi
+model: Raspberry Pi 5 (8 GB)
+formFactor: { mount: standalone, shape: sbc }
+hardware:
+  cpus: [{ ref: broadcom-bcm2712 }]
+  memory:
+    type: LPDDR4
+    modules: [{ sizeBytes: 8 GiB, count: 1, soldered: true }]
+  gpus: []
+  power: { idleW: 3, loadW: 12 }
+  defaultDisks: [{ name: mmcblk0, type: sd, sizeBytes: 64 GB }]
+ports:
+  - { name: eth0, kind: rj45, speedMbps: 1000 }
+  - { name: wlan0, kind: wifi-radio }
+source: [curated]
+confidence: curated

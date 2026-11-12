@@ -7,15 +7,8 @@ import {
   updateWorkload,
 } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import {
-  analyze,
-  buildContext,
-  type ReachabilityResult,
-  type ReachQuery,
-  reach,
-  visibleFrom,
-} from '../src';
-import { apply, byName, homeLab, ifaceOf } from './support';
+import { buildContext, type ReachabilityResult, type ReachQuery, reach, visibleFrom } from '../src';
+import { analyze, apply, byName, homeLab, ifaceOf } from './support';
 
 const run = (p: Project, q: ReachQuery) => reach(buildContext(p), q);
 const failing = (r: ReachabilityResult) =>

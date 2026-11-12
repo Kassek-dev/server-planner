@@ -1,0 +1,46 @@
+id: vaultwarden
+name: Vaultwarden
+description: { en: Lightweight Bitwarden-compatible password manager server. }
+categories: [security, passwords]
+repository: "https://github.com/dani-garcia/vaultwarden"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: vaultwarden
+      role: app
+      image: vaultwarden/server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8081, containerPort: 80, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+flows:
+  - id: vaultwarden.sync
+    name: { en: Bitwarden app syncs the vault }
+    roles:
+      - {
+          key: client,
+          name: { en: Bitwarden app },
+          selector: { kind: lan-clients },
+          userPicks: true,
+        }
+      - { key: server, name: { en: Vaultwarden }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 8081, resolveDns: true }]

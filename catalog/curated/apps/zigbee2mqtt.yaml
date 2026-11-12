@@ -1,0 +1,49 @@
+id: zigbee2mqtt
+name: Zigbee2MQTT
+description: { en: Bridges Zigbee devices to MQTT without vendor hubs (needs a USB coordinator). }
+categories: [home-automation]
+website: "https://www.zigbee2mqtt.io"
+repository: "https://github.com/Koenkk/zigbee2mqtt"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: zigbee2mqtt
+      role: app
+      image: koenkk/zigbee2mqtt
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8080, containerPort: 8080, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /app/data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: [{ capability: mqtt, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: mqtt
+    direction: outbound
+    peer: { kind: dependency, capability: mqtt }
+    protocol: tcp
+    port: 1883
+    purpose: mqtt
+    required: true
+flows:
+  - id: zigbee2mqtt.open-ui
+    name: { en: Open Zigbee2MQTT }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Zigbee2MQTT }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

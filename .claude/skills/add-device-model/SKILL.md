@@ -69,9 +69,11 @@ confidence: curated
 ```
 Konwencje YAML:
 
+- Urządzenia bez CPU w katalogu (switch, router, AP): `hardware: { cpus: [], gpus: [] }` + opcjonalnie `power`.
+
 - Rozmiary jako tekst z jednostką: `8 GiB`, `256 GB`, `2 TiB` (binarne dla RAM, dziesiętne dla dysków jak u producenta) — builder zamienia na bajty; liczba bez jednostki = bajty.
 - Prędkości portów w Mb/s (`1000`, `2500`, `10000`).
-- Switch / router: `switching:` (np. `{ vlanAware: true, l3: false, poeBudgetW: 65 }`) i porty z `poe: { role: pse, standard: at }`.
+- Switch / router: `switching:` (np. `{ layer: 2, managed: true, poeBudgetW: 52 }` — `layer` 2 lub 3) i porty z `poe: { role: pse, standard: at }`.
 - AP: porty `wifi-radio` + `rj45` z `poe: { role: pd, standard: at, drawW: 13 }`.
 - Rack: zawsze `formFactor.mount: rack` z `units` i `width`.
 - `id` = slug `vendor-model`, małe litery, myślniki; nazwa pliku = `id`.

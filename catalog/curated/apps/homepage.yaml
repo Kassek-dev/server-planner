@@ -1,0 +1,50 @@
+id: homepage
+name: Homepage
+description: { en: Customizable dashboard with service widgets and status. }
+categories: [dashboard]
+website: "https://gethomepage.dev"
+repository: "https://github.com/gethomepage/homepage"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: homepage
+      role: app
+      image: ghcr.io/gethomepage/homepage
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3000, containerPort: 3000, protocol: tcp }]
+      volumes:
+        [{ name: config, containerPath: /app/config, purpose: config, defaultSizeBytes: 10 MiB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 128 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: web-ui
+    required: true
+  - id: widgets
+    direction: outbound
+    peer: { kind: dependency, capability: web-backend }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: false
+flows:
+  - id: homepage.open-ui
+    name: { en: Open Homepage }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Homepage }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

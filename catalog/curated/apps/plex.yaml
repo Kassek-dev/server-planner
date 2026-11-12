@@ -1,0 +1,56 @@
+id: plex
+name: Plex Media Server
+description:
+  { en: "Media server with apps for TVs, phones and consoles; requires a plex.tv account." }
+categories: [media]
+website: "https://www.plex.tv"
+license: Proprietary
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: plex
+      role: app
+      image: plexinc/pms-docker
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 32400, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 32400, containerPort: 32400, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: transcode, containerPath: /transcode, purpose: cache, defaultSizeBytes: 20 GB }
+        - { name: data, containerPath: /data, purpose: media, defaultSizeBytes: 1000 GB }
+requirements:
+  min: { cpu: 1, memoryBytes: 2 GiB, diskBytes: 10 GB }
+  recommended:
+    cpu: 4
+    memoryBytes: 4 GiB
+    diskBytes: 30 GB
+    gpu: { required: false, features: [quicksync] }
+dependencies: [{ capability: media-storage, optional: true }]
+provides: [media-server]
+trafficPatterns:
+  - id: web-ui-tcp-32400
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 32400
+    purpose: web-ui
+    required: true
+  - id: plex-tv
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: auth
+    required: true
+flows:
+  - id: plex.open-ui
+    name: { en: Open Plex Media Server }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Plex Media Server }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,4 +1,19 @@
-import type { Device, HostRef, Interface, Link, Project, Vlan } from '@server-planner/model';
+import type {
+  Device,
+  HostRef,
+  Interface,
+  Link,
+  OsId,
+  Project,
+  Resources,
+  Vlan,
+} from '@server-planner/model';
+
+/** Inputs from the catalog (docs/02 Z4: engines are `(Project, Catalog) → result`). */
+export interface EngineOptions {
+  /** Host OS overhead per OS (CatalogOs.overhead); a device's `os.overrideOverhead` wins. */
+  osOverhead?: Partial<Record<OsId, Resources>>;
+}
 
 /**
  * EngineContext — derived indexes shared by all analyses (docs/03 § 5.1, steps 1–3).
@@ -6,6 +21,7 @@ import type { Device, HostRef, Interface, Link, Project, Vlan } from '@server-pl
  */
 export interface EngineContext {
   project: Project;
+  osOverhead: Partial<Record<OsId, Resources>>;
   interfacesByOwner: Map<string, Interface[]>;
   linksByInterface: Map<string, Link[]>;
   vlanByVid: Map<number, Vlan>;
@@ -19,7 +35,7 @@ export interface EngineContext {
 
 const hostKey = (ref: HostRef) => `${ref.type}:${ref.id}`;
 
-export function buildContext(project: Project): EngineContext {
+export function buildContext(project: Project, options: EngineOptions = {}): EngineContext {
   const interfacesByOwner = new Map<string, Interface[]>();
   for (const iface of Object.values(project.interfaces)) {
     const list = interfacesByOwner.get(iface.owner.id) ?? [];
@@ -73,6 +89,7 @@ export function buildContext(project: Project): EngineContext {
 
   return {
     project,
+    osOverhead: options.osOverhead ?? {},
     interfacesByOwner,
     linksByInterface,
     vlanByVid,

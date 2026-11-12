@@ -1,0 +1,19 @@
+id: hp-elitedesk-800-g4-mini
+kind: mini-pc
+vendor: HP
+model: EliteDesk 800 G4 Mini
+formFactor: { mount: standalone, shape: mini-pc }
+hardware:
+  cpus: [{ ref: intel-core-i5-8500t }]
+  memory:
+    type: DDR4
+    slotsTotal: 2
+    maxBytes: 64 GiB
+    modules: [{ sizeBytes: 8 GiB, count: 1, speedMts: 2666 }]
+  gpus: []
+  power: { idleW: 10, loadW: 45 }
+  defaultDisks: [{ name: nvme0, type: ssd-nvme, sizeBytes: 256 GB }]
+ports: [{ name: eth0, kind: rj45, speedMbps: 1000 }]
+expansion: { m2Slots: 2, sataBays: 1 }
+source: [curated]
+confidence: curated

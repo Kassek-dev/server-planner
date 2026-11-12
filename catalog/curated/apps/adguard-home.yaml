@@ -1,0 +1,104 @@
+id: adguard-home
+name: AdGuard Home
+description: { en: "Network-wide DNS server that blocks ads and tracking, with DoH/DoT upstreams." }
+categories: [dns, networking]
+website: "https://adguard.com/adguard-home/overview.html"
+repository: "https://github.com/AdguardTeam/AdGuardHome"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: adguardhome
+      role: dns
+      image: adguard/adguardhome
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 53, protocol: udp, purpose: dns }
+        - { port: 53, protocol: tcp, purpose: dns }
+        - { port: 80, protocol: tcp, purpose: web-ui }
+        - { port: 3000, protocol: tcp, purpose: setup }
+      defaultPortMappings:
+        - { hostPort: 53, containerPort: 53, protocol: udp }
+        - { hostPort: 53, containerPort: 53, protocol: tcp }
+        - { hostPort: 80, containerPort: 80, protocol: tcp }
+        - { hostPort: 3000, containerPort: 3000, protocol: tcp }
+      volumes:
+        - {
+            name: work,
+            containerPath: /opt/adguardhome/work,
+            purpose: data,
+            defaultSizeBytes: 1 GB,
+          }
+        - {
+            name: conf,
+            containerPath: /opt/adguardhome/conf,
+            purpose: config,
+            defaultSizeBytes: 10 MiB,
+          }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: [dns]
+trafficPatterns:
+  - id: dns-udp-53
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 53
+    purpose: dns
+    required: true
+  - id: dns-tcp-53
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 53
+    purpose: dns
+    required: true
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+  - id: setup-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: setup
+    required: false
+  - id: upstream
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: dns-over-https
+    required: true
+flows:
+  - id: adguard-home.dns-query
+    name: { en: Client DNS query }
+    roles:
+      - { key: client, name: { en: Client }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: AdGuard Home }, selector: { kind: self }, userPicks: false }
+      - {
+          key: upstream,
+          name: { en: DoH upstream },
+          selector: { kind: internet },
+          userPicks: false,
+        }
+    steps:
+      - { from: client, to: server, protocol: udp, port: 53 }
+      - { from: server, to: upstream, protocol: tcp, port: 443 }
+  - id: adguard-home.open-ui
+    name: { en: Open AdGuard Home }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: AdGuard Home }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,0 +1,21 @@
+id: synology-ds920-plus
+kind: nas
+vendor: Synology
+model: DiskStation DS920+
+formFactor: { mount: standalone, shape: nas }
+hardware:
+  cpus: [{ ref: intel-celeron-j4125 }]
+  memory:
+    type: DDR4
+    slotsTotal: 1
+    maxBytes: 8 GiB
+    modules:
+      - { sizeBytes: 4 GiB, count: 1, soldered: true }
+  gpus: []
+  power: { idleW: 15, loadW: 33 }
+ports:
+  - { name: LAN 1, kind: rj45, speedMbps: 1000 }
+  - { name: LAN 2, kind: rj45, speedMbps: 1000 }
+expansion: { m2Slots: 2, sataBays: 4 }
+source: [curated]
+confidence: curated

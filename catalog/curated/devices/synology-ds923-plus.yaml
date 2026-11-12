@@ -1,0 +1,21 @@
+id: synology-ds923-plus
+kind: nas
+vendor: Synology
+model: DiskStation DS923+
+formFactor: { mount: standalone, shape: nas }
+hardware:
+  cpus: [{ ref: amd-ryzen-embedded-r1600 }]
+  memory:
+    type: DDR4
+    slotsTotal: 2
+    maxBytes: 32 GiB
+    ecc: true
+    modules: [{ sizeBytes: 4 GiB, count: 1 }]
+  gpus: []
+  power: { idleW: 18, loadW: 36 }
+ports:
+  - { name: LAN 1, kind: rj45, speedMbps: 1000 }
+  - { name: LAN 2, kind: rj45, speedMbps: 1000 }
+expansion: { pcieSlots: 1, m2Slots: 2, sataBays: 4 }
+source: [curated]
+confidence: curated

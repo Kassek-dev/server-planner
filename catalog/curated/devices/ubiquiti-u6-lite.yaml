@@ -1,0 +1,11 @@
+id: ubiquiti-u6-lite
+kind: access-point
+vendor: Ubiquiti
+model: UniFi U6 Lite
+formFactor: { mount: standalone, shape: ceiling }
+hardware: { cpus: [], gpus: [], power: { idleW: 6, loadW: 12 } }
+ports:
+  - { name: eth0, kind: rj45, speedMbps: 1000, poe: { role: pd, standard: af, drawW: 12 } }
+  - { name: wlan0, kind: wifi-radio }
+source: [curated]
+confidence: curated

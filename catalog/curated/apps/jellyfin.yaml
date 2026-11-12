@@ -1,0 +1,93 @@
+id: jellyfin
+name: Jellyfin
+description: { en: "Free media server for movies, shows and music with hardware transcoding." }
+categories: [media]
+website: "https://jellyfin.org"
+repository: "https://github.com/jellyfin/jellyfin"
+license: GPL-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: jellyfin
+      role: app
+      image: jellyfin/jellyfin
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8096, protocol: tcp, purpose: web-ui }
+        - { port: 7359, protocol: udp, purpose: discovery }
+      defaultPortMappings: [{ hostPort: 8096, containerPort: 8096, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: cache, containerPath: /cache, purpose: cache, defaultSizeBytes: 10 GB }
+        - { name: media, containerPath: /media, purpose: media, defaultSizeBytes: 1000 GB }
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+  recommended:
+    cpu: 4
+    memoryBytes: 4 GiB
+    diskBytes: 20 GB
+    gpu: { required: false, features: [quicksync] }
+dependencies: [{ capability: media-storage, optional: true }]
+provides: [media-server]
+trafficPatterns:
+  - id: web-ui-tcp-8096
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8096
+    purpose: web-ui
+    required: true
+  - id: discovery-udp-7359
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 7359
+    purpose: discovery
+    required: false
+  - id: metadata
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: false
+  - id: media
+    direction: outbound
+    peer: { kind: dependency, capability: media-storage }
+    protocol: tcp
+    port: 2049
+    purpose: nfs
+    required: false
+    bandwidth: { typicalMbps: 40, peakMbps: 120 }
+flows:
+  - id: jellyfin.play-movie
+    name: { en: Client plays a movie }
+    roles:
+      - { key: client, name: { en: Client }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Jellyfin }, selector: { kind: self }, userPicks: false }
+      - key: storage
+        name: { en: Media storage }
+        selector: { kind: dependency, capability: media-storage }
+        userPicks: true
+    steps:
+      - from: client
+        to: server
+        protocol: tcp
+        purpose: web-ui
+        resolveDns: true
+        bandwidthMbps: 40
+      - { from: server, to: storage, protocol: tcp, port: 2049, optional: true, bandwidthMbps: 40 }
+  - id: jellyfin.fetch-metadata
+    name: { en: Fetch metadata }
+    roles:
+      - { key: server, name: { en: Jellyfin }, selector: { kind: self }, userPicks: false }
+      - key: internet
+        name: { en: Metadata providers }
+        selector: { kind: internet }
+        userPicks: false
+    steps: [{ from: server, to: internet, protocol: tcp, port: 443, resolveDns: true }]

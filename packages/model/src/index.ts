@@ -9,6 +9,7 @@ export * from './migrations';
 /** Current project file schema version — docs/02-model-danych.md § 11. */
 export { CURRENT_SCHEMA_VERSION as SCHEMA_VERSION } from './migrations';
 export * from './rack';
+export * from './schema/catalog';
 export * from './schema/common';
 export * from './schema/device';
 export * from './schema/hardware';

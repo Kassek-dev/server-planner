@@ -1,0 +1,12 @@
+id: intel-celeron-j4125
+vendor: intel
+model: Intel Celeron J4125
+cores: 4
+threads: 4
+baseGhz: 2.0
+boostGhz: 2.7
+tdpW: 10
+arch: amd64
+igpu: { model: Intel UHD Graphics 600, features: [quicksync] }
+source: [curated]
+confidence: curated

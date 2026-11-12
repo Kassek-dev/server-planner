@@ -1,0 +1,75 @@
+id: home-assistant
+name: Home Assistant
+description: { en: Open-source home automation that puts local control and privacy first. }
+categories: [home-automation]
+website: "https://www.home-assistant.io"
+repository: "https://github.com/home-assistant/core"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: homeassistant
+      role: app
+      image: ghcr.io/home-assistant/home-assistant
+      defaultTag: stable
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8123, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8123, containerPort: 8123, protocol: tcp }]
+      volumes: [{ name: config, containerPath: /config, purpose: config, defaultSizeBytes: 5 GB }]
+  native:
+    os: [proxmox-ve]
+    notes: { en: Home Assistant OS as a VM is the recommended install on Proxmox. }
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 32 GB }
+dependencies: [{ capability: mqtt, optional: true }]
+provides: [home-automation]
+trafficPatterns:
+  - id: web-ui-tcp-8123
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8123
+    purpose: web-ui
+    required: true
+  - id: iot
+    direction: outbound
+    peer: { kind: device-kind, deviceKind: client, clientType: iot }
+    protocol: tcp
+    port: 80
+    purpose: device-polling
+    required: true
+  - id: mqtt
+    direction: outbound
+    peer: { kind: dependency, capability: mqtt }
+    protocol: tcp
+    port: 1883
+    purpose: mqtt
+    required: false
+  - id: updates
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: update-check
+    required: false
+flows:
+  - id: home-assistant.open-ui
+    name: { en: Open Home Assistant }
+    roles:
+      - { key: client, name: { en: Phone }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Home Assistant }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]
+  - id: home-assistant.poll-iot
+    name: { en: Poll IoT devices }
+    roles:
+      - { key: server, name: { en: Home Assistant }, selector: { kind: self }, userPicks: false }
+      - key: device
+        name: { en: IoT device }
+        selector: { kind: device-kind, deviceKind: client, clientType: iot }
+        userPicks: true
+    steps: [{ from: server, to: device, protocol: tcp, port: 80 }]

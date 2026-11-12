@@ -1,0 +1,18 @@
+id: raspberry-pi-4
+kind: sbc
+vendor: Raspberry Pi
+model: Raspberry Pi 4 Model B (4 GB)
+formFactor: { mount: standalone, shape: sbc }
+hardware:
+  cpus: [{ ref: broadcom-bcm2711 }]
+  memory:
+    type: LPDDR4
+    modules: [{ sizeBytes: 4 GiB, count: 1, soldered: true }]
+  gpus: []
+  power: { idleW: 3, loadW: 7 }
+  defaultDisks: [{ name: mmcblk0, type: sd, sizeBytes: 32 GB }]
+ports:
+  - { name: eth0, kind: rj45, speedMbps: 1000 }
+  - { name: wlan0, kind: wifi-radio }
+source: [curated]
+confidence: curated

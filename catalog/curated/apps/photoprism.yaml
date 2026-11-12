@@ -1,0 +1,59 @@
+id: photoprism
+name: PhotoPrism
+description: { en: "AI-powered photo app for browsing, organizing and sharing your library." }
+categories: [photos]
+website: "https://www.photoprism.app"
+repository: "https://github.com/photoprism/photoprism"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: photoprism
+      role: app
+      image: photoprism/photoprism
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 2342, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 2342, containerPort: 2342, protocol: tcp }]
+      volumes:
+        - {
+            name: storage,
+            containerPath: /photoprism/storage,
+            purpose: data,
+            defaultSizeBytes: 20 GB,
+          }
+        - name: originals
+          containerPath: /photoprism/originals
+          purpose: media
+          defaultSizeBytes: 500 GB
+requirements:
+  min: { cpu: 2, memoryBytes: 3 GiB, diskBytes: 20 GB }
+  recommended: { cpu: 4, memoryBytes: 4 GiB, diskBytes: 40 GB }
+dependencies: [{ capability: mysql, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-2342
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 2342
+    purpose: web-ui
+    required: true
+  - id: maps
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: false
+flows:
+  - id: photoprism.open-ui
+    name: { en: Open PhotoPrism }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: PhotoPrism }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,0 +1,94 @@
+id: frigate
+name: Frigate
+description: { en: Network video recorder with real-time AI object detection for IP cameras. }
+categories: [security, home-automation]
+website: "https://frigate.video"
+repository: "https://github.com/blakeblackshear/frigate"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: frigate
+      role: app
+      image: ghcr.io/blakeblackshear/frigate
+      defaultTag: stable
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8971, protocol: tcp, purpose: web-ui }
+        - { port: 8554, protocol: tcp, purpose: rtsp }
+        - { port: 8555, protocol: tcp, purpose: webrtc }
+        - { port: 8555, protocol: udp, purpose: webrtc }
+      defaultPortMappings:
+        - { hostPort: 8971, containerPort: 8971, protocol: tcp }
+        - { hostPort: 8554, containerPort: 8554, protocol: tcp }
+        - { hostPort: 8555, containerPort: 8555, protocol: tcp }
+        - { hostPort: 8555, containerPort: 8555, protocol: udp }
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: media, containerPath: /media/frigate, purpose: media, defaultSizeBytes: 500 GB }
+requirements:
+  min: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 10 GB }
+  recommended:
+    cpu: 4
+    memoryBytes: 4 GiB
+    diskBytes: 20 GB
+    gpu: { required: false, features: [quicksync, tpu] }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8971
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8971
+    purpose: web-ui
+    required: true
+  - id: rtsp-tcp-8554
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8554
+    purpose: rtsp
+    required: true
+  - id: webrtc-tcp-8555
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8555
+    purpose: webrtc
+    required: true
+  - id: webrtc-udp-8555
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 8555
+    purpose: webrtc
+    required: true
+  - id: cameras
+    direction: outbound
+    peer: { kind: device-kind, deviceKind: client, clientType: camera }
+    protocol: tcp
+    port: 554
+    purpose: rtsp
+    required: true
+    bandwidth: { typicalMbps: 8, peakMbps: 16 }
+flows:
+  - id: frigate.open-ui
+    name: { en: Open Frigate }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Frigate }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]
+  - id: frigate.record-camera
+    name: { en: Record a camera stream }
+    roles:
+      - { key: server, name: { en: Frigate }, selector: { kind: self }, userPicks: false }
+      - key: camera
+        name: { en: Camera }
+        selector: { kind: device-kind, deviceKind: client, clientType: camera }
+        userPicks: true
+    steps: [{ from: server, to: camera, protocol: tcp, port: 554, bandwidthMbps: 8 }]

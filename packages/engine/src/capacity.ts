@@ -7,7 +7,6 @@ import type {
   Workload,
 } from '@server-planner/model';
 import { type EngineContext, hostedBy } from './context';
-import { OS_OVERHEAD } from './defaults';
 import type { CapacityReport, EntityRef, ResourceUsage, UsageStatus } from './types';
 
 /**
@@ -119,7 +118,7 @@ function deviceReport(ctx: EngineContext, device: Device, seen: Set<string>): Ca
   const host: HostRef = { type: 'device', id: device.id };
   const { cpu, memory, workloads } = consumers(ctx, host);
   const overhead = device.os
-    ? (device.os.overrideOverhead ?? OS_OVERHEAD[device.os.osId])
+    ? (device.os.overrideOverhead ?? ctx.osOverhead[device.os.osId])
     : undefined;
   if (overhead) {
     cpu.unshift({ ref, amount: overhead.cpu, kind: 'os' });

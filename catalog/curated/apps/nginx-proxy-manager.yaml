@@ -1,0 +1,80 @@
+id: nginx-proxy-manager
+name: Nginx Proxy Manager
+description: { en: "Reverse proxy with a web UI and free Let's Encrypt certificates." }
+categories: [networking, reverse-proxy]
+website: "https://nginxproxymanager.com"
+repository: "https://github.com/NginxProxyManager/nginx-proxy-manager"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: proxy
+      name: nginx-proxy-manager
+      role: proxy
+      image: jc21/nginx-proxy-manager
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 80, protocol: tcp, purpose: http }
+        - { port: 443, protocol: tcp, purpose: https }
+        - { port: 81, protocol: tcp, purpose: admin-ui }
+      defaultPortMappings:
+        - { hostPort: 80, containerPort: 80, protocol: tcp }
+        - { hostPort: 443, containerPort: 443, protocol: tcp }
+        - { hostPort: 81, containerPort: 81, protocol: tcp }
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 256 MiB, diskBytes: 2 GB }
+dependencies: [{ capability: web-backend, optional: true }]
+provides: [reverse-proxy]
+trafficPatterns:
+  - id: http-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: http
+    required: true
+  - id: https-tcp-443
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 443
+    purpose: https
+    required: true
+  - id: admin-ui-tcp-81
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 81
+    purpose: admin-ui
+    required: true
+  - id: acme
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: certificate-renewal
+    required: false
+flows:
+  - id: nginx-proxy-manager.proxy-request
+    name: { en: Request through the reverse proxy }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - {
+          key: proxy,
+          name: { en: Nginx Proxy Manager },
+          selector: { kind: self },
+          userPicks: false,
+        }
+      - key: backend
+        name: { en: Backend app }
+        selector: { kind: dependency, capability: web-backend }
+        userPicks: true
+    steps:
+      - { from: client, to: proxy, protocol: tcp, port: 443, resolveDns: true }
+      - { from: proxy, to: backend, protocol: tcp, purpose: web-ui }

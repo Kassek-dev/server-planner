@@ -1,14 +1,19 @@
-import { CURATED_KINDS, listCuratedFiles } from './curated';
+import { OS_IDS } from '@server-planner/model';
+import { loadCurated } from './curated';
 
-// Schema validation of curated YAML arrives with MVP stage 7 (docs/03 § 11).
-// Until then, fail loudly if curated data appears without a validator.
-const files = await listCuratedFiles();
-const total = CURATED_KINDS.reduce((sum, kind) => sum + files[kind].length, 0);
+/** `pnpm catalog:validate` — curated YAML against the catalog schemas (docs/03 § 7, CI). */
+const { catalog, errors } = await loadCurated();
 
-if (total > 0) {
-  console.error(
-    `catalog:validate — found ${total} curated file(s) but validators are not implemented yet.`,
-  );
+const coveredOs = new Set(catalog.os.map((o) => o.id));
+for (const id of OS_IDS) {
+  if (!coveredOs.has(id)) errors.push({ file: 'os/', message: `missing OS entry for "${id}"` });
+}
+
+if (errors.length > 0) {
+  console.error(`catalog:validate — ${errors.length} problem(s):`);
+  for (const e of errors) console.error(`  ${e.file}: ${e.message}`);
   process.exit(1);
 }
-console.log('catalog:validate — no curated files yet, nothing to validate.');
+console.log(
+  `catalog:validate — OK (${catalog.apps.length} apps, ${catalog.devices.length} devices, ${catalog.cpus.length} CPUs, ${catalog.os.length} OS)`,
+);

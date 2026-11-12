@@ -1,0 +1,58 @@
+id: prometheus
+name: Prometheus
+description: { en: Time-series database that scrapes metrics from exporters. }
+categories: [monitoring]
+website: "https://prometheus.io"
+repository: "https://github.com/prometheus/prometheus"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: prometheus
+      role: app
+      image: prom/prometheus
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 9090, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 9090, containerPort: 9090, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /prometheus, purpose: data, defaultSizeBytes: 20 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 10 GB }
+  recommended: { cpu: 1, memoryBytes: 2 GiB, diskBytes: 50 GB }
+dependencies: [{ capability: metrics-exporter, optional: true }]
+provides: [metrics-store]
+trafficPatterns:
+  - id: web-ui-tcp-9090
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9090
+    purpose: web-ui
+    required: true
+  - id: scrape
+    direction: outbound
+    peer: { kind: dependency, capability: metrics-exporter }
+    protocol: tcp
+    port: 9100
+    purpose: metrics
+    required: false
+flows:
+  - id: prometheus.scrape
+    name: { en: Scrape a node exporter }
+    roles:
+      - { key: server, name: { en: Prometheus }, selector: { kind: self }, userPicks: false }
+      - key: exporter
+        name: { en: Exporter }
+        selector: { kind: dependency, capability: metrics-exporter }
+        userPicks: true
+    steps: [{ from: server, to: exporter, protocol: tcp, port: 9100 }]
+  - id: prometheus.open-ui
+    name: { en: Open Prometheus }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Prometheus }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,6 +1,7 @@
 import {
   type AnalysisResult,
   analyze,
+  type EngineOptions,
   type EntityRef,
   type ReachabilityResult,
   type ReachQuery,
@@ -23,7 +24,7 @@ export interface ResultsState {
 
 export const useResults = create<ResultsState>(() => ({ result: null, pending: false }));
 
-type Analyzer = (project: Project) => Promise<AnalysisResult>;
+type Analyzer = (project: Project, options?: EngineOptions) => Promise<AnalysisResult>;
 
 /** On-demand simulation queries (SIM-01, SIM-03) on a project snapshot. */
 export interface Simulator {
@@ -52,7 +53,9 @@ function engineWorker(): Remote<EngineWorkerApi> | null {
 /** Worker when available (browser), synchronous fallback otherwise (tests, old browsers). */
 export function createAnalyzer(): Analyzer {
   const api = engineWorker();
-  return api ? (project) => api.analyze(project) : async (project) => analyze(project);
+  return api
+    ? (project, options) => api.analyze(project, options)
+    : async (project, options) => analyze(project, options);
 }
 
 export function createSimulator(): Simulator {

@@ -1,0 +1,126 @@
+id: immich
+name: Immich
+description: { en: High-performance self-hosted photo and video backup with ML search. }
+categories: [photos]
+website: "https://immich.app"
+repository: "https://github.com/immich-app/immich"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: server
+      name: immich-server
+      role: app
+      image: ghcr.io/immich-app/immich-server
+      defaultTag: release
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 2283, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 2283, containerPort: 2283, protocol: tcp }]
+      volumes:
+        - {
+            name: library,
+            containerPath: /usr/src/app/upload,
+            purpose: media,
+            defaultSizeBytes: 500 GB,
+          }
+    - key: ml
+      name: immich-machine-learning
+      role: worker
+      image: ghcr.io/immich-app/immich-machine-learning
+      defaultTag: release
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3003, protocol: tcp, purpose: ml-api }]
+      volumes:
+        [{ name: model-cache, containerPath: /cache, purpose: cache, defaultSizeBytes: 5 GB }]
+    - key: db
+      name: postgres
+      role: database
+      image: ghcr.io/immich-app/postgres
+      defaultTag: 14-vectorchord0.4.3-pgvectors0.2.0
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - name: pgdata
+          containerPath: /var/lib/postgresql/data
+          purpose: data
+          defaultSizeBytes: 10 GB
+    - key: redis
+      name: valkey
+      role: cache
+      image: docker.io/valkey/valkey
+      defaultTag: 8-bookworm
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6379, protocol: tcp, purpose: redis }]
+      volumes: []
+requirements:
+  min: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 10 GB }
+  recommended:
+    cpu: 4
+    memoryBytes: 6 GiB
+    diskBytes: 20 GB
+    gpu: { required: false, features: [quicksync, cuda] }
+dependencies:
+  - { capability: postgresql, optional: false, providedByComponent: db }
+  - { capability: redis, optional: false, providedByComponent: redis }
+  - { capability: media-storage, optional: true }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-2283
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 2283
+    purpose: web-ui
+    required: true
+  - id: ml-ml-api
+    direction: outbound
+    peer: { kind: self-component, key: ml }
+    protocol: tcp
+    port: 3003
+    purpose: ml-api
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: redis-redis
+    direction: outbound
+    peer: { kind: self-component, key: redis }
+    protocol: tcp
+    port: 6379
+    purpose: redis
+    required: true
+  - id: models
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: model-download
+    required: false
+flows:
+  - id: immich.upload-photo
+    name: { en: Phone uploads a photo }
+    roles:
+      - { key: client, name: { en: Phone }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Immich }, selector: { kind: self }, userPicks: false }
+      - key: db
+        name: { en: Database }
+        selector: { kind: self-component, key: db }
+        userPicks: false
+    steps:
+      - from: client
+        to: server
+        protocol: tcp
+        purpose: web-ui
+        resolveDns: true
+        bandwidthMbps: 20
+      - { from: server, to: db, protocol: tcp, port: 5432 }

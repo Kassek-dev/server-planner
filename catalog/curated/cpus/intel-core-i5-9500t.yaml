@@ -1,0 +1,12 @@
+id: intel-core-i5-9500t
+vendor: intel
+model: Intel Core i5-9500T
+cores: 6
+threads: 6
+baseGhz: 2.2
+boostGhz: 3.7
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

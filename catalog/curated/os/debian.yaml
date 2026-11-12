@@ -1,0 +1,9 @@
+id: debian
+name: Debian
+versions:
+  - { version: "12", releasedAt: 2023-06-10, eol: 2028-06-30 }
+  - { version: "13", releasedAt: 2025-08-09 }
+role: server
+overhead: { cpu: 0.1, memoryBytes: 256 MiB, diskBytes: 4 GB }
+arch: [amd64, arm64]
+capabilities: { vm: true, lxc: true, docker: native }

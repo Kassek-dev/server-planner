@@ -30,7 +30,7 @@ deployment:
   components:
     - key: server
       name: immich-server
-      role: web # AppInstance['role']
+      role: app # app | database | cache | worker | proxy | dns | other (AppInstance['role'])
       image: ghcr.io/immich-app/immich-server
       defaultTag: release
       arch: [amd64, arm64]
@@ -142,6 +142,9 @@ flows:
       - { from: server, to: storage, protocol: tcp, port: 2049, optional: true }
 ```
 Zasady:
+
+- Wzorce ruchu: `id` unikalne w aplikacji (konwencja `<purpose>-<protocol>-<port>` dla inbound), tak samo `flows[].id`.
+- Kontenery w stosie inne niż pierwszy (db, redis, ml) zwykle bez `defaultPortMappings` (`[]`) — są osiągalne tylko w sieci stosu.
 
 - `id` = slug; komponenty `key` krótkie (`server`, `db`, `ml`).
 - `purpose` z ustalonego słownika (`web-ui`, `api`, `dns`, `dhcp`, `postgresql`, `redis`, `mqtt`, `smb`, `nfs`, `metrics`, `media-stream`, `model-download`, `update-check`, `device-polling`…) — nowe wartości dopisz do słownika w `packages/model` i `en/simulation.json`.

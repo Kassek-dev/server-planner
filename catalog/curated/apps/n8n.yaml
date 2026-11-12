@@ -1,0 +1,50 @@
+id: n8n
+name: n8n
+description: { en: Workflow automation with hundreds of integrations. }
+categories: [automation]
+website: "https://n8n.io"
+repository: "https://github.com/n8n-io/n8n"
+license: Sustainable Use License
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: n8n
+      role: app
+      image: docker.n8n.io/n8nio/n8n
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5678, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 5678, containerPort: 5678, protocol: tcp }]
+      volumes:
+        [{ name: data, containerPath: /home/node/.n8n, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 5 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-5678
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 5678
+    purpose: web-ui
+    required: true
+  - id: apis
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: false
+flows:
+  - id: n8n.open-ui
+    name: { en: Open n8n }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: n8n }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,0 +1,49 @@
+id: tautulli
+name: Tautulli
+description: { en: Monitoring and statistics for Plex Media Server. }
+categories: [media, monitoring]
+website: "https://tautulli.com"
+repository: "https://github.com/Tautulli/Tautulli"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: tautulli
+      role: app
+      image: lscr.io/linuxserver/tautulli
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8181, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8181, containerPort: 8181, protocol: tcp }]
+      volumes: [{ name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: [{ capability: media-server, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8181
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8181
+    purpose: web-ui
+    required: true
+  - id: plex
+    direction: outbound
+    peer: { kind: dependency, capability: media-server }
+    protocol: tcp
+    port: 32400
+    purpose: api
+    required: true
+flows:
+  - id: tautulli.open-ui
+    name: { en: Open Tautulli }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Tautulli }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

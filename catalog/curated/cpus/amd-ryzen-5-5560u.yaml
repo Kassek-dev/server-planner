@@ -1,0 +1,12 @@
+id: amd-ryzen-5-5560u
+vendor: amd
+model: AMD Ryzen 5 5560U
+cores: 6
+threads: 12
+baseGhz: 2.3
+boostGhz: 4.0
+tdpW: 15
+arch: amd64
+igpu: { model: AMD Radeon Graphics (6 CU), features: [vcn] }
+source: [curated]
+confidence: curated

@@ -7,6 +7,7 @@ import { downloadBlob } from '../../app/download';
 import { NotFoundPage } from '../../app/routes/NotFoundPage';
 import { useServices, useSession } from '../../app/services';
 import { TopBar } from '../../app/shell/TopBar';
+import { engineOptions, useCatalog } from '../../catalog/store';
 import { exportBlob, exportFileName } from '../../persistence/backup';
 import { connectResults } from '../../store/results';
 import { Banner } from '../../ui/Banner';
@@ -26,8 +27,16 @@ export function EditorPage() {
   const { repository, session, analyzer } = useServices();
   const [load, setLoad] = useState<LoadState>('loading');
 
-  // Engines follow the open project (docs/03 § 5.5).
-  useEffect(() => connectResults(session, analyzer), [session, analyzer]);
+  // Engines follow the open project (docs/03 § 5.5) and take OS overhead from the catalog.
+  const catalog = useCatalog((s) => s.catalog);
+  useEffect(() => {
+    void useCatalog.getState().load();
+  }, []);
+  useEffect(() => {
+    if (!catalog) return;
+    const options = engineOptions(catalog);
+    return connectResults(session, (project) => analyzer(project, options));
+  }, [session, analyzer, catalog]);
 
   useEffect(() => {
     let cancelled = false;

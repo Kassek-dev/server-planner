@@ -1,0 +1,9 @@
+id: windows-server
+name: Windows Server
+versions:
+  - { version: "2022", releasedAt: 2021-08-18, eol: 2031-10-14 }
+  - { version: "2025", releasedAt: 2024-11-01, eol: 2034-10-10 }
+role: server
+overhead: { cpu: 1, memoryBytes: 2 GiB, diskBytes: 32 GB }
+arch: [amd64]
+capabilities: { vm: true, lxc: false, docker: windows-containers-only }

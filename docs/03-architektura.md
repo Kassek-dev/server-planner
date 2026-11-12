@@ -337,7 +337,8 @@ Adaptery, licencje i budżety zapytań: `06-zrodla-danych.md`.
 
 ### 7.3 Katalog w aplikacji
 
-- **Warstwa bazowa**: w czasie buildu aplikacji `catalog/dist` (+ `curated`) jest dołączany jako osobny, leniwie ładowany chunk → działa offline od pierwszego uruchomienia.
+- **Warstwa bazowa**: w czasie buildu aplikacji `catalog/dist` (+ `curated`) jest dołączany jako osobny, leniwie ładowany chunk → działa offline od pierwszego uruchomienia. Implementacja (MVP): wtyczka Vite z `packages/catalog-builder/src/vite.ts` udostępnia moduł `virtual:catalog` — `loadCurated()` czyta YAML, zamienia jednostki, rozwiązuje referencje CPU i waliduje schematami `Catalog*` z `packages/model`; błędne dane przerywają build. Aplikacja ładuje go przez `import('virtual:catalog')` (`apps/web/src/catalog/store.ts`).
+- **Silniki a katalog**: dane katalogu, których potrzebują silniki (narzut OS), przechodzą jako `EngineOptions` do `analyze(project, options)` — silnik nie importuje katalogu.
 - **Aktualizacja** (CAT‑04): `GET /catalog/manifest.json` (ten sam origin na GitHub Pages — brak CORS) → porównanie `catalogVersion` → pobranie zmienionych plików → weryfikacja SHA‑256 i Zod → zapis do IndexedDB (trzymane 2 wersje).
 - Auto‑sprawdzenie przy starcie najwyżej co 7 dni (data w `settings`); przycisk wymusza tylko sprawdzenie manifestu.
 - `minAppVersion` w manifeście chroni starą wersję aplikacji przed nowym, niezgodnym schematem.

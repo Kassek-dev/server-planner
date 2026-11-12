@@ -1,0 +1,11 @@
+id: tp-link-eap653
+kind: access-point
+vendor: TP-Link
+model: Omada EAP653
+formFactor: { mount: standalone, shape: ceiling }
+hardware: { cpus: [], gpus: [], power: { idleW: 7, loadW: 15 } }
+ports:
+  - { name: eth0, kind: rj45, speedMbps: 1000, poe: { role: pd, standard: at, drawW: 15 } }
+  - { name: wlan0, kind: wifi-radio }
+source: [curated]
+confidence: curated

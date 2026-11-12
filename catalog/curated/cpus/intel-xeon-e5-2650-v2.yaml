@@ -1,0 +1,11 @@
+id: intel-xeon-e5-2650-v2
+vendor: intel
+model: Intel Xeon E5-2650 v2
+cores: 8
+threads: 16
+baseGhz: 2.6
+boostGhz: 3.4
+tdpW: 95
+arch: amd64
+source: [curated]
+confidence: curated

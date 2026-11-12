@@ -1,0 +1,45 @@
+id: mariadb
+name: MariaDB
+description: { en: MySQL-compatible relational database. }
+categories: [database]
+website: "https://mariadb.org"
+license: GPL-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: mariadb
+      role: database
+      image: mariadb
+      defaultTag: "11"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3306, protocol: tcp, purpose: mysql }]
+      defaultPortMappings: [{ hostPort: 3306, containerPort: 3306, protocol: tcp }]
+      volumes:
+        [{ name: data, containerPath: /var/lib/mysql, purpose: data, defaultSizeBytes: 10 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+dependencies: []
+provides: [mysql]
+trafficPatterns:
+  - id: mysql-tcp-3306
+    direction: inbound
+    peer: { kind: dependency, capability: mysql }
+    protocol: tcp
+    port: 3306
+    purpose: mysql
+    required: true
+flows:
+  - id: mariadb.query
+    name: { en: App runs a query }
+    roles:
+      - key: client
+        name: { en: App }
+        selector: { kind: dependency, capability: mysql }
+        userPicks: true
+      - { key: server, name: { en: MariaDB }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 3306 }]

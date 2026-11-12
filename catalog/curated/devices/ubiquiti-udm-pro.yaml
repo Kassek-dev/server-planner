@@ -1,0 +1,21 @@
+id: ubiquiti-udm-pro
+kind: router
+vendor: Ubiquiti
+model: UniFi Dream Machine Pro
+formFactor: { mount: rack, units: 1, width: 19in }
+hardware: { cpus: [], gpus: [], power: { idleW: 20, loadW: 33 } }
+ports:
+  - { name: WAN, kind: wan, speedMbps: 1000 }
+  - { name: WAN 2 (SFP+), kind: sfp+, speedMbps: 10000 }
+  - { name: LAN SFP+, kind: sfp+, speedMbps: 10000 }
+  - { name: Port 1, kind: rj45, speedMbps: 1000 }
+  - { name: Port 2, kind: rj45, speedMbps: 1000 }
+  - { name: Port 3, kind: rj45, speedMbps: 1000 }
+  - { name: Port 4, kind: rj45, speedMbps: 1000 }
+  - { name: Port 5, kind: rj45, speedMbps: 1000 }
+  - { name: Port 6, kind: rj45, speedMbps: 1000 }
+  - { name: Port 7, kind: rj45, speedMbps: 1000 }
+  - { name: Port 8, kind: rj45, speedMbps: 1000 }
+switching: { layer: 3, managed: true }
+source: [curated]
+confidence: curated

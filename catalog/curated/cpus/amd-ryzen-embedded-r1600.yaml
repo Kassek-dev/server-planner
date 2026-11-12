@@ -1,0 +1,11 @@
+id: amd-ryzen-embedded-r1600
+vendor: amd
+model: AMD Ryzen Embedded R1600
+cores: 2
+threads: 4
+baseGhz: 2.6
+boostGhz: 3.1
+tdpW: 25
+arch: amd64
+source: [curated]
+confidence: curated

@@ -1,0 +1,44 @@
+id: node-exporter
+name: Node Exporter
+description: { en: "Prometheus exporter for host CPU, memory, disk and network metrics." }
+categories: [monitoring]
+repository: "https://github.com/prometheus/node_exporter"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: exporter
+      name: node-exporter
+      role: app
+      image: prom/node-exporter
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 9100, protocol: tcp, purpose: metrics }]
+      defaultPortMappings: [{ hostPort: 9100, containerPort: 9100, protocol: tcp }]
+      volumes: []
+requirements:
+  min: { cpu: 0.05, memoryBytes: 32 MiB, diskBytes: 50 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+dependencies: []
+provides: [metrics-exporter]
+trafficPatterns:
+  - id: metrics-tcp-9100
+    direction: inbound
+    peer: { kind: dependency, capability: metrics-store }
+    protocol: tcp
+    port: 9100
+    purpose: metrics
+    required: false
+flows:
+  - id: node-exporter.scraped
+    name: { en: Prometheus scrapes this host }
+    roles:
+      - key: store
+        name: { en: Prometheus }
+        selector: { kind: dependency, capability: metrics-store }
+        userPicks: true
+      - { key: exporter, name: { en: Node Exporter }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: store, to: exporter, protocol: tcp, port: 9100 }]
