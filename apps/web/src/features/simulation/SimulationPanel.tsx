@@ -12,6 +12,8 @@ import { Segmented } from '../../ui/Segmented';
 import { Select } from '../../ui/Select';
 import { Tabs } from '../../ui/Tabs';
 import { TextField } from '../../ui/TextField';
+import { AssertionDialog } from '../access/AssertionDialog';
+import { endpointOf } from '../access/endpoints';
 import { useSelection } from '../canvas/selection';
 import { endpointName, endpointOptions, refFor, type Target, targetFor } from './entities';
 import { FixDialog } from './FixDialog';
@@ -129,6 +131,7 @@ function ReachTab({ project }: { project: Project }) {
   });
   const [result, setResult] = useState<ReachabilityResult | null>(null);
   const [fixOpen, setFixOpen] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
   useEffect(() => () => useSimulation.setState({ highlight: null }), []);
 
   // The URL is the query: re-run whenever it or the project changes (e.g. after applying a fix).
@@ -250,6 +253,21 @@ function ReachTab({ project }: { project: Project }) {
               : t('reach.pathBlocked', { step: result.blockedAt + 1 })}
           </h3>
           <StepList project={project} result={result} />
+          <Button size="sm" className="self-start" onClick={() => setSaveOpen(true)}>
+            {t('reach.saveAssertion')}
+          </Button>
+          <AssertionDialog
+            open={saveOpen}
+            onOpenChange={setSaveOpen}
+            initial={{
+              source: endpointOf(from),
+              destination: endpointOf(to),
+              protocol,
+              ...(port !== undefined ? { port } : {}),
+              expect: result.verdict === 'reachable' ? 'reachable' : 'blocked',
+              enabled: true,
+            }}
+          />
           {result.fix ? (
             <>
               <Button size="sm" className="self-start" onClick={() => setFixOpen(true)}>

@@ -764,6 +764,7 @@ export const rules: ValidationRule[] = [
 
 /** Issue codes produced by the rules — every one needs `issues.<code>` translations (checked in CI). */
 export const ISSUE_CODES = [
+  'VAL_ASSERT',
   'VAL_01',
   'VAL_02',
   'VAL_03',

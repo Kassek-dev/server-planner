@@ -71,6 +71,9 @@ export const SIM_CODES = [
   'SIM_WAN_NO_UPLINK',
   'SIM_FLOW_UNBOUND',
   'SIM_FROM_INTERNET',
+  'SIM_INTERNET_INBOUND',
+  'SIM_NAT_PORT_FORWARD',
+  'SIM_NAT_TARGET_MISSING',
 ] as const;
 
 export interface ReachQuery {
@@ -617,4 +620,133 @@ export function reach(ctx: EngineContext, q: ReachQuery): ReachabilityResult {
     }
   }
   return best as ReachabilityResult;
+}
+
+/** One port forward of a router and what it reaches from the internet (SIM-05). */
+export interface Exposure {
+  routerId: string;
+  ruleId: string;
+  protocol: 'tcp' | 'udp';
+  externalPort: number;
+  /** The forwarded-to element: an app, or the owner of the target address. */
+  target?: EntityRef;
+  result: ReachabilityResult;
+}
+
+/**
+ * Internet → port forward (DNAT) → firewall → L2 to the target → Docker / app checks.
+ * Mirrors `reach()` for inbound traffic; the source side is the internet in the WAN zone.
+ */
+function inbound(
+  ctx: EngineContext,
+  router: Device,
+  rule: Extract<NonNullable<Device['firewall']>['nat'][number], { kind: 'port-forward' }>,
+): Exposure {
+  const p = ctx.project;
+  const t = new Trace(ctx);
+  const routerRef = deviceRef(router);
+  const base = {
+    routerId: router.id,
+    ruleId: rule.id,
+    protocol: rule.protocol,
+    externalPort: rule.externalPort,
+  };
+  const wan = p.interfaces[rule.inInterfaceId];
+  const done = (target?: EntityRef): Exposure => ({
+    ...base,
+    ...(target ? { target } : {}),
+    result: t.result(),
+  });
+  if (!wan) {
+    t.fail('nat', routerRef, 'SIM_NAT_TARGET_MISSING', {
+      router: router.name,
+      port: rule.externalPort,
+    });
+    return done();
+  }
+  const uplink = (ctx.linksByInterface.get(wan.id) ?? []).find(
+    (l) => ctx.deviceOfInterface.get(l.a === wan.id ? l.b : l.a)?.kind === 'internet',
+  );
+  if (!uplink) {
+    t.fail('l3', ifaceRef(wan.id), 'SIM_WAN_NO_UPLINK', { interface: wan.name });
+    return done();
+  }
+  t.links.add(uplink.id);
+  const internet = ctx.deviceOfInterface.get(uplink.a === wan.id ? uplink.b : uplink.a);
+  if (internet) t.devices.add(internet.id);
+  t.devices.add(router.id);
+  t.pass('l3', ifaceRef(wan.id), 'SIM_INTERNET_INBOUND', {
+    interface: wan.name,
+    protocol: rule.protocol,
+    port: rule.externalPort,
+  });
+
+  // DNAT target: an app, or whatever owns the target address.
+  let target: EntityRef | undefined;
+  let dst: Endpoint_ | undefined;
+  if ('appId' in rule.target) {
+    target = { type: 'app', id: rule.target.appId };
+    dst = p.apps[rule.target.appId] ? resolve(ctx, target) : undefined;
+  } else {
+    const ip = rule.target.ip;
+    const iface = findInterfaceByIp(ctx, ip);
+    if (iface) {
+      target = { type: iface.owner.type, id: iface.owner.id };
+      const resolved = resolve(ctx, target);
+      dst = { ...resolved, attachments: resolved.attachments.filter((a) => a.ip === ip) };
+    }
+  }
+  const dstAtt = dst?.attachments[0];
+  if (!dst || !dstAtt || !target) {
+    t.fail('nat', routerRef, 'SIM_NAT_TARGET_MISSING', {
+      router: router.name,
+      port: rule.externalPort,
+    });
+    return done(target);
+  }
+  t.target = ctx.deviceOfInterface.get(dstAtt.ifaceId)?.id;
+  const port = rule.target.port;
+  t.pass('nat', routerRef, 'SIM_NAT_PORT_FORWARD', {
+    router: router.name,
+    external: rule.externalPort,
+    port,
+    target:
+      dst.app?.name ??
+      (target.type === 'device' ? p.devices[target.id]?.name : p.workloads[target.id]?.name) ??
+      '',
+  });
+
+  const wanZone = wan.zoneId ?? Object.values(p.zones).find((z) => z.kind === 'wan')?.id;
+  const srcSide: Side = {
+    internet: true,
+    ...(wanZone ? { zoneId: wanZone } : {}),
+    devices: new Set(),
+    workloads: new Set(),
+    apps: new Set(),
+  };
+  const q: ReachQuery = { from: routerRef, to: target, protocol: rule.protocol, port };
+  if (!firewall(ctx, t, router, srcSide, sideOf(ctx, dst, dstAtt), q)) return done(target);
+  const egress = (ctx.interfacesByOwner.get(router.id) ?? [])
+    .map((i) => attachmentOf(ctx, i))
+    .find((a): a is Attachment => !!a && !!a.subnetId && a.subnetId === dstAtt.subnetId);
+  if (!egress) {
+    t.fail('l3', routerRef, 'SIM_L3_NO_ROUTE', { router: router.name, to: dstAtt.ip ?? '' });
+    return done(target);
+  }
+  const subnet = dstAtt.subnetId ? p.subnets[dstAtt.subnetId]?.cidr : undefined;
+  if (!l2Hop(ctx, t, egress, dstAtt, 'SIM_L2_TO_TARGET', { subnet: subnet ?? '' }))
+    return done(target);
+  targetChecks(t, dst, q, false);
+  return done(target);
+}
+
+/** Every port forward of every router with its outcome (SIM-05). */
+export function exposure(ctx: EngineContext): Exposure[] {
+  const out: Exposure[] = [];
+  for (const router of Object.values(ctx.project.devices)) {
+    for (const rule of router.firewall?.nat ?? []) {
+      if (rule.kind === 'port-forward') out.push(inbound(ctx, router, rule));
+    }
+  }
+  return out;
 }

@@ -4,8 +4,15 @@
 import { type Project, SCHEMA_VERSION } from '@server-planner/model';
 import { buildContext, type EngineOptions } from './context';
 import { type ServiceVisibility, visibleFrom } from './simulation/access';
+import { type AccessMatrix, accessMatrix } from './simulation/assertions';
 import { type FlowRunResult, runFlow } from './simulation/flow';
-import { type ReachabilityResult, type ReachQuery, reach } from './simulation/reach';
+import {
+  type Exposure,
+  exposure,
+  type ReachabilityResult,
+  type ReachQuery,
+  reach,
+} from './simulation/reach';
 import type { EntityRef } from './types';
 
 export { analyze, sameDomain } from './analyze';
@@ -23,8 +30,19 @@ export {
   type ServiceVisibility,
   visibleFrom,
 } from './simulation/access';
+export {
+  type AccessMatrix,
+  type AssertionResult,
+  accessMatrix,
+  evaluateAssertion,
+  evaluateAssertions,
+  MATRIX_PROBES,
+  type MatrixCell,
+} from './simulation/assertions';
 export { type FlowHop, type FlowRunResult, type FlowTarget, runFlow } from './simulation/flow';
 export {
+  type Exposure,
+  exposure,
   type ReachabilityResult,
   type ReachQuery,
   reach,
@@ -54,6 +72,20 @@ export function simulateFlow(
   options: EngineOptions = {},
 ): FlowRunResult {
   return runFlow(buildContext(project, options), input);
+}
+
+/** Access matrix on a project snapshot (SIM-04): zones, or the given elements. */
+export function simulateMatrix(
+  project: Project,
+  refs?: EntityRef[],
+  options: EngineOptions = {},
+): AccessMatrix {
+  return accessMatrix(buildContext(project, options), refs);
+}
+
+/** Port forwards and what they expose (SIM-05). */
+export function simulateExposure(project: Project, options: EngineOptions = {}): Exposure[] {
+  return exposure(buildContext(project, options));
 }
 
 /** Services visible from a client on a project snapshot (SIM-03). */

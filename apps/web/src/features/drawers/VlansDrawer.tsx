@@ -17,6 +17,7 @@ import {
 } from '@server-planner/model';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
 import { Select } from '../../ui/Select';
 import { Tabs } from '../../ui/Tabs';
@@ -31,6 +32,7 @@ import {
   Section,
   useCommand,
 } from '../inspector/parts';
+import { SegmentationDialog } from './SegmentationDialog';
 
 type Tab = 'vlans' | 'subnets' | 'zones';
 
@@ -86,12 +88,21 @@ function VlanList({ project }: { project: Project }) {
       vlan: { vid, name: `VLAN ${vid}`, color: nextPaletteKey(vlans.map((v) => v.color)) },
     });
   };
+  const [wizard, setWizard] = useState(false);
   const subnetCount = (id: string) =>
     Object.values(project.subnets).filter((s) => s.vlanId === id).length;
   return (
     <Section
       title={t('vlans.vlanCount', { count: vlans.length })}
-      action={<AddButton label={t('vlans.addVlan')} onClick={add} />}
+      action={
+        <>
+          <Button size="sm" variant="ghost" onClick={() => setWizard(true)}>
+            {t('segmentation.open')}
+          </Button>
+          <AddButton label={t('vlans.addVlan')} onClick={add} />
+          <SegmentationDialog project={project} open={wizard} onOpenChange={setWizard} />
+        </>
+      }
     >
       {vlans.map((vlan) => (
         <fieldset

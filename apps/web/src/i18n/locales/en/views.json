@@ -79,5 +79,74 @@
     "ok": "OK",
     "poolRow": "{from} – {to} · DHCP pool ({count, plural, one {# address} other {# addresses}})",
     "freeRow": "{from} – {to} · free ({count, plural, one {# address} other {# addresses}})"
+  },
+  "access": {
+    "title": "Access",
+    "mode": "Matrix axis",
+    "modes": {
+      "zones": "Zones",
+      "devices": "Devices"
+    },
+    "matrix": "Who can reach whom",
+    "computing": "Simulating…",
+    "noZones": "Add at least two zones (or one zone and a router to the internet) to see the matrix.",
+    "noDevices": "Give at least two devices an IP address to see the matrix.",
+    "legend": "Each cell probes HTTPS, HTTP, SSH, DNS and ping from one member of the row to one member of the column. Pick a cell to see the path.",
+    "fromTo": "From ↓ / To →",
+    "cell": "{from} to {to}: {status, select, full {everything allowed} partial {{allowed} of 5 services allowed} none {everything blocked} other {no members to test}}",
+    "detail": "{from} → {to}: {status, select, full {all 5 probes pass} partial {{allowed} of 5 probes pass} other {all probes are blocked}}. Example path:",
+    "exposure": "Exposed to the internet",
+    "noExposure": "No port forwards — nothing is reachable from the internet.",
+    "forward": "{router} → {target}",
+    "assertions": "Assertions",
+    "assertionSummary": "{total, plural, one {# assertion} other {# assertions}} · {failed} failing",
+    "addAssertion": "Add assertion",
+    "noAssertions": "No assertions yet. Write down what must (or must not) connect — e.g. “IoT cannot reach LAN” — and the planner checks it after every change.",
+    "unnamed": "Unnamed",
+    "columns": {
+      "enabled": "On",
+      "name": "Name",
+      "path": "Source → destination",
+      "expect": "Expect",
+      "result": "Result",
+      "actions": "Actions"
+    },
+    "expect": {
+      "reachable": "Reachable",
+      "blocked": "Blocked"
+    },
+    "result": {
+      "passed": "Passed",
+      "failed": "Failed — {actual, select, reachable {connects} blocked {blocked} other {unknown}}",
+      "disabled": "Off"
+    },
+    "toggle": "Check “{name}”",
+    "edit": "Edit “{name}”",
+    "delete": "Delete “{name}”",
+    "endpoint": {
+      "any": "Anything",
+      "internet": "Internet"
+    },
+    "groups": {
+      "zones": "zone",
+      "subnets": "subnet",
+      "devices": "device",
+      "workloads": "VM / container",
+      "apps": "app"
+    },
+    "dialog": {
+      "title": "Save as assertion",
+      "editTitle": "Edit assertion",
+      "description": "The planner re-checks this expectation after every change and reports it in Issues when it breaks.",
+      "name": "Name",
+      "namePlaceholder": "e.g. IoT cannot reach LAN",
+      "source": "Source",
+      "destination": "Destination",
+      "protocol": "Protocol",
+      "port": "Port",
+      "expect": "Expectation",
+      "cancel": "Cancel",
+      "save": "Save"
+    }
   }
 }

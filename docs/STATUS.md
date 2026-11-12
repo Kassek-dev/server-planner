@@ -153,6 +153,15 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 13 — Dostęp i bezpieczeństwo sieci (pakiet 2): SIM‑04/05/06, NET‑10/11, widok Access (V‑05)
 
+- [x] SIM‑05 `exposure()`: każdy port forward symulowany od internetu (WAN → DNAT → firewall ze strefą WAN → cel); kroki `SIM_INTERNET_INBOUND`, `SIM_NAT_PORT_FORWARD`, `SIM_NAT_TARGET_MISSING`
+- [x] SIM‑06 asercje: komendy `assertion.add/update/delete`, ocena w `analyze()` (`assertions` w wyniku), problem `VAL_ASSERT` (błąd gdy oczekiwano blokady, inaczej ostrzeżenie); źródło „internet” liczone przez ekspozycję
+- [x] SIM‑04 `accessMatrix()`: strefa × strefa (+ Internet) lub urządzenie × urządzenie, 5 sond (tcp 443/80/22, udp 53, icmp), jeden reprezentant na stronę; urządzenia infrastruktury (router, switch, AP…) nie reprezentują stref
+- [x] V‑05 Access (`#/p/:id/access`, `?matrix=devices`): macierz z podglądem ścieżki komórki, lista „Exposed to the internet”, tabela asercji (włącz/wyłącz, edycja, usuwanie, wynik)
+- [x] D‑11 „Save as assertion” w Reachability (wstępnie wypełnione z zapytania i werdyktu)
+- [x] NET‑10 kreator „Typical segmentation” (szuflada VLANs › VLANs): komenda `network.applySegmentation` — Mgmt/LAN/IoT/Guest (VLAN 10/20/30/40, `192.168.<vid>.0/24`, DHCP poza Mgmt), strefy (Guest z izolacją), pod‑interfejsy bramy na wybranym porcie trunk, reguły (Mgmt/LAN → any, IoT/Guest → Internet), strefa WAN i masquerade gdy brak
+- [x] NET‑11 port forwarding: edycja w szufladzie firewalla (od etapu 4b) + ekspozycja w V‑05
+- [ ] NET‑11 reverse proxy (domena → aplikacja) — **odłożone**: wymaga nowej encji w modelu (schemat v2 + migracja + fixture); do zaplanowania osobno
+
 ### Etap 14 — Zasilanie i koszty (pakiet 5): HW‑06, CAP‑07/08/09, VAL‑12, SET‑02, Dashboard (V‑02)
 
 ### Etap 15 — Planowanie wydajności (pakiet 6): SW‑08/09, CAP‑05/06, HW‑05

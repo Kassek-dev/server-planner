@@ -11,6 +11,7 @@ import { connectResults } from '../../store/results';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
 import { Led, type LedStatus } from '../../ui/Led';
+import { AccessView } from '../access/AccessView';
 import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
 import { DrawerHost } from '../drawers/DrawerHost';
@@ -88,11 +89,12 @@ function EditorLoading() {
   );
 }
 
-type View = 'topology' | 'inventory' | 'ip';
+type View = 'topology' | 'inventory' | 'ip' | 'access';
 const VIEWS: { id: View; path: string }[] = [
   { id: 'topology', path: '' },
   { id: 'inventory', path: 'inventory' },
   { id: 'ip', path: 'ip' },
+  { id: 'access', path: 'access' },
 ];
 
 function useView(): View {
@@ -100,7 +102,7 @@ function useView(): View {
   return VIEWS.find((v) => v.path && rest.startsWith(v.path))?.id ?? 'topology';
 }
 
-/** Topology | Inventory | IP Plan (docs/05 § 3); the selection and `?panel` survive the switch. */
+/** Topology | Inventory | IP Plan | Access (docs/05 § 3); the selection and `?panel` survive the switch. */
 function ViewTabs() {
   const { t } = useTranslation('editor');
   const { projectId = '' } = useParams();
@@ -242,6 +244,8 @@ function Editor() {
           <InventoryView />
         ) : view === 'ip' ? (
           <IpPlanView />
+        ) : view === 'access' ? (
+          <AccessView />
         ) : (
           <CanvasWorkspace />
         )}

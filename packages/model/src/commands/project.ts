@@ -1,4 +1,4 @@
-import type { Note, Project, ProjectSettings, Tag } from '../schema/project';
+import type { Assertion, Note, Project, ProjectSettings, Tag } from '../schema/project';
 import { applyChanges, CommandError, defineCommand, getOrThrow } from './core';
 
 /** Project metadata, tags, layout and notes — docs/02 § 3, § 7. */
@@ -49,6 +49,31 @@ export const deleteTag = defineCommand('tag.delete', (draft, { id }: { id: strin
   for (const item of tagged) item.tagIds = item.tagIds.filter((t) => t !== id);
   delete draft.tags[id];
 });
+
+/** Network assertions (SIM-06): expectations checked by the engines on every change. */
+export const addAssertion = defineCommand(
+  'assertion.add',
+  (draft, { assertion }: { assertion: Omit<Assertion, 'id'> }, ctx): string => {
+    const id = ctx.createId('assertion');
+    draft.assertions[id] = { ...assertion, id };
+    return id;
+  },
+);
+
+export const updateAssertion = defineCommand(
+  'assertion.update',
+  (draft, { id, changes }: { id: string; changes: Partial<Omit<Assertion, 'id'>> }) => {
+    applyChanges(getOrThrow(draft.assertions, id, 'assertion'), changes);
+  },
+);
+
+export const deleteAssertion = defineCommand(
+  'assertion.delete',
+  (draft, { id }: { id: string }) => {
+    getOrThrow(draft.assertions, id, 'assertion');
+    delete draft.assertions[id];
+  },
+);
 
 export const moveNode = defineCommand(
   'layout.moveNode',

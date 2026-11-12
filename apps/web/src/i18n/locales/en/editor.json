@@ -3,7 +3,8 @@
     "label": "Views",
     "topology": "Topology",
     "inventory": "Inventory",
-    "ip": "IP Plan"
+    "ip": "IP Plan",
+    "access": "Access"
   },
   "rename": "Rename project",
   "save": {

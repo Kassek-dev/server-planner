@@ -25,7 +25,8 @@
     "query": "{from} → {to} · {service}",
     "path": "Path",
     "pathBlocked": "Path · blocked at step {step}",
-    "suggestFix": "Suggest fix"
+    "suggestFix": "Suggest fix",
+    "saveAssertion": "Save as assertion"
   },
   "verdict": {
     "reachable": "ALLOWED",
@@ -80,7 +81,10 @@
     "SIM_APP_LISTENING": "{app} listens on {protocol}/{port}.",
     "SIM_APP_NOT_LISTENING": "{app} does not listen on {protocol}/{port}.",
     "SIM_FLOW_UNBOUND": "Nobody plays the role “{role}” — pick a participant.",
-    "SIM_FROM_INTERNET": "Connections from the internet are simulated with port forwarding (coming with exposure checks)."
+    "SIM_FROM_INTERNET": "Connections from the internet start at a port forward — check them in the Access view.",
+    "SIM_INTERNET_INBOUND": "A connection from the internet arrives at {interface} ({protocol}/{port}).",
+    "SIM_NAT_PORT_FORWARD": "{router} forwards port {external} to {target}:{port}.",
+    "SIM_NAT_TARGET_MISSING": "The port forward of port {port} on {router} has no valid target or WAN interface."
   },
   "fix": {
     "title": "Suggested fix",
