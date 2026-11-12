@@ -3,14 +3,17 @@ import {
   analyze,
   type EngineOptions,
   type EntityRef,
+  type FlowRunResult,
+  type FlowTarget,
   type ReachabilityResult,
   type ReachQuery,
   type ServiceVisibility,
   sameDomain,
+  simulateFlow,
   simulateReach,
   simulateVisibleFrom,
 } from '@server-planner/engine';
-import type { Project } from '@server-planner/model';
+import type { CatalogFlow, Project } from '@server-planner/model';
 import { type Remote, wrap } from 'comlink';
 import { create } from 'zustand';
 import type { EngineWorkerApi } from '../workers/engine.worker';
@@ -30,6 +33,10 @@ type Analyzer = (project: Project, options?: EngineOptions) => Promise<AnalysisR
 export interface Simulator {
   reach(project: Project, query: ReachQuery): Promise<ReachabilityResult>;
   visibleFrom(project: Project, viewpoint: EntityRef): Promise<ServiceVisibility[]>;
+  runFlow(
+    project: Project,
+    input: { flow: CatalogFlow; bindings: Record<string, FlowTarget | undefined> },
+  ): Promise<FlowRunResult>;
 }
 
 let shared: Remote<EngineWorkerApi> | null | undefined;
@@ -61,10 +68,15 @@ export function createAnalyzer(): Analyzer {
 export function createSimulator(): Simulator {
   const api = engineWorker();
   if (api)
-    return { reach: (p, q) => api.reach(p, q), visibleFrom: (p, v) => api.visibleFrom(p, v) };
+    return {
+      reach: (p, q) => api.reach(p, q),
+      visibleFrom: (p, v) => api.visibleFrom(p, v),
+      runFlow: (p, input) => api.runFlow(p, input),
+    };
   return {
     reach: async (p, q) => simulateReach(p, q),
     visibleFrom: async (p, v) => simulateVisibleFrom(p, v),
+    runFlow: async (p, input) => simulateFlow(p, input),
   };
 }
 

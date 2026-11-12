@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useSession } from '../../app/services';
 import { endpointName, refFor, targetFor } from './entities';
+import { FlowTimeline } from './FlowTimeline';
 import { ResultSummary } from './SimulationPanel';
 import { useSimulation } from './store';
 
@@ -19,10 +20,11 @@ export function SimulationCanvasLayer() {
   const from = refFor(project, params.get('from'));
   const to = targetFor(project, params.get('to'));
   const port = Number(params.get('port'));
-  const showCard = params.get('sim') !== 'access' && highlight && from && to;
+  const showCard = (params.get('sim') ?? 'reach') === 'reach' && highlight && from && to;
 
   return (
     <>
+      {params.get('sim') === 'flows' ? <FlowTimeline /> : null}
       {showCard ? (
         <div className="absolute top-4 left-4 w-72">
           <ResultSummary

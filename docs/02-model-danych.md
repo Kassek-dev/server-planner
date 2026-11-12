@@ -862,6 +862,8 @@ interface ServiceVisibility {
   purpose?: string;
   result: ReachabilityResult;
 }
+// Implementacja (2026-11-12, packages/engine/src/simulation/flow.ts): hops[] = { step, kind: 'dns' | 'step',
+// from, to (EntityRef | 'internet'), protocol, port?, bandwidthMbps?, result }, skipped: number[], verdict.
 interface FlowRunResult {
   flowId: string;
   bindings: Record<string, EntityRef>; // rola → konkretna encja

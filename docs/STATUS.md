@@ -146,6 +146,11 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 12 — Przepływy ruchu (pakiet 1): FLW‑01…05
 
+- [x] Silnik `runFlow()` (`packages/engine/src/simulation/flow.ts`): kroki procesu z katalogu → wywołania `reach()`; port celu z listenera o danym `purpose` (opublikowany port Dockera); krok DNS do serwera DNS podsieci źródła przy `resolveDns`; kroki opcjonalne bez uczestnika pomijane; brak uczestnika roli wymaganej → `SIM_FLOW_UNBOUND`
+- [x] FLW‑01/02 (`features/simulation/flows.ts`): aplikacje projektu z procesami (po `catalogRef`, zapasowo po nazwie), kandydaci ról (klienci LAN, typy urządzeń, zależności po `provides`, magazyn → NAS, komponenty stosu), domyślne propozycje
+- [x] X‑01c Flows w panelu symulacji, lista kroków z przyczynami; O‑10 oś kroków na canvasie z ⏮ ⏯ ⏭ — każdy krok podświetla ścieżkę, zablokowany zatrzymuje odtwarzanie (FLW‑04/05)
+- Uwagi: ruch z internetu (np. VPN) wymaga etapu 13 (SIM‑05) — taki krok ma wynik „unknown”; obciążenie łączy (FLW‑06/07) to P2
+
 ### Etap 13 — Dostęp i bezpieczeństwo sieci (pakiet 2): SIM‑04/05/06, NET‑10/11, widok Access (V‑05)
 
 ### Etap 14 — Zasilanie i koszty (pakiet 5): HW‑06, CAP‑07/08/09, VAL‑12, SET‑02, Dashboard (V‑02)
@@ -180,5 +185,6 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 10a/10b: builder katalogu z 4 adapterami, bezpiecznikami i blokadą | #22 |
 | 2026-11-12 | Etap 10c: workflow `catalog-update.yml`, pierwszy `dist` od bota (`chore(catalog): 2026.46`), zabezpieczenie rozpakowywania archiwów | #23 |
 | 2026-11-12 | Etap 10d: katalog efektywny w aplikacji (243 aplikacje), aktualizacje CAT‑04, Settings › Catalog, źródła w About, PERF w D‑05 — etap 10 zamknięty; unit 205, E2E 33 | #24 |
-| 2026-11-12 | Etap 11: skan popularnych aplikacji, 63 nowe kurowane, filtry importu → 195 aplikacji | — |
+| 2026-11-12 | Etap 11: skan popularnych aplikacji, 63 nowe kurowane, filtry importu → 195 aplikacji | #25 |
+| 2026-11-12 | Etap 12: przepływy aplikacji (FLW‑01…05), oś kroków na canvasie; unit 211, E2E 34 | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |

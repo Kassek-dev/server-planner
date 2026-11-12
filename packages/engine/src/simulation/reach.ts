@@ -69,6 +69,8 @@ export const SIM_CODES = [
   'SIM_NAT_MISSING',
   'SIM_SRC_NO_NETWORK',
   'SIM_WAN_NO_UPLINK',
+  'SIM_FLOW_UNBOUND',
+  'SIM_FROM_INTERNET',
 ] as const;
 
 export interface ReachQuery {
@@ -588,6 +590,11 @@ function attempt(
 const passed = (r: ReachabilityResult) => r.steps.filter((s) => s.decision === 'pass').length;
 
 /** Reachability of `q.to` from `q.from`; tries every address pair and keeps the best outcome. */
+/** Subnet of the first network attachment of an endpoint (for its DNS server). */
+export function subnetOf(ctx: EngineContext, ref: EntityRef): string | undefined {
+  return resolve(ctx, ref).attachments.find((a) => a.subnetId)?.subnetId;
+}
+
 export function reach(ctx: EngineContext, q: ReachQuery): ReachabilityResult {
   const src = resolve(ctx, q.from);
   const empty = (code: string, ref: EntityRef): ReachabilityResult => ({

@@ -95,3 +95,28 @@ test('overlays: links by speed and devices by zone', async ({ page }) => {
   await page.getByRole('combobox', { name: 'Devices by' }).selectOption('zone');
   await expect(node(page, 'nas-01')).toHaveAttribute('style', /outline/);
 });
+
+test('flows: a catalog process played step by step (FLW-01…05)', async ({ page }) => {
+  await openExample(page);
+  await page.getByRole('button', { name: /2 errors, .* open issues/ }).click();
+  await inspector(page).getByRole('button', { name: 'Allow VLAN 30 on Port 8' }).click();
+  await page.getByRole('button', { name: 'Simulate' }).click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Flows' }).click();
+  await expect(panel.getByRole('combobox', { name: 'Process' })).toHaveValue('jellyfin.play-movie');
+  await expect(panel.getByRole('combobox', { name: 'Client' })).toHaveValue(/dev_/);
+
+  await panel.getByRole('button', { name: 'Run flow' }).click();
+  await expect(panel.getByText(/Flow blocked/)).toBeVisible();
+  await expect(panel.getByText('Blocked by rule #4 on gw-01 (IoT → LAN).').first()).toBeVisible();
+  const timeline = page.getByRole('region', { name: 'Flow timeline' });
+  await expect(timeline).toBeVisible();
+  await expect(
+    timeline.getByRole('button', { name: /tv-salon → Jellyfin · tcp\/8096/ }),
+  ).toBeVisible();
+
+  await choose(panel.getByRole('combobox', { name: 'Client', exact: true }), 'nas-01');
+  await panel.getByRole('button', { name: 'Run flow' }).click();
+  await expect(panel.getByText(/Flow works/)).toBeVisible();
+  await timeline.getByRole('button', { name: 'First step' }).isVisible();
+});
