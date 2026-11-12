@@ -8,7 +8,7 @@
 - [x] `02` model danych v0.3
 - [x] `03` architektura v0.2
 - [x] `04` design system v0.1
-- [x] `05` projekt UI v0.1
+- [x] `05` projekt UI v0.2 (2026-11-12: UI1–UI3 rozstrzygnięte)
 - [x] `06` źródła danych v0.1
 - [x] `07` mapa widoków i sitemapa v0.1
 - [x] Makiety MVP (canvas, kopia w `design/`)
@@ -114,7 +114,10 @@
 - [x] 8a: UI2 — pierwszy router/firewall bez węzła Internet dostaje Internet podłączony do WAN (osobny krok `canvas.addInternet`)
 - [x] 8a: Settings (P‑02): Appearance (motyw System/Dark/Light), Storage (zużycie, persist, eksport wszystkich, usunięcie wszystkich danych z potwierdzeniem); Catalog i Units — informacyjnie (P1 w 1.0)
 - [x] 8a: About (P‑03): Overview, Data sources (warstwa kurowana w użyciu, pozostałe źródła „planned 1.0”), Licenses — lista zależności generowana przy buildzie (`apps/web/plugins/licenses.ts`, `virtual:licenses`)
-- [ ] 8b: eksport PNG/SVG/JSON (D‑04), E2E ścieżek A i B
+- [x] 8b: D‑04 Export — PNG (2×) / SVG / JSON, zakres cały canvas / zaznaczenie, tło Dark/Light niezależne od motywu UI (`html-to-image`, viewport React Flow)
+- [x] 8b: E2E ścieżek A (nowy lab od zera) i B („czy mój sprzęt to uciągnie?”) z `docs/05` § 6; przycisk „Add apps from catalog” w zakładce Capacity
+- [x] 8b: kliknięcie w zaznaczony kafelek wraca ze szczegółów aplikacji/workloadu do inspektora urządzenia
+- Poza MVP (P1, wersja 1.0): builder katalogu i aktualizacje (CAT‑03/04), Settings › Catalog/Units, PWA/offline, Inventory/IP Plan/Access, asercje, przepływy (FLW)
 - Katalog: dane kurowane zostają `curated`; użytkownik przejrzy je później (2026-11-12)
 
 ## Dziennik
@@ -133,4 +136,5 @@
 | 2026-11-12 | Etap 6: symulacja `reach()`, dostęp do internetu, Visible from, panel Simulation, nakładki CAN‑06; unit 156, E2E 19 | #12 |
 | 2026-11-12 | Etap 7a: schematy i walidacja katalogu, warstwa kurowana (59 aplikacji, 19 urządzeń, 11 CPU, 4 OS), warstwa bazowa w aplikacji, narzut OS z katalogu; unit 163, E2E 19 | #13 |
 | 2026-11-12 | Etap 7b: D‑05/D‑06/D‑07, komendy `device.applyModel` i `app.addFromCatalog` — etap 7 zamknięty; unit 172, E2E 23 | #14 |
-| 2026-11-12 | Decyzje UI1–UI3 (`docs/05` § 15, v0.2); etap 8a: toasty z Undo, auto‑Internet, Settings, About; unit 176, E2E 27 | — |
+| 2026-11-12 | Decyzje UI1–UI3 (`docs/05` § 15, v0.2); etap 8a: toasty z Undo, auto‑Internet, Settings, About; unit 176, E2E 27 | #15 |
+| 2026-11-12 | Etap 8b: eksport D‑04 (PNG/SVG/JSON), E2E ścieżek A i B — **MVP ukończone**; unit 176, E2E 30 | — |

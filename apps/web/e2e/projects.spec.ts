@@ -29,6 +29,8 @@ test('create, rename with undo, autosave, export, delete', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Garage lab v2' })).toBeVisible();
 
   const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.getByRole('dialog', { name: 'Export' }).getByText('JSON', { exact: true }).click();
   await page.getByRole('button', { name: 'Export JSON' }).click();
   expect((await download).suggestedFilename()).toMatch(/^garage-lab-v2-\d{4}-\d{2}-\d{2}\.json$/);
 

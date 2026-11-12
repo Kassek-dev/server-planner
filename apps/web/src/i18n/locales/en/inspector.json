@@ -322,6 +322,7 @@
     "unbounded": "unbounded",
     "overcommit": "Overcommit: CPU {cpu}:1, memory {memory}:1 (project settings).",
     "noCpu": "Add a CPU in the Hardware tab to see CPU capacity.",
-    "tip": "Above the warning threshold — add resources, lower allocations or move a workload to another host."
+    "tip": "Above the warning threshold — add resources, lower allocations or move a workload to another host.",
+    "addApps": "Add apps from catalog"
   }
 }
