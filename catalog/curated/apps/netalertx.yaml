@@ -1,0 +1,50 @@
+id: netalertx
+name: NetAlertX
+description: { en: Network presence scanner that alerts on new and missing devices. }
+categories: [networking, monitoring]
+repository: "https://github.com/jokob-sk/NetAlertX"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: netalertx
+      role: app
+      image: jokobsk/netalertx
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 20211, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 20211, containerPort: 20211, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /app/config, purpose: config, defaultSizeBytes: 10 MiB }
+        - { name: db, containerPath: /app/db, purpose: data, defaultSizeBytes: 500 MiB }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-20211
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 20211
+    purpose: web-ui
+    required: true
+  - id: scan
+    direction: outbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: device-polling
+    required: true
+flows:
+  - id: netalertx.open-ui
+    name: { en: Open NetAlertX }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: NetAlertX }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

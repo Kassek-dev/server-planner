@@ -1,0 +1,76 @@
+id: seafile
+name: Seafile
+description: { en: High-performance file sync and share with client apps. }
+categories: [files]
+website: "https://www.seafile.com"
+repository: "https://github.com/haiwen/seafile"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: seafile
+      role: app
+      image: seafileltd/seafile-mc
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8084, containerPort: 80, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /shared, purpose: data, defaultSizeBytes: 100 GB }]
+    - key: db
+      name: mariadb
+      role: database
+      image: mariadb
+      defaultTag: "10.11"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3306, protocol: tcp, purpose: mysql }]
+      volumes: [{ name: db, containerPath: /var/lib/mysql, purpose: data, defaultSizeBytes: 2 GB }]
+    - key: cache
+      name: memcached
+      role: cache
+      image: memcached
+      defaultTag: "1.6"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 11211, protocol: tcp, purpose: memcached }]
+      volumes: []
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 100 GB }
+dependencies:
+  - { capability: mysql, optional: false, providedByComponent: db }
+  - { capability: memcached, optional: false, providedByComponent: cache }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+  - id: db-mysql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 3306
+    purpose: mysql
+    required: true
+  - id: cache-memcached
+    direction: outbound
+    peer: { kind: self-component, key: cache }
+    protocol: tcp
+    port: 11211
+    purpose: memcached
+    required: true
+flows:
+  - id: seafile.open-ui
+    name: { en: Open Seafile }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Seafile }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

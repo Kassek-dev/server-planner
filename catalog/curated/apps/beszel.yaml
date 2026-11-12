@@ -1,0 +1,50 @@
+id: beszel
+name: Beszel
+description:
+  { en: "Lightweight server monitoring hub with historical data, Docker stats and alerts." }
+categories: [monitoring]
+website: "https://beszel.dev"
+repository: "https://github.com/henrygd/beszel"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: hub
+      name: beszel
+      role: app
+      image: henrygd/beszel
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8090, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8090, containerPort: 8090, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /beszel_data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 2 GB }
+dependencies: [{ capability: metrics-agent, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8090
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8090
+    purpose: web-ui
+    required: true
+  - id: agents
+    direction: outbound
+    peer: { kind: dependency, capability: metrics-agent }
+    protocol: tcp
+    port: 45876
+    purpose: metrics
+    required: false
+flows:
+  - id: beszel.open-ui
+    name: { en: Open Beszel }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Beszel }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

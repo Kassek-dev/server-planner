@@ -1,0 +1,53 @@
+id: flaresolverr
+name: FlareSolverr
+description: { en: Proxy that solves Cloudflare challenges for Prowlarr and Jackett. }
+categories: [downloads]
+repository: "https://github.com/FlareSolverr/FlareSolverr"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: flaresolverr
+      role: app
+      image: ghcr.io/flaresolverr/flaresolverr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8191, protocol: tcp, purpose: api }]
+      defaultPortMappings: [{ hostPort: 8191, containerPort: 8191, protocol: tcp }]
+      volumes: []
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: [captcha-solver]
+trafficPatterns:
+  - id: api-tcp-8191
+    direction: inbound
+    peer: { kind: dependency, capability: captcha-solver }
+    protocol: tcp
+    port: 8191
+    purpose: api
+    required: true
+  - id: sites
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: true
+flows:
+  - id: flaresolverr.open-ui
+    name: { en: Open FlareSolverr }
+    roles:
+      - {
+          key: client,
+          name: { en: Indexer manager },
+          selector: { kind: lan-clients },
+          userPicks: true,
+        }
+      - { key: server, name: { en: FlareSolverr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: api, resolveDns: true }]

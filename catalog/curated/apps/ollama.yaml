@@ -1,0 +1,54 @@
+id: ollama
+name: Ollama
+description: { en: Run large language models locally behind a simple HTTP API. }
+categories: [ai]
+website: "https://ollama.com"
+repository: "https://github.com/ollama/ollama"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: ollama
+      role: app
+      image: ollama/ollama
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 11434, protocol: tcp, purpose: api }]
+      defaultPortMappings: [{ hostPort: 11434, containerPort: 11434, protocol: tcp }]
+      volumes:
+        [{ name: models, containerPath: /root/.ollama, purpose: data, defaultSizeBytes: 50 GB }]
+requirements:
+  min: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 20 GB }
+  recommended:
+    { cpu: 8, memoryBytes: 16 GiB, diskBytes: 100 GB, gpu: { required: false, features: [cuda] } }
+dependencies: []
+provides: [llm-api]
+trafficPatterns:
+  - id: api-tcp-11434
+    direction: inbound
+    peer: { kind: dependency, capability: llm-api }
+    protocol: tcp
+    port: 11434
+    purpose: api
+    required: true
+  - id: models
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: model-download
+    required: false
+flows:
+  - id: ollama.generate
+    name: { en: App asks the model }
+    roles:
+      - key: client
+        name: { en: Chat front end }
+        selector: { kind: dependency, capability: llm-api }
+        userPicks: true
+      - { key: server, name: { en: Ollama }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 11434 }]

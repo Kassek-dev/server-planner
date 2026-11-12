@@ -1,0 +1,44 @@
+id: restic-rest-server
+name: Restic REST Server
+description: { en: High-performance HTTP backend for restic backups. }
+categories: [backup]
+repository: "https://github.com/restic/rest-server"
+license: BSD-2-Clause
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: rest-server
+      role: app
+      image: restic/rest-server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8000, protocol: tcp, purpose: backup }]
+      defaultPortMappings: [{ hostPort: 8000, containerPort: 8000, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 500 GB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 10 GB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 500 GB }
+dependencies: []
+provides: [backup-storage]
+trafficPatterns:
+  - id: backup-tcp-8000
+    direction: inbound
+    peer: { kind: dependency, capability: backup-storage }
+    protocol: tcp
+    port: 8000
+    purpose: backup
+    required: true
+flows:
+  - id: restic-rest-server.backup
+    name: { en: Host backs up with restic }
+    roles:
+      - key: client
+        name: { en: restic client }
+        selector: { kind: dependency, capability: backup-storage }
+        userPicks: true
+      - { key: server, name: { en: REST Server }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 8000, bandwidthMbps: 300 }]

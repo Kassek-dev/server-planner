@@ -1,0 +1,44 @@
+id: komga
+name: Komga
+description: { en: "Media server for comics, manga and magazines with OPDS." }
+categories: [media]
+website: "https://komga.org"
+repository: "https://github.com/gotson/komga"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: komga
+      role: app
+      image: gotson/komga
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 25600, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 25600, containerPort: 25600, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: library, containerPath: /data, purpose: media, defaultSizeBytes: 100 GB }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-25600
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 25600
+    purpose: web-ui
+    required: true
+flows:
+  - id: komga.open-ui
+    name: { en: Open Komga }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Komga }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

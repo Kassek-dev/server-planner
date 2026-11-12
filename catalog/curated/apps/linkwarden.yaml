@@ -1,0 +1,71 @@
+id: linkwarden
+name: Linkwarden
+description: { en: Collaborative bookmark manager that archives pages as screenshots and PDFs. }
+categories: [news, productivity]
+website: "https://linkwarden.app"
+repository: "https://github.com/linkwarden/linkwarden"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: linkwarden
+      role: app
+      image: ghcr.io/linkwarden/linkwarden
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3000, containerPort: 3000, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data/data, purpose: data, defaultSizeBytes: 10 GB }]
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          }
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 20 GB }
+dependencies: [{ capability: postgresql, optional: false, providedByComponent: db }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: web-ui
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: fetch
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: true
+flows:
+  - id: linkwarden.open-ui
+    name: { en: Open Linkwarden }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Linkwarden }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

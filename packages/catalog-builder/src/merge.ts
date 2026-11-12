@@ -16,6 +16,10 @@ import { type AppRecord, appKey, type CpuPerfRecord } from './sources/types';
 
 export interface Heuristics {
   excludeImages?: string[];
+  /** Leave out desktop apps streamed to the browser — not home lab services. */
+  excludeDesktopApps?: boolean;
+  /** Images known only to LinuxServer.io need at least this many monthly pulls. */
+  minMonthlyPullsAlone?: number;
   lxcToDocker: { memoryFactor: number; cpuFactor: number; osDiskGb: number; minDiskGb: number };
   defaultRequirements: { min: Resources; recommended: Resources };
   cpuReference: string;
@@ -101,7 +105,10 @@ export function mergeApps({ records, curated, aliases, heuristics }: MergeInput)
   const excluded = new Set(heuristics.excludeImages ?? []);
   const images = records.filter(
     (r) =>
-      r.source === 'linuxserver' && r.image && !excluded.has(r.image.name.replace(/^.*\//, '')),
+      r.source === 'linuxserver' &&
+      r.image &&
+      !excluded.has(r.image.name.replace(/^.*\//, '')) &&
+      !(heuristics.excludeDesktopApps && r.image.desktop),
   );
 
   // Every key a curated app is known by.
@@ -128,6 +135,8 @@ export function mergeApps({ records, curated, aliases, heuristics }: MergeInput)
     if (keys.some((k) => curatedKey.has(k))) continue;
     const info = keys.map((k) => asd.get(k)).find(Boolean);
     const lxc = keys.map((k) => cs.get(k)).find(Boolean);
+    // Nothing but an image and few users: too little to plan with.
+    if (!info && !lxc && (image.popularity ?? 0) < (heuristics.minMonthlyPullsAlone ?? 0)) continue;
     const slug = (image.image?.name.replace(/^.*\//, '') ?? image.key)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')

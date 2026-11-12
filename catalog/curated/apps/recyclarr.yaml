@@ -1,0 +1,48 @@
+id: recyclarr
+name: Recyclarr
+description: { en: Syncs TRaSH Guides quality profiles to Sonarr and Radarr. }
+categories: [media, downloads]
+website: "https://recyclarr.dev"
+repository: "https://github.com/recyclarr/recyclarr"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: job
+      name: recyclarr
+      role: app
+      image: ghcr.io/recyclarr/recyclarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes: [{ name: config, containerPath: /config, purpose: config, defaultSizeBytes: 10 MiB }]
+requirements:
+  min: { cpu: 0.05, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 128 MiB, diskBytes: 200 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: guides
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: true
+  - id: sonarr
+    direction: outbound
+    peer: { kind: dependency, capability: download-client }
+    protocol: tcp
+    port: 8989
+    purpose: api
+    required: false
+flows:
+  - id: recyclarr.sync
+    name: { en: Sync quality profiles }
+    roles:
+      - { key: job, name: { en: Recyclarr }, selector: { kind: self }, userPicks: false }
+      - { key: guides, name: { en: TRaSH Guides }, selector: { kind: internet }, userPicks: false }
+    steps: [{ from: job, to: guides, protocol: tcp, port: 443, resolveDns: true }]

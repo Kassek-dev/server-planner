@@ -1,0 +1,42 @@
+id: excalidraw
+name: Excalidraw
+description: { en: Virtual whiteboard for hand-drawn-like diagrams. }
+categories: [productivity]
+website: "https://excalidraw.com"
+repository: "https://github.com/excalidraw/excalidraw"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: excalidraw
+      role: app
+      image: excalidraw/excalidraw
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8095, containerPort: 80, protocol: tcp }]
+      volumes: []
+requirements:
+  min: { cpu: 0.05, memoryBytes: 32 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+flows:
+  - id: excalidraw.open-ui
+    name: { en: Open Excalidraw }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Excalidraw }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

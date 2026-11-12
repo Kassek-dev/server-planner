@@ -1,0 +1,51 @@
+id: pinchflat
+name: Pinchflat
+description: { en: Automatically download YouTube channels and playlists for your media server. }
+categories: [media, downloads]
+repository: "https://github.com/kieraneglin/pinchflat"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: pinchflat
+      role: app
+      image: ghcr.io/kieraneglin/pinchflat
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8945, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8945, containerPort: 8945, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: downloads, containerPath: /downloads, purpose: media, defaultSizeBytes: 200 GB }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8945
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8945
+    purpose: web-ui
+    required: true
+  - id: youtube
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: media-stream
+    required: true
+    bandwidth: { typicalMbps: 20, peakMbps: 200 }
+flows:
+  - id: pinchflat.open-ui
+    name: { en: Open Pinchflat }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Pinchflat }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

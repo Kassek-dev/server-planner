@@ -1,0 +1,43 @@
+id: watchtower
+name: Watchtower
+description: { en: Updates running containers when a new image is published. }
+categories: [management]
+repository: "https://github.com/containrrr/watchtower"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: agent
+      name: watchtower
+      role: app
+      image: containrrr/watchtower
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes: []
+requirements:
+  min: { cpu: 0.05, memoryBytes: 16 MiB, diskBytes: 50 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: registry
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: update-check
+    required: true
+flows:
+  - id: watchtower.check
+    name: { en: Check registries for new images }
+    roles:
+      - { key: agent, name: { en: Watchtower }, selector: { kind: self }, userPicks: false }
+      - key: registry
+        name: { en: Container registry }
+        selector: { kind: internet }
+        userPicks: false
+    steps: [{ from: agent, to: registry, protocol: tcp, port: 443, resolveDns: true }]

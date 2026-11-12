@@ -1,0 +1,63 @@
+id: tdarr
+name: Tdarr
+description: { en: Distributed transcoding to shrink and standardise a media library. }
+categories: [media]
+website: "https://home.tdarr.io"
+repository: "https://github.com/HaveAGitGat/Tdarr"
+license: Proprietary
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: tdarr
+      role: app
+      image: ghcr.io/haveagitgat/tdarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [
+          { port: 8265, protocol: tcp, purpose: web-ui },
+          { port: 8266, protocol: tcp, purpose: node },
+        ]
+      defaultPortMappings:
+        - { hostPort: 8265, containerPort: 8265, protocol: tcp }
+        - { hostPort: 8266, containerPort: 8266, protocol: tcp }
+      volumes:
+        - { name: server, containerPath: /app/server, purpose: data, defaultSizeBytes: 5 GB }
+        - { name: config, containerPath: /app/configs, purpose: config, defaultSizeBytes: 50 MiB }
+        - { name: media, containerPath: /media, purpose: media, defaultSizeBytes: 1000 GB }
+        - { name: temp, containerPath: /temp, purpose: cache, defaultSizeBytes: 50 GB }
+requirements:
+  min: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 10 GB }
+  recommended:
+    cpu: 4
+    memoryBytes: 4 GiB
+    diskBytes: 50 GB
+    gpu: { required: false, features: [quicksync, cuda] }
+dependencies: [{ capability: media-storage, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8265
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8265
+    purpose: web-ui
+    required: true
+  - id: node-tcp-8266
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8266
+    purpose: node
+    required: true
+flows:
+  - id: tdarr.open-ui
+    name: { en: Open Tdarr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Tdarr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

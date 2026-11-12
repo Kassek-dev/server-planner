@@ -59,6 +59,8 @@ const sha256 = (text: string) => createHash('sha256').update(text).digest('hex')
 
 export interface BuildOptions {
   force?: boolean;
+  /** Accept an intentional drop of imported apps (e.g. after tightening the heuristics). */
+  acceptDrop?: boolean;
   only?: string;
   dryRun?: boolean;
   now?: Date;
@@ -171,8 +173,14 @@ export async function buildCatalog(options: BuildOptions = {}): Promise<number> 
       heuristics,
     });
     for (const r of merged.rejected) log(`  rejected ${r.key}: ${r.reason}`);
-    if (previousApps.length > 0 && merged.apps.length < previousApps.length * (1 - MAX_DROP)) {
-      log(`SAFEGUARD: imported apps dropped from ${previousApps.length} to ${merged.apps.length}.`);
+    if (
+      !options.acceptDrop &&
+      previousApps.length > 0 &&
+      merged.apps.length < previousApps.length * (1 - MAX_DROP)
+    ) {
+      log(
+        `SAFEGUARD: imported apps dropped from ${previousApps.length} to ${merged.apps.length} (intentional? run with --accept-drop).`,
+      );
       return 2;
     }
     apps = merged.apps;
@@ -247,6 +255,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const only = args.includes('--only') ? args[args.indexOf('--only') + 1] : undefined;
   buildCatalog({
     force: args.includes('--force'),
+    acceptDrop: args.includes('--accept-drop'),
     dryRun: args.includes('--dry-run'),
     ...(only ? { only } : {}),
   })

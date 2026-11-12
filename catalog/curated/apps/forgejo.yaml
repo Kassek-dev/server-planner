@@ -1,0 +1,52 @@
+id: forgejo
+name: Forgejo
+description: { en: "Community-driven Git forge with issues, pull requests and Actions." }
+categories: [development]
+website: "https://forgejo.org"
+repository: "https://codeberg.org/forgejo/forgejo"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: forgejo
+      role: app
+      image: codeberg.org/forgejo/forgejo
+      defaultTag: "11"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [{ port: 3000, protocol: tcp, purpose: web-ui }, { port: 22, protocol: tcp, purpose: ssh }]
+      defaultPortMappings:
+        - { hostPort: 3001, containerPort: 3000, protocol: tcp }
+        - { hostPort: 2223, containerPort: 22, protocol: tcp }
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 10 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 2 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 20 GB }
+dependencies: [{ capability: postgresql, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: web-ui
+    required: true
+  - id: ssh-tcp-22
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 22
+    purpose: ssh
+    required: true
+flows:
+  - id: forgejo.open-ui
+    name: { en: Open Forgejo }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Forgejo }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

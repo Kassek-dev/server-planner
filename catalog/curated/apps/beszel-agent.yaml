@@ -1,0 +1,43 @@
+id: beszel-agent
+name: Beszel Agent
+description: { en: Agent that reports host and container metrics to a Beszel hub. }
+categories: [monitoring]
+repository: "https://github.com/henrygd/beszel"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: agent
+      name: beszel-agent
+      role: app
+      image: henrygd/beszel-agent
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 45876, protocol: tcp, purpose: metrics }]
+      volumes: []
+requirements:
+  min: { cpu: 0.05, memoryBytes: 16 MiB, diskBytes: 50 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 32 MiB, diskBytes: 100 MiB }
+dependencies: []
+provides: [metrics-agent]
+trafficPatterns:
+  - id: metrics-tcp-45876
+    direction: inbound
+    peer: { kind: dependency, capability: metrics-agent }
+    protocol: tcp
+    port: 45876
+    purpose: metrics
+    required: false
+flows:
+  - id: beszel-agent.scraped
+    name: { en: Hub collects metrics }
+    roles:
+      - key: hub
+        name: { en: Beszel }
+        selector: { kind: dependency, capability: metrics-agent }
+        userPicks: true
+      - { key: agent, name: { en: Beszel Agent }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: hub, to: agent, protocol: tcp, port: 45876 }]

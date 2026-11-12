@@ -77,6 +77,9 @@ export const linuxserverSource: SourceAdapter = {
             tag: 'latest',
             arch: arch.length > 0 ? arch : ['amd64'],
             ports: (i.config?.ports ?? []).map(port).filter((p): p is SourcePort => !!p),
+            ...((i.config?.ports ?? []).some((p) => /desktop gui/i.test(p.desc ?? ''))
+              ? { desktop: true }
+              : {}),
             volumes: (i.config?.volumes ?? [])
               .filter((v) => v.path?.startsWith('/'))
               .map((v) => ({

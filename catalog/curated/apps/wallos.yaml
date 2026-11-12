@@ -1,0 +1,46 @@
+id: wallos
+name: Wallos
+description: { en: Personal subscription tracker with reminders and statistics. }
+categories: [finance]
+repository: "https://github.com/ellite/Wallos"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: wallos
+      role: app
+      image: bellamy/wallos
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8282, containerPort: 80, protocol: tcp }]
+      volumes:
+        - { name: db, containerPath: /var/www/html/db, purpose: data, defaultSizeBytes: 100 MiB }
+        - name: logos
+          containerPath: /var/www/html/images/uploads/logos
+          purpose: data
+          defaultSizeBytes: 100 MiB
+requirements:
+  min: { cpu: 0.05, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+flows:
+  - id: wallos.open-ui
+    name: { en: Open Wallos }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Wallos }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

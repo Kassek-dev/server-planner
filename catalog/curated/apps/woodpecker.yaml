@@ -1,0 +1,70 @@
+id: woodpecker
+name: Woodpecker CI
+description: { en: "Simple container-based CI engine for Gitea, Forgejo and GitHub." }
+categories: [development]
+website: "https://woodpecker-ci.org"
+repository: "https://github.com/woodpecker-ci/woodpecker"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: server
+      name: woodpecker-server
+      role: app
+      image: woodpeckerci/woodpecker-server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [
+          { port: 8000, protocol: tcp, purpose: web-ui },
+          { port: 9000, protocol: tcp, purpose: grpc },
+        ]
+      defaultPortMappings: [{ hostPort: 8096, containerPort: 8000, protocol: tcp }]
+      volumes:
+        [{ name: data, containerPath: /var/lib/woodpecker, purpose: data, defaultSizeBytes: 5 GB }]
+    - key: agent
+      name: woodpecker-agent
+      role: worker
+      image: woodpeckerci/woodpecker-agent
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes: []
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 20 GB }
+dependencies: [{ capability: git-forge, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8000
+    purpose: web-ui
+    required: true
+  - id: grpc-tcp-9000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9000
+    purpose: grpc
+    required: true
+  - id: forge
+    direction: outbound
+    peer: { kind: dependency, capability: git-forge }
+    protocol: tcp
+    port: 3000
+    purpose: api
+    required: true
+flows:
+  - id: woodpecker.open-ui
+    name: { en: Open Woodpecker CI }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Woodpecker CI }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

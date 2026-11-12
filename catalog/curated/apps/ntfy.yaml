@@ -1,0 +1,60 @@
+id: ntfy
+name: ntfy
+description: { en: Push notifications to phones and desktops over simple HTTP PUT/POST. }
+categories: [messaging]
+website: "https://ntfy.sh"
+repository: "https://github.com/binwiederhier/ntfy"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: ntfy
+      role: app
+      image: binwiederhier/ntfy
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8090, containerPort: 80, protocol: tcp }]
+      volumes:
+        - { name: cache, containerPath: /var/cache/ntfy, purpose: cache, defaultSizeBytes: 1 GB }
+        - { name: config, containerPath: /etc/ntfy, purpose: config, defaultSizeBytes: 10 MiB }
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: [notifications]
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+  - id: push
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: push-relay
+    required: false
+flows:
+  - id: ntfy.publish
+    name: { en: Service sends a notification }
+    roles:
+      - key: client
+        name: { en: Service }
+        selector: { kind: dependency, capability: notifications }
+        userPicks: true
+      - { key: server, name: { en: ntfy }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, port: 8090, resolveDns: true }]
+  - id: ntfy.open-ui
+    name: { en: Open ntfy }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: ntfy }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

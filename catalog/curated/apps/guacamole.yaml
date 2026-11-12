@@ -1,0 +1,94 @@
+id: guacamole
+name: Apache Guacamole
+description: { en: "Clientless remote desktop gateway for RDP, VNC and SSH in the browser." }
+categories: [networking]
+website: "https://guacamole.apache.org"
+repository: "https://github.com/apache/guacamole-server"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: web
+      name: guacamole
+      role: app
+      image: guacamole/guacamole
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8085, containerPort: 8080, protocol: tcp }]
+      volumes: []
+    - key: guacd
+      name: guacd
+      role: worker
+      image: guacamole/guacd
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 4822, protocol: tcp, purpose: guacd }]
+      volumes: []
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 1 GB,
+          }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 2 GB }
+dependencies: [{ capability: postgresql, optional: false, providedByComponent: db }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: guacd-guacd
+    direction: outbound
+    peer: { kind: self-component, key: guacd }
+    protocol: tcp
+    port: 4822
+    purpose: guacd
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: rdp
+    direction: outbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3389
+    purpose: remote-desktop
+    required: false
+  - id: ssh
+    direction: outbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 22
+    purpose: ssh
+    required: false
+flows:
+  - id: guacamole.open-ui
+    name: { en: Open Apache Guacamole }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Apache Guacamole }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

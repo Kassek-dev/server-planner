@@ -1,0 +1,49 @@
+id: archivebox
+name: ArchiveBox
+description: { en: "Self-hosted web archive: saves pages as HTML, PDF, screenshots and media." }
+categories: [news, backup]
+website: "https://archivebox.io"
+repository: "https://github.com/ArchiveBox/ArchiveBox"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: archivebox
+      role: app
+      image: archivebox/archivebox
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8000, containerPort: 8000, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 50 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 10 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 100 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8000
+    purpose: web-ui
+    required: true
+  - id: fetch
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: true
+flows:
+  - id: archivebox.open-ui
+    name: { en: Open ArchiveBox }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: ArchiveBox }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

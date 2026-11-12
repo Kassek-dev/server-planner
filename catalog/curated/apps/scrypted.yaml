@@ -1,0 +1,66 @@
+id: scrypted
+name: Scrypted
+description: { en: "Video integration platform: brings cameras to HomeKit, Google Home and Alexa." }
+categories: [home-automation, security]
+website: "https://www.scrypted.app"
+repository: "https://github.com/koush/scrypted"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: scrypted
+      role: app
+      image: ghcr.io/koush/scrypted
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 10443, protocol: tcp, purpose: https }
+        - { port: 11080, protocol: tcp, purpose: web-ui }
+      defaultPortMappings:
+        - { hostPort: 10443, containerPort: 10443, protocol: tcp }
+        - { hostPort: 11080, containerPort: 11080, protocol: tcp }
+      volumes:
+        [{ name: volume, containerPath: /server/volume, purpose: data, defaultSizeBytes: 10 GB }]
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+  recommended:
+    cpu: 2
+    memoryBytes: 2 GiB
+    diskBytes: 20 GB
+    gpu: { required: false, features: [quicksync] }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: https-tcp-10443
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 10443
+    purpose: https
+    required: true
+  - id: web-ui-tcp-11080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 11080
+    purpose: web-ui
+    required: true
+  - id: cameras
+    direction: outbound
+    peer: { kind: device-kind, deviceKind: client, clientType: camera }
+    protocol: tcp
+    port: 554
+    purpose: rtsp
+    required: true
+    bandwidth: { typicalMbps: 8, peakMbps: 16 }
+flows:
+  - id: scrypted.open-ui
+    name: { en: Open Scrypted }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Scrypted }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

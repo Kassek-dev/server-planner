@@ -1,0 +1,59 @@
+id: searxng
+name: SearXNG
+description:
+  { en: Privacy-respecting metasearch engine that aggregates results from many services. }
+categories: [networking]
+website: "https://docs.searxng.org"
+repository: "https://github.com/searxng/searxng"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: searxng
+      role: app
+      image: searxng/searxng
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8888, containerPort: 8080, protocol: tcp }]
+      volumes:
+        [{ name: config, containerPath: /etc/searxng, purpose: config, defaultSizeBytes: 10 MiB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+  - id: engines
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: search
+    required: true
+flows:
+  - id: searxng.search
+    name: { en: Search the web }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: SearXNG }, selector: { kind: self }, userPicks: false }
+      - {
+          key: engines,
+          name: { en: Search engines },
+          selector: { kind: internet },
+          userPicks: false,
+        }
+    steps:
+      - { from: client, to: server, protocol: tcp, port: 8888, resolveDns: true }
+      - { from: server, to: engines, protocol: tcp, port: 443, resolveDns: true }

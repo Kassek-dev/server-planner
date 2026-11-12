@@ -1,0 +1,87 @@
+id: synapse
+name: Matrix Synapse
+description: { en: Reference homeserver for the Matrix federated chat protocol. }
+categories: [messaging]
+website: "https://element-hq.github.io/synapse/"
+repository: "https://github.com/element-hq/synapse"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: synapse
+      role: app
+      image: matrixdotorg/synapse
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8008, protocol: tcp, purpose: api }
+        - { port: 8448, protocol: tcp, purpose: federation }
+      defaultPortMappings:
+        - { hostPort: 8008, containerPort: 8008, protocol: tcp }
+        - { hostPort: 8448, containerPort: 8448, protocol: tcp }
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 10 GB }]
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 5 GB,
+          }
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 50 GB }
+dependencies: [{ capability: postgresql, optional: false, providedByComponent: db }]
+provides: []
+trafficPatterns:
+  - id: api-tcp-8008
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8008
+    purpose: api
+    required: true
+  - id: federation-tcp-8448
+    direction: inbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 8448
+    purpose: federation
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+  - id: federation
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 8448
+    purpose: federation
+    required: false
+flows:
+  - id: synapse.open-ui
+    name: { en: Open Synapse }
+    roles:
+      - {
+          key: client,
+          name: { en: Matrix client },
+          selector: { kind: lan-clients },
+          userPicks: true,
+        }
+      - { key: server, name: { en: Synapse }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: api, resolveDns: true }]

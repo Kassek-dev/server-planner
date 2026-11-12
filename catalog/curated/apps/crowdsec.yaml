@@ -1,0 +1,67 @@
+id: crowdsec
+name: CrowdSec
+description: { en: Collaborative intrusion detection that bans abusive IPs via bouncers. }
+categories: [security]
+website: "https://www.crowdsec.net"
+repository: "https://github.com/crowdsecurity/crowdsec"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: crowdsec
+      role: app
+      image: crowdsecurity/crowdsec
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [
+          { port: 8080, protocol: tcp, purpose: api },
+          { port: 6060, protocol: tcp, purpose: metrics },
+        ]
+      defaultPortMappings: [{ hostPort: 8086, containerPort: 8080, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /etc/crowdsec, purpose: config, defaultSizeBytes: 50 MiB }
+        - {
+            name: data,
+            containerPath: /var/lib/crowdsec/data,
+            purpose: data,
+            defaultSizeBytes: 1 GB,
+          }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: [ids]
+trafficPatterns:
+  - id: api-tcp-8080
+    direction: inbound
+    peer: { kind: dependency, capability: ids }
+    protocol: tcp
+    port: 8080
+    purpose: api
+    required: true
+  - id: metrics-tcp-6060
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 6060
+    purpose: metrics
+    required: false
+  - id: blocklists
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: update-check
+    required: true
+flows:
+  - id: crowdsec.open-ui
+    name: { en: Open CrowdSec }
+    roles:
+      - { key: client, name: { en: Bouncer }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: CrowdSec }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: api, resolveDns: true }]

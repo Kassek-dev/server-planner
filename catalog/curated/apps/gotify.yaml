@@ -1,0 +1,42 @@
+id: gotify
+name: Gotify
+description: { en: Simple server for sending and receiving messages in real time. }
+categories: [messaging]
+website: "https://gotify.net"
+repository: "https://github.com/gotify/server"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: gotify
+      role: app
+      image: gotify/server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8091, containerPort: 80, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /app/data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 32 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: [notifications]
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+flows:
+  - id: gotify.open-ui
+    name: { en: Open Gotify }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Gotify }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

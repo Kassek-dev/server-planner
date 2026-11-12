@@ -1,0 +1,50 @@
+id: localai
+name: LocalAI
+description: { en: "OpenAI-compatible API for local text, image and audio models." }
+categories: [ai]
+website: "https://localai.io"
+repository: "https://github.com/mudler/LocalAI"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: localai
+      role: app
+      image: localai/localai
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: api }]
+      defaultPortMappings: [{ hostPort: 8080, containerPort: 8080, protocol: tcp }]
+      volumes: [{ name: models, containerPath: /models, purpose: data, defaultSizeBytes: 50 GB }]
+requirements:
+  min: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 20 GB }
+  recommended:
+    { cpu: 8, memoryBytes: 16 GiB, diskBytes: 100 GB, gpu: { required: false, features: [cuda] } }
+dependencies: []
+provides: [llm-api]
+trafficPatterns:
+  - id: api-tcp-8080
+    direction: inbound
+    peer: { kind: dependency, capability: llm-api }
+    protocol: tcp
+    port: 8080
+    purpose: api
+    required: true
+  - id: models
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: model-download
+    required: false
+flows:
+  - id: localai.open-ui
+    name: { en: Open LocalAI }
+    roles:
+      - { key: client, name: { en: App }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: LocalAI }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: api, resolveDns: true }]
