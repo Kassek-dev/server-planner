@@ -21,6 +21,7 @@ function setup() {
     capacity: {},
     deviceStatus: {},
     internet: {},
+    assertions: [],
     durationMs: 0,
   }));
   const disconnect = connectResults(session, analyzer, 150);

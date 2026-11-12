@@ -1,5 +1,6 @@
 import type { Id } from '@server-planner/model';
 import type { InternetAccess } from './simulation/access';
+import type { AssertionResult } from './simulation/assertions';
 
 /** Engine results (never stored) — docs/02-model-danych.md § 8. */
 
@@ -15,7 +16,8 @@ export type EntityRef = {
     | 'zone'
     | 'rule'
     | 'pool'
-    | 'location';
+    | 'location'
+    | 'assertion';
   id: Id;
 };
 
@@ -70,5 +72,7 @@ export interface AnalysisResult {
   deviceStatus: Record<Id, DeviceStatus>;
   /** Internet access per device and VM/LXC with an address (SIM-02). */
   internet: Record<Id, InternetAccess>;
+  /** Enabled network assertions with their outcome (SIM-06). */
+  assertions: AssertionResult[];
   durationMs: number;
 }

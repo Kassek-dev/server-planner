@@ -126,5 +126,30 @@
     "ratio": "Enter a positive number.",
     "currency": "Use a 3-letter currency code such as EUR.",
     "warningBelowCritical": "The warning level must be below the critical level."
+  },
+  "segmentation": {
+    "open": "Typical segmentation…",
+    "title": "Typical segmentation",
+    "description": "Creates a VLAN, a /24 subnet with gateway and a zone per segment, tags them on the router port and adds basic firewall rules. Existing rules keep their priority.",
+    "router": "Router",
+    "trunk": "Trunk port",
+    "segments": "Segments",
+    "names": {
+      "mgmt": "Mgmt · VLAN {vid}",
+      "lan": "LAN · VLAN {vid}",
+      "iot": "IoT · VLAN {vid}",
+      "guest": "Guest · VLAN {vid}"
+    },
+    "hints": {
+      "mgmt": "{cidr}, static addresses; may reach everything.",
+      "lan": "{cidr}, DHCP; trusted devices, may reach everything.",
+      "iot": "{cidr}, DHCP; internet only — add exceptions (e.g. to Home Assistant) later.",
+      "guest": "{cidr}, DHCP; internet only, guests isolated from each other."
+    },
+    "taken": "VLAN {vid} or its subnet already exists.",
+    "noRouter": "Add a router first — the segments need a gateway.",
+    "noWan": "This router has no WAN port, so no internet access or masquerade is set up.",
+    "apply": "{count, plural, =0 {Create segments} one {Create # segment} other {Create # segments}}",
+    "cancel": "Cancel"
   }
 }

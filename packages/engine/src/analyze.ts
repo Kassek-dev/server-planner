@@ -2,6 +2,7 @@ import type { Project } from '@server-planner/model';
 import { capacity } from './capacity';
 import { buildContext, type EngineContext, type EngineOptions } from './context';
 import { internetAccess } from './simulation/access';
+import { evaluateAssertions } from './simulation/assertions';
 import type { AnalysisResult, DeviceStatus, EntityRef, Issue } from './types';
 import { rules } from './validation/rules';
 
@@ -38,6 +39,18 @@ export function analyze(project: Project, options: EngineOptions = {}): Analysis
   const started = Date.now();
   const ctx = buildContext(project, options);
   const issues: Issue[] = rules.flatMap((rule) => rule.run(ctx));
+  // SIM-06: an assertion that does not hold is an issue (security breach = error).
+  const assertions = evaluateAssertions(ctx);
+  for (const r of assertions) {
+    const a = project.assertions[r.assertionId];
+    if (!a || r.passed !== false) continue;
+    issues.push({
+      code: 'VAL_ASSERT',
+      severity: a.expect === 'blocked' ? 'error' : 'warning',
+      params: { name: a.name ?? r.assertionId, expect: a.expect, actual: r.actual },
+      targets: [{ type: 'assertion', id: a.id }],
+    });
+  }
   const reports = capacity(ctx);
 
   const deviceStatus: Record<string, DeviceStatus> = {};
@@ -55,6 +68,7 @@ export function analyze(project: Project, options: EngineOptions = {}): Analysis
     capacity: reports,
     deviceStatus,
     internet: internetAccess(ctx),
+    assertions,
     durationMs: Date.now() - started,
   };
 }

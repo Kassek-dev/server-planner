@@ -1,15 +1,19 @@
 import {
+  type AccessMatrix,
   type AnalysisResult,
   analyze,
   type EngineOptions,
   type EntityRef,
+  type Exposure,
   type FlowRunResult,
   type FlowTarget,
   type ReachabilityResult,
   type ReachQuery,
   type ServiceVisibility,
   sameDomain,
+  simulateExposure,
   simulateFlow,
+  simulateMatrix,
   simulateReach,
   simulateVisibleFrom,
 } from '@server-planner/engine';
@@ -29,7 +33,7 @@ export const useResults = create<ResultsState>(() => ({ result: null, pending: f
 
 type Analyzer = (project: Project, options?: EngineOptions) => Promise<AnalysisResult>;
 
-/** On-demand simulation queries (SIM-01, SIM-03) on a project snapshot. */
+/** On-demand simulation queries (SIM-01, SIM-03, SIM-04, SIM-05) on a project snapshot. */
 export interface Simulator {
   reach(project: Project, query: ReachQuery): Promise<ReachabilityResult>;
   visibleFrom(project: Project, viewpoint: EntityRef): Promise<ServiceVisibility[]>;
@@ -37,6 +41,8 @@ export interface Simulator {
     project: Project,
     input: { flow: CatalogFlow; bindings: Record<string, FlowTarget | undefined> },
   ): Promise<FlowRunResult>;
+  matrix(project: Project, refs?: EntityRef[]): Promise<AccessMatrix>;
+  exposure(project: Project): Promise<Exposure[]>;
 }
 
 let shared: Remote<EngineWorkerApi> | null | undefined;
@@ -72,11 +78,15 @@ export function createSimulator(): Simulator {
       reach: (p, q) => api.reach(p, q),
       visibleFrom: (p, v) => api.visibleFrom(p, v),
       runFlow: (p, input) => api.runFlow(p, input),
+      matrix: (p, refs) => api.matrix(p, refs),
+      exposure: (p) => api.exposure(p),
     };
   return {
     reach: async (p, q) => simulateReach(p, q),
     visibleFrom: async (p, v) => simulateVisibleFrom(p, v),
     runFlow: async (p, input) => simulateFlow(p, input),
+    matrix: async (p, refs) => simulateMatrix(p, refs),
+    exposure: async (p) => simulateExposure(p),
   };
 }
 

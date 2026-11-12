@@ -15,6 +15,7 @@ const NAMED: Partial<
   subnets: (v) => v.cidr as string,
   zones: (v) => v.name as string,
   tags: (v) => v.name as string,
+  assertions: (v) => v.name as string | undefined,
 };
 
 /** Top-level entities (collection, id) added by the given patches. */
