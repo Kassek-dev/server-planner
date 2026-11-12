@@ -54,7 +54,8 @@ export function analyze(project: Project, options: EngineOptions = {}): Analysis
   }
   const reports = capacity(ctx);
   // VAL-12 (PoE budget) and an overloaded UPS come from the power estimate (CAP-07/08).
-  const energy = power(ctx, reports);
+  const expected = capacity(ctx, 'expected');
+  const energy = power(ctx, expected);
   for (const b of energy.poe)
     if (b.budgetW > 0 && b.usedW > b.budgetW)
       issues.push({
@@ -93,6 +94,7 @@ export function analyze(project: Project, options: EngineOptions = {}): Analysis
   return {
     issues,
     capacity: reports,
+    expected,
     deviceStatus,
     internet: internetAccess(ctx),
     assertions,

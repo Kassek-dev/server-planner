@@ -10,7 +10,7 @@ hardware:
     slotsTotal: 2
     maxBytes: 64 GiB
     modules: [{ sizeBytes: 8 GiB, count: 2, speedMts: 3200 }]
-  gpus: []
+  gpus: [{ model: "AMD Radeon Vega 6", features: [vcn] }]
   power: { idleW: 8, loadW: 40 }
   defaultDisks: [{ name: nvme0, type: ssd-nvme, sizeBytes: 500 GB }]
 ports: [{ name: eth0, kind: rj45, speedMbps: 1000 }]

@@ -10,7 +10,7 @@ hardware:
     slotsTotal: 2
     maxBytes: 64 GiB
     modules: [{ sizeBytes: 16 GiB, count: 1, speedMts: 3200 }]
-  gpus: []
+  gpus: [{ model: "Intel Iris Xe Graphics", features: [quicksync] }]
   power: { idleW: 8, loadW: 60 }
   defaultDisks: [{ name: nvme0, type: ssd-nvme, sizeBytes: 512 GB }]
 ports: [{ name: eth0, kind: rj45, speedMbps: 2500 }]

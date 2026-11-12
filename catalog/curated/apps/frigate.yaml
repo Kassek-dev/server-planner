@@ -37,6 +37,19 @@ requirements:
     memoryBytes: 4 GiB
     diskBytes: 20 GB
     gpu: { required: false, features: [quicksync, tpu] }
+loadProfiles:
+  - id: typical
+    name: { en: Detecting }
+    params:
+      - { key: cameras, name: { en: Cameras }, default: 2, min: 1, max: 16 }
+    resources: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 0 }
+    perParam: { cameras: { cpu: 0.5, memoryBytes: 256 MiB } }
+  - id: peak
+    name: { en: Detecting without accelerator }
+    params:
+      - { key: cameras, name: { en: Cameras }, default: 2, min: 1, max: 16 }
+    resources: { cpu: 3, memoryBytes: 1.5 GiB, diskBytes: 0 }
+    perParam: { cameras: { cpu: 1.5, memoryBytes: 256 MiB } }
 dependencies: []
 provides: []
 trafficPatterns:

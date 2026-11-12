@@ -11,7 +11,7 @@ hardware:
     maxBytes: 8 GiB
     modules:
       - { sizeBytes: 4 GiB, count: 1, soldered: true }
-  gpus: []
+  gpus: [{ model: "Intel UHD Graphics 600", features: [quicksync] }]
   power: { idleW: 15, loadW: 33 }
 ports:
   - { name: LAN 1, kind: rj45, speedMbps: 1000 }

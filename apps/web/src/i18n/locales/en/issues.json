@@ -142,5 +142,13 @@
   "VAL_12_UPS": {
     "title": "UPS overloaded",
     "description": "{device} would carry about {load} W, more than its {capacity} W."
+  },
+  "VAL_GPU": {
+    "title": "No accelerator for an app",
+    "description": "{app} needs {features}, but {host} cannot give it{behindVm, select, yes { (it runs in a VM without GPU passthrough)} other {}}."
+  },
+  "VAL_GPU_OPTIONAL": {
+    "title": "No hardware acceleration",
+    "description": "{app} could use {features}, but {host} cannot give it{behindVm, select, yes { (it runs in a VM without GPU passthrough)} other {}} — the work runs on the CPU."
   }
 }

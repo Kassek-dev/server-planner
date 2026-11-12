@@ -32,6 +32,22 @@ requirements:
     memoryBytes: 4 GiB
     diskBytes: 20 GB
     gpu: { required: false, features: [quicksync] }
+loadProfiles:
+  - id: idle
+    name: { en: Idle }
+    resources: { cpu: 0.1, memoryBytes: 400 MiB, diskBytes: 0 }
+  - id: typical
+    name: { en: Evening streaming }
+    params:
+      - { key: streams, name: { en: Direct-play streams }, default: 2, min: 0, max: 20 }
+      - { key: transcodes, name: { en: Simultaneous transcodes (CPU) }, default: 0, min: 0, max: 8 }
+    resources: { cpu: 0.5, memoryBytes: 1 GiB, diskBytes: 0 }
+    perParam:
+      streams: { cpu: 0.1, memoryBytes: 64 MiB }
+      transcodes: { cpu: 2, memoryBytes: 256 MiB }
+  - id: peak
+    name: { en: Library scan }
+    resources: { cpu: 3, memoryBytes: 2 GiB, diskBytes: 0 }
 dependencies: [{ capability: media-storage, optional: true }]
 provides: [media-server]
 trafficPatterns:

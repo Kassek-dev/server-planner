@@ -4,6 +4,7 @@ import {
   type Interface,
   SINGLE_LINK_KINDS,
   type Subnet,
+  type Workload,
 } from '@server-planner/model';
 import ipaddr from 'ipaddr.js';
 import { capacity as computeCapacity } from '../capacity';
@@ -631,6 +632,51 @@ const capacityRule: ValidationRule = {
   },
 };
 
+/**
+ * GPU (CAP-01, HW-05): an app asking for an accelerator its host cannot give it. A VM sees the
+ * host GPU only with passthrough. Required → warning; optional acceleration → info (runs on CPU).
+ */
+const gpuRule: ValidationRule = {
+  code: 'VAL_GPU',
+  run(ctx) {
+    const out: Issue[] = [];
+    for (const app of Object.values(ctx.project.apps)) {
+      const gpu = app.requirements.recommended.gpu ?? app.requirements.min.gpu;
+      if (!gpu || (!gpu.required && gpu.features.length === 0)) continue;
+      // Walk up to the device; a VM without GPU passthrough hides the host GPU.
+      let hidden = false;
+      let at: { type: string; id: string } | undefined = app.runsOn;
+      for (let depth = 0; at && at.type === 'workload' && depth < 16; depth += 1) {
+        const w: Workload | undefined = ctx.project.workloads[at.id];
+        if (w?.kind === 'vm' && !w.passthrough?.gpu) hidden = true;
+        at = w?.host;
+      }
+      const device = at?.type === 'device' ? ctx.project.devices[at.id] : undefined;
+      if (!device) continue;
+      const available = hidden ? [] : device.hardware.gpus.flatMap((g) => g.features);
+      const ok =
+        gpu.features.length === 0
+          ? !hidden && device.hardware.gpus.length > 0
+          : gpu.features.some((f) => available.includes(f));
+      if (ok) continue;
+      out.push(
+        issue(
+          gpu.required ? 'VAL_GPU' : 'VAL_GPU_OPTIONAL',
+          gpu.required ? 'warning' : 'info',
+          [{ type: 'app', id: app.id }],
+          {
+            app: app.name,
+            host: device.name,
+            features: gpu.features.join(', ') || 'GPU',
+            behindVm: hidden ? 'yes' : 'no',
+          },
+        ),
+      );
+    }
+    return out;
+  },
+};
+
 /** VAL-14 required dependency without a provider. */
 const dependencies: ValidationRule = {
   code: 'VAL_14',
@@ -757,6 +803,7 @@ export const rules: ValidationRule[] = [
   portConflict,
   osCompatibility,
   capacityRule,
+  gpuRule,
   dependencies,
   rackRules,
   brokenReferences,
@@ -787,6 +834,8 @@ export const ISSUE_CODES = [
   'VAL_13',
   'VAL_13_OVER',
   'VAL_14',
+  'VAL_GPU',
+  'VAL_GPU_OPTIONAL',
   'VAL_RACK_OVERLAP',
   'VAL_RACK_OUT_OF_RANGE',
   'VAL_RACK_WIDTH',

@@ -8,6 +8,7 @@ import {
 } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../app/format';
+import { catalogApp, useCatalog } from '../../catalog/store';
 import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
 import { Select } from '../../ui/Select';
@@ -156,6 +157,8 @@ export function AppInspector({ project, app }: { project: Project; app: AppInsta
         })}
       </Section>
 
+      <LoadProfileSection app={app} update={update} />
+
       <Section
         title={t('app.dependencies')}
         action={
@@ -239,5 +242,58 @@ export function AppInspector({ project, app }: { project: Project; app: AppInsta
         {t('app.delete')}
       </Button>
     </>
+  );
+}
+
+/** SW-08 load profile from the catalog: expected use in the Capacity tab (CAP-05). */
+function LoadProfileSection({ app, update }: { app: AppInstance; update: (c: Changes) => void }) {
+  const { t, i18n } = useTranslation('inspector');
+  const catalog = useCatalog((s) => s.catalog);
+  const profiles = app.catalogRef
+    ? catalogApp(catalog, app.catalogRef.id)?.loadProfiles
+    : undefined;
+  if (!profiles?.length || (app.role !== undefined && app.role !== 'app')) return null;
+  const text = (l: { en: string } & Record<string, string>) => l[i18n.language] ?? l.en;
+  const current =
+    profiles.find((p) => p.id === app.loadProfile?.profileId) ??
+    profiles.find((p) => p.id === 'typical') ??
+    profiles[0];
+  if (!current) return null;
+  const params = app.loadProfile?.params ?? {};
+  return (
+    <Section title={t('app.loadProfile')}>
+      <Select
+        label={t('app.profile')}
+        value={current.id}
+        options={profiles.map((p) => ({ value: p.id, label: text(p.name) }))}
+        onChange={(e) => update({ loadProfile: { profileId: e.target.value, params } })}
+      />
+      {current.params?.length ? (
+        <Grid>
+          {current.params.map((param) => (
+            <CommitField
+              key={param.key}
+              label={text(param.name)}
+              mono
+              value={String(params[param.key] ?? param.default)}
+              validate={intValidator(
+                param.min,
+                param.max,
+                t('errors.range', { min: param.min, max: param.max }),
+              )}
+              onCommit={(v) =>
+                update({
+                  loadProfile: {
+                    profileId: current.id,
+                    params: { ...params, [param.key]: Number(v) },
+                  },
+                })
+              }
+            />
+          ))}
+        </Grid>
+      ) : null}
+      <p className="m-0 text-body-sm text-text-muted">{t('app.loadProfileHint')}</p>
+    </Section>
   );
 }

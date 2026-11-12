@@ -173,6 +173,12 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 15 — Planowanie wydajności (pakiet 6): SW‑08/09, CAP‑05/06, HW‑05
 
+- [x] SW‑08 profile obciążenia w katalogu (Jellyfin, Plex, Immich, Frigate, Ollama, Tdarr, Nextcloud, Home Assistant) z parametrami (strumienie, transkodowania, kamery, użytkownicy, rozmiar modelu…); w inspectorze aplikacji wybór profilu i parametrów; domyślnie „typical”; profil dotyczy tylko głównej usługi stosu (rola `app`)
+- [x] CAP‑05 tryb **Expected** (`analyze().expected`, przełącznik w zakładce Capacity): aplikacje wg profilu (bez profilu — wymagania zalecane), VM/LXC wg tego, co w nich działa + narzut systemu gościa, nie więcej niż przydział; host bez overcommitu; szacunek mocy (etap 14) liczony z trybu Expected
+- [x] SW‑09 + CAP‑06: przyrost wolumenu / miesiąc w inspectorze kontenera; prognoza „full in about N months” per pula
+- [x] HW‑05: sekcja GPU w Hardware (model, VRAM, funkcje QuickSync/NVENC/VCN/CUDA/ROCm/TPU/NPU); iGPU dopisane do 8 kurowanych modeli; reguły `VAL_GPU` (wymagany akcelerator, ostrzeżenie) i `VAL_GPU_OPTIONAL` (opcjonalna akceleracja, info — praca na CPU); VM bez GPU passthrough nie widzi GPU hosta
+- Bez zmiany schematu — pola (`loadProfile`, `growthBytesPerMonth`, `gpus`, `passthrough.gpu`) istniały w modelu; profile przekazywane do silnika przez `EngineOptions.loadProfiles` (jak narzut OS)
+
 ### Etap 16 — Projekty i wygoda (pakiet 7): PRJ‑06/07/08, CAN‑07/08/09, LIB‑04, LBL‑03
 
 ### Etap 17 — Offline i mobile (pakiet 8): PWA (`vite-plugin-pwa`), widoki M‑01…03
@@ -205,4 +211,5 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 12: przepływy aplikacji (FLW‑01…05), oś kroków na canvasie; unit 211, E2E 34 | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |
 | 2026-11-12 | Etap 13: Access (macierz, ekspozycja, asercje), Save as assertion, kreator segmentacji; unit 218, E2E 37 | #27 |
-| 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | — |
+| 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | #28 |
+| 2026-11-12 | Etap 15: profile obciążenia, tryb Expected, prognoza storage, GPU; unit 227, E2E 40 | — |

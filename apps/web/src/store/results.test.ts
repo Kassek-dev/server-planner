@@ -19,6 +19,7 @@ function setup() {
   const analyzer = vi.fn(async () => ({
     issues: [],
     capacity: {},
+    expected: {},
     deviceStatus: {},
     internet: {},
     assertions: [],

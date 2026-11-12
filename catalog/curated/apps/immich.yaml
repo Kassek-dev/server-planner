@@ -65,6 +65,19 @@ requirements:
     memoryBytes: 6 GiB
     diskBytes: 20 GB
     gpu: { required: false, features: [quicksync, cuda] }
+loadProfiles:
+  - id: idle
+    name: { en: Idle }
+    resources: { cpu: 0.3, memoryBytes: 2 GiB, diskBytes: 0 }
+  - id: typical
+    name: { en: Daily uploads }
+    params:
+      - { key: users, name: { en: Active users }, default: 2, min: 1, max: 20 }
+    resources: { cpu: 1, memoryBytes: 3 GiB, diskBytes: 0 }
+    perParam: { users: { cpu: 0.25, memoryBytes: 128 MiB } }
+  - id: peak
+    name: { en: "Initial import (thumbnails, face recognition)" }
+    resources: { cpu: 4, memoryBytes: 6 GiB, diskBytes: 0 }
 dependencies:
   - { capability: postgresql, optional: false, providedByComponent: db }
   - { capability: redis, optional: false, providedByComponent: redis }
