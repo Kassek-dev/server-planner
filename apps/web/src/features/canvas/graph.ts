@@ -218,7 +218,10 @@ export function toFlowEdges(
       id: link.id,
       source: a.owner.id,
       target: b.owner.id,
-      ...facingHandles(centers.get(a.owner.id), centers.get(b.owner.id)),
+      ...(sameRack(project, a.owner.id, b.owner.id)
+        ? // Inside one rack the cable leaves on the right and comes back, clear of the U column.
+          { sourceHandle: 'r', targetHandle: 'r' }
+        : facingHandles(centers.get(a.owner.id), centers.get(b.owner.id))),
       type: 'step',
       data: { link },
       style: edgeStyle(project, link, a, b),
@@ -226,6 +229,20 @@ export function toFlowEdges(
     });
   }
   return edges;
+}
+
+/** Rack of a device mounted in (or on a shelf of) a rack, if any. */
+function rackOfDevice(project: Project, deviceId: string): string | undefined {
+  const placement = project.devices[deviceId]?.placement;
+  if (!placement || placement.u === undefined) return undefined;
+  return project.locations[placement.locationId]?.kind === 'rack'
+    ? placement.locationId
+    : undefined;
+}
+
+export function sameRack(project: Project, a: string, b: string): boolean {
+  const rack = rackOfDevice(project, a);
+  return rack !== undefined && rack === rackOfDevice(project, b);
 }
 
 function absoluteCenters(nodes: CanvasNode[]): Map<string, { x: number; y: number }> {
