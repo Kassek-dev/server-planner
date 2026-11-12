@@ -1,3 +1,4 @@
+import { findHostingCycle, findInvalidLocationNesting } from '../migrations';
 import type { Assertion, Note, Project, ProjectSettings, Snapshot, Tag } from '../schema/project';
 import { applyChanges, CommandError, defineCommand, getOrThrow } from './core';
 
@@ -137,6 +138,12 @@ export const restoreSnapshot = defineCommand(
   'project.restoreSnapshot',
   (draft, { snapshot }: { snapshot: Pick<Snapshot, 'project'> }) => {
     const { name: _name, createdAt: _created, ...content } = snapshot.project;
+    // Defence in depth: a snapshot from a file or older storage must not bring a broken model.
+    const candidate = { ...content, id: draft.id, name: draft.name, createdAt: draft.createdAt };
+    const cycle = findHostingCycle(candidate);
+    if (cycle) throw new CommandError('WORKLOAD_HOST_CYCLE', { id: cycle });
+    const nesting = findInvalidLocationNesting(candidate);
+    if (nesting) throw new CommandError('LOCATION_INVALID_PARENT', { id: nesting });
     Object.assign(draft, content);
   },
 );

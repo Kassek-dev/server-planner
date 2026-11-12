@@ -10,6 +10,7 @@ import {
   ProjectFileError,
   ProjectSchema,
   parseProjectFile,
+  restoreSnapshot,
   sequentialContext,
   updateWorkload,
 } from '../src';
@@ -90,6 +91,24 @@ describe('hosting cycles (untrusted imports)', () => {
 
   it('rejects projects whose workloads host each other', () => {
     expectFileError(withCycle().file, 'INVALID_PROJECT');
+  });
+
+  it('rejects a cycle hidden in an included snapshot, and refuses to restore one', () => {
+    const { file: broken } = withCycle();
+    const { id: _id, ...content } = broken.project;
+    const file = structuredClone(fixture);
+    file.snapshots = [
+      { id: 'snap_1', name: 'bad', createdAt: '2026-11-12T08:00:00.000Z', project: content },
+    ];
+    expectFileError(file, 'INVALID_PROJECT');
+    expect(() =>
+      execute(
+        fixture.project as never,
+        restoreSnapshot,
+        { snapshot: { project: content as never } },
+        sequentialContext(),
+      ),
+    ).toThrow(CommandError);
   });
 
   it('commands terminate on cyclic data instead of looping', () => {
