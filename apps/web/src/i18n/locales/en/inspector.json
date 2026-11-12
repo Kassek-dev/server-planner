@@ -104,7 +104,21 @@
     "catalogModel": "Model",
     "chooseModel": "Choose model",
     "genericModel": "Generic {kind}",
-    "chooseModelFor": "Choose device model · {name}"
+    "chooseModelFor": "Choose device model · {name}",
+    "ups": "UPS",
+    "upsVa": "Capacity VA",
+    "upsW": "Capacity W",
+    "upsBattery": "Battery Wh",
+    "poe": "PoE",
+    "poeBudget": "PoE budget W",
+    "purchase": "Purchase",
+    "purchaseStatus": "Status",
+    "purchaseStatuses": {
+      "owned": "Owned",
+      "to-buy": "To buy",
+      "optional": "Optional"
+    },
+    "price": "Price ({currency})"
   },
   "software": {
     "notCompute": "This kind of device does not run an operating system or workloads.",
@@ -165,7 +179,13 @@
     "security": "Security",
     "open": "Open",
     "isolation": "Client isolation",
-    "openFirewall": "Open firewall rules"
+    "openFirewall": "Open firewall rules",
+    "poe": "PoE",
+    "poeNone": "None",
+    "poePse": "Powers devices (PSE)",
+    "poePd": "Powered (PD)",
+    "poeStandard": "Standard",
+    "poeDraw": "Draw W"
   },
   "workload": {
     "name": "Name",

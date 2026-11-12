@@ -1,4 +1,5 @@
 import type { Id } from '@server-planner/model';
+import type { PowerReport } from './power';
 import type { InternetAccess } from './simulation/access';
 import type { AssertionResult } from './simulation/assertions';
 
@@ -74,5 +75,7 @@ export interface AnalysisResult {
   internet: Record<Id, InternetAccess>;
   /** Enabled network assertions with their outcome (SIM-06). */
   assertions: AssertionResult[];
+  /** Power draw, PoE budgets, UPS load and energy cost (CAP-07/08). */
+  power: PowerReport;
   durationMs: number;
 }

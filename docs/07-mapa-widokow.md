@@ -106,7 +106,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | ID   | Nazwa         | Trasa        | Zawartość                                                                                                             | Funkcje                 | Prio | Makieta          |
 | ---- | ------------- | ------------ | --------------------------------------------------------------------------------------------------------------------- | ----------------------- | ---- | ---------------- |
 | V-01 | **Topology**  | `/topology`  | Biblioteka + canvas + prawa kolumna (I / X)                                                                           | CAN, LOC, NET, SIM      | P0   | ✅ (dark, light) |
-| V-02 | **Dashboard** | `/dashboard` | Kafle: zasoby łącznie, wykorzystanie per host, problemy, wynik asercji, BOM (koszt), energia                          | CAP‑09, CAP‑07          | P1   | —                |
+| V-02 | **Dashboard** | `/dashboard` | Kafle: zasoby łącznie, wykorzystanie per host, problemy, wynik asercji, BOM (koszt), energia, PoE/UPS (✅ kod, etap 14) | CAP‑09, CAP‑07          | P1   | —                |
 | V-03 | **Inventory** | `/inventory` | Tabela urządzeń / workloadów / aplikacji (przełącznik), grupowanie po lokalizacji, edycja inline, inspector po prawej | VIEW‑02, EXP‑03         | P1   | —                |
 | V-04 | **IP Plan**   | `/ip`        | Karty podsieci z pulą DHCP + tabela adresów, konflikty, wolne zakresy                                                 | VIEW‑03, NET‑04, EXP‑04 | P1   | —                |
 | V-05 | **Access**    | `/access`    | Macierz strefa × strefa / urządzenie × urządzenie + ekspozycja z internetu + lista asercji (✅ kod, etap 13)          | VIEW‑04, SIM‑04…06      | P1   | —                |

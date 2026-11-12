@@ -782,6 +782,8 @@ export const ISSUE_CODES = [
   'VAL_11_DOCKER_PVE',
   'VAL_11_DOCKER_WIN',
   'VAL_11_NOT_COMPUTE',
+  'VAL_12',
+  'VAL_12_UPS',
   'VAL_13',
   'VAL_13_OVER',
   'VAL_14',

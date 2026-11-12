@@ -14,6 +14,7 @@ import { Led, type LedStatus } from '../../ui/Led';
 import { AccessView } from '../access/AccessView';
 import { CanvasWorkspace } from '../canvas/CanvasView';
 import { useSelection } from '../canvas/selection';
+import { DashboardView } from '../dashboard/DashboardView';
 import { DrawerHost } from '../drawers/DrawerHost';
 import { ExportDialog } from '../export/ExportDialog';
 import { useExportDialog } from '../export/store';
@@ -89,9 +90,10 @@ function EditorLoading() {
   );
 }
 
-type View = 'topology' | 'inventory' | 'ip' | 'access';
+type View = 'topology' | 'dashboard' | 'inventory' | 'ip' | 'access';
 const VIEWS: { id: View; path: string }[] = [
   { id: 'topology', path: '' },
+  { id: 'dashboard', path: 'dashboard' },
   { id: 'inventory', path: 'inventory' },
   { id: 'ip', path: 'ip' },
   { id: 'access', path: 'access' },
@@ -102,7 +104,7 @@ function useView(): View {
   return VIEWS.find((v) => v.path && rest.startsWith(v.path))?.id ?? 'topology';
 }
 
-/** Topology | Inventory | IP Plan | Access (docs/05 § 3); the selection and `?panel` survive the switch. */
+/** Topology | Dashboard | Inventory | IP Plan | Access (docs/05 § 3); the selection and `?panel` survive the switch. */
 function ViewTabs() {
   const { t } = useTranslation('editor');
   const { projectId = '' } = useParams();
@@ -240,7 +242,9 @@ function Editor() {
         </div>
       ) : null}
       <main className="flex min-h-0 flex-1">
-        {view === 'inventory' ? (
+        {view === 'dashboard' ? (
+          <DashboardView />
+        ) : view === 'inventory' ? (
           <InventoryView />
         ) : view === 'ip' ? (
           <IpPlanView />

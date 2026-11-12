@@ -24,6 +24,13 @@ export {
   type EngineOptions,
 } from './context';
 export {
+  type DevicePower,
+  type PoeBudget,
+  type PowerReport,
+  power,
+  type UpsReport,
+} from './power';
+export {
   INTERNET_PROBES,
   type InternetAccess,
   internetAccess,
