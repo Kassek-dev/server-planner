@@ -185,6 +185,9 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 - [x] 16a PRJ‑06 ten sam projekt w drugiej karcie → baner ostrzeżenia (BroadcastChannel; decyzja: ostrzeżenie zamiast blokady, autozapis „ostatni wygrywa”)
 - [x] 16a CAN‑09 minimapa (przełącznik przy zoomie), „fit to screen” (był), paleta poleceń Ctrl+K (elementy, widoki, akcje)
 - [x] 16a CAN‑07 notatki na canvasie: z biblioteki, edycja dwuklikiem / Enter, zmiana rozmiaru, przesuwanie, usuwanie Delete; token `bg-note`
+- [x] 16b PRJ‑07 snapshoty: store `snapshots` w IndexedDB (wersja bazy 2), V‑06 `#/p/:id/snapshots` (z podsumowania projektu i palety), D‑12, diff dwóch wersji (`diffProjects` w modelu: urządzenia, lokalizacje, kable, workloady, aplikacje, VLAN‑y, podsieci, strefy, asercje; porty jako zmiana właściciela), Restore jako jedna komenda z cofaniem (`project.restoreSnapshot`) + automatyczny snapshot „Before restoring…”; eksport JSON „Include snapshots” i import snapshotów
+- [x] 16b LIB‑04 własne szablony urządzeń: „Save as template” w Hardware, sekcja „My templates” w bibliotece (klik / przeciągnięcie, usuwanie), zapis w `settings` z walidacją Zod; komenda `device.applyTemplate` (nowe ID dysków i pul, porty jak w `device.applyModel`)
+- [x] 16b CAN‑08 wyrównywanie i równe rozmieszczenie zaznaczonych urządzeń (pasek w panelu wielokrotnego zaznaczenia, jedna operacja cofania); routing łącza ortogonalny (domyślny) / prosty (`layout.setLinkRouting`). Prowadnice przy przeciąganiu i punkty pośrednie łączy — **odłożone** (siatka 16 px i przyciąganie działają)
 - [x] 16a LBL‑03 etykiety kabli `SW1-P05 ↔ PVE1-ETH0`: „Generate label” w inspectorze łącza, kolor kabla, „Label all cables” w palecie (komenda `link.labelCables`, wzorzec domyślny — zapis własnego wzorca wymagałby zmiany schematu)
 
 ### Etap 17 — Offline i mobile (pakiet 8): PWA (`vite-plugin-pwa`), widoki M‑01…03
@@ -219,4 +222,5 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 13: Access (macierz, ekspozycja, asercje), Save as assertion, kreator segmentacji; unit 218, E2E 37 | #27 |
 | 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | #28 |
 | 2026-11-12 | Etap 15: profile obciążenia, tryb Expected, prognoza storage, GPU; unit 227, E2E 40 | #29 |
-| 2026-11-12 | Etap 16a: szablony, druga karta, minimapa, paleta Ctrl+K, notatki, etykiety kabli; unit 233, E2E 43 | — |
+| 2026-11-12 | Etap 16a: szablony, druga karta, minimapa, paleta Ctrl+K, notatki, etykiety kabli; unit 233, E2E 43 | #30 |
+| 2026-11-12 | Etap 16b: snapshoty z diffem i przywracaniem, własne szablony urządzeń, wyrównywanie, routing łączy; unit 239, E2E 45 | — |

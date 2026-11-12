@@ -6,10 +6,12 @@ import {
   isInterfaceFree,
   type Link,
   type Project,
+  setLinkRouting,
   updateLink,
 } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../ui/Button';
+import { Segmented } from '../../ui/Segmented';
 import { Select } from '../../ui/Select';
 import { useSelection } from '../canvas/selection';
 import { CommitField, Grid, Section, useCommand, useTransaction } from './parts';
@@ -162,6 +164,18 @@ export function LinkInspector({ project, link }: { project: Project; link: Link 
           </Button>
         </Section>
       ) : null}
+      <Section title={t('link.drawing')}>
+        <Segmented
+          label={t('link.routing')}
+          fill
+          value={project.layout.links[link.id]?.routing ?? 'orthogonal'}
+          onChange={(routing) => run(setLinkRouting, { id: link.id, routing })}
+          options={[
+            { value: 'orthogonal', label: t('link.orthogonal') },
+            { value: 'straight', label: t('link.straight') },
+          ]}
+        />
+      </Section>
       <Button
         variant="danger"
         onClick={() => {

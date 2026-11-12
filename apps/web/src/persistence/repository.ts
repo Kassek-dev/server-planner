@@ -1,6 +1,11 @@
-import { defaultContext, type ModelContext, type Project } from '@server-planner/model';
+import {
+  defaultContext,
+  type ModelContext,
+  type Project,
+  type Snapshot,
+} from '@server-planner/model';
 import { projectPreview } from '../features/canvas/preview';
-import type { AppDatabase, BackupState, ProjectMeta } from './db';
+import type { AppDatabase, BackupState, ProjectMeta, StoredSnapshot } from './db';
 
 /** Project storage (PRJ-01…03). Writes data and list metadata in one transaction. */
 export class ProjectRepository {
@@ -30,21 +35,63 @@ export class ProjectRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const tx = this.db.transaction(['projects', 'projectData'], 'readwrite');
+    const tx = this.db.transaction(['projects', 'projectData', 'snapshots'], 'readwrite');
+    const snapshots = tx.objectStore('snapshots');
+    const keys = await snapshots.index('by-project').getAllKeys(id);
     await Promise.all([
       tx.objectStore('projectData').delete(id),
       tx.objectStore('projects').delete(id),
+      ...keys.map((key) => snapshots.delete(key)),
       tx.done,
     ]);
   }
 
+  /** PRJ-07 snapshots of a project, newest first. */
+  async listSnapshots(projectId: string): Promise<StoredSnapshot[]> {
+    const rows = await this.db.getAllFromIndex('snapshots', 'by-project', projectId);
+    return rows.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+
+  async createSnapshot(project: Project, name: string): Promise<StoredSnapshot> {
+    const { id: projectId, ...content } = project;
+    const snapshot: StoredSnapshot = {
+      id: this.ctx.createId('snapshot'),
+      projectId,
+      name,
+      createdAt: this.ctx.now(),
+      project: content,
+    };
+    await this.db.put('snapshots', snapshot);
+    return snapshot;
+  }
+
+  /** Imported snapshots of a project; IDs stay unless they already exist. */
+  async importSnapshots(projectId: string, snapshots: Snapshot[]): Promise<void> {
+    for (const snapshot of snapshots) {
+      const taken = (await this.db.getKey('snapshots', snapshot.id)) !== undefined;
+      await this.db.put('snapshots', {
+        ...snapshot,
+        id: taken ? this.ctx.createId('snapshot') : snapshot.id,
+        projectId,
+      });
+    }
+  }
+
+  deleteSnapshot(id: string): Promise<void> {
+    return this.db.delete('snapshots', id);
+  }
+
   /** P-02d "Delete all data": every project, its data and the app settings in this browser. */
   async deleteAll(): Promise<void> {
-    const tx = this.db.transaction(['projects', 'projectData', 'settings'], 'readwrite');
+    const tx = this.db.transaction(
+      ['projects', 'projectData', 'settings', 'snapshots'],
+      'readwrite',
+    );
     await Promise.all([
       tx.objectStore('projects').clear(),
       tx.objectStore('projectData').clear(),
       tx.objectStore('settings').clear(),
+      tx.objectStore('snapshots').clear(),
       tx.done,
     ]);
   }

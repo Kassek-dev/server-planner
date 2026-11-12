@@ -1,4 +1,4 @@
-import type { Assertion, Note, Project, ProjectSettings, Tag } from '../schema/project';
+import type { Assertion, Note, Project, ProjectSettings, Snapshot, Tag } from '../schema/project';
 import { applyChanges, CommandError, defineCommand, getOrThrow } from './core';
 
 /** Project metadata, tags, layout and notes — docs/02 § 3, § 7. */
@@ -101,6 +101,16 @@ export const setGroupByLocation = defineCommand(
   },
 );
 
+/** CAN-08: how a cable is drawn on the canvas (orthogonal by default). */
+export const setLinkRouting = defineCommand(
+  'layout.setLinkRouting',
+  (draft, { id, routing }: { id: string; routing: 'straight' | 'orthogonal' }) => {
+    getOrThrow(draft.links, id, 'link');
+    if (routing === 'orthogonal') delete draft.layout.links[id];
+    else draft.layout.links[id] = { ...draft.layout.links[id], routing };
+  },
+);
+
 export const addNote = defineCommand(
   'note.add',
   (draft, { note }: { note: Omit<Note, 'id'> }, ctx): string => {
@@ -121,3 +131,12 @@ export const deleteNote = defineCommand('note.delete', (draft, { id }: { id: str
   getOrThrow(draft.layout.notes, id, 'note');
   delete draft.layout.notes[id];
 });
+
+/** PRJ-07: brings back the content of a snapshot (one undo step); id and name stay. */
+export const restoreSnapshot = defineCommand(
+  'project.restoreSnapshot',
+  (draft, { snapshot }: { snapshot: Pick<Snapshot, 'project'> }) => {
+    const { name: _name, createdAt: _created, ...content } = snapshot.project;
+    Object.assign(draft, content);
+  },
+);

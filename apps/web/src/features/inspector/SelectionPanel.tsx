@@ -1,10 +1,20 @@
+import {
+  AlignCenterHorizontal,
+  AlignCenterVertical,
+  AlignEndHorizontal,
+  AlignEndVertical,
+  AlignHorizontalSpaceAround,
+  AlignStartHorizontal,
+  AlignStartVertical,
+  AlignVerticalSpaceAround,
+} from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices, useSession } from '../../app/services';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
-import { deleteSelection } from '../canvas/actions';
+import { type AlignMode, alignSelection, deleteSelection } from '../canvas/actions';
 import { useSelection } from '../canvas/selection';
 import { Summary } from '../editor/Summary';
 import { IssuesPanel } from '../issues/IssuesPanel';
@@ -57,6 +67,7 @@ export function SelectionPanel() {
     body = (
       <>
         <h2 className="m-0 text-title font-semibold">{t('multi.title', { count })}</h2>
+        <AlignButtons nodeIds={nodeIds} />
         <Button
           variant="danger"
           onClick={() => {
@@ -87,5 +98,37 @@ export function SelectionPanel() {
       ) : null}
       {body}
     </aside>
+  );
+}
+
+const ALIGN: { mode: AlignMode; icon: typeof AlignStartVertical }[] = [
+  { mode: 'left', icon: AlignStartVertical },
+  { mode: 'center', icon: AlignCenterVertical },
+  { mode: 'right', icon: AlignEndVertical },
+  { mode: 'top', icon: AlignStartHorizontal },
+  { mode: 'middle', icon: AlignCenterHorizontal },
+  { mode: 'bottom', icon: AlignEndHorizontal },
+  { mode: 'row', icon: AlignHorizontalSpaceAround },
+  { mode: 'column', icon: AlignVerticalSpaceAround },
+];
+
+/** CAN-08: align / distribute the selected devices. */
+function AlignButtons({ nodeIds }: { nodeIds: string[] }) {
+  const { t } = useTranslation('inspector');
+  const { session } = useServices();
+  return (
+    <div role="toolbar" aria-label={t('multi.align')} className="flex flex-wrap gap-1">
+      {ALIGN.map(({ mode, icon: Icon }) => (
+        <Button
+          key={mode}
+          size="sm"
+          aria-label={t(`multi.alignModes.${mode}`)}
+          title={t(`multi.alignModes.${mode}`)}
+          onClick={() => alignSelection(session, nodeIds, mode)}
+        >
+          <Icon size={14} aria-hidden="true" />
+        </Button>
+      ))}
+    </div>
   );
 }

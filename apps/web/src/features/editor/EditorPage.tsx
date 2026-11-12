@@ -22,6 +22,7 @@ import { SelectionPanel } from '../inspector/SelectionPanel';
 import { InventoryView } from '../inventory/InventoryView';
 import { IpPlanView } from '../ipplan/IpPlanView';
 import { IssueCounters } from '../issues/IssueCounters';
+import { SnapshotsView } from '../snapshots/SnapshotsView';
 import { describeCommit } from '../toasts/describe';
 import { useToasts } from '../toasts/store';
 import { Toaster } from '../toasts/Toaster';
@@ -92,7 +93,7 @@ function EditorLoading() {
   );
 }
 
-type View = 'topology' | 'dashboard' | 'inventory' | 'ip' | 'access';
+type View = 'topology' | 'dashboard' | 'inventory' | 'ip' | 'access' | 'snapshots';
 const VIEWS: { id: View; path: string }[] = [
   { id: 'topology', path: '' },
   { id: 'dashboard', path: 'dashboard' },
@@ -103,6 +104,8 @@ const VIEWS: { id: View; path: string }[] = [
 
 function useView(): View {
   const rest = useParams()['*'] ?? '';
+  // Snapshots (V-06) open from the project summary and the palette, not from the tabs.
+  if (rest.startsWith('snapshots')) return 'snapshots';
   return VIEWS.find((v) => v.path && rest.startsWith(v.path))?.id ?? 'topology';
 }
 
@@ -250,7 +253,9 @@ function Editor() {
         </div>
       ) : null}
       <main className="flex min-h-0 flex-1">
-        {view === 'dashboard' ? (
+        {view === 'snapshots' ? (
+          <SnapshotsView />
+        ) : view === 'dashboard' ? (
           <DashboardView />
         ) : view === 'inventory' ? (
           <InventoryView />

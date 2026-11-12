@@ -1,6 +1,8 @@
+import { deviceTemplateFrom } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
 import {
   addItemAt,
+  alignSelection,
   connectDevices,
   deleteSelection,
   dropNodes,
@@ -169,5 +171,46 @@ describe('connect, delete, duplicate', () => {
     const names = Object.values(session.getState().project?.devices ?? {}).map((d) => d.name);
     expect(names).toContain('pve2');
     expect(names.filter((n) => n === 'Internet')).toHaveLength(1);
+  });
+});
+
+describe('alignSelection (CAN-08)', () => {
+  it('aligns devices of one location and leaves rack rows alone', () => {
+    const { session, lab } = setup();
+    const ap = deviceByName(lab, 'ap-living');
+    const tv = deviceByName(lab, 'tv-salon');
+    const gw = deviceByName(lab, 'gw-01');
+    expect(alignSelection(session, [ap.id, tv.id, gw.id], 'top').ok).toBe(true);
+    const after = session.getState().project;
+    expect(after?.layout.nodes[ap.id]?.y).toBe(after?.layout.nodes[tv.id]?.y);
+    expect(after?.layout.nodes[gw.id]).toEqual(lab.layout.nodes[gw.id]);
+    // One undo step.
+    session.undo();
+    expect(session.getState().project?.layout.nodes[ap.id]).toEqual(lab.layout.nodes[ap.id]);
+  });
+});
+
+describe('templates in the library (LIB-04)', () => {
+  it('adds a device from an own template with its hardware', () => {
+    const { session, lab } = setup();
+    const pve = deviceByName(lab, 'pve1');
+    const template = deviceTemplateFrom(lab, pve.id, {
+      id: 'tpl_1',
+      name: 'Proxmox box',
+      createdAt: '2026-11-12T08:00:00.000Z',
+    });
+    const result = addItemAt(
+      session,
+      { type: 'template', template, meta: '' },
+      { x: 2000, y: 2000 },
+      names,
+    );
+    expect(result.ok).toBe(true);
+    const added =
+      result.ok && result.selectId
+        ? session.getState().project?.devices[result.selectId]
+        : undefined;
+    expect(added?.name).toBe('proxmox-box-1');
+    expect(added?.hardware.cpus).toEqual(pve.hardware.cpus);
   });
 });

@@ -251,7 +251,8 @@ export function toFlowEdges(
         ? // Inside one rack the cable leaves on the right and comes back, clear of the U column.
           { sourceHandle: 'r', targetHandle: 'r' }
         : facingHandles(centers.get(a.owner.id), centers.get(b.owner.id))),
-      type: 'step',
+      // CAN-08: orthogonal by default, straight when chosen for the cable.
+      type: project.layout.links[link.id]?.routing === 'straight' ? 'straight' : 'step',
       data: { link },
       style: edgeStyle(project, link, a, b),
       zIndex: 1,

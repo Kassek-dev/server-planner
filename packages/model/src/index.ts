@@ -3,6 +3,8 @@ export * from './catalog';
 export * from './commands';
 export * from './connect';
 export * from './defaults';
+export * from './deviceTemplates';
+export * from './diff';
 export * from './factories';
 export type { EntityType, IdPrefix } from './ids';
 export { createId, entityTypeOf, ID_PREFIXES } from './ids';

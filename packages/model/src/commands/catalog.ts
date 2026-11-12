@@ -1,4 +1,5 @@
 import { clone } from '../clone';
+import type { ModelContext } from '../factories';
 import { checkRackFit } from '../rack';
 import type { CatalogApp, CatalogDevice } from '../schema/catalog';
 import type { Bytes } from '../schema/common';
@@ -66,39 +67,60 @@ export const applyDeviceModel = defineCommand(
         };
     }
 
-    const ports = Object.values(draft.interfaces)
-      .filter((i) => i.owner.type === 'device' && i.owner.id === id && PHYSICAL.includes(i.kind))
-      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
-    const linked = new Set(Object.values(draft.links).flatMap((l) => [l.a, l.b]));
-    model.ports.forEach((template, index) => {
-      const existing = ports[index];
-      const fields = {
-        name: template.name,
-        kind: template.kind,
-        index,
-        ...(template.speedMbps ? { speedMbps: template.speedMbps } : {}),
-        ...(template.poe ? { poe: { ...template.poe } } : {}),
-      };
-      if (existing) {
-        delete existing.speedMbps;
-        delete existing.poe;
-        Object.assign(existing, fields);
-        return;
-      }
-      const ifaceId = ctx.createId('interface');
-      draft.interfaces[ifaceId] = {
-        id: ifaceId,
-        owner: { type: 'device', id },
-        ...fields,
-        addresses: [],
-        enabled: true,
-      };
-    });
-    for (const extra of ports.slice(model.ports.length)) {
-      if (!linked.has(extra.id)) removeInterface(draft, extra.id);
-    }
+    applyPorts(draft, id, model.ports, ctx);
   },
 );
+
+/** A physical port to create (catalog model or own template). */
+export interface PortSpec {
+  name: string;
+  kind: Interface['kind'];
+  speedMbps?: number | undefined;
+  poe?: { role: 'pd' | 'pse'; standard?: 'af' | 'at' | 'bt' | undefined } | undefined;
+}
+
+/**
+ * Physical ports from a template, matched by position: kept ports keep cables and addresses,
+ * extra old ports go only when nothing is connected to them.
+ */
+export function applyPorts(
+  draft: Project,
+  id: string,
+  ports: readonly PortSpec[],
+  ctx: { createId: ModelContext['createId'] },
+) {
+  const existingPorts = Object.values(draft.interfaces)
+    .filter((i) => i.owner.type === 'device' && i.owner.id === id && PHYSICAL.includes(i.kind))
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  const linked = new Set(Object.values(draft.links).flatMap((l) => [l.a, l.b]));
+  ports.forEach((template, index) => {
+    const existing = existingPorts[index];
+    const fields = {
+      name: template.name,
+      kind: template.kind,
+      index,
+      ...(template.speedMbps ? { speedMbps: template.speedMbps } : {}),
+      ...(template.poe ? { poe: { ...template.poe } } : {}),
+    };
+    if (existing) {
+      delete existing.speedMbps;
+      delete existing.poe;
+      Object.assign(existing, fields);
+      return;
+    }
+    const ifaceId = ctx.createId('interface');
+    draft.interfaces[ifaceId] = {
+      id: ifaceId,
+      owner: { type: 'device', id },
+      ...fields,
+      addresses: [],
+      enabled: true,
+    };
+  });
+  for (const extra of existingPorts.slice(ports.length)) {
+    if (!linked.has(extra.id)) removeInterface(draft, extra.id);
+  }
+}
 
 export interface AddAppOptions {
   /** Port mappings per component key; a missing key = the catalog defaults, `[]` = not published. */

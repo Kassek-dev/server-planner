@@ -33,6 +33,7 @@ import {
   useTransaction,
 } from '../parts';
 import { useMoveDevice } from './moveDevice';
+import { SaveTemplate } from './SaveTemplate';
 
 const GiB = 1024 ** 3;
 const DISK_TYPES = ['ssd-nvme', 'ssd-sata', 'hdd', 'emmc', 'sd'] as const;
@@ -388,6 +389,8 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
       ) : null}
 
       <PurchaseSection device={device} />
+
+      <SaveTemplate device={device} />
     </>
   );
 }

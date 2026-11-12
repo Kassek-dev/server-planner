@@ -21,6 +21,23 @@ describe('ProjectRepository', () => {
     expect((await repo.list()).map((p) => p.name)).toEqual(['B']);
   });
 
+  it('keeps snapshots per project and removes them with the project (PRJ-07)', async () => {
+    const repo = await freshRepo();
+    const a = createProject('A');
+    const b = createProject('B');
+    await repo.save(a);
+    await repo.save(b);
+    const first = await repo.createSnapshot(a, 'before');
+    await repo.createSnapshot(b, 'other');
+    expect((await repo.listSnapshots(a.id)).map((s) => s.name)).toEqual(['before']);
+    expect(first.project).not.toHaveProperty('id');
+    await repo.delete(a.id);
+    expect(await repo.listSnapshots(a.id)).toEqual([]);
+    expect(await repo.listSnapshots(b.id)).toHaveLength(1);
+    await repo.deleteSnapshot((await repo.listSnapshots(b.id))[0]?.id ?? '');
+    expect(await repo.listSnapshots(b.id)).toEqual([]);
+  });
+
   it('duplicates with a new project id and renames', async () => {
     const repo = await freshRepo();
     const original = createProject('Lab');

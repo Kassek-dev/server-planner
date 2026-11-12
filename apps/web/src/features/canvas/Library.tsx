@@ -1,12 +1,13 @@
 import { type CatalogDevice, DEFAULT_FORM_FACTOR } from '@server-planner/model';
-import { Boxes, Server, StickyNote } from 'lucide-react';
-import { useState } from 'react';
+import { Boxes, Server, StickyNote, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSession } from '../../app/services';
+import { useServices, useSession } from '../../app/services';
 import { DeviceIcon, Silhouette } from '../../icons/devices';
 import { AppCatalogDialog } from '../catalog/AppCatalogDialog';
 import { DeviceModelPicker } from '../catalog/DeviceModelPicker';
 import { defaultHost } from '../catalog/helpers';
+import { useDeviceTemplates } from './deviceTemplates';
 import { DRAG_MIME, LIBRARY, type LibraryItem } from './library';
 import { useSelection } from './selection';
 
@@ -22,6 +23,11 @@ export function Library({
   const { t } = useTranslation('canvas');
   const project = useSession((s) => s.project);
   const [dialog, setDialog] = useState<'models' | 'apps' | null>(null);
+  const { repository } = useServices();
+  const templates = useDeviceTemplates((s) => s.templates);
+  useEffect(() => {
+    void useDeviceTemplates.getState().load(repository);
+  }, [repository]);
   const close = (open: boolean) => {
     if (!open) setDialog(null);
   };
@@ -86,6 +92,44 @@ export function Library({
           })}
         </section>
       ))}
+      {templates.length > 0 ? (
+        <section className="flex flex-col gap-1.5">
+          <h2 className="m-0 font-mono text-badge font-semibold tracking-[0.08em] text-text-muted uppercase">
+            {t('library.sections.templates')}
+          </h2>
+          {templates.map((template) => (
+            <div key={template.id} className="flex items-center gap-1">
+              <button
+                type="button"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(
+                    DRAG_MIME,
+                    JSON.stringify({ type: 'template', template, meta: '' } satisfies LibraryItem),
+                  );
+                  e.dataTransfer.effectAllowed = 'copy';
+                }}
+                onClick={() => onAdd({ type: 'template', template, meta: '' })}
+                title={t('library.addHint')}
+                className={`${CATALOG_BUTTON} min-w-0 flex-1`}
+              >
+                <span className="text-text-secondary">
+                  <DeviceIcon device={template.device} size={18} />
+                </span>
+                <span className="truncate">{template.name}</span>
+              </button>
+              <button
+                type="button"
+                aria-label={t('library.removeTemplate', { name: template.name })}
+                onClick={() => void useDeviceTemplates.getState().remove(repository, template.id)}
+                className="flex size-7 items-center justify-center rounded-md text-text-muted hover:bg-tile-header hover:text-text-primary"
+              >
+                <X size={14} aria-hidden="true" />
+              </button>
+            </div>
+          ))}
+        </section>
+      ) : null}
       <section className="flex flex-col gap-1.5">
         <h2 className="m-0 font-mono text-badge font-semibold tracking-[0.08em] text-text-muted uppercase">
           {t('library.sections.catalog')}
@@ -124,6 +168,7 @@ const CATALOG_BUTTON =
 
 export function itemLabel(t: (key: string) => string, item: LibraryItem): string {
   if (item.type === 'note') return t('library.note');
+  if (item.type === 'template') return item.template.name;
   if (item.type === 'location') return t(`locationKind.${item.kind}`);
   return item.clientType ? t(`clientType.${item.clientType}`) : t(`deviceKind.${item.kind}`);
 }
