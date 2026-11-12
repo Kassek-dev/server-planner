@@ -1,0 +1,86 @@
+name: Catalog update
+
+# Weekly catalog build (docs/03 § 7.2, D7): fetch sources, merge, check safeguards, publish dist.
+on:
+  schedule:
+    - cron: "0 3 * * 1" # Monday 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Ignore the 7-day lock
+        type: boolean
+        default: false
+
+permissions:
+  contents: write # commit catalog/dist
+  issues: write # report a tripped safeguard
+  actions: write # start the deploy after a bot commit
+
+concurrency:
+  group: catalog-update
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm catalog:validate
+
+      - name: Build catalog
+        id: build
+        run: |
+          set +e
+          pnpm catalog:build -- ${{ inputs.force && '--force' || '' }} 2>&1 | tee build.log
+          code=${PIPESTATUS[0]}
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = "1" ]; then exit 1; fi
+          exit 0
+
+      - name: Report safeguard
+        if: steps.build.outputs.code == '2'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The weekly catalog build stopped on a safeguard, nothing was published."
+            echo
+            echo '```'
+            tail -n 60 build.log
+            echo '```'
+            echo
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } > issue.md
+          gh issue create --title "Catalog update stopped by a safeguard" --body-file issue.md
+          exit 1
+
+      - name: Commit catalog
+        id: commit
+        if: steps.build.outputs.code == '0'
+        run: |
+          git add catalog/dist catalog/state.json
+          if git diff --cached --quiet; then
+            echo "No catalog changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          version=$(node -p "require('./catalog/dist/manifest.json').catalogVersion")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(catalog): $version"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with GITHUB_TOKEN do not trigger other workflows — start the deploy explicitly.
+      - name: Deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main

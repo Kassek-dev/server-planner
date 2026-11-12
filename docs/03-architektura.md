@@ -331,7 +331,8 @@ on:
 #   ok i są zmiany → commit "catalog: 2026.46" do main → wyzwala deploy.yml
 #   bezpiecznik    → gh issue create z raportem, brak commita
 #   brak zmian     → nic
-# sekrety: GITHUB_TOKEN (commit, issue); DOCKERHUB_TOKEN — opcjonalny, wyższy limit Docker Hub
+# sekrety: GITHUB_TOKEN (commit, issue, uruchomienie deploy.yml — push tokenem GITHUB_TOKEN nie wyzwala innych workflowów)
+# DOCKERHUB_TOKEN — opcjonalny, gdy dojdzie adapter Docker Hub
 # limit czasu: 30 min; adapter Blender Open Data parsuje zrzut JSON strumieniowo (bez ładowania całości do pamięci)
 ```
 
