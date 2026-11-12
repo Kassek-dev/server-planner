@@ -5,3 +5,9 @@ declare module 'virtual:catalog' {
   const catalog: Catalog;
   export default catalog;
 }
+
+/** Production dependencies and their licenses, generated at build time (apps/web/plugins/licenses.ts). */
+declare module 'virtual:licenses' {
+  const licenses: { name: string; version: string; license: string; url?: string }[];
+  export default licenses;
+}

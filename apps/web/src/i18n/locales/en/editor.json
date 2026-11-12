@@ -29,5 +29,15 @@
     "issueCount": "{errors, plural, =0 {No errors} one {# error} other {# errors}}, {warnings, plural, =0 {no warnings} one {# warning} other {# warnings}}",
     "showIssues": "Show"
   },
-  "simulate": "Simulate"
+  "simulate": "Simulate",
+  "toasts": {
+    "undo": "Undo",
+    "dismiss": "Dismiss",
+    "deleted": "Deleted {names}",
+    "deletedMany": "Deleted {first} and {count, plural, one {# more} other {# more}}",
+    "deletedGeneric": "Deleted",
+    "internetAdded": "Internet added and connected to {router} WAN",
+    "appAdded": "{name} added ({count, plural, one {# container} other {# containers}})",
+    "appsAdded": "Apps added ({count, plural, one {# container} other {# containers}})"
+  }
 }

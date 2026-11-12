@@ -9,6 +9,7 @@ import drawers from './locales/en/drawers.json';
 import editor from './locales/en/editor.json';
 import inspector from './locales/en/inspector.json';
 import issues from './locales/en/issues.json';
+import pages from './locales/en/pages.json';
 import projects from './locales/en/projects.json';
 import simulation from './locales/en/simulation.json';
 
@@ -18,6 +19,7 @@ export const SUPPORTED_LANGUAGES = ['en'] as const;
 export const NAMESPACES = [
   'common',
   'projects',
+  'pages',
   'editor',
   'canvas',
   'catalog',
@@ -29,7 +31,19 @@ export const NAMESPACES = [
 ] as const;
 
 export const resources = {
-  en: { common, projects, editor, canvas, catalog, inspector, drawers, issues, simulation, dev },
+  en: {
+    common,
+    projects,
+    pages,
+    editor,
+    canvas,
+    catalog,
+    inspector,
+    drawers,
+    issues,
+    simulation,
+    dev,
+  },
 } as const;
 
 export async function initI18n(): Promise<void> {

@@ -51,6 +51,11 @@ export interface ProjectSession extends StoreApi<ProjectSessionState> {
   redo(): boolean;
   /** Writes pending changes immediately (navigation, export, page hide). */
   flush(): Promise<void>;
+  /**
+   * Called after every new undo step (not after undo/redo or merged edits) with the project
+   * before the change — used for toasts like "Deleted pve1 · Undo" (O-12).
+   */
+  onCommit(listener: (entry: HistoryEntry, before: Project) => void): () => void;
 }
 
 export interface ProjectSessionOptions {
@@ -113,6 +118,10 @@ export function createProjectSession({
 
   /** Set after undo/redo so the next command never merges into an older step. */
   let mergeBlocked = false;
+  const commitListeners = new Set<(entry: HistoryEntry, before: Project) => void>();
+  const notifyCommit = (entry: HistoryEntry, before: Project) => {
+    for (const listener of commitListeners) listener(entry, before);
+  };
 
   function dispatch<P, R>(command: Command<P, R>, payload: P, options: DispatchOptions = {}): R {
     const { project, past } = store.getState();
@@ -154,6 +163,7 @@ export function createProjectSession({
       lastError: null,
     });
     scheduleSave();
+    if (!merge) notifyCommit(entry, project);
     return out.result;
   }
 
@@ -182,13 +192,15 @@ export function createProjectSession({
     if (patches.length === 0) return result;
     mergeBlocked = false;
     const { past } = store.getState();
+    const entry: HistoryEntry = { label, patches, inversePatches, at: clock() };
     store.setState({
       project: working,
-      past: [...past, { label, patches, inversePatches, at: clock() }].slice(-historyLimit),
+      past: [...past, entry].slice(-historyLimit),
       future: [],
       lastError: null,
     });
     scheduleSave();
+    notifyCommit(entry, start);
     return result;
   }
 
@@ -208,6 +220,10 @@ export function createProjectSession({
 
     dispatch,
     transaction,
+    onCommit(listener) {
+      commitListeners.add(listener);
+      return () => commitListeners.delete(listener);
+    },
 
     undo() {
       const { project, past, future } = store.getState();

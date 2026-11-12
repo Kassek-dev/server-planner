@@ -2,6 +2,7 @@ import { catalogPlugin } from '@server-planner/catalog-builder/vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
+import { licensesPlugin } from './plugins/licenses';
 
 /**
  * Content Security Policy for production builds (docs/03 § 10).
@@ -33,7 +34,13 @@ function contentSecurityPolicy(): Plugin {
 
 export default defineConfig({
   base: '/server-planner/',
-  plugins: [react(), tailwindcss(), catalogPlugin(), contentSecurityPolicy()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    catalogPlugin(),
+    licensesPlugin(import.meta.dirname),
+    contentSecurityPolicy(),
+  ],
   server: { port: 5173, strictPort: true },
   preview: { port: 4173, strictPort: true },
 });

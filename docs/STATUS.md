@@ -110,7 +110,12 @@
 
 ## Etap 8 — Eksport i szlif
 
-- [ ] PNG/SVG/JSON (D‑04), Settings/About, motyw, E2E ścieżek A i B
+- [x] 8a: toasty z Undo (O‑12) — sesja zgłasza zatwierdzone kroki (`onCommit`), `describeCommit` wybiera: usunięcia (UI3, z nazwami), auto‑Internet (UI2), aplikacje z katalogu; Undo tylko gdy krok jest wciąż ostatni
+- [x] 8a: UI2 — pierwszy router/firewall bez węzła Internet dostaje Internet podłączony do WAN (osobny krok `canvas.addInternet`)
+- [x] 8a: Settings (P‑02): Appearance (motyw System/Dark/Light), Storage (zużycie, persist, eksport wszystkich, usunięcie wszystkich danych z potwierdzeniem); Catalog i Units — informacyjnie (P1 w 1.0)
+- [x] 8a: About (P‑03): Overview, Data sources (warstwa kurowana w użyciu, pozostałe źródła „planned 1.0”), Licenses — lista zależności generowana przy buildzie (`apps/web/plugins/licenses.ts`, `virtual:licenses`)
+- [ ] 8b: eksport PNG/SVG/JSON (D‑04), E2E ścieżek A i B
+- Katalog: dane kurowane zostają `curated`; użytkownik przejrzy je później (2026-11-12)
 
 ## Dziennik
 
@@ -127,4 +132,5 @@
 | 2026-11-11 | Etap 5: silnik (walidacja, capacity, poprawki), worker, panel Issues, diody i zakładka Capacity; unit 143, E2E 16 | #11 |
 | 2026-11-12 | Etap 6: symulacja `reach()`, dostęp do internetu, Visible from, panel Simulation, nakładki CAN‑06; unit 156, E2E 19 | #12 |
 | 2026-11-12 | Etap 7a: schematy i walidacja katalogu, warstwa kurowana (59 aplikacji, 19 urządzeń, 11 CPU, 4 OS), warstwa bazowa w aplikacji, narzut OS z katalogu; unit 163, E2E 19 | #13 |
-| 2026-11-12 | Etap 7b: D‑05/D‑06/D‑07, komendy `device.applyModel` i `app.addFromCatalog` — etap 7 zamknięty; unit 172, E2E 23 | — |
+| 2026-11-12 | Etap 7b: D‑05/D‑06/D‑07, komendy `device.applyModel` i `app.addFromCatalog` — etap 7 zamknięty; unit 172, E2E 23 | #14 |
+| 2026-11-12 | Decyzje UI1–UI3 (`docs/05` § 15, v0.2); etap 8a: toasty z Undo, auto‑Internet, Settings, About; unit 176, E2E 27 | — |

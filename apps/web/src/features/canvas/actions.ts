@@ -175,8 +175,39 @@ export function addItemAt(
         });
       return deviceId;
     });
+    const hasInternet = Object.values(project.devices).some((d) => d.kind === 'internet');
+    if ((item.kind === 'router' || item.kind === 'firewall') && !hasInternet)
+      addInternetFor(session, id, {
+        x: toGrid(topLeft.x),
+        y: Math.max(0, toGrid(topLeft.y) - 6),
+      });
     return { ok: true, selectId: id };
   });
+}
+
+/**
+ * UI2 (docs/05 § 15): the first router gets an Internet node cabled to its WAN port — a separate
+ * undo step, so the toast's Undo removes only the Internet node.
+ */
+export function addInternetFor(
+  session: ProjectSession,
+  routerId: string,
+  position: { x: number; y: number },
+): void {
+  const project = session.getState().project;
+  const wan = Object.values(project?.interfaces ?? {}).find(
+    (i) => i.owner.type === 'device' && i.owner.id === routerId && i.kind === 'wan',
+  );
+  try {
+    session.transaction('canvas.addInternet', (run) => {
+      const { interfaceIds } = run(addDevice, { kind: 'internet', position });
+      const port = interfaceIds[0];
+      if (wan && port) run(connectInterfaces, { a: port, b: wan.id });
+    });
+  } catch (error) {
+    // Optional convenience: a rejection (e.g. the WAN port is taken) must not undo the router.
+    if (!(error instanceof CommandError)) throw error;
+  }
 }
 
 export interface DraggedNode {
