@@ -1,0 +1,59 @@
+{
+ "format": "server-planner/catalog",
+ "schemaVersion": 1,
+ "catalogVersion": "2026.46",
+ "generatedAt": "2026-11-12T12:15:15.036Z",
+ "minAppVersion": "1.1.0",
+ "files": [
+  {
+   "name": "apps.json",
+   "sha256": "2f9da5def65728a7fb4497aca69960d18b4794b943c7c20f4edb4a2ad0b30337",
+   "bytes": 469832,
+   "records": 184
+  },
+  {
+   "name": "perf.json",
+   "sha256": "8e0f98460f2e591708bcd6c9c4efb294341ee8a915f752adf002ded50a8a81bf",
+   "bytes": 177257,
+   "records": 1313
+  }
+ ],
+ "sources": [
+  {
+   "id": "linuxserver",
+   "name": "LinuxServer.io API",
+   "url": "https://www.linuxserver.io",
+   "license": "facts only",
+   "status": "ok",
+   "fetchedAt": "2026-11-12T12:15:15.036Z",
+   "records": 203
+  },
+  {
+   "id": "awesome-selfhosted",
+   "name": "awesome-selfhosted-data",
+   "url": "https://github.com/awesome-selfhosted/awesome-selfhosted-data",
+   "license": "CC BY-SA 3.0",
+   "status": "ok",
+   "fetchedAt": "2026-11-12T12:15:15.036Z",
+   "records": 766
+  },
+  {
+   "id": "community-scripts",
+   "name": "Proxmox VE Community Scripts",
+   "url": "https://github.com/community-scripts/ProxmoxVE",
+   "license": "MIT",
+   "status": "ok",
+   "fetchedAt": "2026-11-12T12:15:15.036Z",
+   "records": 648
+  },
+  {
+   "id": "blender",
+   "name": "Blender Open Data",
+   "url": "https://opendata.blender.org",
+   "license": "CC0 1.0",
+   "status": "ok",
+   "fetchedAt": "2026-11-12T12:15:15.036Z",
+   "records": 1313
+  }
+ ]
+}
