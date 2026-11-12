@@ -1,0 +1,12 @@
+id: intel-core-i7-8700t
+vendor: intel
+model: Intel Core i7-8700T
+cores: 6
+threads: 12
+baseGhz: 2.4
+boostGhz: 4.0
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

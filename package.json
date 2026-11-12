@@ -12,7 +12,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit -p . && pnpm -r typecheck",
-    "test": "vitest run",
+    "test": "vitest run --configLoader runner",
     "test:e2e": "pnpm --filter @server-planner/web test:e2e",
     "i18n:check": "tsx scripts/i18n-check.ts",
     "tokens:check": "tsx scripts/tokens-check.ts",

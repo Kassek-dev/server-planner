@@ -1,0 +1,42 @@
+id: homarr
+name: Homarr
+description: { en: Drag-and-drop dashboard for your homelab services. }
+categories: [dashboard]
+website: "https://homarr.dev"
+repository: "https://github.com/homarr-labs/homarr"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: homarr
+      role: app
+      image: ghcr.io/homarr-labs/homarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 7575, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 7575, containerPort: 7575, protocol: tcp }]
+      volumes: [{ name: appdata, containerPath: /appdata, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-7575
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 7575
+    purpose: web-ui
+    required: true
+flows:
+  - id: homarr.open-ui
+    name: { en: Open Homarr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Homarr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

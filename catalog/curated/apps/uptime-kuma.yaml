@@ -1,0 +1,56 @@
+id: uptime-kuma
+name: Uptime Kuma
+description: { en: Self-hosted monitoring tool for websites and services with notifications. }
+categories: [monitoring]
+website: "https://uptime.kuma.pet"
+repository: "https://github.com/louislam/uptime-kuma"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: uptime-kuma
+      role: app
+      image: louislam/uptime-kuma
+      defaultTag: "2"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3001, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3001, containerPort: 3001, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /app/data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3001
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3001
+    purpose: web-ui
+    required: true
+  - id: checks-lan
+    direction: outbound
+    peer: { kind: dependency, capability: web-backend }
+    protocol: tcp
+    port: 443
+    purpose: health-check
+    required: false
+  - id: checks-net
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: health-check
+    required: false
+flows:
+  - id: uptime-kuma.open-ui
+    name: { en: Open Uptime Kuma }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Uptime Kuma }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

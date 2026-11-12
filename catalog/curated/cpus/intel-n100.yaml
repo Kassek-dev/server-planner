@@ -1,0 +1,11 @@
+id: intel-n100
+vendor: intel
+model: Intel N100
+cores: 4
+threads: 4
+boostGhz: 3.4
+tdpW: 6
+arch: amd64
+igpu: { model: Intel UHD Graphics (24 EU), features: [quicksync] }
+source: [curated]
+confidence: curated

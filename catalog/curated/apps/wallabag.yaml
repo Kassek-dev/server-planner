@@ -1,0 +1,53 @@
+id: wallabag
+name: wallabag
+description: { en: Read-it-later app that saves web pages for offline reading. }
+categories: [productivity, news]
+website: "https://wallabag.org"
+repository: "https://github.com/wallabag/wallabag"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: wallabag
+      role: app
+      image: wallabag/wallabag
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8087, containerPort: 80, protocol: tcp }]
+      volumes:
+        - name: images
+          containerPath: /var/www/wallabag/web/assets/images
+          purpose: data
+          defaultSizeBytes: 2 GB
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+  - id: fetch
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: true
+flows:
+  - id: wallabag.open-ui
+    name: { en: Open wallabag }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: wallabag }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

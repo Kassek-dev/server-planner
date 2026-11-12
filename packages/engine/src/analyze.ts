@@ -1,6 +1,6 @@
 import type { Project } from '@server-planner/model';
 import { capacity } from './capacity';
-import { buildContext, type EngineContext } from './context';
+import { buildContext, type EngineContext, type EngineOptions } from './context';
 import { internetAccess } from './simulation/access';
 import type { AnalysisResult, DeviceStatus, EntityRef, Issue } from './types';
 import { rules } from './validation/rules';
@@ -34,9 +34,9 @@ function deviceOf(ctx: EngineContext, ref: EntityRef): string | undefined {
  * access → device status.
  * Pure and synchronous; runs in the engine worker.
  */
-export function analyze(project: Project): AnalysisResult {
+export function analyze(project: Project, options: EngineOptions = {}): AnalysisResult {
   const started = Date.now();
-  const ctx = buildContext(project);
+  const ctx = buildContext(project, options);
   const issues: Issue[] = rules.flatMap((rule) => rule.run(ctx));
   const reports = capacity(ctx);
 

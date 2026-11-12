@@ -1,0 +1,98 @@
+id: unifi-network-application
+name: UniFi Network Application
+description: { en: "Controller for UniFi access points, switches and gateways." }
+categories: [networking]
+website: "https://ui.com/download/releases/network-server"
+license: Proprietary
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: server
+      name: unifi-network-application
+      role: app
+      image: lscr.io/linuxserver/unifi-network-application
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8443, protocol: tcp, purpose: web-ui }
+        - { port: 8080, protocol: tcp, purpose: device-inform }
+        - { port: 3478, protocol: udp, purpose: stun }
+        - { port: 10001, protocol: udp, purpose: discovery }
+      defaultPortMappings:
+        - { hostPort: 8443, containerPort: 8443, protocol: tcp }
+        - { hostPort: 8080, containerPort: 8080, protocol: tcp }
+        - { hostPort: 3478, containerPort: 3478, protocol: udp }
+        - { hostPort: 10001, containerPort: 10001, protocol: udp }
+      volumes: [{ name: config, containerPath: /config, purpose: config, defaultSizeBytes: 2 GB }]
+    - key: db
+      name: mongo
+      role: database
+      image: mongo
+      defaultTag: "7.0"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 27017, protocol: tcp, purpose: mongodb }]
+      volumes: [{ name: db, containerPath: /data/db, purpose: data, defaultSizeBytes: 5 GB }]
+requirements:
+  min: { cpu: 0.5, memoryBytes: 1 GiB, diskBytes: 5 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 10 GB }
+dependencies: [{ capability: mongodb, optional: false, providedByComponent: db }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8443
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8443
+    purpose: web-ui
+    required: true
+  - id: device-inform-tcp-8080
+    direction: inbound
+    peer: { kind: device-kind, deviceKind: access-point }
+    protocol: tcp
+    port: 8080
+    purpose: device-inform
+    required: true
+  - id: stun-udp-3478
+    direction: inbound
+    peer: { kind: device-kind, deviceKind: access-point }
+    protocol: udp
+    port: 3478
+    purpose: stun
+    required: true
+  - id: discovery-udp-10001
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 10001
+    purpose: discovery
+    required: false
+  - id: db-mongodb
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 27017
+    purpose: mongodb
+    required: true
+flows:
+  - id: unifi-network-application.open-ui
+    name: { en: Open UniFi Network Application }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - key: server
+        name: { en: UniFi Network Application }
+        selector: { kind: self }
+        userPicks: false
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]
+  - id: unifi-network-application.adopt
+    name: { en: Access point checks in }
+    roles:
+      - key: device
+        name: { en: Access point }
+        selector: { kind: device-kind, deviceKind: access-point }
+        userPicks: true
+      - { key: server, name: { en: UniFi controller }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: device, to: server, protocol: tcp, port: 8080 }]

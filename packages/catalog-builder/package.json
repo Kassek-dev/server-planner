@@ -9,6 +9,12 @@
     "build:catalog": "tsx src/build.ts"
   },
   "dependencies": {
-    "@server-planner/model": "workspace:*"
+    "@server-planner/model": "workspace:*",
+    "yaml": "2.8.4",
+    "zod": "4.6.7"
+  },
+  "exports": {
+    "./curated": "./src/curated.ts",
+    "./vite": "./src/vite.ts"
   }
 }

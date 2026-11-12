@@ -1,0 +1,9 @@
+id: ubuntu-server
+name: Ubuntu Server
+versions:
+  - { version: "22.04", releasedAt: 2022-04-21, eol: 2027-04-30 }
+  - { version: "24.04", releasedAt: 2024-04-25, eol: 2029-04-30 }
+role: server
+overhead: { cpu: 0.2, memoryBytes: 512 MiB, diskBytes: 6 GB }
+arch: [amd64, arm64]
+capabilities: { vm: true, lxc: true, docker: native }

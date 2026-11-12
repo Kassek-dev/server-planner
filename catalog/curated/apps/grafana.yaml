@@ -1,0 +1,50 @@
+id: grafana
+name: Grafana
+description: { en: "Dashboards and visualization for metrics, logs and traces." }
+categories: [monitoring]
+website: "https://grafana.com/oss/grafana/"
+repository: "https://github.com/grafana/grafana"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: grafana
+      role: app
+      image: grafana/grafana
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 3000, containerPort: 3000, protocol: tcp }]
+      volumes:
+        [{ name: data, containerPath: /var/lib/grafana, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: [{ capability: metrics-store, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-3000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 3000
+    purpose: web-ui
+    required: true
+  - id: prometheus
+    direction: outbound
+    peer: { kind: dependency, capability: metrics-store }
+    protocol: tcp
+    port: 9090
+    purpose: metrics-query
+    required: false
+flows:
+  - id: grafana.open-ui
+    name: { en: Open Grafana }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Grafana }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

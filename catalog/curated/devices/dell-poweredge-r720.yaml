@@ -1,0 +1,24 @@
+id: dell-poweredge-r720
+kind: server
+vendor: Dell
+model: PowerEdge R720
+formFactor: { mount: rack, units: 2, width: 19in }
+hardware:
+  cpus: [{ ref: intel-xeon-e5-2650-v2 }, { ref: intel-xeon-e5-2650-v2 }]
+  memory:
+    type: DDR3
+    slotsTotal: 24
+    maxBytes: 768 GiB
+    ecc: true
+    modules: [{ sizeBytes: 16 GiB, count: 8, speedMts: 1600 }]
+  gpus: []
+  power: { idleW: 110, loadW: 350 }
+ports:
+  - { name: eno1, kind: rj45, speedMbps: 1000 }
+  - { name: eno2, kind: rj45, speedMbps: 1000 }
+  - { name: eno3, kind: rj45, speedMbps: 1000 }
+  - { name: eno4, kind: rj45, speedMbps: 1000 }
+  - { name: iDRAC, kind: rj45, speedMbps: 1000 }
+expansion: { pcieSlots: 7, sataBays: 8 }
+source: [curated]
+confidence: curated

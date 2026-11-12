@@ -1,0 +1,11 @@
+id: proxmox-ve
+name: Proxmox VE
+versions:
+  - { version: "8.4", releasedAt: 2025-04-09 }
+  - { version: "9.0", releasedAt: 2025-08-05 }
+role: hypervisor
+# Host services (pveproxy, pvedaemon, corosync, …) without ZFS ARC — ARC is set per pool.
+overhead: { cpu: 0.5, memoryBytes: 1 GiB, diskBytes: 16 GB }
+arch: [amd64]
+capabilities: { vm: true, lxc: true, docker: discouraged }
+defaultInterfaces: [{ name: vmbr0, kind: bridge }]

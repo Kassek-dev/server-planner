@@ -1,0 +1,96 @@
+id: paperless-ngx
+name: Paperless-ngx
+description: { en: "Scans, indexes and archives your paper documents with OCR." }
+categories: [productivity, documents]
+website: "https://docs.paperless-ngx.com"
+repository: "https://github.com/paperless-ngx/paperless-ngx"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: webserver
+      name: paperless-ngx
+      role: app
+      image: ghcr.io/paperless-ngx/paperless-ngx
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8000, containerPort: 8000, protocol: tcp }]
+      volumes:
+        - {
+            name: data,
+            containerPath: /usr/src/paperless/data,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          }
+        - name: media
+          containerPath: /usr/src/paperless/media
+          purpose: media
+          defaultSizeBytes: 20 GB
+        - name: consume
+          containerPath: /usr/src/paperless/consume
+          purpose: data
+          defaultSizeBytes: 1 GB
+    - key: broker
+      name: redis
+      role: cache
+      image: redis
+      defaultTag: "7"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6379, protocol: tcp, purpose: redis }]
+      volumes: []
+    - key: db
+      name: postgres
+      role: database
+      image: postgres
+      defaultTag: "16"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5432, protocol: tcp, purpose: postgresql }]
+      volumes:
+        - {
+            name: pgdata,
+            containerPath: /var/lib/postgresql/data,
+            purpose: data,
+            defaultSizeBytes: 2 GB,
+          }
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
+  recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 30 GB }
+dependencies:
+  - { capability: redis, optional: false, providedByComponent: broker }
+  - { capability: postgresql, optional: false, providedByComponent: db }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8000
+    purpose: web-ui
+    required: true
+  - id: broker-redis
+    direction: outbound
+    peer: { kind: self-component, key: broker }
+    protocol: tcp
+    port: 6379
+    purpose: redis
+    required: true
+  - id: db-postgresql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 5432
+    purpose: postgresql
+    required: true
+flows:
+  - id: paperless-ngx.open-ui
+    name: { en: Open Paperless-ngx }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Paperless-ngx }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

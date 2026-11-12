@@ -1,0 +1,64 @@
+id: duplicati
+name: Duplicati
+description: { en: "Encrypted, incremental backups to local disks and cloud storage." }
+categories: [backup]
+website: "https://duplicati.com"
+repository: "https://github.com/duplicati/duplicati"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: duplicati
+      role: app
+      image: lscr.io/linuxserver/duplicati
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8200, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8200, containerPort: 8200, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: backups, containerPath: /backups, purpose: data, defaultSizeBytes: 500 GB }
+        - { name: source, containerPath: /source, purpose: data, defaultSizeBytes: 100 GB }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 2 GB }
+dependencies: [{ capability: backup-storage, optional: true }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8200
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8200
+    purpose: web-ui
+    required: true
+  - id: cloud
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: backup-upload
+    required: false
+    bandwidth: { typicalMbps: 20, peakMbps: 100 }
+  - id: nas
+    direction: outbound
+    peer: { kind: dependency, capability: backup-storage }
+    protocol: tcp
+    port: 445
+    purpose: smb
+    required: false
+    bandwidth: { typicalMbps: 100, peakMbps: 1000 }
+flows:
+  - id: duplicati.nightly-backup
+    name: { en: Nightly backup to a NAS }
+    roles:
+      - { key: server, name: { en: Duplicati }, selector: { kind: self }, userPicks: false }
+      - key: storage
+        name: { en: Backup storage }
+        selector: { kind: dependency, capability: backup-storage }
+        userPicks: true
+    steps: [{ from: server, to: storage, protocol: tcp, port: 445, bandwidthMbps: 500 }]

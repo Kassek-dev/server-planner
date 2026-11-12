@@ -1,0 +1,63 @@
+id: mosquitto
+name: Mosquitto
+description: { en: Lightweight MQTT broker from the Eclipse Foundation. }
+categories: [home-automation, messaging]
+website: "https://mosquitto.org"
+repository: "https://github.com/eclipse-mosquitto/mosquitto"
+license: EPL-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: broker
+      name: mosquitto
+      role: app
+      image: eclipse-mosquitto
+      defaultTag: "2"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 1883, protocol: tcp, purpose: mqtt }
+        - { port: 9001, protocol: tcp, purpose: mqtt-websocket }
+      defaultPortMappings:
+        - { hostPort: 1883, containerPort: 1883, protocol: tcp }
+        - { hostPort: 9001, containerPort: 9001, protocol: tcp }
+      volumes:
+        - {
+            name: config,
+            containerPath: /mosquitto/config,
+            purpose: config,
+            defaultSizeBytes: 10 MiB,
+          }
+        - { name: data, containerPath: /mosquitto/data, purpose: data, defaultSizeBytes: 1 GB }
+requirements:
+  min: { cpu: 0.1, memoryBytes: 32 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: [mqtt]
+trafficPatterns:
+  - id: mqtt-tcp-1883
+    direction: inbound
+    peer: { kind: dependency, capability: mqtt }
+    protocol: tcp
+    port: 1883
+    purpose: mqtt
+    required: true
+  - id: mqtt-websocket-tcp-9001
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9001
+    purpose: mqtt-websocket
+    required: true
+flows:
+  - id: mosquitto.publish
+    name: { en: Sensor publishes a reading }
+    roles:
+      - key: device
+        name: { en: IoT device }
+        selector: { kind: device-kind, deviceKind: client, clientType: iot }
+        userPicks: true
+      - { key: broker, name: { en: Mosquitto }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: device, to: broker, protocol: tcp, port: 1883 }]

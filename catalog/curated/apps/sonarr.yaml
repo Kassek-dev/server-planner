@@ -1,0 +1,59 @@
+id: sonarr
+name: Sonarr
+description: { en: Monitors RSS feeds and downloads new episodes of TV series. }
+categories: [media, downloads]
+website: "https://sonarr.tv"
+repository: "https://github.com/Sonarr/Sonarr"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: sonarr
+      role: app
+      image: lscr.io/linuxserver/sonarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8989, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8989, containerPort: 8989, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: tv, containerPath: /tv, purpose: media, defaultSizeBytes: 1000 GB }
+        - { name: downloads, containerPath: /downloads, purpose: data, defaultSizeBytes: 200 GB }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: [{ capability: download-client, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8989
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8989
+    purpose: web-ui
+    required: true
+  - id: indexers
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: false
+  - id: download
+    direction: outbound
+    peer: { kind: dependency, capability: download-client }
+    protocol: tcp
+    port: 8080
+    purpose: api
+    required: true
+flows:
+  - id: sonarr.open-ui
+    name: { en: Open Sonarr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Sonarr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

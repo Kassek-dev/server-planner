@@ -99,7 +99,10 @@
 
 ## Etap 7 — Katalog
 
-- [ ] `catalog/curated` (~50 aplikacji, typy urządzeń, OS, CPU), warstwa bazowa w aplikacji, D‑05/D‑06/D‑07
+- [x] 7a: schematy `Catalog*` w `packages/model`, `loadCurated()` + `pnpm catalog:validate` (YAML → jednostki → referencje CPU → Zod, kontrola id = nazwa pliku, unikalność wzorców i przepływów)
+- [x] 7a: warstwa kurowana — 59 aplikacji (wzorce ruchu + co najmniej jeden przepływ na aplikację z UI), 19 modeli sprzętu, 11 CPU, 4 OS
+- [x] 7a: warstwa bazowa w aplikacji (`virtual:catalog`, osobny chunk), narzut OS z katalogu (`EngineOptions`), usunięta tymczasowa tabela `OS_OVERHEAD`
+- [ ] 7b: D‑05 wybór modelu urządzenia, D‑06 katalog aplikacji, D‑07 kreator dodawania aplikacji
 
 ## Etap 8 — Eksport i szlif
 
@@ -118,4 +121,5 @@
 | 2026-11-11 | Etap 4a: inspector (urządzenie z zakładkami, workloady, aplikacje, łącza, lokalizacje) | — |
 | 2026-11-11 | Etap 4b: szuflady VLAN/podsieci/strefy, firewall + NAT, tagi, ustawienia projektu — etap 4 zamknięty | — |
 | 2026-11-11 | Etap 5: silnik (walidacja, capacity, poprawki), worker, panel Issues, diody i zakładka Capacity; unit 143, E2E 16 | #11 |
-| 2026-11-12 | Etap 6: symulacja `reach()`, dostęp do internetu, Visible from, panel Simulation, nakładki CAN‑06; unit 156, E2E 19 | — |
+| 2026-11-12 | Etap 6: symulacja `reach()`, dostęp do internetu, Visible from, panel Simulation, nakładki CAN‑06; unit 156, E2E 19 | #12 |
+| 2026-11-12 | Etap 7a: schematy i walidacja katalogu, warstwa kurowana (59 aplikacji, 19 urządzeń, 11 CPU, 4 OS), warstwa bazowa w aplikacji, narzut OS z katalogu; unit 163, E2E 19 | — |

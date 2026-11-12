@@ -1,0 +1,75 @@
+id: caddy
+name: Caddy
+description: { en: Web server and reverse proxy with automatic HTTPS. }
+categories: [networking, reverse-proxy]
+website: "https://caddyserver.com"
+repository: "https://github.com/caddyserver/caddy"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: proxy
+      name: caddy
+      role: proxy
+      image: caddy
+      defaultTag: "2"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 80, protocol: tcp, purpose: http }
+        - { port: 443, protocol: tcp, purpose: https }
+        - { port: 443, protocol: udp, purpose: https }
+      defaultPortMappings:
+        - { hostPort: 80, containerPort: 80, protocol: tcp }
+        - { hostPort: 443, containerPort: 443, protocol: tcp }
+        - { hostPort: 443, containerPort: 443, protocol: udp }
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 256 MiB, diskBytes: 2 GB }
+dependencies: [{ capability: web-backend, optional: true }]
+provides: [reverse-proxy]
+trafficPatterns:
+  - id: http-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: http
+    required: true
+  - id: https-tcp-443
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 443
+    purpose: https
+    required: true
+  - id: https-udp-443
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 443
+    purpose: https
+    required: true
+  - id: acme
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: certificate-renewal
+    required: false
+flows:
+  - id: caddy.proxy-request
+    name: { en: Request through the reverse proxy }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: proxy, name: { en: Caddy }, selector: { kind: self }, userPicks: false }
+      - key: backend
+        name: { en: Backend app }
+        selector: { kind: dependency, capability: web-backend }
+        userPicks: true
+    steps:
+      - { from: client, to: proxy, protocol: tcp, port: 443, resolveDns: true }
+      - { from: proxy, to: backend, protocol: tcp, purpose: web-ui }

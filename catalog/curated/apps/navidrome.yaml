@@ -1,0 +1,44 @@
+id: navidrome
+name: Navidrome
+description: { en: Music server and streamer compatible with Subsonic clients. }
+categories: [media, music]
+website: "https://www.navidrome.org"
+repository: "https://github.com/navidrome/navidrome"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: navidrome
+      role: app
+      image: deluan/navidrome
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 4533, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 4533, containerPort: 4533, protocol: tcp }]
+      volumes:
+        - { name: data, containerPath: /data, purpose: data, defaultSizeBytes: 1 GB }
+        - { name: music, containerPath: /music, purpose: media, defaultSizeBytes: 200 GB }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-4533
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 4533
+    purpose: web-ui
+    required: true
+flows:
+  - id: navidrome.open-ui
+    name: { en: Open Navidrome }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Navidrome }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

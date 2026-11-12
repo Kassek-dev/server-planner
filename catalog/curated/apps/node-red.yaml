@@ -1,0 +1,49 @@
+id: node-red
+name: Node-RED
+description: { en: "Flow-based programming tool for wiring devices, APIs and services." }
+categories: [home-automation, automation]
+website: "https://nodered.org"
+repository: "https://github.com/node-red/node-red"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: node-red
+      role: app
+      image: nodered/node-red
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 1880, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 1880, containerPort: 1880, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-1880
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 1880
+    purpose: web-ui
+    required: true
+  - id: mqtt
+    direction: outbound
+    peer: { kind: dependency, capability: mqtt }
+    protocol: tcp
+    port: 1883
+    purpose: mqtt
+    required: false
+flows:
+  - id: node-red.open-ui
+    name: { en: Open Node-RED }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Node-RED }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

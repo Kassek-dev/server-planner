@@ -1,0 +1,79 @@
+id: syncthing
+name: Syncthing
+description: { en: Continuous peer-to-peer file synchronization between devices. }
+categories: [files]
+website: "https://syncthing.net"
+repository: "https://github.com/syncthing/syncthing"
+license: MPL-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: syncthing
+      role: app
+      image: syncthing/syncthing
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        - { port: 8384, protocol: tcp, purpose: web-ui }
+        - { port: 22000, protocol: tcp, purpose: sync }
+        - { port: 22000, protocol: udp, purpose: sync }
+        - { port: 21027, protocol: udp, purpose: discovery }
+      defaultPortMappings:
+        - { hostPort: 8384, containerPort: 8384, protocol: tcp }
+        - { hostPort: 22000, containerPort: 22000, protocol: tcp }
+        - { hostPort: 22000, containerPort: 22000, protocol: udp }
+        - { hostPort: 21027, containerPort: 21027, protocol: udp }
+      volumes:
+        [{ name: data, containerPath: /var/syncthing, purpose: data, defaultSizeBytes: 100 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 5 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8384
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8384
+    purpose: web-ui
+    required: true
+  - id: sync-tcp-22000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 22000
+    purpose: sync
+    required: true
+  - id: sync-udp-22000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 22000
+    purpose: sync
+    required: true
+  - id: discovery-udp-21027
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: udp
+    port: 21027
+    purpose: discovery
+    required: false
+  - id: relays
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 22067
+    purpose: relay
+    required: false
+flows:
+  - id: syncthing.open-ui
+    name: { en: Open Syncthing }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Syncthing }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

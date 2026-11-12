@@ -1,0 +1,56 @@
+id: jellyseerr
+name: Jellyseerr
+description: { en: "Request management for Jellyfin, Plex and Emby libraries." }
+categories: [media]
+repository: "https://github.com/fallenbagel/jellyseerr"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: jellyseerr
+      role: app
+      image: fallenbagel/jellyseerr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5055, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 5055, containerPort: 5055, protocol: tcp }]
+      volumes:
+        [{ name: config, containerPath: /app/config, purpose: config, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 1 GB }
+dependencies: [{ capability: media-server, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-5055
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 5055
+    purpose: web-ui
+    required: true
+  - id: media-server
+    direction: outbound
+    peer: { kind: dependency, capability: media-server }
+    protocol: tcp
+    port: 8096
+    purpose: api
+    required: true
+  - id: tmdb
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: false
+flows:
+  - id: jellyseerr.open-ui
+    name: { en: Open Jellyseerr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Jellyseerr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

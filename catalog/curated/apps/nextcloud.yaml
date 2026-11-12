@@ -1,0 +1,95 @@
+id: nextcloud
+name: Nextcloud
+description: { en: "Files, calendar, contacts and collaboration on your own server." }
+categories: [productivity, files]
+website: "https://nextcloud.com"
+repository: "https://github.com/nextcloud/server"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: stack
+  components:
+    - key: app
+      name: nextcloud
+      role: app
+      image: nextcloud
+      defaultTag: stable-apache
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 80, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8080, containerPort: 80, protocol: tcp }]
+      volumes:
+        [{ name: html, containerPath: /var/www/html, purpose: data, defaultSizeBytes: 100 GB }]
+    - key: db
+      name: mariadb
+      role: database
+      image: mariadb
+      defaultTag: "11"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 3306, protocol: tcp, purpose: mysql }]
+      volumes: [{ name: db, containerPath: /var/lib/mysql, purpose: data, defaultSizeBytes: 5 GB }]
+    - key: redis
+      name: redis
+      role: cache
+      image: redis
+      defaultTag: "7"
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6379, protocol: tcp, purpose: redis }]
+      volumes: []
+requirements:
+  min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 20 GB }
+  recommended: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 100 GB }
+dependencies:
+  - { capability: mysql, optional: false, providedByComponent: db }
+  - { capability: redis, optional: false, providedByComponent: redis }
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-80
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 80
+    purpose: web-ui
+    required: true
+  - id: db-mysql
+    direction: outbound
+    peer: { kind: self-component, key: db }
+    protocol: tcp
+    port: 3306
+    purpose: mysql
+    required: true
+  - id: redis-redis
+    direction: outbound
+    peer: { kind: self-component, key: redis }
+    protocol: tcp
+    port: 6379
+    purpose: redis
+    required: true
+  - id: apps
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: update-check
+    required: false
+flows:
+  - id: nextcloud.sync-file
+    name: { en: Desktop client syncs a file }
+    roles:
+      - {
+          key: client,
+          name: { en: Desktop client },
+          selector: { kind: lan-clients },
+          userPicks: true,
+        }
+      - { key: server, name: { en: Nextcloud }, selector: { kind: self }, userPicks: false }
+      - key: db
+        name: { en: Database }
+        selector: { kind: self-component, key: db }
+        userPicks: false
+    steps:
+      - { from: client, to: server, protocol: tcp, port: 8080, resolveDns: true, bandwidthMbps: 50 }
+      - { from: server, to: db, protocol: tcp, port: 3306 }

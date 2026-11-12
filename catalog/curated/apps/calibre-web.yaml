@@ -1,0 +1,43 @@
+id: calibre-web
+name: Calibre-Web
+description: { en: Web app for browsing and reading a Calibre e-book library. }
+categories: [media, books]
+repository: "https://github.com/janeczku/calibre-web"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: calibre-web
+      role: app
+      image: lscr.io/linuxserver/calibre-web
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8083, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8083, containerPort: 8083, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: books, containerPath: /books, purpose: media, defaultSizeBytes: 20 GB }
+requirements:
+  min: { cpu: 0.1, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8083
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8083
+    purpose: web-ui
+    required: true
+flows:
+  - id: calibre-web.open-ui
+    name: { en: Open Calibre-Web }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Calibre-Web }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

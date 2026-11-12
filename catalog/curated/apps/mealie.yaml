@@ -1,0 +1,49 @@
+id: mealie
+name: Mealie
+description: { en: Recipe manager and meal planner with a web scraper. }
+categories: [productivity, home]
+website: "https://mealie.io"
+repository: "https://github.com/mealie-recipes/mealie"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: mealie
+      role: app
+      image: ghcr.io/mealie-recipes/mealie
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 9000, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 9925, containerPort: 9000, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /app/data, purpose: data, defaultSizeBytes: 2 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-9000
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9000
+    purpose: web-ui
+    required: true
+  - id: scraper
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: false
+flows:
+  - id: mealie.open-ui
+    name: { en: Open Mealie }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Mealie }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

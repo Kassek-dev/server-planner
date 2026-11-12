@@ -1,0 +1,42 @@
+id: dozzle
+name: Dozzle
+description: { en: Real-time log viewer for Docker containers. }
+categories: [monitoring, management]
+website: "https://dozzle.dev"
+repository: "https://github.com/amir20/dozzle"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: dozzle
+      role: app
+      image: amir20/dozzle
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 8080, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 8080, containerPort: 8080, protocol: tcp }]
+      volumes: []
+requirements:
+  min: { cpu: 0.05, memoryBytes: 32 MiB, diskBytes: 50 MiB }
+  recommended: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-8080
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 8080
+    purpose: web-ui
+    required: true
+flows:
+  - id: dozzle.open-ui
+    name: { en: Open Dozzle }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Dozzle }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

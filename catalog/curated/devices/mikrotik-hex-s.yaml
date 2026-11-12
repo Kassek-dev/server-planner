@@ -1,0 +1,15 @@
+id: mikrotik-hex-s
+kind: router
+vendor: MikroTik
+model: hEX S (RB760iGS)
+formFactor: { mount: standalone, shape: desktop }
+hardware: { cpus: [], gpus: [], power: { idleW: 4, loadW: 7 } }
+ports:
+  - { name: ether1, kind: wan, speedMbps: 1000 }
+  - { name: ether2, kind: rj45, speedMbps: 1000 }
+  - { name: ether3, kind: rj45, speedMbps: 1000 }
+  - { name: ether4, kind: rj45, speedMbps: 1000 }
+  - { name: ether5, kind: rj45, speedMbps: 1000, poe: { role: pse, standard: af } }
+  - { name: sfp1, kind: sfp, speedMbps: 1000 }
+source: [curated]
+confidence: curated

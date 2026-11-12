@@ -1,0 +1,42 @@
+id: actual-budget
+name: Actual Budget
+description: { en: Local-first personal finance and envelope budgeting. }
+categories: [finance]
+website: "https://actualbudget.org"
+repository: "https://github.com/actualbudget/actual"
+license: MIT
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: actual-server
+      role: app
+      image: actualbudget/actual-server
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 5006, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 5006, containerPort: 5006, protocol: tcp }]
+      volumes: [{ name: data, containerPath: /data, purpose: data, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 128 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 256 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-5006
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 5006
+    purpose: web-ui
+    required: true
+flows:
+  - id: actual-budget.open-ui
+    name: { en: Open Actual Budget }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Actual Budget }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

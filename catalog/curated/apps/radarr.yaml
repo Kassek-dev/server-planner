@@ -1,0 +1,59 @@
+id: radarr
+name: Radarr
+description: { en: Movie collection manager for Usenet and BitTorrent users. }
+categories: [media, downloads]
+website: "https://radarr.video"
+repository: "https://github.com/Radarr/Radarr"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: radarr
+      role: app
+      image: lscr.io/linuxserver/radarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 7878, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 7878, containerPort: 7878, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: movies, containerPath: /movies, purpose: media, defaultSizeBytes: 1000 GB }
+        - { name: downloads, containerPath: /downloads, purpose: data, defaultSizeBytes: 200 GB }
+requirements:
+  min: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 1, memoryBytes: 512 MiB, diskBytes: 2 GB }
+dependencies: [{ capability: download-client, optional: false }]
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-7878
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 7878
+    purpose: web-ui
+    required: true
+  - id: indexers
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: false
+  - id: download
+    direction: outbound
+    peer: { kind: dependency, capability: download-client }
+    protocol: tcp
+    port: 8080
+    purpose: api
+    required: true
+flows:
+  - id: radarr.open-ui
+    name: { en: Open Radarr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Radarr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

@@ -1,0 +1,49 @@
+id: cloudflared
+name: Cloudflare Tunnel
+description:
+  { en: Publishes local services through an outbound tunnel to Cloudflare — no port forwarding. }
+categories: [networking]
+website: "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/"
+repository: "https://github.com/cloudflare/cloudflared"
+license: Apache-2.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: connector
+      name: cloudflared
+      role: app
+      image: cloudflare/cloudflared
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: []
+      volumes: []
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 200 MiB }
+dependencies: [{ capability: web-backend, optional: true }]
+provides: [tunnel]
+trafficPatterns:
+  - id: edge
+    direction: outbound
+    peer: { kind: internet }
+    protocol: udp
+    port: 7844
+    purpose: tunnel
+    required: true
+  - id: backend
+    direction: outbound
+    peer: { kind: dependency, capability: web-backend }
+    protocol: tcp
+    port: 443
+    purpose: web-ui
+    required: false
+flows:
+  - id: cloudflared.connect
+    name: { en: Tunnel connects to Cloudflare }
+    roles:
+      - { key: connector, name: { en: cloudflared }, selector: { kind: self }, userPicks: false }
+      - { key: edge, name: { en: Cloudflare edge }, selector: { kind: internet }, userPicks: false }
+    steps: [{ from: connector, to: edge, protocol: udp, port: 7844, resolveDns: true }]

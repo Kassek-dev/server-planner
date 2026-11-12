@@ -1,0 +1,61 @@
+id: wg-easy
+name: WireGuard Easy
+description: { en: WireGuard VPN server with a web UI to manage clients. }
+categories: [networking, vpn]
+repository: "https://github.com/wg-easy/wg-easy"
+license: AGPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: wg-easy
+      role: app
+      image: ghcr.io/wg-easy/wg-easy
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners:
+        [
+          { port: 51820, protocol: udp, purpose: vpn },
+          { port: 51821, protocol: tcp, purpose: web-ui },
+        ]
+      defaultPortMappings:
+        - { hostPort: 51820, containerPort: 51820, protocol: udp }
+        - { hostPort: 51821, containerPort: 51821, protocol: tcp }
+      volumes:
+        [{ name: config, containerPath: /etc/wireguard, purpose: config, defaultSizeBytes: 10 MiB }]
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 200 MiB }
+  recommended: { cpu: 0.5, memoryBytes: 128 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: [vpn]
+trafficPatterns:
+  - id: vpn-udp-51820
+    direction: inbound
+    peer: { kind: internet }
+    protocol: udp
+    port: 51820
+    purpose: vpn
+    required: true
+  - id: web-ui-tcp-51821
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 51821
+    purpose: web-ui
+    required: true
+flows:
+  - id: wg-easy.remote-access
+    name: { en: Phone connects from outside }
+    roles:
+      - { key: client, name: { en: Remote phone }, selector: { kind: internet }, userPicks: false }
+      - { key: server, name: { en: WireGuard }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: udp, port: 51820 }]
+  - id: wg-easy.open-ui
+    name: { en: Open WireGuard Easy }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: WireGuard Easy }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

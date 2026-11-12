@@ -1,0 +1,10 @@
+id: broadcom-bcm2711
+vendor: arm
+model: Broadcom BCM2711 (Cortex-A72)
+cores: 4
+threads: 4
+boostGhz: 1.8
+tdpW: 6
+arch: arm64
+source: [curated]
+confidence: curated

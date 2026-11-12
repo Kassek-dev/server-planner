@@ -1,0 +1,12 @@
+id: intel-core-i5-1240p
+vendor: intel
+model: Intel Core i5-1240P
+cores: 12
+threads: 16
+baseGhz: 1.7
+boostGhz: 4.4
+tdpW: 28
+arch: amd64
+igpu: { model: Intel Iris Xe Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

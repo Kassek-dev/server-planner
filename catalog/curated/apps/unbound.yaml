@@ -1,0 +1,72 @@
+id: unbound
+name: Unbound
+description: { en: "Validating, recursive and caching DNS resolver." }
+categories: [dns, networking]
+website: "https://nlnetlabs.nl/projects/unbound/about/"
+repository: "https://github.com/NLnetLabs/unbound"
+license: BSD-3-Clause
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: unbound
+      role: dns
+      image: mvance/unbound
+      defaultTag: latest
+      arch: [amd64]
+      platform: linux
+      listeners:
+        [{ port: 53, protocol: udp, purpose: dns }, { port: 53, protocol: tcp, purpose: dns }]
+      defaultPortMappings:
+        - { hostPort: 5335, containerPort: 53, protocol: udp }
+        - { hostPort: 5335, containerPort: 53, protocol: tcp }
+      volumes:
+        - name: config
+          containerPath: /opt/unbound/etc/unbound
+          purpose: config
+          defaultSizeBytes: 10 MiB
+requirements:
+  min: { cpu: 0.1, memoryBytes: 64 MiB, diskBytes: 100 MiB }
+  recommended: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 500 MiB }
+dependencies: []
+provides: [dns-resolver]
+trafficPatterns:
+  - id: dns-udp-53
+    direction: inbound
+    peer: { kind: dependency, capability: dns-resolver }
+    protocol: udp
+    port: 53
+    purpose: dns
+    required: true
+  - id: dns-tcp-53
+    direction: inbound
+    peer: { kind: dependency, capability: dns-resolver }
+    protocol: tcp
+    port: 53
+    purpose: dns
+    required: true
+  - id: roots
+    direction: outbound
+    peer: { kind: internet }
+    protocol: udp
+    port: 53
+    purpose: dns
+    required: true
+flows:
+  - id: unbound.resolve
+    name: { en: Resolve a name recursively }
+    roles:
+      - key: client
+        name: { en: DNS forwarder }
+        selector: { kind: dependency, capability: dns-resolver }
+        userPicks: true
+      - { key: server, name: { en: Unbound }, selector: { kind: self }, userPicks: false }
+      - key: roots
+        name: { en: Root and TLD servers }
+        selector: { kind: internet }
+        userPicks: false
+    steps:
+      - { from: client, to: server, protocol: udp, port: 5335 }
+      - { from: server, to: roots, protocol: udp, port: 53 }

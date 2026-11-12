@@ -16,8 +16,8 @@ import {
   updateWorkload,
 } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import { analyze, type Issue, sameDomain } from '../src';
-import { apply, byName, homeLab, ifaceOf } from './support';
+import { type Issue, sameDomain } from '../src';
+import { analyze, apply, byName, homeLab, ifaceOf } from './support';
 
 const GiB = 1024 ** 3;
 const codes = (issues: Issue[], severity?: Issue['severity']) =>

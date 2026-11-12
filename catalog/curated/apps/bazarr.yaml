@@ -1,0 +1,51 @@
+id: bazarr
+name: Bazarr
+description: { en: Downloads subtitles for Sonarr and Radarr libraries. }
+categories: [media]
+website: "https://www.bazarr.media"
+repository: "https://github.com/morpheus65535/bazarr"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: bazarr
+      role: app
+      image: lscr.io/linuxserver/bazarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 6767, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 6767, containerPort: 6767, protocol: tcp }]
+      volumes:
+        - { name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }
+        - { name: media, containerPath: /media, purpose: media, defaultSizeBytes: 1000 GB }
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-6767
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 6767
+    purpose: web-ui
+    required: true
+  - id: providers
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: metadata-fetch
+    required: false
+flows:
+  - id: bazarr.open-ui
+    name: { en: Open Bazarr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Bazarr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

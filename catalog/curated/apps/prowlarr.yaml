@@ -1,0 +1,49 @@
+id: prowlarr
+name: Prowlarr
+description: { en: Indexer manager that syncs indexers to Sonarr and Radarr. }
+categories: [media, downloads]
+website: "https://prowlarr.com"
+repository: "https://github.com/Prowlarr/Prowlarr"
+license: GPL-3.0
+source: [curated]
+confidence: curated
+deployment:
+  kind: single
+  components:
+    - key: server
+      name: prowlarr
+      role: app
+      image: lscr.io/linuxserver/prowlarr
+      defaultTag: latest
+      arch: [amd64, arm64]
+      platform: linux
+      listeners: [{ port: 9696, protocol: tcp, purpose: web-ui }]
+      defaultPortMappings: [{ hostPort: 9696, containerPort: 9696, protocol: tcp }]
+      volumes: [{ name: config, containerPath: /config, purpose: config, defaultSizeBytes: 1 GB }]
+requirements:
+  min: { cpu: 0.25, memoryBytes: 128 MiB, diskBytes: 1 GB }
+  recommended: { cpu: 0.5, memoryBytes: 256 MiB, diskBytes: 1 GB }
+dependencies: []
+provides: []
+trafficPatterns:
+  - id: web-ui-tcp-9696
+    direction: inbound
+    peer: { kind: lan-clients }
+    protocol: tcp
+    port: 9696
+    purpose: web-ui
+    required: true
+  - id: indexers
+    direction: outbound
+    peer: { kind: internet }
+    protocol: tcp
+    port: 443
+    purpose: api
+    required: true
+flows:
+  - id: prowlarr.open-ui
+    name: { en: Open Prowlarr }
+    roles:
+      - { key: client, name: { en: Browser }, selector: { kind: lan-clients }, userPicks: true }
+      - { key: server, name: { en: Prowlarr }, selector: { kind: self }, userPicks: false }
+    steps: [{ from: client, to: server, protocol: tcp, purpose: web-ui, resolveDns: true }]

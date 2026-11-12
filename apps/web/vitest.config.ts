@@ -1,8 +1,9 @@
+import { catalogPlugin } from '@server-planner/catalog-builder/vite';
 import react from '@vitejs/plugin-react';
 import { defineProject } from 'vitest/config';
 
 export default defineProject({
-  plugins: [react()],
+  plugins: [react(), catalogPlugin()],
   test: {
     name: 'web',
     environment: 'jsdom',

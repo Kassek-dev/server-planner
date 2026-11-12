@@ -1,0 +1,21 @@
+id: beelink-eq12
+kind: mini-pc
+vendor: Beelink
+model: EQ12 (N100)
+formFactor: { mount: standalone, shape: mini-pc }
+hardware:
+  cpus: [{ ref: intel-n100 }]
+  memory:
+    type: DDR5
+    slotsTotal: 1
+    maxBytes: 16 GiB
+    modules: [{ sizeBytes: 16 GiB, count: 1, speedMts: 4800 }]
+  gpus: []
+  power: { idleW: 7, loadW: 25 }
+  defaultDisks: [{ name: nvme0, type: ssd-nvme, sizeBytes: 500 GB }]
+ports:
+  - { name: eth0, kind: rj45, speedMbps: 2500 }
+  - { name: eth1, kind: rj45, speedMbps: 2500 }
+expansion: { m2Slots: 1, sataBays: 1 }
+source: [curated]
+confidence: curated

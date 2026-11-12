@@ -1,0 +1,12 @@
+id: intel-core-i5-8500t
+vendor: intel
+model: Intel Core i5-8500T
+cores: 6
+threads: 6
+baseGhz: 2.1
+boostGhz: 3.5
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated
