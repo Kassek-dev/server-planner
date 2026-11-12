@@ -90,7 +90,12 @@
 
 ## Etap 6 — Silniki II
 
-- [ ] `reach()`, dostęp do internetu, widok klienta, nakładki (X‑01a/b)
+- [x] `reach()` (SIM‑01): końcówki (aplikacja → kontener/Docker → vNIC → bridge → port), L2 z VLAN-ami portów (access/trunk/native, SSID na AP, bridge'e), L3 (brama, trasy bezpośrednie i statyczne bez kolejnych routerów), firewall (first match, polityka domyślna, ruch wewnątrz strefy), NAT (masquerade), publikacja portów Dockera, nasłuch aplikacji; ścieżka i „Suggest fix” (`firewall.addRule`)
+- [x] Dostęp do internetu (SIM‑02) w `analyze()` — sondy tcp/443, tcp/80, udp/53, icmp → full / partial / none
+- [x] Widok klienta „Visible from” (SIM‑03) — zapytanie na żądanie w workerze
+- [x] Panel Simulation (X‑01a Reachability, X‑01b Access) pod `?panel=sim&sim=…&from=…&to=…&proto=…&port=…`, karta wyniku (O‑08), wygaszanie poza ścieżką, przepływ na łączach, plakietki ✓/◐/✕ (O‑09), podgląd poprawki (D‑08), Esc zamyka
+- [x] Nakładki CAN‑06: łącza wg typu / prędkości (z legendą), urządzenia wg strefy / tagu / stanu capacity
+- Uwagi: wieloskokowy routing przez kilka routerów daje werdykt „unknown” (`SIM_L3_NEXT_HOP_UNSUPPORTED`); DNS jako krok symulacji dopiero z przepływami (FLW, P1); „Save as assertion” (SIM‑06) to P1
 
 ## Etap 7 — Katalog
 
@@ -112,4 +117,5 @@
 | 2026-11-11 | Etap 3: canvas (React Flow), kafelki, lokalizacje i rack, biblioteka, łączenie, zaznaczanie, panel, miniatury | — |
 | 2026-11-11 | Etap 4a: inspector (urządzenie z zakładkami, workloady, aplikacje, łącza, lokalizacje) | — |
 | 2026-11-11 | Etap 4b: szuflady VLAN/podsieci/strefy, firewall + NAT, tagi, ustawienia projektu — etap 4 zamknięty | — |
-| 2026-11-11 | Etap 5: silnik (walidacja, capacity, poprawki), worker, panel Issues, diody i zakładka Capacity; unit 143, E2E 16 | — |
+| 2026-11-11 | Etap 5: silnik (walidacja, capacity, poprawki), worker, panel Issues, diody i zakładka Capacity; unit 143, E2E 16 | #11 |
+| 2026-11-12 | Etap 6: symulacja `reach()`, dostęp do internetu, Visible from, panel Simulation, nakładki CAN‑06; unit 156, E2E 19 | — |

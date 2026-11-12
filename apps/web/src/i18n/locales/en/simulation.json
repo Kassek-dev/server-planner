@@ -1,0 +1,118 @@
+{
+  "title": "Simulation",
+  "back": "Back to inspector",
+  "modes": {
+    "label": "Simulation mode",
+    "reach": "Reachability",
+    "access": "Access"
+  },
+  "kinds": {
+    "vm": "VM",
+    "lxc": "LXC",
+    "container": "container",
+    "app": "app"
+  },
+  "reach": {
+    "from": "From",
+    "to": "To",
+    "choose": "Choose…",
+    "internet": "Internet",
+    "useSelection": "Use canvas selection",
+    "protocol": "Protocol",
+    "port": "Port",
+    "run": "Run",
+    "query": "{from} → {to} · {service}",
+    "path": "Path",
+    "pathBlocked": "Path · blocked at step {step}",
+    "suggestFix": "Suggest fix"
+  },
+  "verdict": {
+    "reachable": "ALLOWED",
+    "blocked": "BLOCKED",
+    "unknown": "CANNOT TELL"
+  },
+  "decision": {
+    "pass": "Passed",
+    "fail": "Failed"
+  },
+  "layers": {
+    "dns": "DNS",
+    "l2": "L2",
+    "l3": "L3",
+    "firewall": "FW",
+    "nat": "NAT",
+    "docker": "DOCK",
+    "app": "APP"
+  },
+  "ruleLink": "Rule #{rule}",
+  "steps": {
+    "SIM_SRC_NO_NETWORK": "The source has no network interface with an address or a cable.",
+    "SIM_DST_NO_NETWORK": "The target has no network interface with an address or a cable.",
+    "SIM_LOCAL": "Same host — the traffic never leaves the machine.",
+    "SIM_L2_SAME_SEGMENT": "Same subnet {subnet} — delivered over VLAN {segment}.",
+    "SIM_L2_TO_GATEWAY": "Reaches the gateway {gateway} over VLAN {segment}.",
+    "SIM_L2_TO_TARGET": "Delivered to the target over VLAN {segment}.",
+    "SIM_L2_VLAN_NOT_ALLOWED": "VLAN {segment} not allowed on {device} {interface}.",
+    "SIM_L2_NO_PATH": "No cable path carries VLAN {segment} to the next hop.",
+    "SIM_L2_OTHER_SEGMENT": "The next hop is on another VLAN than {segment}.",
+    "SIM_L3_NO_SUBNET": "The source address belongs to no subnet in the project.",
+    "SIM_L3_NO_GATEWAY": "Subnet {subnet} has no gateway on any device.",
+    "SIM_L3_ROUTE": "{router} routes {from} → {to}.",
+    "SIM_L3_ROUTE_INTERNET": "{router} routes {from} to the internet.",
+    "SIM_L3_NO_ROUTE": "{router} has no route to {to}.",
+    "SIM_L3_NO_WAN": "{router} has no WAN interface.",
+    "SIM_L3_NEXT_HOP_UNSUPPORTED": "{router} forwards via {via}; routing over several routers is not simulated yet.",
+    "SIM_FW_RULE_ALLOW": "Allowed by rule #{rule} on {router}.",
+    "SIM_FW_RULE_DENY": "Blocked by rule #{rule} on {router} ({from} → {to}).",
+    "SIM_FW_DEFAULT_ALLOW": "No rule matches; {router} allows by default.",
+    "SIM_FW_DEFAULT_DENY": "No rule matches; {router} denies by default ({from} → {to}).",
+    "SIM_FW_INTRA_ZONE_ALLOW": "Inside zone {from} — allowed.",
+    "SIM_FW_INTRA_ZONE_DENY": "Inside zone {from} — traffic between subnets is denied.",
+    "SIM_NAT_MASQUERADE": "Masqueraded on {router} {interface}.",
+    "SIM_NAT_MISSING": "No masquerade (source NAT) on {router} {interface} for this zone.",
+    "SIM_WAN_NO_UPLINK": "{interface} is not connected to the Internet.",
+    "SIM_INTERNET": "Leaves through {interface} to the internet.",
+    "SIM_DOCKER_NAT": "Docker network {network} — NAT through the host.",
+    "SIM_DOCKER_INTERNAL": "Docker network {network} is internal — no traffic leaves it.",
+    "SIM_DOCKER_PUBLISHED": "{container} publishes {protocol}/{hostPort} → {containerPort}.",
+    "SIM_DOCKER_NOT_PUBLISHED": "{container} does not publish {protocol}/{port}.",
+    "SIM_APP_LISTENING": "{app} listens on {protocol}/{port}.",
+    "SIM_APP_NOT_LISTENING": "{app} does not listen on {protocol}/{port}."
+  },
+  "fix": {
+    "title": "Suggested fix",
+    "description": "Add a rule on {router} at position #{position}: allow {source} → {destination} · {service}.",
+    "apply": "Apply",
+    "cancel": "Cancel"
+  },
+  "access": {
+    "overlay": "Overlay",
+    "internet": "Internet access",
+    "visible": "Visible from",
+    "on": "On",
+    "off": "Off",
+    "viewpoint": "Point of view",
+    "pickViewpoint": "Choose a client to see which services it can reach.",
+    "summary": "From {name} · {reachable} of {total} reachable",
+    "internetState": {
+      "full": "Full internet access",
+      "partial": "Partial — only some services (e.g. HTTPS)",
+      "none": "No internet access"
+    },
+    "direct": "Same network — no firewall on the way",
+    "noServices": "No apps with listening ports in this project."
+  },
+  "legend": {
+    "internet": "Internet access",
+    "visible": "Visible from {name}"
+  },
+  "coverage": {
+    "full": "full",
+    "partial": "partial",
+    "none": "none"
+  },
+  "badge": {
+    "internet": "Internet access: {state}",
+    "visible": "Services visible from the viewpoint: {state}"
+  }
+}

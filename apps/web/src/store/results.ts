@@ -1,6 +1,16 @@
-import { type AnalysisResult, analyze, sameDomain } from '@server-planner/engine';
+import {
+  type AnalysisResult,
+  analyze,
+  type EntityRef,
+  type ReachabilityResult,
+  type ReachQuery,
+  type ServiceVisibility,
+  sameDomain,
+  simulateReach,
+  simulateVisibleFrom,
+} from '@server-planner/engine';
 import type { Project } from '@server-planner/model';
-import { wrap } from 'comlink';
+import { type Remote, wrap } from 'comlink';
 import { create } from 'zustand';
 import type { EngineWorkerApi } from '../workers/engine.worker';
 import type { ProjectSession } from './projectSession';
@@ -15,18 +25,44 @@ export const useResults = create<ResultsState>(() => ({ result: null, pending: f
 
 type Analyzer = (project: Project) => Promise<AnalysisResult>;
 
-/** Worker when available (browser), synchronous fallback otherwise (tests, old browsers). */
-export function createAnalyzer(): Analyzer {
-  if (typeof Worker === 'undefined') return async (project) => analyze(project);
+/** On-demand simulation queries (SIM-01, SIM-03) on a project snapshot. */
+export interface Simulator {
+  reach(project: Project, query: ReachQuery): Promise<ReachabilityResult>;
+  visibleFrom(project: Project, viewpoint: EntityRef): Promise<ServiceVisibility[]>;
+}
+
+let shared: Remote<EngineWorkerApi> | null | undefined;
+
+/** One engine worker per page, created lazily; null when workers are unavailable (tests). */
+function engineWorker(): Remote<EngineWorkerApi> | null {
+  if (shared !== undefined) return shared;
+  shared = null;
+  if (typeof Worker === 'undefined') return shared;
   try {
     const worker = new Worker(new URL('../workers/engine.worker.ts', import.meta.url), {
       type: 'module',
     });
-    const api = wrap<EngineWorkerApi>(worker);
-    return (project) => api.analyze(project);
+    shared = wrap<EngineWorkerApi>(worker);
   } catch {
-    return async (project) => analyze(project);
+    shared = null;
   }
+  return shared;
+}
+
+/** Worker when available (browser), synchronous fallback otherwise (tests, old browsers). */
+export function createAnalyzer(): Analyzer {
+  const api = engineWorker();
+  return api ? (project) => api.analyze(project) : async (project) => analyze(project);
+}
+
+export function createSimulator(): Simulator {
+  const api = engineWorker();
+  if (api)
+    return { reach: (p, q) => api.reach(p, q), visibleFrom: (p, v) => api.visibleFrom(p, v) };
+  return {
+    reach: async (p, q) => simulateReach(p, q),
+    visibleFrom: async (p, v) => simulateVisibleFrom(p, v),
+  };
 }
 
 /**

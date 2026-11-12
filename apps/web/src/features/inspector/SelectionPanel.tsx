@@ -8,6 +8,7 @@ import { deleteSelection } from '../canvas/actions';
 import { useSelection } from '../canvas/selection';
 import { Summary } from '../editor/Summary';
 import { IssuesPanel } from '../issues/IssuesPanel';
+import { SimulationPanel } from '../simulation/SimulationPanel';
 import { AppInspector } from './AppInspector';
 import { DeviceInspector } from './device/DeviceInspector';
 import { LinkInspector } from './LinkInspector';
@@ -24,10 +25,12 @@ export function SelectionPanel() {
   const error = useInspectorError((s) => s.error);
   const [params, setParams] = useSearchParams();
   const issuesOpen = params.get('panel') === 'issues';
-  const closeIssues = () =>
+  const simOpen = params.get('panel') === 'sim';
+  const closePanel = () =>
     setParams((prev) => {
       const p = new URLSearchParams(prev);
-      p.delete('panel');
+      for (const key of ['panel', 'sim', 'from', 'to', 'proto', 'port', 'view', 'visible'])
+        p.delete(key);
       return p;
     });
 
@@ -46,7 +49,8 @@ export function SelectionPanel() {
   const link = count === 1 && edgeIds[0] ? project.links[edgeIds[0]] : undefined;
 
   let body = <Summary project={project} />;
-  if (issuesOpen) body = <IssuesPanel onClose={closeIssues} />;
+  if (issuesOpen) body = <IssuesPanel onClose={closePanel} />;
+  else if (simOpen) body = <SimulationPanel onClose={closePanel} />;
   else if (workload) body = <WorkloadInspector project={project} workload={workload} />;
   else if (app) body = <AppInspector project={project} app={app} />;
   else if (count > 1)

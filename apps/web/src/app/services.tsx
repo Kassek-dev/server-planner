@@ -7,7 +7,7 @@ import {
   type ProjectSession,
   type ProjectSessionState,
 } from '../store/projectSession';
-import { createAnalyzer } from '../store/results';
+import { createAnalyzer, createSimulator, type Simulator } from '../store/results';
 
 /** App-wide services (storage + editing session), created once at startup. */
 export interface AppServices {
@@ -15,12 +15,14 @@ export interface AppServices {
   session: ProjectSession;
   /** Engine runner (Web Worker in the browser). */
   analyzer: ReturnType<typeof createAnalyzer>;
+  /** Simulation queries (same worker). */
+  simulator: Simulator;
 }
 
 export async function createServices(dbName?: string): Promise<AppServices> {
   const repository = new ProjectRepository(await openAppDb(dbName));
   const session = createProjectSession({ repository });
-  return { repository, session, analyzer: createAnalyzer() };
+  return { repository, session, analyzer: createAnalyzer(), simulator: createSimulator() };
 }
 
 const ServicesContext = createContext<AppServices | null>(null);

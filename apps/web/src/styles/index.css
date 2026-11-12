@@ -167,3 +167,39 @@
   outline: 2px solid var(--sp-focus-ring);
   outline-offset: 2px;
 }
+
+/* Simulation on the canvas (docs/04 § 6.10): path in accent with flowing dashes, rest dimmed. */
+.sp-canvas .react-flow__node.sp-dim,
+.sp-canvas .react-flow__edge.sp-dim {
+  opacity: 0.35;
+}
+.sp-canvas .react-flow__node.sp-path > * {
+  outline: 2px solid var(--sp-accent);
+  outline-offset: 2px;
+}
+.sp-canvas .react-flow__node.sp-blocked > * {
+  outline: 2px solid var(--sp-status-error);
+  outline-offset: 2px;
+}
+.sp-canvas .react-flow__edge.sp-flow .react-flow__edge-path {
+  /* biome-ignore lint/complexity/noImportantStyles: React Flow sets the edge stroke inline */
+  stroke: var(--sp-accent) !important;
+  stroke-dasharray: 8 6;
+  animation: sp-flow 1s linear infinite;
+}
+.sp-canvas .react-flow__edge.sp-blocked .react-flow__edge-path {
+  /* biome-ignore lint/complexity/noImportantStyles: React Flow sets the edge stroke inline */
+  stroke: var(--sp-status-error) !important;
+  stroke-dasharray: 3 4;
+}
+@keyframes sp-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-canvas .react-flow__edge.sp-flow .react-flow__edge-path {
+    stroke-dasharray: none;
+    animation: none;
+  }
+}

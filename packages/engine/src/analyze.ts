@@ -1,6 +1,7 @@
 import type { Project } from '@server-planner/model';
 import { capacity } from './capacity';
 import { buildContext, type EngineContext } from './context';
+import { internetAccess } from './simulation/access';
 import type { AnalysisResult, DeviceStatus, EntityRef, Issue } from './types';
 import { rules } from './validation/rules';
 
@@ -29,7 +30,8 @@ function deviceOf(ctx: EngineContext, ref: EntityRef): string | undefined {
 }
 
 /**
- * Full analysis of a project (docs/03 § 5.1): context → validation rules + capacity → device status.
+ * Full analysis of a project (docs/03 § 5.1): context → validation rules + capacity + internet
+ * access → device status.
  * Pure and synchronous; runs in the engine worker.
  */
 export function analyze(project: Project): AnalysisResult {
@@ -48,7 +50,13 @@ export function analyze(project: Project): AnalysisResult {
     const status: DeviceStatus = issue.severity === 'error' ? 'error' : 'warning';
     for (const target of issue.targets) raise(deviceOf(ctx, target), status);
   }
-  return { issues, capacity: reports, deviceStatus, durationMs: Date.now() - started };
+  return {
+    issues,
+    capacity: reports,
+    deviceStatus,
+    internet: internetAccess(ctx),
+    durationMs: Date.now() - started,
+  };
 }
 
 /** True when only the canvas layout changed — analyses can be skipped (docs/03 § 5.5). */

@@ -77,5 +77,25 @@
     "warning": "Has warnings",
     "error": "Has errors",
     "memory": "Memory {percent}%"
+  },
+  "overlay": {
+    "links": "Links by",
+    "devices": "Devices by",
+    "linkOptions": {
+      "type": "Type (VLAN / trunk)",
+      "speed": "Speed"
+    },
+    "deviceOptions": {
+      "none": "No color",
+      "zone": "Zone",
+      "tag": "Tag",
+      "capacity": "Capacity status"
+    },
+    "speed": {
+      "slow": "< 1 Gb/s",
+      "gigabit": "1 Gb/s",
+      "multi": "2.5–5 Gb/s",
+      "ten": "≥ 10 Gb/s"
+    }
   }
 }

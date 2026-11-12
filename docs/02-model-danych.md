@@ -841,14 +841,26 @@ interface ReachabilityResult {
   verdict: 'reachable' | 'blocked' | 'unknown';
   steps: SimStep[];
   blockedAt?: number; // indeks kroku z porażką
+  path: { devices: Id[]; links: Id[] }; // do podświetlenia na canvasie (O-08)
+  fix?: { command: string; payload: unknown }; // „Suggest fix” — np. firewall.addRule nad regułą blokującą
 }
 interface SimStep {
   ref: EntityRef;
   layer: 'dns' | 'l2' | 'l3' | 'firewall' | 'nat' | 'docker' | 'app';
   decision: 'pass' | 'fail';
-  code: string; // "SIM_L2_VLAN_NOT_ALLOWED", "SIM_FW_RULE_DENY"
+  code: string; // "SIM_L2_VLAN_NOT_ALLOWED", "SIM_FW_RULE_DENY" — pełna lista: SIM_CODES w packages/engine
   params: Record<string, string | number>;
   ruleRef?: EntityRef;
+}
+// --- dostęp (SIM-02/03) ---
+// AnalysisResult.internet: Record<Id, 'full' | 'partial' | 'none'> — urządzenia i VM/LXC z adresem;
+// sondy tcp/443, tcp/80, udp/53, icmp do Internetu: wszystkie = full, część = partial, żadna = none.
+interface ServiceVisibility {
+  appId: Id;
+  port: number; // port widziany w sieci (opublikowany port hosta dla kontenera w sieci bridge)
+  protocol: Transport;
+  purpose?: string;
+  result: ReachabilityResult;
 }
 interface FlowRunResult {
   flowId: string;
