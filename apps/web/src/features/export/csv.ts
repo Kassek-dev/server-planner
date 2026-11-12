@@ -4,9 +4,13 @@ import type { SubnetPlan } from '../ipplan/plan';
 
 /** CSV exports (EXP-03, EXP-04): RFC 4180 quoting, `\r\n` line ends, one header row. */
 
+/**
+ * RFC 4180 CSV. Text cells starting with = + - @ or a control character get a leading apostrophe,
+ * so a name from an imported project cannot run as a spreadsheet formula (CSV injection).
+ */
 export function toCsv(header: string[], rows: (string | number)[][]): string {
   const cell = (v: string | number) => {
-    const s = String(v);
+    const s = typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? `'${v}` : String(v);
     return /[",\r\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
   };
   return `${[header, ...rows].map((r) => r.map(cell).join(',')).join('\r\n')}\r\n`;
