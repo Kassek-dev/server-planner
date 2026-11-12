@@ -1,0 +1,118 @@
+{
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "appearance": "Appearance",
+      "catalog": "Catalog",
+      "units": "Units & costs",
+      "storage": "Storage"
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "System follows your operating system. Dark is the default design; light is for bright rooms and printing.",
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "catalog": {
+      "version": "Catalog {version}",
+      "description": "Built into the app: {apps} apps, {devices} device models, {cpus} CPUs. Works offline.",
+      "updates": "Weekly catalog updates, source status and rollback arrive with version 1.0."
+    },
+    "units": {
+      "description": "Currency, energy price and default capacity thresholds for new projects arrive with version 1.0. Until then, set thresholds and overcommit per project in Project settings."
+    },
+    "storage": {
+      "used": "Browser storage used",
+      "usage": "{used} of ~{quota} available",
+      "unknown": "This browser does not report storage usage.",
+      "persistence": "Persistent storage",
+      "persisted": "Granted. The browser keeps your projects even when disk space runs low.",
+      "notPersisted": "Not granted. The browser may clear your projects when disk space runs low — export backups regularly.",
+      "request": "Request persistence",
+      "backups": "Backups",
+      "backupsDescription": "{count, plural, one {# project} other {# projects}} · last export: {last}. A JSON export is a complete backup of a project.",
+      "exportAll": "Export all projects",
+      "danger": "Danger zone",
+      "deleteDescription": "Delete all projects and settings from this browser. This cannot be undone.",
+      "deleteAll": "Delete all data",
+      "confirmTitle": "Delete all data?",
+      "confirmDescription": "{count, plural, one {# project} other {# projects}} and all settings will be removed from this browser. Export what you want to keep first.",
+      "cancel": "Cancel"
+    }
+  },
+  "about": {
+    "title": "About",
+    "sections": {
+      "overview": "Overview",
+      "data-sources": "Data sources",
+      "licenses": "Licenses"
+    },
+    "overview": {
+      "description": "Server Planner is a free, open-source planner for home labs: devices, racks and rooms, networks and firewalls, VMs, containers and apps, with capacity checks and traffic simulation. It runs entirely in your browser.",
+      "version": "Version",
+      "license": "License",
+      "licenseValue": "MIT (code) · CC BY-SA 4.0 (catalog data)",
+      "source": "Source code",
+      "bugs": "Bugs and ideas",
+      "reportBug": "Open an issue on GitHub",
+      "privacy": "Privacy",
+      "privacyValue": "No accounts, no telemetry, no cookies. Projects stay in this browser unless you export them."
+    },
+    "recommended": {
+      "title": "Recommended",
+      "description": "selfh.st — a living directory of self-hosted apps. Not used as a data source.",
+      "open": "Open selfh.st"
+    },
+    "sources": {
+      "description": "Catalog {version}. The catalog as a whole is licensed CC BY-SA 4.0. In this version it consists of the curated layer maintained in the repository; automatic weekly imports from the other sources arrive with version 1.0.",
+      "columns": {
+        "source": "Source",
+        "usedFor": "Used for",
+        "license": "License",
+        "status": "Status"
+      },
+      "facts": "facts only",
+      "inUse": "in use",
+      "planned": "planned (1.0)",
+      "items": {
+        "curated": {
+          "name": "Curated layer (this project)",
+          "usedFor": "Apps, traffic patterns and flows, device models, CPUs, OS"
+        },
+        "awesome-selfhosted": {
+          "name": "awesome-selfhosted-data",
+          "usedFor": "App list, descriptions, tags"
+        },
+        "community-scripts": {
+          "name": "Proxmox VE Community Scripts",
+          "usedFor": "Default CPU / RAM / disk for apps"
+        },
+        "linuxserver": {
+          "name": "LinuxServer.io API",
+          "usedFor": "Ports, volumes, architectures"
+        },
+        "docker-hub": {
+          "name": "Docker Hub",
+          "usedFor": "Image tags, architectures, sizes"
+        },
+        "blender": {
+          "name": "Blender Open Data",
+          "usedFor": "CPU and GPU performance"
+        },
+        "wikidata": {
+          "name": "Wikidata",
+          "usedFor": "CPU specifications"
+        }
+      }
+    },
+    "licenses": {
+      "description": "{count, plural, one {# open-source package ships} other {# open-source packages ship}} with the app. The list is generated when the app is built.",
+      "columns": {
+        "package": "Package",
+        "version": "Version",
+        "license": "License"
+      }
+    }
+  }
+}

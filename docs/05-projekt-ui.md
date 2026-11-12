@@ -1,6 +1,6 @@
-# Server Planner — projekt UI (v0.1)
+# Server Planner — projekt UI (v0.2)
 
-> Status: **projekt do akceptacji** · Data: 2026-11-11
+> Status: **zaakceptowany, v0.2** · Data: 2026-11-12
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -212,7 +212,7 @@ Liczba i typy („3 devices, 1 link”), wspólne pola (tagi, lokalizacja, forma
 1. Projekty → **New project** → Empty.
 2. Pusty canvas: podpowiedź „Start with a location or drop a device” + przyciski Add room / Add rack / Add device.
 3. Użytkownik przeciąga router i switch (rack 1U) do racka, mini PC na półkę. Domyślne nazwy i porty.
-4. Łączy porty (§ 4.4). Pierwsze łącze do routera automatycznie tworzy węzeł **Internet** i łącze WAN, jeśli go nie ma (podpowiedź z możliwością cofnięcia).
+4. Łączy porty (§ 4.4). Dodanie pierwszego routera (gdy w projekcie nie ma węzła **Internet**) tworzy węzeł Internet nad routerem i łącze do portu WAN — toast „Internet added · Undo” (UI2).
 5. Problemy pojawiają się na bieżąco („No subnet on router LAN interface”) z akcją **Fix**: „Create LAN 192.168.1.0/24”.
 6. Hardware mini PC: wybór modelu z katalogu (LIB‑01 / 02) → CPU, RAM, dyski wypełnione.
 7. Software: OS Proxmox → Add VM „docker‑vm” → Add app „Jellyfin” (kreator § 6.3).
@@ -337,10 +337,10 @@ Otwierany z liczników w top barze lub `Ctrl Shift M`. Zastępuje inspector.
 
 ---
 
-## 15. Otwarte kwestie
+## 15. Rozstrzygnięte kwestie
 
-| #   | Kwestia                                                                                             | Propozycja                                                                  |
-| --- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| UI1 | Edytory globalne (VLANy, firewall) jako panel wysuwany nad canvasem czy osobne widoki w zakładkach? | **Panel wysuwany** — reguły firewall najlepiej rozumieć, widząc topologię.  |
-| UI2 | Auto‑tworzenie węzła Internet przy pierwszym routerze                                               | **Tak**, z toastem i Undo.                                                  |
-| UI3 | Usuwanie bez dialogu potwierdzenia (tylko toast z Undo)                                             | **Tak** dla elementów projektu; dialog tylko dla usunięcia całego projektu. |
+| #   | Kwestia                                                                                             | Decyzja                                                                                                                                                         |
+| --- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI1 | Edytory globalne (VLANy, firewall) jako panel wysuwany nad canvasem czy osobne widoki w zakładkach? | **Panel wysuwany (szuflady S‑01…S‑04)** — przyjęte w implementacji etapu 4 (2026-11-11).                                                                        |
+| UI2 | Auto‑tworzenie węzła Internet przy pierwszym routerze                                               | **Tak, z toastem i Undo** (2026-11-12): pierwszy router (lub firewall) w projekcie bez węzła Internet dostaje Internet podłączony do portu WAN — osobny krok historii, więc Undo w toaście usuwa tylko Internet. |
+| UI3 | Usuwanie bez dialogu potwierdzenia (tylko toast z Undo)                                             | **Tak** (2026-11-12): elementy projektu usuwane od razu z toastem „Deleted … · Undo” (O‑12); dialog tylko dla usunięcia całego projektu.                         |

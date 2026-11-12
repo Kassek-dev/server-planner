@@ -1,7 +1,7 @@
 # Server Planner — mapa widoków i sitemapa (v0.1)
 
 > Status: **zaakceptowany, v0.1** · Data: 2026-11-11
-> Podstawa: `01-funkcjonalnosci.md` v0.4 (ID funkcji), `05-projekt-ui.md` v0.1 (zachowania), `04-design-system.md` (komponenty)
+> Podstawa: `01-funkcjonalnosci.md` v0.4 (ID funkcji), `05-projekt-ui.md` v0.2 (zachowania), `04-design-system.md` (komponenty)
 > Cel: kompletny spis **każdego osobnego widoku**, który trzeba zaprojektować i zbudować — podstawa sitemapy, routingu, makiet i planu prac.
 
 ---

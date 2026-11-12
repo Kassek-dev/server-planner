@@ -1,7 +1,6 @@
 import { createHashRouter, type RouteObject } from 'react-router';
 import { ProjectsPage } from '../features/projects/ProjectsPage';
 import { NotFoundPage } from './routes/NotFoundPage';
-import { PlaceholderPage } from './routes/PlaceholderPage';
 
 /** Routes — sitemap in docs/07 § 1. Hash routing for GitHub Pages (ADR 007). */
 const devRoutes: RouteObject[] =
@@ -18,8 +17,16 @@ const devRoutes: RouteObject[] =
 
 export const routes: RouteObject[] = [
   { path: '/', Component: ProjectsPage },
-  { path: '/settings/:section?', element: <PlaceholderPage titleKey="pages.settings" stage={8} /> },
-  { path: '/about/:section?', element: <PlaceholderPage titleKey="pages.about" stage={8} /> },
+  {
+    path: '/settings/:section?',
+    lazy: async () => ({
+      Component: (await import('../features/pages/SettingsPage')).SettingsPage,
+    }),
+  },
+  {
+    path: '/about/:section?',
+    lazy: async () => ({ Component: (await import('../features/pages/AboutPage')).AboutPage }),
+  },
   {
     // Editor (React Flow, engines later) loads on demand so the projects page stays light.
     path: '/p/:projectId/*',

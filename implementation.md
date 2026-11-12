@@ -58,6 +58,7 @@
 - **Po co:** dev server i build SPA; obsługa workerów (`new Worker(new URL(...), { type: 'module' })`).
 - **Konfiguracja:** `apps/web/vite.config.ts` — `base: '/server-planner/'` (GitHub Pages), plugin React, plugin PWA, import katalogu bazowego jako leniwy chunk.
 - **Komendy:** `pnpm dev` (http://localhost:5173/server-planner/), `pnpm build`, `pnpm --filter web preview`.
+- **Wtyczki własne:** `catalogPlugin` (`virtual:catalog`, `packages/catalog-builder/src/vite.ts`) i `licensesPlugin` (`virtual:licenses`, `apps/web/plugins/licenses.ts` — produkcyjne zależności z licencjami dla About › Licenses).
 - **`--configLoader runner`** (w skryptach `dev`/`build`/`preview` i w `pnpm test`): config importuje wtyczkę katalogu z pakietu workspace w TypeScripcie (`@server-planner/catalog-builder/vite`); domyślny loader oddaje takie importy natywnemu Node, który nie rozwiązuje importów bez rozszerzeń. Loader `runner` transformuje je jak resztę kodu.
 
 ---

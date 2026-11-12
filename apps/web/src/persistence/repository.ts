@@ -38,6 +38,17 @@ export class ProjectRepository {
     ]);
   }
 
+  /** P-02d "Delete all data": every project, its data and the app settings in this browser. */
+  async deleteAll(): Promise<void> {
+    const tx = this.db.transaction(['projects', 'projectData', 'settings'], 'readwrite');
+    await Promise.all([
+      tx.objectStore('projects').clear(),
+      tx.objectStore('projectData').clear(),
+      tx.objectStore('settings').clear(),
+      tx.done,
+    ]);
+  }
+
   async rename(id: string, name: string): Promise<void> {
     const project = await this.get(id);
     if (!project) throw new Error(`Project ${id} not found`);

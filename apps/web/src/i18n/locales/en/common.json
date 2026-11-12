@@ -10,13 +10,6 @@
     "projectTitle": "Project not found",
     "description": "The address {path} does not match any page."
   },
-  "placeholder": {
-    "description": "This view arrives in MVP stage {stage}."
-  },
-  "pages": {
-    "settings": "Settings",
-    "about": "About"
-  },
   "actions": {
     "cancel": "Cancel",
     "close": "Close"

@@ -18,6 +18,9 @@ import { useSelection } from '../canvas/selection';
 import { DrawerHost } from '../drawers/DrawerHost';
 import { SelectionPanel } from '../inspector/SelectionPanel';
 import { IssueCounters } from '../issues/IssueCounters';
+import { describeCommit } from '../toasts/describe';
+import { useToasts } from '../toasts/store';
+import { Toaster } from '../toasts/Toaster';
 
 type LoadState = 'loading' | 'ready' | 'missing';
 
@@ -32,6 +35,16 @@ export function EditorPage() {
   useEffect(() => {
     void useCatalog.getState().load();
   }, []);
+  // Toasts with Undo for deletions, the automatic Internet node and catalog apps (O-12).
+  useEffect(
+    () =>
+      session.onCommit((entry, before) => {
+        const after = session.getState().project;
+        const toast = after ? describeCommit(entry, before, after) : null;
+        if (toast) useToasts.getState().push(toast);
+      }),
+    [session],
+  );
   useEffect(() => {
     if (!catalog) return;
     const options = engineOptions(catalog);
@@ -200,6 +213,7 @@ function Editor() {
         <SelectionPanel />
       </main>
       <DrawerHost />
+      <Toaster />
     </div>
   );
 }
