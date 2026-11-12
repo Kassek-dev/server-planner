@@ -14,12 +14,14 @@ import {
   updateDevice,
   type Workload,
 } from '@server-planner/model';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatSize } from '../../../app/format';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Select } from '../../../ui/Select';
 import { nextName } from '../../canvas/actions';
 import { useSelection } from '../../canvas/selection';
+import { AppCatalogDialog } from '../../catalog/AppCatalogDialog';
 import {
   AddButton,
   CommitField,
@@ -142,6 +144,7 @@ export function WorkloadList({
   const { t } = useTranslation('inspector');
   const transaction = useTransaction();
   const setDetail = useSelection((s) => s.setDetail);
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const hosted = Object.values(project.workloads).filter(
     (w) => w.host.type === host.type && w.host.id === host.id,
   );
@@ -277,8 +280,12 @@ export function WorkloadList({
           <AddButton label={t('software.addLxc')} onClick={() => addGuest('lxc')} />
         ) : null}
         {hasDocker ? <AddButton label={t('software.addContainer')} onClick={addContainer} /> : null}
-        <AddButton label={t('software.addApp')} onClick={addCustomApp} />
+        <AddButton label={t('software.addApp')} onClick={() => setCatalogOpen(true)} />
+        <AddButton label={t('software.addCustomApp')} onClick={addCustomApp} />
       </div>
+      {catalogOpen ? (
+        <AppCatalogDialog project={project} host={host} open onOpenChange={setCatalogOpen} />
+      ) : null}
       {!canVirtualize && !hasDocker && host.type === 'device' ? (
         <p className="m-0 text-body-sm text-text-muted">{t('software.howToAdd')}</p>
       ) : null}

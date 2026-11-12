@@ -102,7 +102,11 @@
 - [x] 7a: schematy `Catalog*` w `packages/model`, `loadCurated()` + `pnpm catalog:validate` (YAML → jednostki → referencje CPU → Zod, kontrola id = nazwa pliku, unikalność wzorców i przepływów)
 - [x] 7a: warstwa kurowana — 59 aplikacji (wzorce ruchu + co najmniej jeden przepływ na aplikację z UI), 19 modeli sprzętu, 11 CPU, 4 OS
 - [x] 7a: warstwa bazowa w aplikacji (`virtual:catalog`, osobny chunk), narzut OS z katalogu (`EngineOptions`), usunięta tymczasowa tabela `OS_OVERHEAD`
-- [ ] 7b: D‑05 wybór modelu urządzenia, D‑06 katalog aplikacji, D‑07 kreator dodawania aplikacji
+- [x] 7b: komendy `device.applyModel` (sprzęt, porty po pozycji z zachowaniem kabli, forma; urządzenie, które przestaje pasować do slotu racka, opuszcza go) i `app.addFromCatalog` (kontener na komponent, stos, AppInstance na komponent, zależności spięte z komponentami, włączenie Dockera i sieci bridge), `publishedPorts`
+- [x] 7b: D‑05 wybór modelu (filtry typ/producent, wyszukiwarka, tabela CPU/RAM/NIC/pobór) — z biblioteki (nowe urządzenie) i z Hardware › Model
+- [x] 7b: D‑06 katalog aplikacji (kategorie, wyszukiwarka, multi‑select, szczegóły: stos, wymagania, ruch, źródła; wiele naraz → wybrany host) — z Software › Add app from catalog i z biblioteki
+- [x] 7b: D‑07 kreator Where / Ports & storage / Network (konflikty portów z propozycją wolnego, pule i rozmiary wolumenów, sieć Docker; ostrzeżenie o Dockerze na Proxmoksie)
+- Uwagi: toast „… added · Undo” (O‑12) jeszcze nie istnieje — cofnięcie przez Ctrl+Z działa jednym krokiem; kolumna PERF w D‑05 dojdzie z danymi Blender Open Data (builder 1.0)
 
 ## Etap 8 — Eksport i szlif
 
@@ -122,4 +126,5 @@
 | 2026-11-11 | Etap 4b: szuflady VLAN/podsieci/strefy, firewall + NAT, tagi, ustawienia projektu — etap 4 zamknięty | — |
 | 2026-11-11 | Etap 5: silnik (walidacja, capacity, poprawki), worker, panel Issues, diody i zakładka Capacity; unit 143, E2E 16 | #11 |
 | 2026-11-12 | Etap 6: symulacja `reach()`, dostęp do internetu, Visible from, panel Simulation, nakładki CAN‑06; unit 156, E2E 19 | #12 |
-| 2026-11-12 | Etap 7a: schematy i walidacja katalogu, warstwa kurowana (59 aplikacji, 19 urządzeń, 11 CPU, 4 OS), warstwa bazowa w aplikacji, narzut OS z katalogu; unit 163, E2E 19 | — |
+| 2026-11-12 | Etap 7a: schematy i walidacja katalogu, warstwa kurowana (59 aplikacji, 19 urządzeń, 11 CPU, 4 OS), warstwa bazowa w aplikacji, narzut OS z katalogu; unit 163, E2E 19 | #13 |
+| 2026-11-12 | Etap 7b: D‑05/D‑06/D‑07, komendy `device.applyModel` i `app.addFromCatalog` — etap 7 zamknięty; unit 172, E2E 23 | — |

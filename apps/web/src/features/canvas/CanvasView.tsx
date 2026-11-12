@@ -273,7 +273,20 @@ function Workspace() {
 
   return (
     <div className="flex min-h-0 flex-1">
-      <Library onAdd={addAtCenter} />
+      <Library
+        onAdd={addAtCenter}
+        onAddModel={(device, catalogVersion) =>
+          report(
+            addItemAt(
+              session,
+              { type: 'device', kind: device.kind, meta: '' },
+              viewportCenter(),
+              defaultName,
+              { device, catalogVersion },
+            ),
+          )
+        }
+      />
       <section
         ref={wrapper}
         aria-label={t('canvas')}

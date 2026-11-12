@@ -1,6 +1,8 @@
 import {
   addDevice,
   addLocation,
+  applyDeviceModel,
+  type CatalogDevice,
   CommandError,
   checkRackFit,
   connectInterfaces,
@@ -99,6 +101,8 @@ export function addItemAt(
   item: LibraryItem,
   point: { x: number; y: number },
   defaultName: (item: LibraryItem) => string,
+  /** Catalog model (D-05 from the library): its form factor and hardware replace the defaults. */
+  model?: { device: CatalogDevice; catalogVersion: string },
 ): ActionResult {
   const project = session.getState().project;
   if (!project) return fail('NO_PROJECT');
@@ -125,7 +129,7 @@ export function addItemAt(
     }
 
     // Size and units of the new device come from its defaults; probe placement on a dry run.
-    const formFactor = DEFAULT_FORM_FACTOR[item.kind];
+    const formFactor = model?.device.formFactor ?? DEFAULT_FORM_FACTOR[item.kind];
     const draftDevice = {
       id: 'dev_probe',
       kind: item.kind,
@@ -163,6 +167,12 @@ export function addItemAt(
       });
       if (item.clientType)
         run(updateDevice, { id: deviceId, changes: { clientType: item.clientType } });
+      if (model)
+        run(applyDeviceModel, {
+          id: deviceId,
+          model: model.device,
+          catalogVersion: model.catalogVersion,
+        });
       return deviceId;
     });
     return { ok: true, selectId: id };

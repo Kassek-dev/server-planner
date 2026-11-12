@@ -100,7 +100,11 @@
     "poolDisks": "Disks in this pool",
     "power": "Power",
     "idleW": "Idle W",
-    "loadW": "Load W"
+    "loadW": "Load W",
+    "catalogModel": "Model",
+    "chooseModel": "Choose model",
+    "genericModel": "Generic {kind}",
+    "chooseModelFor": "Choose device model · {name}"
   },
   "software": {
     "notCompute": "This kind of device does not run an operating system or workloads.",
@@ -115,8 +119,9 @@
     "addVm": "Add VM",
     "addLxc": "Add LXC",
     "addContainer": "Add container",
-    "addApp": "Add app",
-    "howToAdd": "Choose Proxmox VE to add VMs and LXC, or enable Docker to add containers."
+    "addApp": "Add app from catalog",
+    "howToAdd": "Choose Proxmox VE to add VMs and LXC, or enable Docker to add containers.",
+    "addCustomApp": "Add custom app"
   },
   "network": {
     "interfaces": "{count, plural, one {Interfaces · #} other {Interfaces · #}}",
@@ -301,7 +306,10 @@
     "RACK_UNIT_REQUIRED": "Choose a unit in the rack.",
     "RACK_STANDALONE_NEEDS_SHELF": "Standalone devices need a shelf in the rack.",
     "DEVICE_HAS_NO_FIREWALL": "This device has no firewall.",
-    "NOT_FOUND": "That item no longer exists."
+    "NOT_FOUND": "That item no longer exists.",
+    "MODEL_KIND_MISMATCH": "This model is a {model}, not a {kind}.",
+    "APP_HOST_IS_CONTAINER": "Apps from the catalog go on a host, VM or LXC, not inside a container.",
+    "NETWORK_ON_OTHER_HOST": "That Docker network belongs to another host."
   },
   "capacity": {
     "title": "Capacity",

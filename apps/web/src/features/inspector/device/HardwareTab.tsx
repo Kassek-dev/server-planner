@@ -1,4 +1,5 @@
 import {
+  applyDeviceModel,
   createId,
   type Device,
   type Hardware,
@@ -10,12 +11,15 @@ import {
   unplaceDevice,
   updateDevice,
 } from '@server-planner/model';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../../app/format';
+import { catalogDevice, useCatalog } from '../../../catalog/store';
 import { Silhouette, type SilhouetteName } from '../../../icons/devices';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Segmented } from '../../../ui/Segmented';
 import { Select } from '../../../ui/Select';
+import { DeviceModelPicker, modelName } from '../../catalog/DeviceModelPicker';
 import {
   AddButton,
   Card,
@@ -73,6 +77,7 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
           run(updateDevice, { id: device.id, changes: { hostname: hostname || undefined } })
         }
       />
+      {device.kind !== 'internet' ? <ModelSection device={device} /> : null}
       {device.formFactor ? <FormFactorSection project={project} device={device} /> : null}
       {device.formFactor ? <LocationSection project={project} device={device} /> : null}
 
@@ -621,6 +626,43 @@ function LocationSection({ project, device }: { project: Project; device: Device
             device.placement.onShelf
               ? t('hardware.onShelf', { u: device.placement.u })
               : `U${device.placement.u}`
+          }
+        />
+      ) : null}
+    </Section>
+  );
+}
+
+/** MODEL (D-05): the catalog model a device was built from, or generic; "Choose model" applies one. */
+function ModelSection({ device }: { device: Device }) {
+  const { t } = useTranslation(['inspector', 'canvas']);
+  const run = useCommand();
+  const catalog = useCatalog((s) => s.catalog);
+  const [open, setOpen] = useState(false);
+  const model = device.catalogRef ? catalogDevice(catalog, device.catalogRef.id) : undefined;
+  useEffect(() => {
+    if (device.catalogRef) void useCatalog.getState().load();
+  }, [device.catalogRef]);
+  return (
+    <Section
+      title={t('hardware.catalogModel')}
+      action={<AddButton label={t('hardware.chooseModel')} onClick={() => setOpen(true)} />}
+    >
+      <span className="text-body">
+        {model
+          ? modelName(model)
+          : device.catalogRef
+            ? device.catalogRef.id
+            : t('hardware.genericModel', { kind: t(`canvas:deviceKind.${device.kind}`) })}
+      </span>
+      {open ? (
+        <DeviceModelPicker
+          open
+          onOpenChange={setOpen}
+          kind={device.kind}
+          title={t('hardware.chooseModelFor', { name: device.name })}
+          onPick={(picked, catalogVersion) =>
+            run(applyDeviceModel, { id: device.id, model: picked, catalogVersion })
           }
         />
       ) : null}
