@@ -299,7 +299,9 @@
     "category": "Category",
     "length": "Length (m)",
     "label": "Label",
-    "delete": "Delete link"
+    "delete": "Delete link",
+    "color": "Cable color",
+    "generateLabel": "Generate label (SW1-P05 ↔ PVE1-ETH0)"
   },
   "location": {
     "name": "Name",

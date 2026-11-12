@@ -1,6 +1,7 @@
 import {
   addDevice,
   addLocation,
+  addNote,
   applyDeviceModel,
   type CatalogDevice,
   CommandError,
@@ -11,6 +12,7 @@ import {
   deleteDevice,
   deleteLink,
   deleteLocation,
+  deleteNote,
   duplicateDevice,
   findConnectablePorts,
   moveNode,
@@ -22,6 +24,7 @@ import {
   setLocationRect,
   unplaceDevice,
   updateDevice,
+  updateNote,
 } from '@server-planner/model';
 import type { ProjectSession } from '../../store/projectSession';
 import { deviceSize, toGrid, unitAtY } from './geometry';
@@ -107,6 +110,12 @@ export function addItemAt(
   const project = session.getState().project;
   if (!project) return fail('NO_PROJECT');
   return guard(() => {
+    if (item.type === 'note') {
+      // CAN-07: a sticky note centred on the drop point.
+      const rect = { x: toGrid(point.x) - 6, y: toGrid(point.y) - 3, w: 12, h: 6 };
+      const id = session.dispatch(addNote, { note: { text: '', rect } });
+      return { ok: true, selectId: id };
+    }
     if (item.type === 'location') {
       const size =
         item.kind === 'rack'
@@ -212,7 +221,7 @@ export function addInternetFor(
 
 export interface DraggedNode {
   id: string;
-  type: 'device' | 'location';
+  type: 'device' | 'location' | 'note';
   /** Absolute top-left in flow coordinates. */
   x: number;
   y: number;
@@ -229,6 +238,15 @@ export function dropNodes(session: ProjectSession, dragged: DraggedNode[]): Acti
   return guard(() => {
     session.transaction('canvas.move', (run) => {
       for (const node of dragged) {
+        if (node.type === 'note') {
+          const note = project.layout.notes[node.id];
+          if (note)
+            run(updateNote, {
+              id: node.id,
+              changes: { rect: { ...note.rect, x: toGrid(node.x), y: toGrid(node.y) } },
+            });
+          continue;
+        }
         if (node.type === 'location') {
           const rect = project.layout.locations[node.id]?.rect;
           if (!rect) continue;
@@ -305,6 +323,7 @@ export function deleteSelection(
       for (const id of edgeIds) if (project.links[id]) run(deleteLink, { id });
       for (const id of nodeIds) if (project.devices[id]) run(deleteDevice, { id });
       for (const id of nodeIds) if (project.locations[id]) run(deleteLocation, { id });
+      for (const id of nodeIds) if (project.layout.notes[id]) run(deleteNote, { id });
     });
     return { ok: true };
   });

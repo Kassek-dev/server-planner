@@ -86,5 +86,30 @@
     "composeHost": "{name} ({count, plural, one {# container} other {# containers}})",
     "composeStack": "Stack {name} ({count, plural, one {# container} other {# containers}})",
     "noContainers": "There are no containers in this project yet."
+  },
+  "otherTab": "This project is also open in another tab. Both save automatically, so the last change wins — keep editing in one tab only.",
+  "palette": {
+    "title": "Command palette",
+    "search": "Search elements and actions",
+    "placeholder": "Go to a device, app, view or action…",
+    "results": "Results",
+    "empty": "Nothing matches.",
+    "kinds": {
+      "device": "Device",
+      "location": "Location",
+      "workload": "VM / container",
+      "app": "App",
+      "view": "View",
+      "action": "Action"
+    },
+    "actions": {
+      "simulate": "Open simulation",
+      "issues": "Show issues",
+      "export": "Export…",
+      "vlans": "VLANs & subnets",
+      "tags": "Tags",
+      "settings": "Project settings",
+      "labelCables": "Label all cables"
+    }
   }
 }

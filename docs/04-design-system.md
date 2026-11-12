@@ -50,6 +50,7 @@ Konwencje:
 | `bg-raised`      | `#1f1f1f`                 | `#ffffff`          | elementy pływające na canvasie: karta symulacji, zoom, legenda |
 | `bg-tile`        | `#262626`                 | `#ffffff`          | kafelek urządzenia, element listy w bibliotece                 |
 | `bg-tile-header` | `#2e2e2e`                 | `#f0f0f0`          | nagłówek kafelka, nagłówek racka, aktywna zakładka             |
+| `bg-note`        | `#2e2918`                 | `#fef3c7`          | notatka na canvasie (CAN‑07)                                   |
 | `bg-inset`       | `#141414`                 | `#f4f4f4`          | pola formularzy, kieszenie dysków, wnętrze portów              |
 | `bg-container`   | `#1b1b1b`                 | `#f7f7f7`          | wnętrze racka                                                  |
 | `border-subtle`  | `#2e2e2e`                 | `#e5e5e5`          | podziały paneli                                                |

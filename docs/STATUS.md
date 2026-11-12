@@ -181,6 +181,12 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 16 — Projekty i wygoda (pakiet 7): PRJ‑06/07/08, CAN‑07/08/09, LIB‑04, LBL‑03
 
+- [x] 16a PRJ‑08 szablony startowe w D‑01 (`createFromTemplate` w `packages/model`): Mini PC + router, Proxmox 3‑node, IoT segmentation (kreator NET‑10 + porty switcha); test: bez błędów walidacji
+- [x] 16a PRJ‑06 ten sam projekt w drugiej karcie → baner ostrzeżenia (BroadcastChannel; decyzja: ostrzeżenie zamiast blokady, autozapis „ostatni wygrywa”)
+- [x] 16a CAN‑09 minimapa (przełącznik przy zoomie), „fit to screen” (był), paleta poleceń Ctrl+K (elementy, widoki, akcje)
+- [x] 16a CAN‑07 notatki na canvasie: z biblioteki, edycja dwuklikiem / Enter, zmiana rozmiaru, przesuwanie, usuwanie Delete; token `bg-note`
+- [x] 16a LBL‑03 etykiety kabli `SW1-P05 ↔ PVE1-ETH0`: „Generate label” w inspectorze łącza, kolor kabla, „Label all cables” w palecie (komenda `link.labelCables`, wzorzec domyślny — zapis własnego wzorca wymagałby zmiany schematu)
+
 ### Etap 17 — Offline i mobile (pakiet 8): PWA (`vite-plugin-pwa`), widoki M‑01…03
 
 ## Dziennik
@@ -212,4 +218,5 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |
 | 2026-11-12 | Etap 13: Access (macierz, ekspozycja, asercje), Save as assertion, kreator segmentacji; unit 218, E2E 37 | #27 |
 | 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | #28 |
-| 2026-11-12 | Etap 15: profile obciążenia, tryb Expected, prognoza storage, GPU; unit 227, E2E 40 | — |
+| 2026-11-12 | Etap 15: profile obciążenia, tryb Expected, prognoza storage, GPU; unit 227, E2E 40 | #29 |
+| 2026-11-12 | Etap 16a: szablony, druga karta, minimapa, paleta Ctrl+K, notatki, etykiety kabli; unit 233, E2E 43 | — |

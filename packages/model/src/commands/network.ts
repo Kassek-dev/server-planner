@@ -1,4 +1,5 @@
 import { SINGLE_LINK_KINDS, VIRTUAL_KINDS } from '../defaults';
+import { cableLabel } from '../labels';
 import type {
   Firewall,
   FirewallRule,
@@ -138,6 +139,21 @@ export const updateLink = defineCommand(
   'link.update',
   (draft, { id, changes }: { id: string; changes: Partial<Omit<Link, 'id' | 'a' | 'b'>> }) => {
     applyChanges(getOrThrow(draft.links, id, 'link'), changes);
+  },
+);
+
+/** LBL-03: labels physical cables from a pattern; existing labels stay unless `overwrite`. */
+export const labelCables = defineCommand(
+  'link.labelCables',
+  (draft, { pattern, overwrite = false }: { pattern?: string; overwrite?: boolean }): number => {
+    let count = 0;
+    for (const link of Object.values(draft.links)) {
+      if (link.medium === 'wifi' || link.medium === 'virtual') continue;
+      if (link.cable?.label && !overwrite) continue;
+      link.cable = { ...link.cable, label: cableLabel(draft, link, pattern) };
+      count += 1;
+    }
+    return count;
   },
 );
 

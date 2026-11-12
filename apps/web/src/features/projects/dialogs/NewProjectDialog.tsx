@@ -1,12 +1,13 @@
+import { PROJECT_TEMPLATES, type ProjectTemplate } from '@server-planner/model';
 import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../../ui/Button';
 import { Dialog } from '../../../ui/Dialog';
 import { TextField } from '../../../ui/TextField';
 
-export type NewProjectStart = 'empty' | 'example';
+export type NewProjectStart = 'empty' | 'example' | ProjectTemplate;
 
-/** D-01 New project (docs/07 § 6). Templates (PRJ-08) arrive in P1. */
+/** D-01 New project (docs/07 § 6): empty, a starter template (PRJ-08) or the example. */
 export function NewProjectDialog({
   open,
   onOpenChange,
@@ -35,6 +36,11 @@ export function NewProjectDialog({
 
   const options: { value: NewProjectStart; label: string; hint: string }[] = [
     { value: 'empty', label: t('newDialog.empty'), hint: t('newDialog.emptyHint') },
+    ...PROJECT_TEMPLATES.map((value) => ({
+      value,
+      label: t(`newDialog.templates.${value}.label`),
+      hint: t(`newDialog.templates.${value}.hint`),
+    })),
     { value: 'example', label: t('newDialog.example'), hint: t('newDialog.exampleHint') },
   ];
 

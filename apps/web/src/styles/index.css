@@ -19,6 +19,7 @@
   --color-canvas: var(--sp-bg-canvas);
   --color-raised: var(--sp-bg-raised);
   --color-tile: var(--sp-bg-tile);
+  --color-note: var(--sp-bg-note);
   --color-tile-header: var(--sp-bg-tile-header);
   --color-inset: var(--sp-bg-inset);
   --color-container: var(--sp-bg-container);

@@ -45,7 +45,21 @@
     "example": "Example project",
     "exampleHint": "The sample lab from the docs, with issues to explore.",
     "create": "Create project",
-    "nameRequired": "Enter a project name."
+    "nameRequired": "Enter a project name.",
+    "templates": {
+      "mini-pc-router": {
+        "label": "Mini PC + router",
+        "hint": "Router with internet and one Debian mini PC — the smallest useful lab."
+      },
+      "proxmox-cluster": {
+        "label": "Proxmox 3-node",
+        "hint": "Router, switch and three Proxmox VE hosts."
+      },
+      "iot-segmentation": {
+        "label": "IoT segmentation",
+        "hint": "Mgmt, LAN, IoT and Guest VLANs with firewall rules, a switch, an AP and a server."
+      }
+    }
   },
   "renameDialog": {
     "title": "Rename project",

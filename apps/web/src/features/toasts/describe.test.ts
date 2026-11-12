@@ -1,10 +1,11 @@
 import { createProject } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
 import { addItemAt, deleteSelection } from '../canvas/actions';
+import type { LibraryItem } from '../canvas/library';
 import { deviceByName, homeLab, sessionWith } from '../canvas/testSupport';
 import { describeCommit } from './describe';
 
-const names = (item: { kind: string }) => item.kind;
+const names = (item: LibraryItem) => ('kind' in item ? item.kind : item.type);
 
 function recording(project = homeLab()) {
   const session = sessionWith(project);

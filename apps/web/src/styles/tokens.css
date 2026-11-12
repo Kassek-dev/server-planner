@@ -15,6 +15,7 @@
   --sp-canvas-grid: rgb(255 255 255 / 0.035);
   --sp-bg-raised: #1f1f1f;
   --sp-bg-tile: #262626;
+  --sp-bg-note: #2e2918;
   --sp-bg-tile-header: #2e2e2e;
   --sp-bg-inset: #141414;
   --sp-bg-container: #1b1b1b;
@@ -89,6 +90,7 @@
   --sp-canvas-grid: rgb(0 0 0 / 0.05);
   --sp-bg-raised: #ffffff;
   --sp-bg-tile: #ffffff;
+  --sp-bg-note: #fef3c7;
   --sp-bg-tile-header: #f0f0f0;
   --sp-bg-inset: #f4f4f4;
   --sp-bg-container: #f7f7f7;

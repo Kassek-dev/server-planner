@@ -12,7 +12,8 @@
       "catalog": "Catalog"
     },
     "browseDevices": "Browse device models",
-    "browseApps": "Browse apps"
+    "browseApps": "Browse apps",
+    "note": "Note"
   },
   "deviceKind": {
     "internet": "Internet",
@@ -59,7 +60,8 @@
   "zoom": {
     "in": "Zoom in",
     "out": "Zoom out",
-    "fit": "Fit to screen"
+    "fit": "Fit to screen",
+    "minimap": "Minimap"
   },
   "errors": {
     "generic": "That change is not possible ({code}).",
@@ -100,5 +102,12 @@
       "multi": "2.5–5 Gb/s",
       "ten": "≥ 10 Gb/s"
     }
+  },
+  "minimap": "Canvas overview",
+  "note": {
+    "edit": "Edit note",
+    "label": "Note: {text}",
+    "empty": "empty",
+    "placeholder": "Double-click to write a note"
   }
 }

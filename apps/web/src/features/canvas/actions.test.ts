@@ -8,9 +8,10 @@ import {
 } from './actions';
 import { rackRowTop } from './geometry';
 import { absoluteLocationRects } from './graph';
+import type { LibraryItem } from './library';
 import { deviceByName, homeLab, sessionWith } from './testSupport';
 
-const names = (item: { kind: string }) => item.kind;
+const names = (item: LibraryItem) => ('kind' in item ? item.kind : item.type);
 
 function setup() {
   const lab = homeLab();
