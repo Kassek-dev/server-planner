@@ -76,10 +76,17 @@ export function parseProjectFile(raw: unknown): ParsedProjectFile {
       result.error.issues,
     );
   }
-  const cycle = findHostingCycle(result.data.project);
-  if (cycle) throw new ProjectFileError('INVALID_PROJECT', { count: 1, cycleAt: cycle });
-  const nesting = findInvalidLocationNesting(result.data.project);
-  if (nesting) throw new ProjectFileError('INVALID_PROJECT', { count: 1, locationAt: nesting });
+  // Snapshots can be restored into the project, so they pass the same integrity checks.
+  const versions = [
+    result.data.project,
+    ...(result.data.snapshots ?? []).map((s) => ({ ...s.project, id: result.data.project.id })),
+  ];
+  for (const project of versions) {
+    const cycle = findHostingCycle(project);
+    if (cycle) throw new ProjectFileError('INVALID_PROJECT', { count: 1, cycleAt: cycle });
+    const nesting = findInvalidLocationNesting(project);
+    if (nesting) throw new ProjectFileError('INVALID_PROJECT', { count: 1, locationAt: nesting });
+  }
 
   return version < CURRENT_SCHEMA_VERSION
     ? { file: result.data, migratedFrom: version }
