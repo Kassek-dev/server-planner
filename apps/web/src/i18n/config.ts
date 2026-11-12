@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import ICU from 'i18next-icu';
 import { initReactI18next } from 'react-i18next';
 import canvas from './locales/en/canvas.json';
+import catalog from './locales/en/catalog.json';
 import common from './locales/en/common.json';
 import dev from './locales/en/dev.json';
 import drawers from './locales/en/drawers.json';
@@ -19,6 +20,7 @@ export const NAMESPACES = [
   'projects',
   'editor',
   'canvas',
+  'catalog',
   'inspector',
   'drawers',
   'issues',
@@ -27,7 +29,7 @@ export const NAMESPACES = [
 ] as const;
 
 export const resources = {
-  en: { common, projects, editor, canvas, inspector, drawers, issues, simulation, dev },
+  en: { common, projects, editor, canvas, catalog, inspector, drawers, issues, simulation, dev },
 } as const;
 
 export async function initI18n(): Promise<void> {

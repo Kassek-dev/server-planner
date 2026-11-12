@@ -1,11 +1,30 @@
-import { DEFAULT_FORM_FACTOR } from '@server-planner/model';
+import { type CatalogDevice, DEFAULT_FORM_FACTOR } from '@server-planner/model';
+import { Boxes, Server } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSession } from '../../app/services';
 import { DeviceIcon, Silhouette } from '../../icons/devices';
+import { AppCatalogDialog } from '../catalog/AppCatalogDialog';
+import { DeviceModelPicker } from '../catalog/DeviceModelPicker';
+import { defaultHost } from '../catalog/helpers';
 import { DRAG_MIME, LIBRARY, type LibraryItem } from './library';
+import { useSelection } from './selection';
 
 /** Left column (232 px) — docs/04 § 6.13. Drag onto the canvas, or click / Enter to add at the center. */
-export function Library({ onAdd }: { onAdd: (item: LibraryItem) => void }) {
+export function Library({
+  onAdd,
+  onAddModel,
+}: {
+  onAdd: (item: LibraryItem) => void;
+  /** D-05 from the library: a catalog model added at the viewport center. */
+  onAddModel: (model: CatalogDevice, catalogVersion: string) => void;
+}) {
   const { t } = useTranslation('canvas');
+  const project = useSession((s) => s.project);
+  const [dialog, setDialog] = useState<'models' | 'apps' | null>(null);
+  const close = (open: boolean) => {
+    if (!open) setDialog(null);
+  };
   return (
     <aside
       aria-label={t('library.title')}
@@ -65,9 +84,41 @@ export function Library({ onAdd }: { onAdd: (item: LibraryItem) => void }) {
           })}
         </section>
       ))}
+      <section className="flex flex-col gap-1.5">
+        <h2 className="m-0 font-mono text-badge font-semibold tracking-[0.08em] text-text-muted uppercase">
+          {t('library.sections.catalog')}
+        </h2>
+        <button type="button" className={CATALOG_BUTTON} onClick={() => setDialog('models')}>
+          <Server size={16} aria-hidden="true" className="text-text-secondary" />
+          {t('library.browseDevices')}
+        </button>
+        <button type="button" className={CATALOG_BUTTON} onClick={() => setDialog('apps')}>
+          <Boxes size={16} aria-hidden="true" className="text-text-secondary" />
+          {t('library.browseApps')}
+        </button>
+      </section>
+      {dialog === 'models' ? (
+        <DeviceModelPicker
+          open
+          onOpenChange={close}
+          title={t('library.browseDevices')}
+          onPick={onAddModel}
+        />
+      ) : null}
+      {dialog === 'apps' && project ? (
+        <AppCatalogDialog
+          project={project}
+          host={defaultHost(project, undefined, useSelection.getState())}
+          open
+          onOpenChange={close}
+        />
+      ) : null}
     </aside>
   );
 }
+
+const CATALOG_BUTTON =
+  'flex h-8.5 items-center gap-2.5 rounded-md border border-border-subtle bg-tile px-2.5 text-left text-body text-text-primary hover:border-border-strong';
 
 export function itemLabel(t: (key: string) => string, item: LibraryItem): string {
   if (item.type === 'location') return t(`locationKind.${item.kind}`);

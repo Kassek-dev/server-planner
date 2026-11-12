@@ -2,14 +2,18 @@ import * as RadixDialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-/** Dialog — docs/04 § 6.14: 480/640 wide, title-lg, actions on the right (primary last), Esc closes. */
+/**
+ * Dialog — docs/04 § 6.14: 480/640 wide (catalog pickers 1040/1120), actions on the right (primary
+ * last), Esc closes. `flush` drops the body padding for multi-column layouts.
+ */
 export interface DialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
   closeLabel: string;
-  width?: 480 | 560 | 640;
+  width?: 480 | 560 | 640 | 1040 | 1120;
+  flush?: boolean;
   children?: ReactNode;
   footer: ReactNode;
 }
@@ -21,6 +25,7 @@ export function Dialog({
   description,
   closeLabel,
   width = 480,
+  flush = false,
   children,
   footer,
 }: DialogProps) {
@@ -42,9 +47,11 @@ export function Dialog({
               <X size={18} aria-hidden="true" />
             </RadixDialog.Close>
           </header>
-          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-5">
+          <div className={`flex min-h-0 flex-1 flex-col overflow-auto ${flush ? '' : 'gap-4 p-5'}`}>
             {description ? (
-              <RadixDialog.Description className="m-0 text-text-secondary">
+              <RadixDialog.Description
+                className={`m-0 text-text-secondary ${flush ? 'sr-only' : ''}`}
+              >
                 {description}
               </RadixDialog.Description>
             ) : (

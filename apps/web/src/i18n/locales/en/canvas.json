@@ -8,8 +8,11 @@
       "rack": "Rack-mount",
       "standalone": "Standalone",
       "clients": "Clients",
-      "locations": "Locations"
-    }
+      "locations": "Locations",
+      "catalog": "Catalog"
+    },
+    "browseDevices": "Browse device models",
+    "browseApps": "Browse apps"
   },
   "deviceKind": {
     "internet": "Internet",
