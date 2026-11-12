@@ -1,0 +1,83 @@
+{
+  "inventory": {
+    "title": "Inventory",
+    "show": "Show",
+    "search": "Search inventory",
+    "groupByLocation": "Group by location",
+    "modes": {
+      "devices": "Devices · {count}",
+      "workloads": "Workloads · {count}",
+      "apps": "Apps · {count}"
+    },
+    "rename": "Name of {name}",
+    "moveTo": "Location of {name}",
+    "unplaced": "Unplaced",
+    "empty": "Nothing here yet.",
+    "columns": {
+      "name": "Name",
+      "kind": "Kind",
+      "location": "Location",
+      "model": "Model",
+      "cpu": "CPU",
+      "ram": "RAM",
+      "storage": "Storage",
+      "os": "OS",
+      "workloads": "Workloads",
+      "internet": "Internet",
+      "capacity": "Capacity",
+      "tags": "Tags",
+      "host": "Host",
+      "device": "Device",
+      "vcpu": "vCPU",
+      "disk": "Disk",
+      "image": "Image / OS",
+      "role": "Role",
+      "ports": "Ports",
+      "catalog": "Catalog",
+      "confidence": "Confidence"
+    },
+    "internet": {
+      "full": "Full",
+      "partial": "Partial",
+      "none": "None"
+    },
+    "capacity": {
+      "ok": "OK",
+      "warning": "Warning",
+      "critical": "Critical",
+      "over": "Over"
+    }
+  },
+  "ip": {
+    "title": "IP Plan",
+    "summary": "{subnets, plural, one {# subnet} other {# subnets}}",
+    "editSubnets": "VLANs & subnets",
+    "empty": "No subnets yet — add VLANs and subnets to plan addresses.",
+    "vlan": "VLAN",
+    "zone": "Zone",
+    "gateway": "Gateway",
+    "used": "Used",
+    "usedOf": "{used} of {hosts}",
+    "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
+    "pool": "DHCP pool {from} – {to} · {leases} of {size} in use",
+    "poolUsage": "DHCP pool {percent}% in use",
+    "columns": {
+      "ip": "Address",
+      "host": "Host",
+      "interface": "Interface",
+      "type": "Type",
+      "status": "Status"
+    },
+    "kinds": {
+      "static": "Static",
+      "dhcp": "DHCP",
+      "dhcp-reservation": "DHCP reservation",
+      "gateway": "Gateway"
+    },
+    "duplicate": "Assigned more than once",
+    "outside": "Outside this subnet",
+    "ok": "OK",
+    "poolRow": "{from} – {to} · DHCP pool ({count, plural, one {# address} other {# addresses}})",
+    "freeRow": "{from} – {to} · free ({count, plural, one {# address} other {# addresses}})"
+  }
+}
