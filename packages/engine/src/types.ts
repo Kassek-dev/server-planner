@@ -56,10 +56,11 @@ export interface ResourceUsage {
 
 export interface CapacityReport {
   host: EntityRef;
-  mode: 'allocated';
+  mode: 'allocated' | 'expected';
   cpu: ResourceUsage;
   memory: ResourceUsage;
-  storage: (ResourceUsage & { poolId: Id })[];
+  /** Pools; with planned volume growth also the forecast (CAP-06). */
+  storage: (ResourceUsage & { poolId: Id; growthPerMonth?: number; monthsToFull?: number })[];
   children: CapacityReport[];
 }
 
@@ -69,6 +70,8 @@ export interface AnalysisResult {
   issues: Issue[];
   /** Capacity per host (device or VM/LXC) ID. */
   capacity: Record<Id, CapacityReport>;
+  /** Expected use per host from load profiles (CAP-05); same keys as `capacity`. */
+  expected: Record<Id, CapacityReport>;
   /** Worst state per device: issues on it, its ports, workloads and apps, and its capacity. */
   deviceStatus: Record<Id, DeviceStatus>;
   /** Internet access per device and VM/LXC with an address (SIM-02). */

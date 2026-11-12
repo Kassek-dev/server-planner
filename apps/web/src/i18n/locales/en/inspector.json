@@ -118,7 +118,22 @@
       "to-buy": "To buy",
       "optional": "Optional"
     },
-    "price": "Price ({currency})"
+    "price": "Price ({currency})",
+    "gpus": "GPUs and accelerators",
+    "addGpu": "Add GPU",
+    "noGpu": "None — add the iGPU too if apps should use it (e.g. QuickSync for transcoding).",
+    "gpuModel": "Model",
+    "vram": "VRAM",
+    "gpuFeatures": "Features",
+    "gpuFeature": {
+      "quicksync": "QuickSync",
+      "nvenc": "NVENC",
+      "vcn": "VCN",
+      "cuda": "CUDA",
+      "rocm": "ROCm",
+      "tpu": "TPU (Coral)",
+      "npu": "NPU"
+    }
   },
   "software": {
     "notCompute": "This kind of device does not run an operating system or workloads.",
@@ -225,7 +240,8 @@
     "cpuLimit": "CPU",
     "memoryLimit": "Memory",
     "unbounded": "unbounded",
-    "delete": "Delete workload"
+    "delete": "Delete workload",
+    "growth": "Growth / month"
   },
   "app": {
     "name": "Name",
@@ -263,7 +279,10 @@
       "imported": "imported",
       "estimated": "estimated"
     },
-    "delete": "Delete app"
+    "delete": "Delete app",
+    "loadProfile": "Load profile",
+    "profile": "Profile",
+    "loadProfileHint": "Used by the Expected mode of the host's Capacity tab."
   },
   "link": {
     "title": "Link",
@@ -329,7 +348,8 @@
     "NOT_FOUND": "That item no longer exists.",
     "MODEL_KIND_MISMATCH": "This model is a {model}, not a {kind}.",
     "APP_HOST_IS_CONTAINER": "Apps from the catalog go on a host, VM or LXC, not inside a container.",
-    "NETWORK_ON_OTHER_HOST": "That Docker network belongs to another host."
+    "NETWORK_ON_OTHER_HOST": "That Docker network belongs to another host.",
+    "range": "Enter a whole number from {min} to {max}."
   },
   "capacity": {
     "title": "Capacity",
@@ -343,6 +363,12 @@
     "overcommit": "Overcommit: CPU {cpu}:1, memory {memory}:1 (project settings).",
     "noCpu": "Add a CPU in the Hardware tab to see CPU capacity.",
     "tip": "Above the warning threshold — add resources, lower allocations or move a workload to another host.",
-    "addApps": "Add apps from catalog"
+    "addApps": "Add apps from catalog",
+    "mode": "Capacity mode",
+    "allocated": "Allocated",
+    "expected": "Expected",
+    "cores": "{count} cores",
+    "expectedNote": "Expected use: apps at their load profile, VMs and LXCs at what runs inside them, against the physical hardware (no overcommit).",
+    "forecast": "Grows {growth}/month — full in about {months, plural, =0 {less than a month} one {# month} other {# months}}."
   }
 }

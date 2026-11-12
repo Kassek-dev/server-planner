@@ -16,7 +16,13 @@ import {
 import type { EntityRef } from './types';
 
 export { analyze, sameDomain } from './analyze';
-export { capacity, poolUsableBytes, usageStatus } from './capacity';
+export {
+  type CapacityMode,
+  capacity,
+  expectedAppResources,
+  poolUsableBytes,
+  usageStatus,
+} from './capacity';
 export {
   buildContext,
   carriedVlans,

@@ -10,7 +10,7 @@ hardware:
     slotsTotal: 2
     maxBytes: 64 GiB
     modules: [{ sizeBytes: 8 GiB, count: 2, speedMts: 2666 }]
-  gpus: []
+  gpus: [{ model: "Intel UHD Graphics 630", features: [quicksync] }]
   power: { idleW: 12, loadW: 55 }
   defaultDisks: [{ name: nvme0, type: ssd-nvme, sizeBytes: 512 GB }]
 ports: [{ name: eth0, kind: rj45, speedMbps: 1000 }]

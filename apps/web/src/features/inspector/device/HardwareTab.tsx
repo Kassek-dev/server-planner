@@ -2,6 +2,7 @@ import {
   applyDeviceModel,
   createId,
   type Device,
+  GpuFeatureSchema,
   type Hardware,
   type Project,
   STANDALONE_SHAPES,
@@ -303,6 +304,8 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
 
       <DisksSection device={device} setHw={setHw} />
 
+      <GpuSection device={device} setHw={setHw} />
+
       <Section title={t('hardware.power')}>
         <Grid>
           <CommitField
@@ -429,6 +432,75 @@ function PurchaseSection({ device }: { device: Device }) {
           }
         />
       </Grid>
+    </Section>
+  );
+}
+
+/** HW-05: GPUs and accelerators (iGPU, discrete, Coral) with the features apps can use. */
+function GpuSection({ device, setHw }: { device: Device; setHw: (hw: Hardware) => void }) {
+  const { t } = useTranslation('inspector');
+  const hw = device.hardware;
+  const setGpu = (i: number, changes: Partial<Hardware['gpus'][number]>) =>
+    setHw({ ...hw, gpus: hw.gpus.map((g, j) => (j === i ? { ...g, ...changes } : g)) });
+  return (
+    <Section
+      title={t('hardware.gpus')}
+      action={
+        <AddButton
+          label={t('hardware.addGpu')}
+          onClick={() =>
+            setHw({
+              ...hw,
+              gpus: [...hw.gpus, { model: 'Intel UHD Graphics', features: ['quicksync'] }],
+            })
+          }
+        />
+      }
+    >
+      {hw.gpus.length === 0 ? (
+        <p className="m-0 text-body-sm text-text-muted">{t('hardware.noGpu')}</p>
+      ) : null}
+      {hw.gpus.map((gpu, i) => (
+        <Card key={`${gpu.model}-${i}`} label={gpu.model}>
+          <div className="flex items-end gap-2">
+            <Grid>
+              <CommitField
+                label={t('hardware.gpuModel')}
+                value={gpu.model}
+                onCommit={(model) => model && setGpu(i, { model })}
+              />
+              <CommitField
+                label={t('hardware.vram')}
+                mono
+                value={gpu.vramBytes !== undefined ? formatSize(gpu.vramBytes) : ''}
+                validate={(v) => (v === '' || parseSize(v) !== undefined ? null : t('errors.size'))}
+                onCommit={(v) => setGpu(i, { vramBytes: v === '' ? undefined : parseSize(v) })}
+              />
+            </Grid>
+            <RemoveButton
+              label={t('actions.remove')}
+              onClick={() => setHw({ ...hw, gpus: hw.gpus.filter((_, j) => j !== i) })}
+            />
+          </div>
+          <fieldset className="m-0 flex flex-wrap gap-x-4 gap-y-1 border-0 p-0">
+            <legend className="sr-only">{t('hardware.gpuFeatures')}</legend>
+            {GpuFeatureSchema.options.map((f) => (
+              <Checkbox
+                key={f}
+                label={t(`hardware.gpuFeature.${f}`)}
+                checked={gpu.features.includes(f)}
+                onChange={(e) =>
+                  setGpu(i, {
+                    features: e.target.checked
+                      ? [...gpu.features, f]
+                      : gpu.features.filter((x) => x !== f),
+                  })
+                }
+              />
+            ))}
+          </fieldset>
+        </Card>
+      ))}
     </Section>
   );
 }

@@ -42,6 +42,16 @@ deployment:
 requirements:
   min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 20 GB }
   recommended: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 100 GB }
+loadProfiles:
+  - id: idle
+    name: { en: Idle }
+    resources: { cpu: 0.2, memoryBytes: 512 MiB, diskBytes: 0 }
+  - id: typical
+    name: { en: Everyday use }
+    params:
+      - { key: users, name: { en: Active users }, default: 3, min: 1, max: 50 }
+    resources: { cpu: 0.4, memoryBytes: 768 MiB, diskBytes: 0 }
+    perParam: { users: { cpu: 0.1, memoryBytes: 64 MiB } }
 dependencies:
   - { capability: mysql, optional: false, providedByComponent: db }
   - { capability: redis, optional: false, providedByComponent: redis }

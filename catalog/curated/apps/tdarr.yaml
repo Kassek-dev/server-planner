@@ -37,6 +37,16 @@ requirements:
     memoryBytes: 4 GiB
     diskBytes: 50 GB
     gpu: { required: false, features: [quicksync, cuda] }
+loadProfiles:
+  - id: idle
+    name: { en: Idle }
+    resources: { cpu: 0.2, memoryBytes: 500 MiB, diskBytes: 0 }
+  - id: typical
+    name: { en: Transcoding queue }
+    params:
+      - { key: workers, name: { en: CPU workers }, default: 1, min: 0, max: 8 }
+    resources: { cpu: 3, memoryBytes: 1.5 GiB, diskBytes: 0 }
+    perParam: { workers: { cpu: 2.5, memoryBytes: 512 MiB } }
 dependencies: [{ capability: media-storage, optional: true }]
 provides: []
 trafficPatterns:

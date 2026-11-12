@@ -26,6 +26,16 @@ deployment:
 requirements:
   min: { cpu: 1, memoryBytes: 1 GiB, diskBytes: 10 GB }
   recommended: { cpu: 2, memoryBytes: 2 GiB, diskBytes: 32 GB }
+loadProfiles:
+  - id: idle
+    name: { en: Idle }
+    resources: { cpu: 0.1, memoryBytes: 400 MiB, diskBytes: 0 }
+  - id: typical
+    name: { en: Everyday automations }
+    params:
+      - { key: devices, name: { en: Devices and entities (hundreds) }, default: 1, min: 1, max: 20 }
+    resources: { cpu: 0.3, memoryBytes: 700 MiB, diskBytes: 0 }
+    perParam: { devices: { cpu: 0.1, memoryBytes: 150 MiB } }
 dependencies: [{ capability: mqtt, optional: true }]
 provides: [home-automation]
 trafficPatterns:

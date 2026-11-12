@@ -65,10 +65,15 @@ export const useCatalog = create<CatalogState>((set, get) => ({
   },
 }));
 
-/** Engine inputs from the catalog (OS overhead per OS). */
+/** Engine inputs from the catalog: OS overhead per OS, load profiles per app (SW-08). */
 export function engineOptions(catalog: Catalog | null): EngineOptions {
   if (!catalog) return {};
-  return { osOverhead: Object.fromEntries(catalog.os.map((o) => [o.id, o.overhead])) };
+  return {
+    osOverhead: Object.fromEntries(catalog.os.map((o) => [o.id, o.overhead])),
+    loadProfiles: Object.fromEntries(
+      catalog.apps.flatMap((a) => (a.loadProfiles?.length ? [[a.id, a.loadProfiles]] : [])),
+    ),
+  };
 }
 
 export const catalogApp = (catalog: Catalog | null, id: string): CatalogApp | undefined =>

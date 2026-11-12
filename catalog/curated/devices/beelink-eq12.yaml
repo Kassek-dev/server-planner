@@ -10,7 +10,7 @@ hardware:
     slotsTotal: 1
     maxBytes: 16 GiB
     modules: [{ sizeBytes: 16 GiB, count: 1, speedMts: 4800 }]
-  gpus: []
+  gpus: [{ model: "Intel UHD Graphics (N100)", features: [quicksync] }]
   power: { idleW: 7, loadW: 25 }
   defaultDisks: [{ name: nvme0, type: ssd-nvme, sizeBytes: 500 GB }]
 ports:

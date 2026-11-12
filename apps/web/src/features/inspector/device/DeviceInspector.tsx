@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices } from '../../../app/services';
-import { useResults } from '../../../store/results';
 import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Tabs } from '../../../ui/Tabs';
@@ -11,6 +10,7 @@ import { deleteSelection } from '../../canvas/actions';
 import { useSelection } from '../../canvas/selection';
 import { AppCatalogDialog } from '../../catalog/AppCatalogDialog';
 import { CapacityMeters } from '../CapacityMeters';
+import { useHostReport } from '../capacityMode';
 import { AddButton, CommitField, useCommand } from '../parts';
 import { HardwareTab } from './HardwareTab';
 import { NetworkTab } from './NetworkTab';
@@ -29,7 +29,7 @@ export function DeviceInspector({ project, device }: { project: Project; device:
   const [params, setParams] = useSearchParams();
   const compute = COMPUTE_KINDS.includes(device.kind);
   const clientType = device.clientType ?? 'other';
-  const report = useResults((s) => s.result?.capacity[device.id]);
+  const report = useHostReport(device.id);
   const tabs: { value: Tab; label: string }[] = [
     ...(compute && report ? [{ value: 'capacity' as const, label: t('tabs.capacity') }] : []),
     { value: 'hardware', label: t('tabs.hardware') },

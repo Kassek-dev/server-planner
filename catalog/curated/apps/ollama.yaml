@@ -25,6 +25,16 @@ requirements:
   min: { cpu: 2, memoryBytes: 4 GiB, diskBytes: 20 GB }
   recommended:
     { cpu: 8, memoryBytes: 16 GiB, diskBytes: 100 GB, gpu: { required: false, features: [cuda] } }
+loadProfiles:
+  - id: idle
+    name: { en: Idle (model unloaded) }
+    resources: { cpu: 0.1, memoryBytes: 200 MiB, diskBytes: 0 }
+  - id: typical
+    name: { en: Answering (CPU) }
+    params:
+      - { key: modelGb, name: { en: Model size (GB) }, default: 5, min: 1, max: 70 }
+    resources: { cpu: 4, memoryBytes: 1 GiB, diskBytes: 0 }
+    perParam: { modelGb: { memoryBytes: 1.1 GiB } }
 dependencies: []
 provides: [llm-api]
 trafficPatterns:

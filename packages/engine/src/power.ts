@@ -5,7 +5,7 @@ import type { CapacityReport, UsageStatus } from './types';
 
 /**
  * Power, PoE and UPS (HW-06, CAP-07, CAP-08). Estimates only: the expected draw interpolates
- * between idle and load by the host's allocated CPU share.
+ * between idle and load by the host's expected CPU use (CAP-05).
  */
 
 /** Upper bound of a powered device per PoE standard (802.3af/at/bt, at the device). */

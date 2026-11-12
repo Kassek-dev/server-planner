@@ -1,4 +1,5 @@
 import type {
+  CatalogLoadProfile,
   Device,
   HostRef,
   Interface,
@@ -13,6 +14,8 @@ import type {
 export interface EngineOptions {
   /** Host OS overhead per OS (CatalogOs.overhead); a device's `os.overrideOverhead` wins. */
   osOverhead?: Partial<Record<OsId, Resources>>;
+  /** Load profiles per catalog app ID (SW-08) for the "expected" capacity mode (CAP-05). */
+  loadProfiles?: Record<string, CatalogLoadProfile[]>;
 }
 
 /**
@@ -22,6 +25,7 @@ export interface EngineOptions {
 export interface EngineContext {
   project: Project;
   osOverhead: Partial<Record<OsId, Resources>>;
+  loadProfiles: Record<string, CatalogLoadProfile[]>;
   interfacesByOwner: Map<string, Interface[]>;
   linksByInterface: Map<string, Link[]>;
   vlanByVid: Map<number, Vlan>;
@@ -90,6 +94,7 @@ export function buildContext(project: Project, options: EngineOptions = {}): Eng
   return {
     project,
     osOverhead: options.osOverhead ?? {},
+    loadProfiles: options.loadProfiles ?? {},
     interfacesByOwner,
     linksByInterface,
     vlanByVid,
