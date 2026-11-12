@@ -164,6 +164,13 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 
 ### Etap 14 — Zasilanie i koszty (pakiet 5): HW‑06, CAP‑07/08/09, VAL‑12, SET‑02, Dashboard (V‑02)
 
+- [x] HW‑06 w inspectorze: UPS (VA, W, bateria Wh), budżet PoE switcha, rola PoE portu (PSE/PD, standard af/at/bt, pobór W), zakup (status, cena) — bez zmiany schematu (pola istniały w modelu)
+- [x] CAP‑07 silnik `power()` (wynik `analyze().power`): pobór idle/load/oczekiwany (interpolacja wg przydzielonego CPU hosta), urządzenia PoE liczone raz — z własnych danych lub poboru portu (domyślnie maks. standardu), kWh i koszt miesięczny z ceny kWh
+- [x] UPS: chroni urządzenia w swojej lokalizacji (rack/półka/pomieszczenie z zawartością); UPS bez lokalizacji — wszystko, czego nie chroni inny UPS; urządzenia PoE liczą się, gdy chroniony jest ich switch; czas pracy = 80% baterii / obciążenie
+- [x] CAP‑08 + VAL‑12: budżety PoE, `VAL_12` (przekroczony budżet PoE, błąd) i `VAL_12_UPS` (przeciążony UPS, błąd)
+- [x] SET‑02: waluta, cena kWh, progi i overcommity były w ustawieniach od etapu 8a; jednostki stałe (SI)
+- [x] V‑02 Dashboard (`#/p/:id/dashboard`, CAP‑09): zasoby łącznie, wykorzystanie per host, problemy, asercje, BOM (do kupienia / opcjonalne), energia, PoE i UPS
+
 ### Etap 15 — Planowanie wydajności (pakiet 6): SW‑08/09, CAP‑05/06, HW‑05
 
 ### Etap 16 — Projekty i wygoda (pakiet 7): PRJ‑06/07/08, CAN‑07/08/09, LIB‑04, LBL‑03
@@ -197,3 +204,5 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 | 2026-11-12 | Etap 11: skan popularnych aplikacji, 63 nowe kurowane, filtry importu → 195 aplikacji | #25 |
 | 2026-11-12 | Etap 12: przepływy aplikacji (FLW‑01…05), oś kroków na canvasie; unit 211, E2E 34 | — |
 | 2026-11-12 | **Wydanie v1.0.0** (MVP; D10: następna faza = 1.1), `CHANGELOG.md`, wersja w `apps/web/package.json` | tag `v1.0.0` |
+| 2026-11-12 | Etap 13: Access (macierz, ekspozycja, asercje), Save as assertion, kreator segmentacji; unit 218, E2E 37 | #27 |
+| 2026-11-12 | Etap 14: zasilanie, PoE, UPS, koszt energii, Dashboard; unit 223, E2E 38 | — |

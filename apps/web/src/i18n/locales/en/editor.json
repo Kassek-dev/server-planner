@@ -4,7 +4,8 @@
     "topology": "Topology",
     "inventory": "Inventory",
     "ip": "IP Plan",
-    "access": "Access"
+    "access": "Access",
+    "dashboard": "Dashboard"
   },
   "rename": "Rename project",
   "save": {

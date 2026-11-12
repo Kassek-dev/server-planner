@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../../app/format';
+import { useSession } from '../../../app/services';
 import { catalogDevice, useCatalog } from '../../../catalog/store';
 import { Silhouette, type SilhouetteName } from '../../../icons/devices';
 import { Checkbox } from '../../../ui/Checkbox';
@@ -55,6 +56,28 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
   const hw = device.hardware;
   const setHw = (next: Hardware) =>
     run(updateDevice, { id: device.id, changes: { hardware: next } });
+  const setUps = (changes: {
+    capacityVa?: number | undefined;
+    capacityW?: number | undefined;
+    batteryWh?: number | undefined;
+  }) => {
+    const merged = { ...device.ups, ...changes };
+    for (const key of Object.keys(changes) as (keyof typeof changes)[])
+      if (changes[key] === undefined) delete merged[key];
+    const { capacityVa, capacityW, batteryWh } = merged;
+    // VA and W are required together; a single figure stands in for the other until filled.
+    const va = capacityVa ?? capacityW;
+    const w = capacityW ?? capacityVa;
+    run(updateDevice, {
+      id: device.id,
+      changes: {
+        ups:
+          va === undefined || w === undefined
+            ? undefined
+            : { capacityVa: va, capacityW: w, ...(batteryWh !== undefined ? { batteryWh } : {}) },
+      },
+    });
+  };
   const sizeError = t('errors.size');
   const sizeValidator = (v: string) => (parseSize(v) === undefined ? sizeError : null);
   const numberValidator = intValidator(0, 100_000, t('errors.number'));
@@ -310,7 +333,103 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
           />
         </Grid>
       </Section>
+
+      {device.kind === 'ups' ? (
+        <Section title={t('hardware.ups')}>
+          <Grid>
+            <CommitField
+              label={t('hardware.upsVa')}
+              mono
+              value={device.ups ? String(device.ups.capacityVa) : ''}
+              validate={(v) => (v === '' ? null : numberValidator(v))}
+              onCommit={(v) => setUps({ capacityVa: v === '' ? undefined : Number(v) })}
+            />
+            <CommitField
+              label={t('hardware.upsW')}
+              mono
+              value={device.ups ? String(device.ups.capacityW) : ''}
+              validate={(v) => (v === '' ? null : numberValidator(v))}
+              onCommit={(v) => setUps({ capacityW: v === '' ? undefined : Number(v) })}
+            />
+            <CommitField
+              label={t('hardware.upsBattery')}
+              mono
+              value={device.ups?.batteryWh !== undefined ? String(device.ups.batteryWh) : ''}
+              validate={(v) => (v === '' ? null : numberValidator(v))}
+              onCommit={(v) => setUps({ batteryWh: v === '' ? undefined : Number(v) })}
+            />
+          </Grid>
+        </Section>
+      ) : null}
+
+      {device.switching ? (
+        <Section title={t('hardware.poe')}>
+          <Grid>
+            <CommitField
+              label={t('hardware.poeBudget')}
+              mono
+              value={
+                device.switching.poeBudgetW !== undefined ? String(device.switching.poeBudgetW) : ''
+              }
+              validate={(v) => (v === '' ? null : numberValidator(v))}
+              onCommit={(v) => {
+                const { poeBudgetW: _, ...rest } = device.switching ?? { layer: 2, managed: false };
+                run(updateDevice, {
+                  id: device.id,
+                  changes: { switching: v === '' ? rest : { ...rest, poeBudgetW: Number(v) } },
+                });
+              }}
+            />
+          </Grid>
+        </Section>
+      ) : null}
+
+      <PurchaseSection device={device} />
     </>
+  );
+}
+
+/** BOM data (EXP-03, CAP-09): owned / to buy / optional, price. */
+function PurchaseSection({ device }: { device: Device }) {
+  const { t } = useTranslation('inspector');
+  const run = useCommand();
+  const currency = useSession((s) => s.project?.settings.currency) ?? '';
+  const purchase = device.purchase;
+  const set = (changes: Partial<NonNullable<Device['purchase']>>) => {
+    const next = { status: 'owned' as const, ...purchase, ...changes };
+    if (next.price === undefined) delete next.price;
+    if (next.price === undefined) delete next.currency;
+    run(updateDevice, { id: device.id, changes: { purchase: next } });
+  };
+  return (
+    <Section title={t('hardware.purchase')}>
+      <Grid>
+        <Select
+          label={t('hardware.purchaseStatus')}
+          value={purchase?.status ?? 'owned'}
+          options={(['owned', 'to-buy', 'optional'] as const).map((value) => ({
+            value,
+            label: t(`hardware.purchaseStatuses.${value}`),
+          }))}
+          onChange={(e) => set({ status: e.target.value as 'owned' | 'to-buy' | 'optional' })}
+        />
+        <CommitField
+          label={t('hardware.price', { currency: purchase?.currency ?? currency })}
+          mono
+          value={purchase?.price !== undefined ? String(purchase.price) : ''}
+          validate={(v) =>
+            v === '' || (Number.isFinite(Number(v)) && Number(v) >= 0) ? null : t('errors.number')
+          }
+          onCommit={(v) =>
+            set(
+              v === ''
+                ? { price: undefined }
+                : { price: Number(v), currency: purchase?.currency ?? currency },
+            )
+          }
+        />
+      </Grid>
+    </Section>
   );
 }
 

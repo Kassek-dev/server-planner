@@ -134,5 +134,13 @@
   "VAL_ASSERT": {
     "title": "Access expectation not met",
     "description": "“{name}” expects {expect, select, reachable {a connection} other {no connection}}, but {actual, select, reachable {it connects} blocked {it is blocked} other {the result is unknown}}."
+  },
+  "VAL_12": {
+    "title": "PoE budget exceeded",
+    "description": "Devices on {device} draw {used} W of PoE, but its budget is {budget} W."
+  },
+  "VAL_12_UPS": {
+    "title": "UPS overloaded",
+    "description": "{device} would carry about {load} W, more than its {capacity} W."
   }
 }

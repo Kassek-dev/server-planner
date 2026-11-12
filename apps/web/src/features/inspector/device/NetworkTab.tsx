@@ -326,7 +326,79 @@ export function InterfaceCard({
       {address?.subnetId && project.subnets[address.subnetId] ? (
         <Row label={t('network.subnet')} value={project.subnets[address.subnetId]?.cidr ?? ''} />
       ) : null}
+      {iface.kind === 'rj45' ? <PoeFields iface={iface} update={update} /> : null}
     </Card>
+  );
+}
+
+/** HW-06: PoE role of a copper port — power source (switch, injector) or powered device. */
+function PoeFields({
+  iface,
+  update,
+}: {
+  iface: Interface;
+  update: (changes: Parameters<typeof updateInterface.run>[1]['changes']) => void;
+}) {
+  const { t } = useTranslation('inspector');
+  const poe = iface.poe;
+  return (
+    <Grid>
+      <Select
+        label={t('network.poe')}
+        value={poe?.role ?? ''}
+        options={[
+          { value: '', label: t('network.poeNone') },
+          { value: 'pse', label: t('network.poePse') },
+          { value: 'pd', label: t('network.poePd') },
+        ]}
+        onChange={(e) => {
+          const role = e.target.value;
+          update({
+            poe:
+              role === 'pse' || role === 'pd'
+                ? { role, ...(poe?.standard ? { standard: poe.standard } : {}) }
+                : undefined,
+          });
+        }}
+      />
+      {poe ? (
+        <Select
+          label={t('network.poeStandard')}
+          mono
+          value={poe.standard ?? ''}
+          options={[
+            { value: '', label: '—' },
+            { value: 'af', label: '802.3af' },
+            { value: 'at', label: '802.3at' },
+            { value: 'bt', label: '802.3bt' },
+          ]}
+          onChange={(e) => {
+            const standard = e.target.value;
+            const { standard: _, ...rest } = poe;
+            update({
+              poe:
+                standard === 'af' || standard === 'at' || standard === 'bt'
+                  ? { ...rest, standard }
+                  : rest,
+            });
+          }}
+        />
+      ) : null}
+      {poe?.role === 'pd' ? (
+        <CommitField
+          label={t('network.poeDraw')}
+          mono
+          value={poe.drawW !== undefined ? String(poe.drawW) : ''}
+          validate={(v) =>
+            v === '' || (Number(v) > 0 && Number(v) <= 100) ? null : t('errors.number')
+          }
+          onCommit={(v) => {
+            const { drawW: _, ...rest } = poe;
+            update({ poe: v === '' ? rest : { ...rest, drawW: Number(v) } });
+          }}
+        />
+      ) : null}
+    </Grid>
   );
 }
 

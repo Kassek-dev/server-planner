@@ -22,6 +22,15 @@ function setup() {
     deviceStatus: {},
     internet: {},
     assertions: [],
+    power: {
+      devices: {},
+      totalIdleW: 0,
+      totalExpectedW: 0,
+      monthlyKwh: 0,
+      poe: [],
+      ups: [],
+      unknown: [],
+    },
     durationMs: 0,
   }));
   const disconnect = connectResults(session, analyzer, 150);

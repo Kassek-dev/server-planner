@@ -1,6 +1,7 @@
 import type { Project } from '@server-planner/model';
 import { capacity } from './capacity';
 import { buildContext, type EngineContext, type EngineOptions } from './context';
+import { power } from './power';
 import { internetAccess } from './simulation/access';
 import { evaluateAssertions } from './simulation/assertions';
 import type { AnalysisResult, DeviceStatus, EntityRef, Issue } from './types';
@@ -52,6 +53,32 @@ export function analyze(project: Project, options: EngineOptions = {}): Analysis
     });
   }
   const reports = capacity(ctx);
+  // VAL-12 (PoE budget) and an overloaded UPS come from the power estimate (CAP-07/08).
+  const energy = power(ctx, reports);
+  for (const b of energy.poe)
+    if (b.budgetW > 0 && b.usedW > b.budgetW)
+      issues.push({
+        code: 'VAL_12',
+        severity: 'error',
+        params: {
+          device: project.devices[b.deviceId]?.name ?? '?',
+          used: Math.round(b.usedW * 10) / 10,
+          budget: b.budgetW,
+        },
+        targets: [{ type: 'device', id: b.deviceId }],
+      });
+  for (const u of energy.ups)
+    if (u.capacityW > 0 && u.loadW > u.capacityW)
+      issues.push({
+        code: 'VAL_12_UPS',
+        severity: 'error',
+        params: {
+          device: project.devices[u.deviceId]?.name ?? '?',
+          load: Math.round(u.loadW),
+          capacity: u.capacityW,
+        },
+        targets: [{ type: 'device', id: u.deviceId }],
+      });
 
   const deviceStatus: Record<string, DeviceStatus> = {};
   for (const id of Object.keys(project.devices)) deviceStatus[id] = 'ok';
@@ -69,6 +96,7 @@ export function analyze(project: Project, options: EngineOptions = {}): Analysis
     deviceStatus,
     internet: internetAccess(ctx),
     assertions,
+    power: energy,
     durationMs: Date.now() - started,
   };
 }
