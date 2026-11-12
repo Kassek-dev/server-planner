@@ -10,6 +10,7 @@
       "**",
       "!**/dist",
       "!catalog/dist",
+      "!catalog/state.json",
       "!design/canvas",
       "!**/*.dc.html",
       "!pnpm-lock.yaml",

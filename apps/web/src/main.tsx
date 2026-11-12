@@ -16,6 +16,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './app/App';
 import { createServices, ServicesProvider } from './app/services';
 import { initTheme } from './app/theme';
+import { maybeCheckForUpdate, restoreDownloaded } from './catalog/updates';
 import { initI18n } from './i18n/config';
 
 initTheme();
@@ -25,6 +26,9 @@ const root = document.getElementById('root');
 if (!root) throw new Error('Root element #root not found');
 
 const services = await createServices();
+// Catalog (CAT-04): a downloaded newer version first, then — at most weekly — a background check.
+await restoreDownloaded(services.repository);
+void maybeCheckForUpdate(services.repository);
 // Never lose the last edits: write as soon as the tab is hidden (usually before it closes),
 // and ask the browser to confirm leaving while a write is still pending.
 document.addEventListener('visibilitychange', () => {

@@ -242,6 +242,48 @@ export const CatalogOsSchema = z.object({
 });
 
 /** The effective catalog the app works with (base layer, later + downloaded updates). */
+/** Status of one builder source as published in `catalog/dist/manifest.json` (docs/02 § 9.1). */
+export const CatalogSourceSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  url: HttpsUrlSchema,
+  license: z.string(),
+  status: z.enum(['ok', 'failed', 'stale']),
+  fetchedAt: IsoDateSchema.optional(),
+  records: z.number().int().nonnegative(),
+  error: z.string().optional(),
+});
+
+export const CatalogManifestSchema = z.object({
+  format: z.literal('server-planner/catalog'),
+  schemaVersion: z.literal(1),
+  catalogVersion: z.string().min(1),
+  generatedAt: IsoDateSchema,
+  minAppVersion: z.string().min(1),
+  files: z.array(
+    z.object({
+      name: z.string().regex(/^[a-z]+\.json$/),
+      sha256: z.string().regex(/^[0-9a-f]{64}$/),
+      bytes: z.number().int().nonnegative(),
+      records: z.number().int().nonnegative(),
+    }),
+  ),
+  sources: z.array(CatalogSourceSchema),
+});
+
+/** `catalog/dist/perf.json` — relative multi-core score per CPU name (i5-8500T = 100). */
+export const CpuPerfFileSchema = z.object({
+  reference: z.string(),
+  cpus: z.array(
+    z.object({
+      name: z.string(),
+      normalized: z.string(),
+      score: z.number().nonnegative(),
+      samples: z.number().int().positive(),
+    }),
+  ),
+});
+
 export const CatalogSchema = z.object({
   format: z.literal('server-planner/catalog'),
   catalogVersion: z.string().min(1),
@@ -250,6 +292,8 @@ export const CatalogSchema = z.object({
   devices: z.array(CatalogDeviceSchema),
   cpus: z.array(CatalogCpuSchema),
   os: z.array(CatalogOsSchema),
+  /** Builder sources behind this catalog (absent for the curated layer alone). */
+  sources: z.array(CatalogSourceSchema).optional(),
 });
 
 export type CatalogAppComponent = z.infer<typeof CatalogAppComponentSchema>;
@@ -260,3 +304,6 @@ export type CatalogCpu = z.infer<typeof CatalogCpuSchema>;
 export type CatalogDevice = z.infer<typeof CatalogDeviceSchema>;
 export type CatalogOs = z.infer<typeof CatalogOsSchema>;
 export type Catalog = z.infer<typeof CatalogSchema>;
+export type CatalogSource = z.infer<typeof CatalogSourceSchema>;
+export type CatalogManifest = z.infer<typeof CatalogManifestSchema>;
+export type CpuPerfFile = z.infer<typeof CpuPerfFileSchema>;

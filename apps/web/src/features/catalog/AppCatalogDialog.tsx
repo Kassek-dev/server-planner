@@ -53,14 +53,21 @@ export function AppCatalogDialog({
     return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   }, [apps]);
   const q = query.trim().toLowerCase();
-  const results = apps.filter(
-    (a) =>
-      (category === 'all' || a.categories.includes(category)) &&
-      (!q ||
-        a.name.toLowerCase().includes(q) ||
-        a.description.en.toLowerCase().includes(q) ||
-        a.categories.some((c) => c.includes(q))),
-  );
+  const results = apps
+    .filter(
+      (a) =>
+        (category === 'all' || a.categories.includes(category)) &&
+        (!q ||
+          a.name.toLowerCase().includes(q) ||
+          a.description.en.toLowerCase().includes(q) ||
+          a.categories.some((c) => c.includes(q))),
+    )
+    // Name matches first, then alphabetical (curated and imported apps mixed).
+    .sort(
+      (a, b) =>
+        Number(!!q && !a.name.toLowerCase().includes(q)) -
+          Number(!!q && !b.name.toLowerCase().includes(q)) || a.name.localeCompare(b.name),
+    );
   const detail = apps.find((a) => a.id === (focused ?? selected[0])) ?? results[0];
   const hosts = appHosts(project);
 
