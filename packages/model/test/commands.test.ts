@@ -2,6 +2,7 @@ import { applyPatches } from 'immer';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   addDevice,
+  addDockerNetwork,
   addFirewallRule,
   addInterface,
   addLocation,
@@ -27,9 +28,11 @@ import {
   type ModelContext,
   moveFirewallRule,
   moveNode,
+  moveWorkload,
   type Project,
   ProjectSchema,
   placeDevice,
+  setDeviceOs,
   setLinkRouting,
   setLinkWaypoints,
   updateApp,
@@ -463,6 +466,96 @@ describe('workloads and apps', () => {
     });
     const { project } = run(dependent.project, deleteApp, { id: jellyfin.id });
     expect(project.apps[jellyfin.id]).toBeUndefined();
+  });
+});
+
+describe('moving workloads (SW-11)', () => {
+  const workload = (p: Project, name: string) => {
+    const w = Object.values(p.workloads).find((x) => x.name === name);
+    if (!w) throw new Error(`no workload ${name}`);
+    return w;
+  };
+  /** A second Proxmox host with its own pool and vmbr0. */
+  function withSecondHost(p: Project) {
+    const added = run(p, addDevice, { kind: 'server', name: 'pve2' });
+    const id = added.result.deviceId;
+    let next = run(added.project, setDeviceOs, {
+      id,
+      os: { osId: 'proxmox-ve', version: '8.3' },
+    }).project;
+    next = run(next, updateDevice, {
+      id,
+      changes: {
+        hardware: {
+          cpus: [],
+          disks: [],
+          gpus: [],
+          pools: [{ id: 'pool_new', name: 'local-zfs', layout: 'single', diskIds: [] }],
+        },
+      },
+    }).project;
+    return { project: next, id };
+  }
+
+  it('moves a VM with its container, re-cabling the vNIC and moving disks', () => {
+    const { project, id } = withSecondHost(lab);
+    const vm = workload(project, 'docker-vm');
+    const moved = run(project, moveWorkload, { id: vm.id, host: { type: 'device', id } }).project;
+    const after = moved.workloads[vm.id];
+    expect(after?.host).toEqual({ type: 'device', id });
+    expect(after?.kind !== 'container' && after?.resources.disks.map((d) => d.poolId)).toEqual([
+      'pool_new',
+    ]);
+    const bridge = ifaceOf(moved, 'pve2', 'vmbr0');
+    const nics = Object.values(moved.interfaces).filter((i) => i.owner.id === vm.id);
+    for (const nic of nics) {
+      const links = Object.values(moved.links).filter((l) => l.a === nic.id || l.b === nic.id);
+      expect(links.map((l) => (l.a === nic.id ? l.b : l.a))).toEqual([bridge.id]);
+    }
+    // The container stays inside the VM with its network.
+    const jellyfin = workload(moved, 'jellyfin');
+    expect(jellyfin.host).toEqual({ type: 'workload', id: vm.id });
+    const before = workload(project, 'jellyfin');
+    expect(jellyfin.kind === 'container' && jellyfin.network).toEqual(
+      before.kind === 'container' && before.network,
+    );
+    for (const volume of jellyfin.kind === 'container' ? jellyfin.volumes : [])
+      if (volume.poolId) expect(volume.poolId).toBe('pool_new');
+    expectNoDanglingCoreRefs(moved);
+  });
+
+  it('moves a container to a Docker host and joins its network', () => {
+    const nas = byName(lab, 'nas-01');
+    let project = run(lab, updateDevice, {
+      id: nas.id,
+      changes: { docker: { enabled: true, networkIds: [] } },
+    }).project;
+    const added = run(project, addDockerNetwork, {
+      network: { host: { type: 'device', id: nas.id }, name: 'bridge', driver: 'bridge' },
+    });
+    project = added.project;
+    const jellyfin = workload(project, 'jellyfin');
+    const moved = run(project, moveWorkload, {
+      id: jellyfin.id,
+      host: { type: 'device', id: nas.id },
+    }).project;
+    const after = moved.workloads[jellyfin.id];
+    expect(after?.kind === 'container' && after.network).toEqual({
+      mode: 'docker-network',
+      dockerNetworkId: added.result,
+    });
+    expect(after?.kind === 'container' && after.stackId).toBeFalsy();
+  });
+
+  it('rejects moving a workload into what it hosts', () => {
+    const vm = workload(lab, 'docker-vm');
+    const jellyfin = workload(lab, 'jellyfin');
+    expectRejected(
+      lab,
+      moveWorkload,
+      { id: vm.id, host: { type: 'workload', id: jellyfin.id } },
+      'WORKLOAD_HOST_CYCLE',
+    );
   });
 });
 

@@ -247,7 +247,7 @@ Trzy warstwy: **walidacja statyczna** (ciągła) → **analiza dostępności** (
 | VAL-08 | Port użyty dwukrotnie / urządzenie bez połączeń                            | Błąd / Info        |
 | VAL-09 | Nakładające się podsieci                                                   | Błąd               |
 | VAL-10 | Konflikt portów na tym samym IP (dwie usługi na :443)                      | Błąd               |
-| VAL-11 | Niezgodność OS/obrazu (SW-12)                                              | Błąd / Ostrzeżenie |
+| VAL-11 | Niezgodność OS/obrazu (SW-12); architektura OS i obrazu vs CPU — kody `VAL_ARCH`, `VAL_ARCH_OS` (dane `arch` z katalogu) | Błąd / Ostrzeżenie |
 | VAL-12 | Przekroczony budżet PoE                                                    | Błąd               |
 | VAL-13 | Przekroczenie capacity (z M9)                                              | Błąd / Ostrzeżenie |
 | VAL-14 | Niespełniona zależność aplikacji (brak bazy danych / niedostępna sieciowo) | Błąd               |

@@ -4,6 +4,7 @@ import {
   type Device,
   GpuFeatureSchema,
   type Hardware,
+  modelSpecChanges,
   type Project,
   STANDALONE_SHAPES,
   type StandaloneShape,
@@ -16,6 +17,8 @@ import { formatSize, parseSize } from '../../../app/format';
 import { useSession } from '../../../app/services';
 import { catalogDevice, useCatalog } from '../../../catalog/store';
 import { Silhouette, type SilhouetteName } from '../../../icons/devices';
+import { Banner } from '../../../ui/Banner';
+import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Segmented } from '../../../ui/Segmented';
 import { Select } from '../../../ui/Select';
@@ -811,6 +814,11 @@ function ModelSection({ device }: { device: Device }) {
   const catalog = useCatalog((s) => s.catalog);
   const [open, setOpen] = useState(false);
   const model = device.catalogRef ? catalogDevice(catalog, device.catalogRef.id) : undefined;
+  // LIB-03: the project keeps its copy; a newer catalog with different data only offers an update.
+  const changes =
+    model && catalog && device.catalogRef?.version !== catalog.catalogVersion
+      ? modelSpecChanges(device, model)
+      : [];
   useEffect(() => {
     if (device.catalogRef) void useCatalog.getState().load();
   }, [device.catalogRef]);
@@ -826,6 +834,31 @@ function ModelSection({ device }: { device: Device }) {
             ? device.catalogRef.id
             : t('hardware.genericModel', { kind: t(`canvas:deviceKind.${device.kind}`) })}
       </span>
+      {model && catalog && changes.length > 0 ? (
+        <Banner
+          kind="info"
+          actions={
+            <Button
+              size="sm"
+              onClick={() =>
+                run(applyDeviceModel, {
+                  id: device.id,
+                  model,
+                  catalogVersion: catalog.catalogVersion,
+                })
+              }
+            >
+              {t('hardware.specApply')}
+            </Button>
+          }
+        >
+          {t('hardware.specUpdate', {
+            from: device.catalogRef?.version ?? '',
+            to: catalog.catalogVersion,
+            fields: changes.map((f) => t(`hardware.specFields.${f}`)).join(', '),
+          })}
+        </Banner>
+      ) : null}
       {open ? (
         <DeviceModelPicker
           open

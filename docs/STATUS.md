@@ -212,9 +212,9 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 
 ### Etap 19 — Software: przenoszenie, zgodność, aktualizacje specyfikacji (SW‑11, SW‑12, LIB‑03)
 
-- [ ] SW‑11 przeniesienie workloadu na inny host (drzewo w inspectorze, z kaskadą vNIC/mostów)
-- [ ] SW‑12 architektura obrazu (amd64/arm64) vs CPU hosta — reguła walidacji
-- [ ] LIB‑03 „dostępna nowsza specyfikacja” dla pozycji z katalogu
+- [x] SW‑11 przeniesienie workloadu na inny host: komenda `workload.move` (vNIC na most nowego urządzenia, dyski/wolumeny na jego pulę, kontener do sieci Dockera nowego hosta, bez stosu), pole „Runs on” w inspectorze workloadu zamiast przeciągania
+- [x] SW‑12 reguła `VAL_ARCH` (obraz kontenera vs CPU urządzenia) i `VAL_ARCH_OS` (OS hosta lub gościa VM vs CPU); architektury z katalogu przez `EngineOptions.imageArch` / `osArch`
+- [x] LIB‑03 `modelSpecChanges`: gdy katalog ma inną wersję i inne dane modelu, sekcja Model pokazuje baner „Update specification” z listą zmienianych części
 
 ### Etap 20 — Sieć i etykiety, schemat v2 (NET‑11, NET‑14, LBL‑03)
 
@@ -268,4 +268,5 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 | 2026-11-12 | Poprawka bezpieczeństwa: walidacja snapshotów przy imporcie i przywracaniu | #32 |
 | 2026-11-12 | Etap 17: PWA (offline, aktualizacja), tryb mobilny tylko do odczytu (M‑01…03); unit 241, E2E 47 | #33 |
 | 2026-11-12 | **Wydanie v1.1.0** (etapy 9–17; format projektu bez zmian, schemat v1), `CHANGELOG.md`, wersja w `apps/web/package.json` (spełnia `minAppVersion` katalogu) | tag `v1.1.0` |
-| 2026-11-12 | Plan wersji 1.2 (etapy 18–22); etap 18: punkty pośrednie kabli, prowadnice, Group by | — |
+| 2026-11-12 | Plan wersji 1.2 (etapy 18–22); etap 18: punkty pośrednie kabli, prowadnice, Group by | #35 |
+| 2026-11-15 | Etap 19: przenoszenie workloadów (SW‑11), zgodność architektury (SW‑12), nowsza specyfikacja z katalogu (LIB‑03) | — |

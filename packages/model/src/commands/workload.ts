@@ -1,6 +1,6 @@
 import type { Project } from '../schema/project';
 import type { AppInstance, DockerNetwork, HostRef, Stack, Workload } from '../schema/workload';
-import { removeApp, removeWorkload } from './cascade';
+import { removeApp, removeLink, removeWorkload } from './cascade';
 import {
   applyChanges,
   CommandError,
@@ -51,6 +51,101 @@ export const updateWorkload = defineCommand(
     const workload = getOrThrow(draft.workloads, id, 'workload');
     if (changes.host) checkHost(draft, changes.host, id);
     applyChanges(workload, changes as Partial<Workload>);
+  },
+);
+
+/** The physical device at the bottom of a hosting chain (bounded walk, cycle-safe). */
+function rootDevice(draft: Project, host: HostRef) {
+  let current: HostRef | undefined = host;
+  for (let depth = 0; current && depth < 8; depth += 1) {
+    if (current.type === 'device') return draft.devices[current.id];
+    current = draft.workloads[current.id]?.host;
+  }
+  return undefined;
+}
+
+/** The workload and everything it hosts, transitively. */
+function subtree(draft: Project, id: string): Set<string> {
+  const ids = new Set([id]);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const w of Object.values(draft.workloads)) {
+      if (w.host.type === 'workload' && ids.has(w.host.id) && !ids.has(w.id)) {
+        ids.add(w.id);
+        grew = true;
+      }
+    }
+  }
+  return ids;
+}
+
+/**
+ * SW-11 moves a workload (with what it hosts) to another host, "on paper": vNICs are re-cabled to
+ * the new device's bridge, disks and volumes go to its first pool when their pool is not there,
+ * and a container leaves its stack and joins a Docker network of the new host (same name if any).
+ * Whether the new host can run it is left to validation (VAL-11, VAL-13, VAL_ARCH).
+ */
+export const moveWorkload = defineCommand(
+  'workload.move',
+  (draft, { id, host }: { id: string; host: HostRef }, ctx) => {
+    const workload = getOrThrow(draft.workloads, id, 'workload');
+    if (workload.host.type === host.type && workload.host.id === host.id) return;
+    checkHost(draft, host, id);
+    const from = rootDevice(draft, workload.host);
+    workload.host = { ...host };
+    const to = rootDevice(draft, host);
+    if (!to || to.id === from?.id) return;
+
+    const pools = new Set(to.hardware.pools.map((p) => p.id));
+    const fallbackPool = to.hardware.pools[0]?.id;
+    const repool = (poolId: string) =>
+      pools.has(poolId) || fallbackPool === undefined ? poolId : fallbackPool;
+    const bridge = Object.values(draft.interfaces).find(
+      (i) => i.owner.type === 'device' && i.owner.id === to.id && i.kind === 'bridge',
+    );
+    const moved = subtree(draft, id);
+    for (const wid of moved) {
+      const w = draft.workloads[wid];
+      if (!w) continue;
+      if (w.kind !== 'container') {
+        for (const disk of w.resources.disks) disk.poolId = repool(disk.poolId);
+      } else {
+        for (const volume of w.volumes) if (volume.poolId) volume.poolId = repool(volume.poolId);
+      }
+      // vNICs cabled to a bridge of the old device follow to the new device's bridge.
+      for (const nic of Object.values(draft.interfaces)) {
+        if (nic.owner.type !== 'workload' || nic.owner.id !== wid) continue;
+        for (const link of Object.values(draft.links)) {
+          const peerId = link.a === nic.id ? link.b : link.b === nic.id ? link.a : undefined;
+          const peer = peerId ? draft.interfaces[peerId] : undefined;
+          if (peer?.owner.type !== 'device' || peer.owner.id === to.id) continue;
+          removeLink(draft, link.id);
+          if (bridge) {
+            const linkId = ctx.createId('link');
+            draft.links[linkId] = { ...link, id: linkId, a: nic.id, b: bridge.id };
+          }
+        }
+      }
+    }
+
+    if (workload.kind === 'container') {
+      const stack = workload.stackId ? draft.stacks[workload.stackId] : undefined;
+      if (stack && (stack.host.type !== host.type || stack.host.id !== host.id))
+        delete workload.stackId;
+      if (workload.network.mode === 'docker-network') {
+        const current = draft.dockerNetworks[workload.network.dockerNetworkId];
+        const onHost = Object.values(draft.dockerNetworks).filter(
+          (n) => n.host.type === host.type && n.host.id === host.id,
+        );
+        if (!current || current.host.type !== host.type || current.host.id !== host.id) {
+          const target = onHost.find((n) => n.name === current?.name) ?? onHost[0];
+          workload.network = target
+            ? { mode: 'docker-network', dockerNetworkId: target.id }
+            : { mode: 'none' };
+        }
+      }
+    }
   },
 );
 

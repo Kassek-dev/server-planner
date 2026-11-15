@@ -14,6 +14,7 @@ import {
   createProject,
   execute,
   type ModelContext,
+  modelSpecChanges,
   type Project,
   ProjectSchema,
   publishedPorts,
@@ -170,6 +171,28 @@ describe('device.applyModel', () => {
     const ports = Object.values(p.interfaces).filter((i) => i.owner.id === sw.id);
     const linked = new Set(Object.values(p.links).flatMap((l) => [l.a, l.b]));
     expect(ports.every((i) => i.name === 'Port 1' || linked.has(i.id))).toBe(true);
+  });
+});
+
+describe('newer model specification (LIB-03)', () => {
+  it('lists what applying the catalog model again would change', () => {
+    let p = createProject('Lab', ctx);
+    const pc = run(p, addDevice, { kind: 'mini-pc' });
+    p = run(pc.project, applyDeviceModel, {
+      id: pc.result.deviceId,
+      model: miniPc,
+      catalogVersion: '2026.46',
+    }).project;
+    const device = p.devices[pc.result.deviceId];
+    if (!device) throw new Error('no device');
+    expect(modelSpecChanges(device, miniPc)).toEqual([]);
+    const cpu = miniPc.hardware.cpus[0];
+    if (!cpu) throw new Error('no cpu');
+    const newer: CatalogDevice = {
+      ...miniPc,
+      hardware: { ...miniPc.hardware, cpus: [{ ...cpu, tdpW: 25 }] },
+    };
+    expect(modelSpecChanges(device, newer)).toEqual(['cpu']);
   });
 });
 

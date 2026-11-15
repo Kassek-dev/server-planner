@@ -104,6 +104,16 @@
     "catalogModel": "Model",
     "chooseModel": "Choose model",
     "genericModel": "Generic {kind}",
+    "specUpdate": "Catalog {to} has newer data for this model than {from}. Updating replaces: {fields}.",
+    "specApply": "Update specification",
+    "specFields": {
+      "cpu": "CPU",
+      "gpu": "GPU",
+      "memory": "memory",
+      "power": "power draw",
+      "formFactor": "form factor",
+      "switching": "switching"
+    },
     "chooseModelFor": "Choose device model · {name}",
     "ups": "UPS",
     "upsVa": "Capacity VA",
@@ -204,6 +214,7 @@
   },
   "workload": {
     "name": "Name",
+    "host": "Runs on (move to another host)",
     "container": "Container",
     "resources": "Resources",
     "vcpu": "vCPU",

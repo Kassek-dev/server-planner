@@ -70,3 +70,29 @@ test('rejected change shows a readable message', async ({ page }) => {
   // pve1 is standalone: it goes on the rack shelf at U10.
   await expect(panel.getByText('Shelf at U10')).toBeVisible();
 });
+
+test('move a VM to another Proxmox host (SW-11)', async ({ page }) => {
+  await openExample(page);
+  await page
+    .getByRole('complementary', { name: 'Library' })
+    .getByRole('button', { name: /^Mini PC/ })
+    .click();
+  const panel = inspector(page);
+  await expect(panel.getByRole('heading', { name: 'mini-pc-1' })).toBeVisible();
+  await panel.getByRole('tab', { name: 'Software' }).click();
+  await panel.getByLabel('System').selectOption('proxmox-ve');
+
+  await node(page, 'pve1').click();
+  await panel.getByRole('tab', { name: 'Software' }).click();
+  await panel.getByRole('button', { name: /docker-vm/ }).click();
+  await expect(panel.getByRole('heading', { name: 'docker-vm' })).toBeVisible();
+  const host = panel.getByLabel('Runs on (move to another host)');
+  await expect(host.locator('option')).toHaveText(['pve1', 'mini-pc-1']);
+  await host.selectOption({ label: 'mini-pc-1' });
+  await expect(
+    panel.getByRole('navigation', { name: 'Location in hierarchy' }).getByRole('button', {
+      name: 'mini-pc-1',
+    }),
+  ).toBeVisible();
+  await expect(panel.getByLabel('net0 bridge')).toHaveValue(/.+/);
+});
