@@ -223,8 +223,10 @@ function Editor() {
   const selected = useSelection((s) => [...s.nodeIds, ...s.edgeIds].join(','));
   useEffect(() => {
     setParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
+      () => {
+        // Read the live URL: router navigations run as transitions, so `prev` can still hold a
+        // panel another handler closed in the same tick (it would be restored).
+        const next = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
         if (selected) next.set('sel', selected);
         else next.delete('sel');
         return next;

@@ -19,13 +19,18 @@ const LED: Record<Severity, 'error' | 'warning' | 'info'> = {
   info: 'info',
 };
 
-/** X-02 Issues panel (docs/05 § 8): filters, groups by severity, target links, Fix actions. */
-export function IssuesPanel({ onClose }: { onClose: () => void }) {
+/**
+ * X-02 Issues panel (docs/05 § 8): filters, groups by severity, target links, Fix actions.
+ * `onReveal` runs after a target link opened its element (phones close the full-screen list, M-04).
+ */
+export function IssuesPanel({ onClose, onReveal }: { onClose: () => void; onReveal?: () => void }) {
   const { t } = useTranslation('issues');
   const { session } = useServices();
   const project = useSession((s) => s.project);
   const result = useResults((s) => s.result);
   const pending = useResults((s) => s.pending);
+  // View-only sessions (phones) cannot apply fixes, so they are not offered.
+  const readOnly = useSession((s) => s.readOnly);
   const reveal = useRevealTarget(project);
   const [filter, setFilter] = useState<Filter>('all');
   if (!project) return null;
@@ -102,14 +107,17 @@ export function IssuesPanel({ onClose }: { onClose: () => void }) {
                         <button
                           type="button"
                           className="text-accent-text hover:underline"
-                          onClick={() => reveal(target)}
+                          onClick={() => {
+                            reveal(target);
+                            onReveal?.();
+                          }}
                         >
                           {targetLabel(project, target)}
                         </button>
                       ) : null}
                       <span className="font-mono text-data-sm text-text-muted">{issue.code}</span>
                     </span>
-                    {issue.fix ? (
+                    {issue.fix && !readOnly ? (
                       <Button
                         size="sm"
                         variant="ghost"

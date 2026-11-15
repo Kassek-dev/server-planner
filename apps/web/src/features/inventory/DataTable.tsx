@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Fragment, useState } from 'react';
+import { useIsMobile } from '../../app/useIsMobile';
 
 /** Table features shared by every data table (sorting + text search) — stable at module scope. */
 export const features = tableFeatures({
@@ -33,7 +34,8 @@ export type Column<T extends RowData> = ColumnDef<typeof features, T, any>;
 
 /**
  * Data table (docs/05 § 9): sortable headers (`aria-sort`), text search, optional grouping rows,
- * selected row highlight. Row clicks select the element in the project.
+ * selected row highlight. Row clicks select the element in the project. On phones (M-05) every row
+ * is a card: the first column is its title, the others label: value pairs.
  */
 export function DataTable<T extends RowData>({
   label,
@@ -72,6 +74,58 @@ export function DataTable<T extends RowData>({
     ? [...visible].sort((a, b) => groupOf(a.original).localeCompare(groupOf(b.original)))
     : visible;
   const span = table.getAllLeafColumns().length;
+  const mobile = useIsMobile();
+
+  if (mobile) {
+    const headers = new Map(table.getFlatHeaders().map((h) => [h.column.id, h]));
+    return (
+      <ul aria-label={label} className="m-0 flex list-none flex-col gap-2 px-4 py-2">
+        {grouped.length === 0 ? <li className="py-6 text-text-secondary">{empty}</li> : null}
+        {grouped.map((row, index) => {
+          const group = groupOf?.(row.original);
+          const previous =
+            index > 0 ? groupOf?.((grouped[index - 1] as typeof row).original) : undefined;
+          const [first, ...rest] = row.getAllCells();
+          return (
+            <Fragment key={row.id}>
+              {groupOf && (index === 0 || group !== previous) ? (
+                <li className="pt-2 font-mono text-label font-semibold tracking-[0.08em] text-text-muted uppercase">
+                  {group}
+                </li>
+              ) : null}
+              {/* biome-ignore lint/a11y/useKeyWithClickEvents: like a table row — the name cell and the canvas are the keyboard paths */}
+              <li
+                aria-current={row.id === selectedId ? 'true' : undefined}
+                onClick={() => onSelect?.(row.original)}
+                className={`flex flex-col gap-1.5 rounded-md border p-3 ${row.id === selectedId ? 'border-selection bg-accent-subtle' : 'border-border-subtle bg-panel'}`}
+              >
+                {first ? (
+                  <div className="min-h-11 font-semibold">
+                    <table.FlexRender cell={first} />
+                  </div>
+                ) : null}
+                <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+                  {rest.map((cell) => {
+                    const header = headers.get(cell.column.id);
+                    return (
+                      <Fragment key={cell.id}>
+                        <dt className="font-mono text-label tracking-[0.08em] text-text-secondary uppercase">
+                          {header ? <table.FlexRender header={header} /> : null}
+                        </dt>
+                        <dd className="m-0 min-w-0">
+                          <table.FlexRender cell={cell} />
+                        </dd>
+                      </Fragment>
+                    );
+                  })}
+                </dl>
+              </li>
+            </Fragment>
+          );
+        })}
+      </ul>
+    );
+  }
 
   return (
     <table aria-label={label} className="w-full border-collapse text-left">

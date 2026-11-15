@@ -197,7 +197,7 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 - [x] M‑01 projekty: jedna kolumna, bez „New project” (import i przykład zostają)
 - [x] M‑02 edytor: skrócony top bar (widoki w selekcie, bez Undo/Redo/Export, Simulate jako ikona), bez biblioteki i nakładek kolorowania, bez przeciągania i łączenia; dolny arkusz z inspectorem 40 % / 90 % z zamykaniem; jednorazowy baner „Editing is available on desktop”
 - [x] M‑03 Reachability w arkuszu (wybór z list)
-- Pozostałe: M‑04 (pełnoekranowa lista problemów) i M‑05 (karty zamiast tabel) — kolejne iteracje
+- M‑04 i M‑05 — etap 22 (wersja 1.2)
 
 ## Wersja 1.2 — plan (2026-11-12)
 
@@ -232,7 +232,8 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 
 ### Etap 22 — Telefon (M‑04, M‑05)
 
-- [ ] M‑04 pełnoekranowa lista problemów, M‑05 karty zamiast tabel
+- [x] M‑04 pełnoekranowa lista problemów (cel zamyka listę, bez Fix w trybie tylko do odczytu); poprawka: synchronizacja `?sel=` czyta bieżący URL (wcześniej mogła przywrócić zamknięty panel)
+- [x] M‑05 karty w `DataTable` (Inventory), IP Plan bez kolumn interfejs/typ, macierz Access jako lista źródeł
 
 ## Dziennik
 
@@ -272,4 +273,5 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 | 2026-11-12 | Plan wersji 1.2 (etapy 18–22); etap 18: punkty pośrednie kabli, prowadnice, Group by | #35 |
 | 2026-11-15 | Etap 19: przenoszenie workloadów (SW‑11), zgodność architektury (SW‑12), nowsza specyfikacja z katalogu (LIB‑03) | #36 |
 | 2026-11-15 | Etap 20: schemat projektu v2 z migracją — reverse proxy (NET‑11), lokalny DNS (NET‑14), wzorzec etykiet (LBL‑03); IndexedDB v3 | #37 |
-| 2026-11-15 | Etap 21: domyślne ustawienia nowych projektów (SET‑02), inspector lokalizacji (LOC‑06), filtry modeli sprzętu (LIB‑02) | — |
+| 2026-11-15 | Etap 21: domyślne ustawienia nowych projektów (SET‑02), inspector lokalizacji (LOC‑06), filtry modeli sprzętu (LIB‑02) | #38 |
+| 2026-11-15 | Etap 22: telefon — pełnoekranowe problemy (M‑04), karty zamiast tabel (M‑05); plan 1.2 zamknięty | — |

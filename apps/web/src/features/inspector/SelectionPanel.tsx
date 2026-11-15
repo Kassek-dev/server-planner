@@ -66,7 +66,8 @@ export function SelectionPanel() {
   const link = count === 1 && edgeIds[0] ? project.links[edgeIds[0]] : undefined;
 
   let body = <Summary project={project} />;
-  if (issuesOpen) body = <IssuesPanel onClose={closePanel} />;
+  if (issuesOpen)
+    body = <IssuesPanel onClose={closePanel} {...(mobile ? { onReveal: closePanel } : {})} />;
   else if (simOpen) body = <SimulationPanel onClose={closePanel} />;
   else if (workload) body = <WorkloadInspector project={project} workload={workload} />;
   else if (app) body = <AppInspector project={project} app={app} />;
@@ -97,12 +98,14 @@ export function SelectionPanel() {
     return (
       <aside
         aria-label={t('title')}
-        className={`fixed inset-x-0 bottom-0 z-40 flex flex-col rounded-t-lg border-t border-border-default bg-panel shadow-overlay ${expanded ? 'h-[90dvh]' : 'h-[40dvh]'}`}
+        // M-04: the issue list takes the whole screen; anything else is a 40 % / 90 % sheet.
+        className={`fixed inset-x-0 bottom-0 z-40 flex flex-col border-border-default bg-panel shadow-overlay ${issuesOpen ? 'top-0' : `rounded-t-lg border-t ${expanded ? 'h-[90dvh]' : 'h-[40dvh]'}`}`}
       >
         <div className="flex shrink-0 items-center justify-between border-b border-border-subtle px-2">
           <Button
             size="touch"
             variant="ghost"
+            className={issuesOpen ? 'invisible' : undefined}
             aria-expanded={expanded}
             onClick={() => setExpanded((e) => !e)}
           >

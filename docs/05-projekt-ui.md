@@ -317,6 +317,8 @@ Otwierany z liczników w top barze lub `Ctrl Shift M`. Zastępuje inspector.
 - **Edytor**: top bar skrócony (logo, nazwa projektu, menu widoków ▾, liczniki problemów); canvas na pełny ekran z gestami (przesuwanie, szczypanie), zoom semantyczny; brak biblioteki i przeciągania.
 - Stuknięcie elementu → **dolny arkusz** (40% / 90% wysokości) z inspectorem **tylko do odczytu** (zakładki jak na desktopie).
 - Symulacja: Reachability dostępne (to odczyt, nie edycja) — wybór źródła i celu z list.
+- Problemy (M‑04): liczniki otwierają listę na pełnym ekranie; stuknięcie celu zamyka listę i pokazuje element w arkuszu; akcje Fix ukryte (tryb tylko do odczytu).
+- Widoki tabelaryczne (M‑05): Inventory jako karty (tytuł + pary etykieta: wartość), IP Plan bez kolumn interfejs/typ (interfejs pod nazwą hosta), macierz Access jako lista „From X” z celami.
 - Baner jednorazowy: „Editing is available on desktop.”
 - Cele dotykowe ≥ 44 px.
 
