@@ -10,7 +10,8 @@ Deploy: `deploy.yml` buduje i publikuje `apps/web` na GitHub Pages po każdym pu
 ## Wersjonowanie
 
 - SemVer; `1.0.0` = MVP gotowe (D10, wydane 2026-11-12); funkcje P1 → `1.1.0`, dalej `1.x`.
-- `minor` — nowe funkcje; `patch` — poprawki; zmiana `schemaVersion` projektu w `0.x` → `minor`, po 1.0 → `major` tylko gdy brak automatycznej migracji (z migracją: `minor`).
+- **`X.Y.Z` (D11, decyzja użytkownika z 2026-11-16):** `X` — wersja generalna, `Y` — wydanie z nowymi funkcjami (zeruje `Z`), `Z` — **liczba poprawek** od wydania `X.Y.0`, liczona narastająco. Wydanie samych poprawek: 4 poprawki po `1.3.0` → `1.3.4`; kolejne 2 → `1.3.6`. Poprawką jest każdy commit `fix(...)` (squash PR) od ostatniego `X.Y.0`; poprawki wydane razem z nowymi funkcjami wchodzą do `X.Y.0` i nie podbijają `Z`.
+- Zmiana `schemaVersion` projektu w `0.x` → `minor`, po 1.0 → `major` tylko gdy brak automatycznej migracji (z migracją: `minor`).
 - Wersja w `apps/web/package.json` (źródło `appVersion` w eksporcie i `minAppVersion` katalogu).
 
 ## Kroki (tylko na prośbę użytkownika)

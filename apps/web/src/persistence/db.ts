@@ -40,8 +40,17 @@ interface AppDb extends DBSchema {
 
 export type AppDatabase = IDBPDatabase<AppDb>;
 
-export function openAppDb(name: string = DB_NAME): Promise<AppDatabase> {
-  return openDB<AppDb>(name, DB_VERSION, {
+export async function openAppDb(
+  name: string = DB_NAME,
+  /** Called when a newer app version (another tab) waits to upgrade the database. */
+  onVersionChange: () => void = () => globalThis.location?.reload(),
+): Promise<AppDatabase> {
+  const db = await openDB<AppDb>(name, DB_VERSION, {
+    // An open older tab would block the upgrade forever: it lets go and reloads instead.
+    blocking() {
+      db.close();
+      onVersionChange();
+    },
     async upgrade(db, oldVersion, _newVersion, tx) {
       if (oldVersion < 1) {
         db.createObjectStore('projects', { keyPath: 'id' }).createIndex('by-updated', 'updatedAt');
@@ -71,4 +80,5 @@ export function openAppDb(name: string = DB_NAME): Promise<AppDatabase> {
       }
     },
   });
+  return db;
 }

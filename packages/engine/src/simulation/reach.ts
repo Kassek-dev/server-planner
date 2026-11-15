@@ -74,6 +74,7 @@ export const SIM_CODES = [
   'SIM_INTERNET_INBOUND',
   'SIM_NAT_PORT_FORWARD',
   'SIM_NAT_TARGET_MISSING',
+  'SIM_L2_CLIENT_ISOLATION',
 ] as const;
 
 export interface ReachQuery {
@@ -314,6 +315,16 @@ function l2Hop(
     t.addPath(search, to.l2IfaceId);
     t.pass('l2', ifaceRef(from.ifaceId), code, { ...params, segment });
     return true;
+  }
+  for (const [linkId, ssid] of search.isolated) {
+    const link = ctx.project.links[linkId];
+    if (link?.a !== to.l2IfaceId && link?.b !== to.l2IfaceId) continue;
+    t.links.add(linkId);
+    return t.fail('l2', ifaceRef(from.ifaceId), 'SIM_L2_CLIENT_ISOLATION', {
+      ...params,
+      segment,
+      ssid,
+    });
   }
   const refused = search.blocked?.ifaceId
     ? ctx.project.interfaces[search.blocked.ifaceId]

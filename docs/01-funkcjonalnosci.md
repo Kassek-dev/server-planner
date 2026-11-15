@@ -1,6 +1,6 @@
 # Server Planner — specyfikacja funkcjonalna (v0.4)
 
-> Status: **zaakceptowany zakres, v0.6** (D10: numeracja wydań; v0.6: HW‑09 predefiniowane podzespoły) · Ostatnia zmiana: 2026-11-16
+> Status: **zaakceptowany zakres, v0.6** (D10: numeracja wydań; v0.6: HW‑09 predefiniowane podzespoły, D11: numer poprawek) · Ostatnia zmiana: 2026-11-16
 > Kolejne dokumenty: `02-model-danych.md`, `03-architektura.md`, `04-design-system.md`, `05-projekt-ui.md`
 > Dokumentacja prowadzona po polsku; interfejs aplikacji i kod — po angielsku.
 
@@ -20,6 +20,7 @@
 | D8  | **Router/firewall tylko jako generyczne urządzenie** — bez modelowania routera jako VM (np. OPNsense na Proxmoxie).                                                                                                                                                                                                                       | Poza zakresem na teraz; możliwe w przyszłości.                                                                                                                                                                                                                |
 | D9  | **Fizyczne rozmieszczenie na canvasie: lokalizacje + forma urządzenia.** Każde urządzenie jest **rack‑mount** (kafelek‑front z uszami, wysokość w U) albo **standalone** (karta z sylwetką: tower, mini PC, desktop, NAS, ściana, sufit, SBC). Na canvasie są pojemniki **Pomieszczenie / Półka / Rack**; rack ma szynę U i sloty.        | Lab „bez szafy” i lab w szafie wyglądają naturalnie. Lokalizacja to dane domenowe (walidacja U, zasilanie), nie tylko rysunek. Zastępuje dawne „Grupy” i osobny widok Rack. Wybrany kierunek wizualny: C „Rack”, wariant E (canvas) + inspector z wariantu D. |
 | D10 | **Ukończone MVP = wydanie 1.0.0** (SemVer); funkcje P1 trafiają do wersji **1.1**, kolejne do 1.x. | „1.0” nie oznacza już fazy po MVP — teksty UI i dokumentacja mówią o wersji 1.1. Zmiana `schemaVersion` po 1.0: z automatyczną migracją → `minor`, bez → `major` (skill `release`). Decyzja z 2026-11-12. |
+| D11 | **Numeracja `X.Y.Z`: `Z` = liczba poprawek** od wydania `X.Y.0` (narastająco), `Y` = wydanie z nowymi funkcjami, `X` = wersja generalna. | Wydanie poprawek z 4 poprawkami po 1.3.0 to 1.3.4 (skill `release`). Decyzja z 2026-11-16. |
 
 ---
 

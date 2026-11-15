@@ -2,7 +2,7 @@ import { createProject, sequentialContext } from '@server-planner/model';
 import { openDB } from 'idb';
 import { describe, expect, it } from 'vitest';
 import v1 from '../../../../fixtures/schema/v1/home-lab.json';
-import { openAppDb } from './db';
+import { DB_VERSION, openAppDb } from './db';
 import { ProjectRepository, toMeta } from './repository';
 
 let n = 0;
@@ -102,5 +102,17 @@ describe('ProjectRepository', () => {
     expect(project?.devices).toEqual(v1.project.devices);
     const [snapshot] = await repo.listSnapshots(id);
     expect(snapshot?.project.dnsRecords).toEqual({});
+  });
+
+  it('an open older tab lets a newer version upgrade the database', async () => {
+    const name = `test-repo-blocking-${++n}`;
+    let released = 0;
+    await openAppDb(name, () => {
+      released += 1;
+    });
+    // A newer app version opens the same database with a higher version.
+    const newer = await openDB(name, DB_VERSION + 1);
+    expect(released).toBe(1);
+    newer.close();
   });
 });

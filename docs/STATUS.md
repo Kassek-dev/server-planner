@@ -47,7 +47,7 @@
 - [x] Powłoka edytora V‑01: nazwa z edycją w miejscu, status zapisu, undo/redo (przyciski + Ctrl+Z / Ctrl+Shift+Z), eksport, P‑04 dla brakującego projektu
 - [x] Komponenty UI: Dialog, Menu, TextField, Banner (w galerii `#/dev/design`)
 - [x] Testy: 73 jednostkowe (repozytorium na fake-indexeddb, import, sesja, router) + E2E 5/5 (pełna ścieżka projektu, import, kopia, błędny plik)
-- [ ] Miniatury projektów na kartach (wymagają canvasu — etap 3)
+- [x] Miniatury projektów na kartach — zrobione w etapie 3 (`features/canvas/preview.ts`)
 
 ## Etap 3 — Canvas
 
@@ -61,7 +61,7 @@
 - [x] Miniatury projektów (PRJ‑02): schemat SVG liczony z układu przy zapisie
 - [x] Model: `checkRackFit`, `nearestFreeU`, `rackOccupancy`, `findConnectablePorts`, komenda `device.duplicate`; sesja: `transaction` (wiele komend = jeden krok)
 - [x] Edytor ładowany leniwie (główny chunk 116 kB gzip); testy: 105 jednostkowych + E2E 8/8
-- [ ] Trasowanie łączy z punktami pośrednimi i wyrównywanie (CAN‑08, P1); wybór konkretnego portu przy łączeniu (dziś: automatyczny) — w inspectorze łącza, etap 4
+- [x] Trasowanie łączy z punktami pośrednimi i wyrównywanie (CAN‑08) — etapy 16b i 18; wybór konkretnego portu — w inspectorze łącza (etap 4)
 
 ## Etap 4 — Inspector
 
@@ -160,7 +160,7 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 - [x] D‑11 „Save as assertion” w Reachability (wstępnie wypełnione z zapytania i werdyktu)
 - [x] NET‑10 kreator „Typical segmentation” (szuflada VLANs › VLANs): komenda `network.applySegmentation` — Mgmt/LAN/IoT/Guest (VLAN 10/20/30/40, `192.168.<vid>.0/24`, DHCP poza Mgmt), strefy (Guest z izolacją), pod‑interfejsy bramy na wybranym porcie trunk, reguły (Mgmt/LAN → any, IoT/Guest → Internet), strefa WAN i masquerade gdy brak
 - [x] NET‑11 port forwarding: edycja w szufladzie firewalla (od etapu 4b) + ekspozycja w V‑05
-- [ ] NET‑11 reverse proxy (domena → aplikacja) — **odłożone**: wymaga nowej encji w modelu (schemat v2 + migracja + fixture); do zaplanowania osobno
+- [x] NET‑11 reverse proxy (domena → aplikacja) — zrobione w etapie 20 (schemat v2)
 
 ### Etap 14 — Zasilanie i koszty (pakiet 5): HW‑06, CAP‑07/08/09, VAL‑12, SET‑02, Dashboard (V‑02)
 
@@ -246,6 +246,16 @@ Zadania dodane przez użytkownika po wydaniu 1.2.
 - Decyzje (2026-11-16): dane CPU/GPU tylko pewne (zegary pominięte, gdy niepewne); RAM i dyski to konfiguracje, nie dane z zewnętrznego źródła — bez wpisu w `06`; GPU bez `catalogRef` (schemat projektu bez zmian)
 - Diagnoza (2026-11-15): pola pojemności i typu istnieją na każdym dysku, ale nowe urządzenie nie ma dysków, a pula nie pokazuje pojemności ani tego, że trzeba najpierw dodać dyski
 
+## Wersja 1.3 — pakiet poprawek (2026-11-16)
+
+- [x] NET‑12 izolacja klientów Wi‑Fi w symulacji: stacje tego samego SSID z `clientIsolation` nie widzą się w L2 (dowolne radio AP), powód `SIM_L2_CLIENT_ISOLATION`; ruch przewodowy do stacji dalej działa
+- [x] IndexedDB: starsza otwarta karta zamyka bazę i przeładowuje się, gdy nowsza wersja czeka na aktualizację (`blocking`)
+- [x] `i18n:check` wykrywa zdublowane klucze w plikach JSON
+- [x] Nieaktualne punkty STATUS (miniatury, CAN‑08, NET‑11) odhaczone
+- [x] Eksport Markdown: sekcje Reverse proxy i Local DNS
+- [x] Przepływy: krok DNS z lokalną nazwą celu (trasa proxy lub rekord A) i serwerem DNS z rekordu (`FlowHop.name`); ruch przez proxy w przepływach — nadal poza zakresem
+- D11: numeracja `X.Y.Z`, `Z` = liczba poprawek od `X.Y.0` (`docs/01`, skill `release`)
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -287,4 +297,5 @@ Zadania dodane przez użytkownika po wydaniu 1.2.
 | 2026-11-15 | Etap 21: domyślne ustawienia nowych projektów (SET‑02), inspector lokalizacji (LOC‑06), filtry modeli sprzętu (LIB‑02) | #38 |
 | 2026-11-15 | Etap 22: telefon — pełnoekranowe problemy (M‑04), karty zamiast tabel (M‑05); plan 1.2 zamknięty | #39 |
 | 2026-11-15 | **Wydanie v1.2.0** (etapy 18–22; schemat projektu v2 z automatyczną migracją), `CHANGELOG.md`, wersja w `apps/web/package.json`; zakres 1.3: predefiniowane podzespoły, edycja dysków i pul | tag `v1.2.0` |
-| 2026-11-16 | Etap 23: dodawanie wielu dysków, pojemność pul, `VAL_POOL`; listy predefiniowanych CPU (46), GPU/akceleratorów (18), RAM i dysków (HW‑09) | — |
+| 2026-11-16 | Etap 23: dodawanie wielu dysków, pojemność pul, `VAL_POOL`; listy predefiniowanych CPU (46), GPU/akceleratorów (18), RAM i dysków (HW‑09) | #41 |
+| 2026-11-16 | Pakiet poprawek: izolacja Wi‑Fi (NET‑12), `blocking` IndexedDB, duplikaty i18n, proxy/DNS w Markdown, lokalne nazwy w krokach DNS; D11 | — |
