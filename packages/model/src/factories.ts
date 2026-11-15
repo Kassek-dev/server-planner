@@ -53,6 +53,8 @@ export function createProject(name: string, ctx: ModelContext = defaultContext):
     subnets: {},
     zones: {},
     routes: {},
+    proxyRoutes: {},
+    dnsRecords: {},
     tags: {},
     assertions: {},
     locations: {},

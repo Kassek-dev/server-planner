@@ -12,6 +12,8 @@ export const DIFF_COLLECTIONS = [
   'subnets',
   'zones',
   'assertions',
+  'proxyRoutes',
+  'dnsRecords',
 ] as const;
 export type DiffCollection = (typeof DIFF_COLLECTIONS)[number];
 
@@ -50,6 +52,8 @@ function nameOf(project: Comparable, collection: DiffCollection, id: string): st
   }
   if (collection === 'vlans') return `VLAN ${entity.vid as number}`;
   if (collection === 'subnets') return entity.cidr as string;
+  if (collection === 'proxyRoutes') return entity.hostname as string;
+  if (collection === 'dnsRecords') return `${entity.name as string} ${entity.type as string}`;
   return (entity.name as string | undefined) ?? id;
 }
 

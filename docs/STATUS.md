@@ -218,10 +218,11 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 
 ### Etap 20 — Sieć i etykiety, schemat v2 (NET‑11, NET‑14, LBL‑03)
 
-- [ ] Schemat v2 + migracja v1→v2 + fixture
-- [ ] NET‑11 reverse proxy (domena → aplikacja), ekspozycja i symulacja przez proxy
-- [ ] NET‑14 lokalne rekordy DNS
-- [ ] LBL‑03 własny wzorzec etykiet kabli w ustawieniach projektu
+- [x] Schemat projektu v2: `proxyRoutes` (`prx_`), `dnsRecords` (`dns_`), `settings.cableLabelPattern?`; migracja `migrateV1toV2` (projekt i snapshoty), IndexedDB v3 migruje zapisane dane; fixture'y `v1/` zamrożone, `v2/home-lab.json` i `v2/reverse-proxy.json` z buildera
+- [x] NET‑11 komendy `proxyRoute.add/update/delete` (nazwa małymi literami, unikalna, walidowana), szuflada S‑06 Proxy & DNS, silnik: `proxyRoutes()` (proxy → aplikacja), `exposureWithRoutes()` — nazwy hostów pod przekierowaniem w widoku Access; `VAL_PROXY`
+- [x] NET‑14 komendy `dnsRecord.add/update/delete` (wiele A dla nazwy, CNAME jedyny), `resolveLocalName()` z łańcuchem CNAME; `VAL_DNS_ADDRESS`, `VAL_PROXY_DNS`; snapshoty porównują nowe kolekcje
+- [x] LBL‑03 wzorzec etykiet w ustawieniach projektu (z podglądem), używany przez „Generate label” i „Label all cables”
+- Poza zakresem: rekordy DNS i trasy proxy w eksporcie Markdown, użycie rekordów w symulacji przepływów (krok DNS nadal idzie do serwera DNS podsieci)
 
 ### Etap 21 — Ustawienia, lokalizacje, katalog sprzętu (SET‑02, LOC‑06, LIB‑02)
 
@@ -269,4 +270,5 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 | 2026-11-12 | Etap 17: PWA (offline, aktualizacja), tryb mobilny tylko do odczytu (M‑01…03); unit 241, E2E 47 | #33 |
 | 2026-11-12 | **Wydanie v1.1.0** (etapy 9–17; format projektu bez zmian, schemat v1), `CHANGELOG.md`, wersja w `apps/web/package.json` (spełnia `minAppVersion` katalogu) | tag `v1.1.0` |
 | 2026-11-12 | Plan wersji 1.2 (etapy 18–22); etap 18: punkty pośrednie kabli, prowadnice, Group by | #35 |
-| 2026-11-15 | Etap 19: przenoszenie workloadów (SW‑11), zgodność architektury (SW‑12), nowsza specyfikacja z katalogu (LIB‑03) | — |
+| 2026-11-15 | Etap 19: przenoszenie workloadów (SW‑11), zgodność architektury (SW‑12), nowsza specyfikacja z katalogu (LIB‑03) | #36 |
+| 2026-11-15 | Etap 20: schemat projektu v2 z migracją — reverse proxy (NET‑11), lokalny DNS (NET‑14), wzorzec etykiet (LBL‑03); IndexedDB v3 | — |

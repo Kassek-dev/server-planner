@@ -47,6 +47,7 @@ export function Summary({ project }: { project: Project }) {
             {t('summary.firewall', { name: r.name })}
           </Button>
         ))}
+        <Button onClick={() => open({ kind: 'services' })}>{t('summary.services')}</Button>
         <Button onClick={() => open({ kind: 'tags' })}>{t('summary.tags')}</Button>
         <Button onClick={() => open({ kind: 'settings' })}>{t('summary.settings')}</Button>
         <Button onClick={() => navigate(`/p/${projectId}/snapshots`)}>

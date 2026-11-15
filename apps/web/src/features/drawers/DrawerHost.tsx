@@ -4,6 +4,7 @@ import { Banner } from '../../ui/Banner';
 import { Drawer } from '../../ui/Drawer';
 import { useInspectorError } from '../inspector/parts';
 import { FirewallDrawer } from './FirewallDrawer';
+import { ServicesDrawer } from './ServicesDrawer';
 import { SettingsDrawer } from './SettingsDrawer';
 import { TagsDrawer } from './TagsDrawer';
 import { useDrawer } from './useDrawer';
@@ -28,7 +29,9 @@ export function DrawerHost() {
         ? t('tags.title')
         : panel.kind === 'settings'
           ? t('settings.title')
-          : t('firewall.titleFor', { name: device?.name ?? '' });
+          : panel.kind === 'services'
+            ? t('services.title')
+            : t('firewall.titleFor', { name: device?.name ?? '' });
   const subtitle =
     panel.kind === 'vlans'
       ? t('vlans.subtitle', {
@@ -38,7 +41,9 @@ export function DrawerHost() {
         })
       : panel.kind === 'firewall'
         ? t('firewall.subtitle', { count: device?.firewall?.rules.length ?? 0 })
-        : undefined;
+        : panel.kind === 'services'
+          ? t('services.subtitle')
+          : undefined;
 
   return (
     <Drawer
@@ -59,6 +64,7 @@ export function DrawerHost() {
       {panel.kind === 'vlans' ? <VlansDrawer project={project} /> : null}
       {panel.kind === 'tags' ? <TagsDrawer project={project} /> : null}
       {panel.kind === 'settings' ? <SettingsDrawer project={project} /> : null}
+      {panel.kind === 'services' ? <ServicesDrawer project={project} /> : null}
       {panel.kind === 'firewall' && device ? (
         <FirewallDrawer project={project} device={device} />
       ) : null}

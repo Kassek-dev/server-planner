@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 16b: snapshots with diff and restore, own device templates, cable routing. */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v1/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 const library = (page: Page) => page.getByRole('complementary', { name: 'Library' });
 const node = (page: Page, name: string) =>

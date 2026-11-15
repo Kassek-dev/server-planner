@@ -28,6 +28,7 @@
     "apps": "Apps",
     "manage": "Manage",
     "firewall": "Firewall · {name}",
+    "services": "Proxy & DNS",
     "tags": "Tags",
     "settings": "Project settings",
     "issues": "Issues",
@@ -110,6 +111,7 @@
       "issues": "Show issues",
       "export": "Export…",
       "vlans": "VLANs & subnets",
+      "services": "Proxy & DNS",
       "tags": "Tags",
       "settings": "Project settings",
       "labelCables": "Label all cables"

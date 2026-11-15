@@ -11,7 +11,7 @@ import {
 import { type AnalysisResult, analyze as analyzeWith } from '../src';
 
 const raw = JSON.parse(
-  readFileSync(join(import.meta.dirname, '../../../fixtures/schema/v1/home-lab.json'), 'utf8'),
+  readFileSync(join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json'), 'utf8'),
 );
 export const homeLab = (): Project => parseProjectFile(raw).file.project;
 

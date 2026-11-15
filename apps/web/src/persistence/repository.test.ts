@@ -1,5 +1,7 @@
 import { createProject, sequentialContext } from '@server-planner/model';
+import { openDB } from 'idb';
 import { describe, expect, it } from 'vitest';
+import v1 from '../../../../fixtures/schema/v1/home-lab.json';
 import { openAppDb } from './db';
 import { ProjectRepository, toMeta } from './repository';
 
@@ -70,5 +72,35 @@ describe('ProjectRepository', () => {
       hardware: { cpus: [], disks: [], pools: [], gpus: [] },
     };
     expect(toMeta(project).deviceCount).toBe(0);
+  });
+
+  it('migrates projects and snapshots stored by version 1.1 (database v2) to schema v2', async () => {
+    const name = `test-repo-upgrade-${++n}`;
+    const old = await openDB(name, 2, {
+      upgrade(db) {
+        db.createObjectStore('projects', { keyPath: 'id' }).createIndex('by-updated', 'updatedAt');
+        db.createObjectStore('projectData', { keyPath: 'id' });
+        db.createObjectStore('settings');
+        db.createObjectStore('snapshots', { keyPath: 'id' }).createIndex('by-project', 'projectId');
+      },
+    });
+    const { id, ...content } = v1.project;
+    await old.put('projectData', v1.project);
+    await old.put('snapshots', {
+      id: 'snap_0001',
+      projectId: id,
+      name: 'before',
+      createdAt: v1.exportedAt,
+      project: content,
+    });
+    old.close();
+
+    const repo = new ProjectRepository(await openAppDb(name), sequentialContext());
+    const project = await repo.get(id);
+    expect(project?.proxyRoutes).toEqual({});
+    expect(project?.dnsRecords).toEqual({});
+    expect(project?.devices).toEqual(v1.project.devices);
+    const [snapshot] = await repo.listSnapshots(id);
+    expect(snapshot?.project.dnsRecords).toEqual({});
   });
 });

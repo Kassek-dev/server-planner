@@ -6,13 +6,8 @@ import { buildContext, type EngineOptions } from './context';
 import { type ServiceVisibility, visibleFrom } from './simulation/access';
 import { type AccessMatrix, accessMatrix } from './simulation/assertions';
 import { type FlowRunResult, runFlow } from './simulation/flow';
-import {
-  type Exposure,
-  exposure,
-  type ReachabilityResult,
-  type ReachQuery,
-  reach,
-} from './simulation/reach';
+import { exposureWithRoutes } from './simulation/proxy';
+import { type Exposure, type ReachabilityResult, type ReachQuery, reach } from './simulation/reach';
 import type { EntityRef } from './types';
 
 export { analyze, sameDomain } from './analyze';
@@ -53,9 +48,11 @@ export {
   type MatrixCell,
 } from './simulation/assertions';
 export { type FlowHop, type FlowRunResult, type FlowTarget, runFlow } from './simulation/flow';
+export { exposureWithRoutes, proxyRoutes, resolveLocalName } from './simulation/proxy';
 export {
   type Exposure,
   exposure,
+  type ProxyRouteResult,
   type ReachabilityResult,
   type ReachQuery,
   reach,
@@ -98,7 +95,7 @@ export function simulateMatrix(
 
 /** Port forwards and what they expose (SIM-05). */
 export function simulateExposure(project: Project, options: EngineOptions = {}): Exposure[] {
-  return exposure(buildContext(project, options));
+  return exposureWithRoutes(buildContext(project, options));
 }
 
 /** Services visible from a client on a project snapshot (SIM-03). */

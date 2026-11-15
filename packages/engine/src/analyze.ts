@@ -117,6 +117,8 @@ export function sameDomain(a: Project, b: Project): boolean {
     'subnets',
     'zones',
     'routes',
+    'proxyRoutes',
+    'dnsRecords',
     'tags',
     'assertions',
     'locations',

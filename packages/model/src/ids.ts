@@ -17,6 +17,8 @@ export const ID_PREFIXES = {
   firewallRule: 'fwr',
   natRule: 'nat',
   route: 'rte',
+  proxyRoute: 'prx',
+  dnsRecord: 'dns',
   tag: 'tag',
   note: 'note',
   assertion: 'asr',

@@ -29,6 +29,14 @@ export function removeInterface(draft: Project, interfaceId: string): void {
 
 export function removeApp(draft: Project, appId: string): void {
   delete draft.apps[appId];
+  // A proxy route is meaningless without its proxy or target; DNS records stay without a server.
+  for (const route of Object.values(draft.proxyRoutes)) {
+    if (route.proxyAppId === appId || route.target.appId === appId)
+      delete draft.proxyRoutes[route.id];
+  }
+  for (const record of Object.values(draft.dnsRecords)) {
+    if (record.serverAppId === appId) delete record.serverAppId;
+  }
   for (const app of Object.values(draft.apps)) {
     for (const dependency of app.dependencies) {
       if (dependency.satisfiedBy === appId) delete dependency.satisfiedBy;

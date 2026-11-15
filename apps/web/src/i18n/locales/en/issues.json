@@ -151,6 +151,18 @@
     "title": "OS for another CPU architecture",
     "description": "{os} does not install on the {arch} CPU of {host}."
   },
+  "VAL_PROXY": {
+    "title": "Proxy cannot reach its app",
+    "description": "{proxy} serves {hostname} but cannot reach {app} on port {port}."
+  },
+  "VAL_PROXY_DNS": {
+    "title": "Host name does not point to the proxy",
+    "description": "{hostname} resolves locally to {resolved}, not to {proxy}."
+  },
+  "VAL_DNS_ADDRESS": {
+    "title": "DNS record for an unknown address",
+    "description": "{name} points to {address}, which no device or container in the project has."
+  },
   "VAL_GPU": {
     "title": "No accelerator for an app",
     "description": "{app} needs {features}, but {host} cannot give it{behindVm, select, yes { (it runs in a VM without GPU passthrough)} other {}}."

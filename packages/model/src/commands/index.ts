@@ -4,6 +4,7 @@ import * as location from './location';
 import * as network from './network';
 import * as project from './project';
 import * as segmentation from './segmentation';
+import * as services from './services';
 import * as workload from './workload';
 
 export * from './catalog';
@@ -13,11 +14,12 @@ export * from './location';
 export * from './network';
 export * from './project';
 export * from './segmentation';
+export * from './services';
 export * from './workload';
 
 /** All commands by name (`device.add`, `link.connect`, …) — used for history labels and logging. */
 export const commands = Object.fromEntries(
-  [catalog, device, location, network, project, segmentation, workload]
+  [catalog, device, location, network, project, segmentation, services, workload]
     .flatMap((module) => Object.values(module))
     .filter(
       (value): value is { name: string; run: (...args: never[]) => unknown } =>

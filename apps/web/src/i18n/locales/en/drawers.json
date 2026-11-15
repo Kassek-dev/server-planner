@@ -91,6 +91,31 @@
     "targetAddress": "Target IP",
     "targetPort": "Target port"
   },
+  "services": {
+    "title": "Proxy & DNS",
+    "subtitle": "Host names of your services",
+    "proxyTitle": "{count, plural, =0 {Reverse proxy routes} one {# reverse proxy route} other {# reverse proxy routes}}",
+    "proxyHint": "Each host name is served by a reverse proxy app and passed to an app port. A port forward to the proxy exposes these names to the internet.",
+    "noProxy": "Add a reverse proxy app (Caddy, Traefik, Nginx Proxy Manager…) from the catalog to route host names to apps.",
+    "addRoute": "Add route",
+    "hostname": "Host name",
+    "proxy": "Proxy",
+    "target": "App",
+    "port": "App port",
+    "portError": "Ports are 1–65535.",
+    "tls": "HTTPS (TLS at the proxy)",
+    "removeRoute": "Remove route {hostname}",
+    "dnsTitle": "{count, plural, =0 {Local DNS records} one {# local DNS record} other {# local DNS records}}",
+    "dnsHint": "Names your local DNS server answers, such as nas.home.arpa. A records point to an address, CNAME records to another name.",
+    "addRecord": "Add record",
+    "name": "Name",
+    "type": "Type",
+    "address": "Address",
+    "alias": "Points to",
+    "server": "DNS server",
+    "anyServer": "Any local DNS",
+    "removeRecord": "Remove record {name}"
+  },
   "tags": {
     "title": "Tags",
     "count": "{count, plural, =0 {No tags} one {# tag} other {# tags}}",
@@ -102,6 +127,9 @@
   },
   "settings": {
     "title": "Project settings",
+    "labels": "Labels",
+    "cablePattern": "Cable label pattern",
+    "cablePatternHint": "Tokens: '{a.device} {a.port} {b.device} {b.port}'. Example: {example}",
     "project": "Project",
     "name": "Name",
     "description": "Description",
@@ -117,6 +145,7 @@
     "energyPrice": "Energy price per kWh"
   },
   "errors": {
+    "pattern": "Enter a pattern of up to 120 characters.",
     "cidr": "Enter a network such as 192.168.10.0/24.",
     "ip": "Enter a valid IP address.",
     "port": "Ports are 1–65535.",
