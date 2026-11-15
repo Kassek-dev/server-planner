@@ -98,6 +98,7 @@
     "exposure": "Exposed to the internet",
     "noExposure": "No port forwards — nothing is reachable from the internet.",
     "forward": "{router} → {target}",
+    "fromRow": "From {from}",
     "proxied": "Host names behind this reverse proxy",
     "proxiedTo": "→ {app}:{port}{verdict, select, reachable {} other { (the proxy cannot reach it)}}",
     "assertions": "Assertions",

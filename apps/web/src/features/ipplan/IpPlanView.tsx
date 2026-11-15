@@ -98,8 +98,9 @@ function SubnetCard({ plan }: { plan: SubnetPlan }) {
           <tr className="font-mono text-label tracking-[0.08em] text-text-secondary uppercase">
             <th className="px-4 py-2 font-semibold">{t('ip.columns.ip')}</th>
             <th className="px-4 py-2 font-semibold">{t('ip.columns.host')}</th>
-            <th className="px-4 py-2 font-semibold">{t('ip.columns.interface')}</th>
-            <th className="px-4 py-2 font-semibold">{t('ip.columns.type')}</th>
+            {/* Phones (M-05): interface moves under the host, the type column is left out. */}
+            <th className="px-4 py-2 font-semibold max-md:hidden">{t('ip.columns.interface')}</th>
+            <th className="px-4 py-2 font-semibold max-md:hidden">{t('ip.columns.type')}</th>
             <th className="px-4 py-2 font-semibold">{t('ip.columns.status')}</th>
           </tr>
         </thead>
@@ -123,11 +124,16 @@ function SubnetCard({ plan }: { plan: SubnetPlan }) {
                   ) : (
                     <span className="text-text-muted">—</span>
                   )}
+                  {row.iface ? (
+                    <span className="block font-mono text-data-sm text-text-secondary md:hidden">
+                      {row.iface}
+                    </span>
+                  ) : null}
                 </td>
-                <td className="px-4 py-1.5 font-mono text-data text-text-secondary">
+                <td className="px-4 py-1.5 font-mono text-data text-text-secondary max-md:hidden">
                   {row.iface || '—'}
                 </td>
-                <td className="px-4 py-1.5 text-body-sm text-text-secondary">
+                <td className="px-4 py-1.5 text-body-sm text-text-secondary max-md:hidden">
                   {t(`ip.kinds.${row.kind}`)}
                 </td>
                 <td className="px-4 py-1.5 text-body-sm">

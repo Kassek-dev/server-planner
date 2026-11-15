@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { useServices, useSession } from '../../app/services';
+import { useIsMobile } from '../../app/useIsMobile';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
 import { Led, type LedStatus } from '../../ui/Led';
@@ -182,6 +183,50 @@ function MatrixTable({
   onSelect: (cell: [number, number]) => void;
 }) {
   const { t } = useTranslation('views');
+  const mobile = useIsMobile();
+  const label = (i: number, j: number) => {
+    const c = matrix.cells[i]?.[j];
+    return c
+      ? t('access.cell', {
+          from: matrix.axis[i]?.label ?? '',
+          to: matrix.axis[j]?.label ?? '',
+          status: c.status,
+          allowed: c.allowed,
+        })
+      : '';
+  };
+  // Phones (M-05): one card per source with its destinations instead of a wide grid.
+  if (mobile)
+    return (
+      <ul aria-label={t('access.matrix')} className="m-0 flex list-none flex-col gap-2 p-0">
+        {matrix.axis.map((row, i) => (
+          <li key={row.key} className="rounded-md border border-border-subtle bg-panel p-3">
+            <h4 className="m-0 mb-1.5 font-semibold">{t('access.fromRow', { from: row.label })}</h4>
+            <div className="flex flex-col gap-1">
+              {matrix.axis.map((col, j) => {
+                const c = matrix.cells[i]?.[j];
+                if (!c || c.status === 'unknown') return null;
+                const active = selected?.[0] === i && selected[1] === j;
+                return (
+                  <button
+                    key={col.key}
+                    type="button"
+                    aria-label={label(i, j)}
+                    aria-pressed={active}
+                    onClick={() => onSelect([i, j])}
+                    className={`flex min-h-11 items-center gap-2 rounded-sm px-2 text-left ${active ? 'bg-accent-subtle' : 'hover:bg-tile-header'}`}
+                  >
+                    <Led status={cellLed[c.status]} size={7} />
+                    <span className="flex-1">{`→ ${col.label}`}</span>
+                    <span className="font-mono text-data text-text-secondary">{`${c.allowed}/5`}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
   return (
     <div className="overflow-auto rounded-md border border-border-subtle bg-panel">
       <table className="border-collapse text-left">

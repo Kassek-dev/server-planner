@@ -223,8 +223,8 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | M-01 | P‑01        | Lista jednokolumnowa, otwarcie pliku do podglądu (✅ kod, etap 17)  | P0   | ✅      |
 | M-02 | V‑01 + I‑*  | Canvas na pełny ekran + dolny arkusz z inspectorem tylko do odczytu (✅ kod, etap 17) | P0   | ✅      |
 | M-03 | X‑01a       | Reachability z wyborem z list (✅ kod, etap 17)                     | P0   | ✅      |
-| M-04 | X‑02        | Lista problemów (pełny ekran)                                       | P0   | —       |
-| M-05 | V‑02…05     | Karty zamiast tabel / macierzy                                      | P1   | —       |
+| M-04 | X‑02        | Lista problemów (pełny ekran; cel problemu zamyka listę i otwiera element w arkuszu; bez Fix) (✅ kod, etap 22) | P0   | ✅      |
+| M-05 | V‑02…05     | Karty zamiast tabel / macierzy: Inventory (karty `DataTable`), IP Plan (kolumny interfejs/typ ukryte), Access (macierz jako lista źródeł) (✅ kod, etap 22) | P1   | ✅      |
 | M-06 | P‑02, P‑03  | Strony jednokolumnowe                                               | P0   | —       |
 
 ---
