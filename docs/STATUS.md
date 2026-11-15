@@ -199,7 +199,7 @@ Kolejność ustalona z użytkownikiem: najpierw etapy 9 i 10, potem rozbudowa ka
 - [x] M‑03 Reachability w arkuszu (wybór z list)
 - M‑04 i M‑05 — etap 22 (wersja 1.2)
 
-## Wersja 1.2 — plan (2026-11-12)
+## Wersja 1.2 — plan (2026-11-12), wydana jako v1.2.0
 
 Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Kolejność: najpierw bez zmiany formatu projektu, potem schemat v2 (jedna migracja dla wszystkich nowych pól).
 
@@ -234,6 +234,17 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 
 - [x] M‑04 pełnoekranowa lista problemów (cel zamyka listę, bez Fix w trybie tylko do odczytu); poprawka: synchronizacja `?sel=` czyta bieżący URL (wcześniej mogła przywrócić zamknięty panel)
 - [x] M‑05 karty w `DataTable` (Inventory), IP Plan bez kolumn interfejs/typ, macierz Access jako lista źródeł
+
+## Wersja 1.3 — zakres (2026-11-15)
+
+Zadania dodane przez użytkownika po wydaniu 1.2; kolejność i szczegóły do ustalenia przed wdrożeniem.
+
+### Etap 23 — Predefiniowane podzespoły i edycja dysków (HW)
+
+- [ ] Listy predefiniowanych podzespołów do wyboru w Hardware: CPU (z katalogu, z wydajnością i iGPU), GPU / akceleratory, moduły RAM (typ, pojemność), dyski (typ, pojemność); wybór z listy wypełnia pola, wpis ręczny zostaje
+- [ ] Dyski: „Add disks” z liczbą i pojemnością naraz (np. 4 × 8 TB HDD), czytelny pusty stan sekcji Disks i Storage pools (dziś tylko mały przycisk „Add disk” w nagłówku — łatwo przeoczyć)
+- [ ] Pula: wybór dysków przy tworzeniu, wyliczona pojemność użytkowa wg RAID (single / mirror / RAIDZ…) widoczna przy puli; podpowiedź, gdy pula nie ma dysków (dziś pokazuje tylko RAID i system plików)
+- Diagnoza (2026-11-15): pola pojemności i typu istnieją na każdym dysku, ale nowe urządzenie nie ma dysków, a pula nie pokazuje pojemności ani tego, że trzeba najpierw dodać dyski
 
 ## Dziennik
 
@@ -274,4 +285,5 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 | 2026-11-15 | Etap 19: przenoszenie workloadów (SW‑11), zgodność architektury (SW‑12), nowsza specyfikacja z katalogu (LIB‑03) | #36 |
 | 2026-11-15 | Etap 20: schemat projektu v2 z migracją — reverse proxy (NET‑11), lokalny DNS (NET‑14), wzorzec etykiet (LBL‑03); IndexedDB v3 | #37 |
 | 2026-11-15 | Etap 21: domyślne ustawienia nowych projektów (SET‑02), inspector lokalizacji (LOC‑06), filtry modeli sprzętu (LIB‑02) | #38 |
-| 2026-11-15 | Etap 22: telefon — pełnoekranowe problemy (M‑04), karty zamiast tabel (M‑05); plan 1.2 zamknięty | — |
+| 2026-11-15 | Etap 22: telefon — pełnoekranowe problemy (M‑04), karty zamiast tabel (M‑05); plan 1.2 zamknięty | #39 |
+| 2026-11-15 | **Wydanie v1.2.0** (etapy 18–22; schemat projektu v2 z automatyczną migracją), `CHANGELOG.md`, wersja w `apps/web/package.json`; zakres 1.3: predefiniowane podzespoły, edycja dysków i pul | tag `v1.2.0` |
