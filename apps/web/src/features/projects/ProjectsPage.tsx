@@ -26,6 +26,7 @@ import { NewProjectDialog, type NewProjectStart } from './dialogs/NewProjectDial
 import { RenameDialog } from './dialogs/RenameDialog';
 import { loadExampleProject } from './example';
 import { ProjectPreview } from './ProjectPreview';
+import { loadProjectDefaults } from './projectDefaults';
 import { useProjectList } from './useProjectList';
 
 type DialogState =
@@ -58,12 +59,17 @@ export function ProjectsPage() {
   };
 
   const create = async (name: string, start: NewProjectStart) => {
-    const project: Project =
+    const created: Project =
       start === 'example'
         ? await loadExampleProject(name)
         : start === 'empty'
           ? createProject(name)
           : createFromTemplate(start, name);
+    // SET-02: new projects start with this browser's defaults; the example keeps its own.
+    const project =
+      start === 'example'
+        ? created
+        : { ...created, settings: await loadProjectDefaults(repository) };
     await repository.save(project);
     setDialog({ kind: 'none' });
     navigate(`/p/${project.id}`);

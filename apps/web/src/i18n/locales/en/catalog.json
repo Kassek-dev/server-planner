@@ -130,6 +130,22 @@
       "perf": "Perf"
     },
     "perfHint": "perf: Blender Open Data, i5-8500T = 100",
-    "perfLabel": "Relative multi-core performance of {model}"
+    "perfLabel": "Relative multi-core performance of {model}",
+    "spec": {
+      "title": "Specification",
+      "any": "Any",
+      "arch": "CPU architecture",
+      "archValue": "{value}",
+      "minCores": "CPU cores",
+      "minCoresValue": "{value}+ cores",
+      "minRamGiB": "Max RAM",
+      "minRamGiBValue": "{value} GiB or more",
+      "minPorts": "Wired ports",
+      "minPortsValue": "{value}+ ports",
+      "minSpeedMbps": "Port speed",
+      "minSpeedMbpsValue": "{value, select, 2500 {2.5 Gb/s or faster} 10000 {10 Gb/s or faster} other {{value} Mb/s}}",
+      "maxIdleW": "Idle power",
+      "maxIdleWValue": "Up to {value} W"
+    }
   }
 }

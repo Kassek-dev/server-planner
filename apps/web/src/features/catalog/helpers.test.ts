@@ -1,7 +1,8 @@
+import type { CatalogDevice } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
 import { homeLab } from '../canvas/testSupport';
 import { modelName, portSummary } from './DeviceModelPicker';
-import { appHosts, defaultHost, nextFreePort, takenPorts } from './helpers';
+import { appHosts, defaultHost, matchesSpec, nextFreePort, takenPorts } from './helpers';
 
 const lab = homeLab();
 const vm = Object.values(lab.workloads).find((w) => w.name === 'docker-vm');
@@ -43,5 +44,51 @@ describe('catalog helpers', () => {
     );
     expect(portSummary([...Array(24).fill(1000), 10000, 10000])).toBe('24 × 1G · 2 × 10G');
     expect(portSummary([2500, 100])).toBe('1 × 100M · 1 × 2.5G');
+  });
+});
+
+describe('device model spec filters (LIB-02)', () => {
+  const GiB = 1024 ** 3;
+  const device = (over: Partial<CatalogDevice['hardware']>, ports: CatalogDevice['ports']) =>
+    ({
+      id: 'x',
+      kind: 'mini-pc',
+      vendor: 'V',
+      model: 'M',
+      hardware: { cpus: [], gpus: [], ...over },
+      ports,
+    }) as unknown as CatalogDevice;
+  const cpu = (cores: number, arch: 'amd64' | 'arm64') => ({
+    model: 'c',
+    cores,
+    threads: cores,
+    arch,
+  });
+  const mini = device(
+    {
+      cpus: [cpu(6, 'amd64')],
+      memory: { maxBytes: 64 * GiB, slots: 2, modules: [] },
+      power: { idleW: 9, loadW: 60 },
+    } as never,
+    [
+      { name: 'eth0', kind: 'rj45', speedMbps: 2500 },
+      { name: 'wlan0', kind: 'wifi-radio' },
+    ],
+  );
+  const pi = device({ cpus: [cpu(4, 'arm64')] } as never, [
+    { name: 'eth0', kind: 'rj45', speedMbps: 1000 },
+  ]);
+
+  it('filters by CPU, memory, ports and idle power', () => {
+    expect(matchesSpec(mini, {})).toBe(true);
+    expect(matchesSpec(mini, { arch: 'amd64', minCores: 6, minRamGiB: 32 })).toBe(true);
+    expect(matchesSpec(pi, { arch: 'amd64' })).toBe(false);
+    expect(matchesSpec(mini, { minPorts: 2 })).toBe(false); // the Wi-Fi radio is not a port
+    expect(matchesSpec(mini, { minSpeedMbps: 2500 })).toBe(true);
+    expect(matchesSpec(pi, { minSpeedMbps: 2500 })).toBe(false);
+    expect(matchesSpec(mini, { maxIdleW: 10 })).toBe(true);
+    // Unknown figures do not pass a filter on them.
+    expect(matchesSpec(pi, { maxIdleW: 10 })).toBe(false);
+    expect(matchesSpec(pi, { minRamGiB: 4 })).toBe(false);
   });
 });

@@ -226,9 +226,9 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 
 ### Etap 21 — Ustawienia, lokalizacje, katalog sprzętu (SET‑02, LOC‑06, LIB‑02)
 
-- [ ] SET‑02 domyślne ustawienia nowych projektów (Settings › Units & costs)
-- [ ] LOC‑06 inspector lokalizacji: zajętość U, lista urządzeń, pobór mocy racka vs budżet UPS
-- [ ] LIB‑02 filtry katalogu sprzętu (CPU, RAM, porty, pobór mocy)
+- [x] SET‑02 Settings › Units & costs: wspólny formularz `SettingsFields` (też w S‑04), zapis `projectDefaults` w store `settings` (walidacja Zod, „Reset to built-in defaults”); nowy pusty projekt i szablon startują z tymi ustawieniami
+- [x] LOC‑06 inspector lokalizacji: zajętość U racka, pobór idle/expected urządzeń (pomieszczenie z rackami i półkami), UPS‑y z obciążeniem, klikalna lista urządzeń
+- [x] LIB‑02 filtry w D‑05: architektura CPU, rdzenie, max RAM, porty przewodowe, prędkość portu, pobór w spoczynku (`matchesSpec`; brak danych nie przechodzi filtra)
 
 ### Etap 22 — Telefon (M‑04, M‑05)
 
@@ -271,4 +271,5 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 | 2026-11-12 | **Wydanie v1.1.0** (etapy 9–17; format projektu bez zmian, schemat v1), `CHANGELOG.md`, wersja w `apps/web/package.json` (spełnia `minAppVersion` katalogu) | tag `v1.1.0` |
 | 2026-11-12 | Plan wersji 1.2 (etapy 18–22); etap 18: punkty pośrednie kabli, prowadnice, Group by | #35 |
 | 2026-11-15 | Etap 19: przenoszenie workloadów (SW‑11), zgodność architektury (SW‑12), nowsza specyfikacja z katalogu (LIB‑03) | #36 |
-| 2026-11-15 | Etap 20: schemat projektu v2 z migracją — reverse proxy (NET‑11), lokalny DNS (NET‑14), wzorzec etykiet (LBL‑03); IndexedDB v3 | — |
+| 2026-11-15 | Etap 20: schemat projektu v2 z migracją — reverse proxy (NET‑11), lokalny DNS (NET‑14), wzorzec etykiet (LBL‑03); IndexedDB v3 | #37 |
+| 2026-11-15 | Etap 21: domyślne ustawienia nowych projektów (SET‑02), inspector lokalizacji (LOC‑06), filtry modeli sprzętu (LIB‑02) | — |

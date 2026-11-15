@@ -46,7 +46,8 @@
       }
     },
     "units": {
-      "description": "Defaults for new projects (currency, energy price, capacity thresholds) come in a later version. Until then, set them per project in Project settings."
+      "description": "New projects start with these settings. Each project keeps its own copy — change an existing project in its Project settings.",
+      "reset": "Reset to built-in defaults"
     },
     "storage": {
       "used": "Browser storage used",

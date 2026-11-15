@@ -196,6 +196,8 @@ Końce A i B (urządzenie:port, zmiana z listy), typ (kabel / Wi‑Fi), prędko�
 
 Rack: nazwa, U (6–42), szerokość, głębokość, Space bar, Power (P1), lista MOUNTED, półki (Add shelf). Pomieszczenie / półka: nazwa, rodzic (P1), lista urządzeń.
 
+LOC‑06: rack pokazuje zajętość („5 of 12 U occupied”, pasek z progami capacity projektu); każda lokalizacja — szacowany pobór (idle / expected) urządzeń w niej (pomieszczenie liczy też swoje racki i półki), urządzenia bez danych o mocy, UPS‑y chroniące te urządzenia z obciążeniem vs pojemność. Lista urządzeń otwiera urządzenie.
+
 ### 5.7 Edytory globalne (otwierane z podsumowania projektu, z menu routera lub skrótem)
 
 Edytory pełnoekranowe nad canvasem (panel 720 px wysuwany z prawej, canvas widoczny i przyciemniony):
@@ -289,7 +291,7 @@ Otwierany z liczników w top barze lub `Ctrl Shift M`. Zastępuje inspector.
 
 ## 10. Ustawienia i About
 
-- **Settings** (`#/settings`): Appearance (Theme: System / Dark / Light — SET‑01), Catalog (wersja, data, auto‑check on/off, Check now, Roll back — SET‑03, P1), Units & costs (P1), Storage (zużycie IndexedDB, Persist data, Export all projects).
+- **Settings** (`#/settings`): Appearance (Theme: System / Dark / Light — SET‑01), Catalog (wersja, data, auto‑check on/off, Check now, Roll back — SET‑03, P1), Units & costs (SET‑02: te same pola co ustawienia projektu — progi, overcommit, rezerwa, waluta, cena kWh, wzorzec etykiet — zapisane w przeglądarce jako start dla **nowych** projektów; przykład zachowuje własne; „Reset to built-in defaults”), Storage (zużycie IndexedDB, Persist data, Export all projects).
 - **About** (`#/about`): wersja aplikacji, licencja MIT, link do repo, **Data sources** (tabela z `06` § 5), Recommended (selfh.st), zgłaszanie błędów (link do GitHub Issues).
 
 ---

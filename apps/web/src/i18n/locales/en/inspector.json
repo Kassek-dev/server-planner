@@ -331,6 +331,14 @@
     "shelfU": "At U",
     "shelfUnits": "Height (U)",
     "devices": "{count, plural, =0 {No devices} one {# device} other {# devices}}",
+    "occupancy": "Occupancy",
+    "occupied": "{used} of {total} U occupied",
+    "power": "Power",
+    "powerIdle": "Idle",
+    "powerExpected": "Expected",
+    "powerUnknown": "{count, plural, one {# device has} other {# devices have}} no power figure and {count, plural, one {is} other {are}} not counted.",
+    "noUps": "No UPS protects these devices.",
+    "upsLoad": "{name}: {load} of {capacity} W",
     "delete": "Delete location"
   },
   "multi": {
