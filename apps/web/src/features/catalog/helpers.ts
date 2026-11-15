@@ -1,5 +1,6 @@
 import {
   type CatalogApp,
+  type CatalogDevice,
   COMPUTE_KINDS,
   type HostRef,
   type PortMapping,
@@ -84,3 +85,30 @@ export const installedApps = (project: Project) =>
       .map((a) => a.catalogRef?.id)
       .filter(Boolean),
   );
+
+/** LIB-02 spec filters of the device model picker; an unset field does not filter. */
+export interface SpecFilter {
+  arch?: 'amd64' | 'arm64';
+  minCores?: number;
+  minRamGiB?: number;
+  minPorts?: number;
+  minSpeedMbps?: number;
+  maxIdleW?: number;
+}
+
+const GiB = 1024 ** 3;
+
+/** Devices without a figure (no CPU, unknown RAM or power) do not pass a filter on that figure. */
+export function matchesSpec(device: CatalogDevice, f: SpecFilter): boolean {
+  const cpus = device.hardware.cpus;
+  const wired = device.ports.filter((p) => p.kind !== 'wifi-radio');
+  if (f.arch && !cpus.some((c) => c.arch === f.arch)) return false;
+  if (f.minCores && cpus.reduce((n, c) => n + c.cores, 0) < f.minCores) return false;
+  if (f.minRamGiB && (device.hardware.memory?.maxBytes ?? 0) < f.minRamGiB * GiB) return false;
+  if (f.minPorts && wired.length < f.minPorts) return false;
+  const speed = f.minSpeedMbps;
+  if (speed && !wired.some((p) => (p.speedMbps ?? 0) >= speed)) return false;
+  const idle = device.hardware.power?.idleW;
+  if (f.maxIdleW && (idle === undefined || idle > f.maxIdleW)) return false;
+  return true;
+}

@@ -1,3 +1,8 @@
+import {
+  DEFAULT_CABLE_PATTERN,
+  DEFAULT_PROJECT_SETTINGS,
+  type ProjectSettings,
+} from '@server-planner/model';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
@@ -26,12 +31,18 @@ import { Dialog } from '../../ui/Dialog';
 import { Led } from '../../ui/Led';
 import { SegmentBar } from '../../ui/SegmentBar';
 import { Segmented } from '../../ui/Segmented';
+import { SettingsFields } from '../drawers/SettingsFields';
+import {
+  loadProjectDefaults,
+  mergeSettings,
+  saveProjectDefaults,
+} from '../projects/projectDefaults';
 import { PageTitle, SectionLayout, SettingCard } from './SectionLayout';
 
 const SECTIONS = ['appearance', 'catalog', 'units', 'storage'] as const;
 type Section = (typeof SECTIONS)[number];
 
-/** P-02 Settings (docs/07): Appearance and Storage (P0), Catalog and Units (P1, informational). */
+/** P-02 Settings (docs/07): Appearance, Catalog, Units & costs (defaults for new projects), Storage. */
 export function SettingsPage() {
   const { t } = useTranslation('pages');
   const { section } = useParams();
@@ -192,15 +203,54 @@ function CatalogInfo() {
   );
 }
 
+/** SET-02 defaults for new projects; each project keeps its own copy (Project settings). */
 function Units() {
   const { t } = useTranslation('pages');
+  const { repository } = useServices();
+  const [settings, setSettings] = useState<ProjectSettings | null>(null);
+  useEffect(() => {
+    void loadProjectDefaults(repository).then(setSettings);
+  }, [repository]);
+  const change = (changes: Partial<ProjectSettings>) => {
+    if (!settings) return;
+    const next = mergeSettings(settings, changes);
+    setSettings(next);
+    void saveProjectDefaults(repository, next);
+  };
   return (
     <>
       <PageTitle>{t('settings.sections.units')}</PageTitle>
       <p className="m-0 leading-normal text-text-secondary">{t('settings.units.description')}</p>
+      {settings ? (
+        <div className="flex max-w-140 flex-col gap-4">
+          <SettingsFields
+            settings={settings}
+            onChange={change}
+            labelExample={(pattern) => sampleCableLabel(pattern)}
+          />
+          <div>
+            <Button
+              onClick={() => {
+                setSettings(structuredClone(DEFAULT_PROJECT_SETTINGS));
+                void saveProjectDefaults(repository, null);
+              }}
+            >
+              {t('settings.units.reset')}
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
+
+/** Pattern preview without a project: a switch port and a server NIC. */
+const sampleCableLabel = (pattern: string | undefined) =>
+  (pattern ?? DEFAULT_CABLE_PATTERN)
+    .replaceAll('{a.device}', 'PVE1')
+    .replaceAll('{a.port}', 'ETH0')
+    .replaceAll('{b.device}', 'SW1')
+    .replaceAll('{b.port}', 'P05');
 
 /** Browser usage is often a few hundred KB — show KB/MB below a gigabyte-friendly size. */
 const storageSize = (bytes: number) =>

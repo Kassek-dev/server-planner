@@ -6,8 +6,13 @@ import { useCatalog } from '../../catalog/store';
 import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
 import { Dialog } from '../../ui/Dialog';
+import { Select } from '../../ui/Select';
+import { matchesSpec, type SpecFilter } from './helpers';
 
-/** D-05 Device model picker (docs/07): filters by type and vendor, search, specs table, Use. */
+/**
+ * D-05 Device model picker (docs/07): filters by type, vendor and spec (LIB-02: CPU, RAM, ports,
+ * idle power), search, specs table, Use.
+ */
 export function DeviceModelPicker({
   open,
   onOpenChange,
@@ -27,6 +32,7 @@ export function DeviceModelPicker({
   const [kinds, setKinds] = useState<string[]>([]);
   const [vendors, setVendors] = useState<string[]>([]);
   const [query, setQuery] = useState('');
+  const [spec, setSpec] = useState<SpecFilter>({});
   const [chosen, setChosen] = useState<string | null>(null);
 
   useEffect(() => {
@@ -41,6 +47,7 @@ export function DeviceModelPicker({
     (d) =>
       (kinds.length === 0 || kinds.includes(d.kind)) &&
       (vendors.length === 0 || vendors.includes(d.vendor)) &&
+      matchesSpec(d, spec) &&
       (!q ||
         `${d.vendor} ${d.model} ${d.hardware.cpus.map((c) => c.model).join(' ')}`
           .toLowerCase()
@@ -113,6 +120,7 @@ export function DeviceModelPicker({
               />
             ))}
           </fieldset>
+          <SpecFilters spec={spec} onChange={setSpec} />
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-auto p-4">
           <input
@@ -236,5 +244,53 @@ function PerfCell({ cpus, label }: { cpus: CatalogDevice['hardware']['cpus']; la
         {score}
       </span>
     </span>
+  );
+}
+
+/** Choices of the spec filters; the first ("any") leaves the filter unset. */
+const SPEC_CHOICES = {
+  arch: ['amd64', 'arm64'],
+  minCores: [2, 4, 6, 8, 16],
+  minRamGiB: [8, 16, 32, 64, 128],
+  minPorts: [2, 4, 8, 24],
+  minSpeedMbps: [2500, 10000],
+  maxIdleW: [10, 20, 40, 80],
+} as const;
+
+function SpecFilters({
+  spec,
+  onChange,
+}: {
+  spec: SpecFilter;
+  onChange: (spec: SpecFilter) => void;
+}) {
+  const { t } = useTranslation('catalog');
+  const field = (key: keyof SpecFilter) => (
+    <Select
+      key={key}
+      label={t(`models.spec.${key}`)}
+      value={spec[key] === undefined ? '' : String(spec[key])}
+      options={[
+        { value: '', label: t('models.spec.any') },
+        ...SPEC_CHOICES[key].map((v) => ({
+          value: String(v),
+          label: t(`models.spec.${key}Value`, { value: v }),
+        })),
+      ]}
+      onChange={(e) => {
+        const { [key]: _, ...rest } = spec;
+        const raw = e.target.value;
+        if (!raw) return onChange(rest);
+        onChange({ ...rest, [key]: key === 'arch' ? raw : Number(raw) });
+      }}
+    />
+  );
+  return (
+    <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
+      <legend className="mb-1.5 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+        {t('models.spec.title')}
+      </legend>
+      {(Object.keys(SPEC_CHOICES) as (keyof SpecFilter)[]).map(field)}
+    </fieldset>
   );
 }
