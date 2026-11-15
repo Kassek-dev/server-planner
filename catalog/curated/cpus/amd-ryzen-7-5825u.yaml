@@ -1,0 +1,12 @@
+id: amd-ryzen-7-5825u
+vendor: amd
+model: AMD Ryzen 7 5825U
+cores: 8
+threads: 16
+baseGhz: 2.0
+boostGhz: 4.5
+tdpW: 15
+arch: amd64
+igpu: { model: AMD Radeon Graphics (8 CU), features: [vcn] }
+source: [curated]
+confidence: curated

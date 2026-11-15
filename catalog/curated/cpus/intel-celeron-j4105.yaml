@@ -1,0 +1,12 @@
+id: intel-celeron-j4105
+vendor: intel
+model: Intel Celeron J4105
+cores: 4
+threads: 4
+baseGhz: 1.5
+boostGhz: 2.5
+tdpW: 10
+arch: amd64
+igpu: { model: Intel UHD Graphics 600, features: [quicksync] }
+source: [curated]
+confidence: curated

@@ -1,0 +1,8 @@
+id: google-coral-m2
+vendor: google
+kind: accelerator
+attach: m2
+model: Google Coral M.2 Accelerator
+features: [tpu]
+source: [curated]
+confidence: curated

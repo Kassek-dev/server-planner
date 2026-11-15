@@ -1,0 +1,8 @@
+id: google-coral-usb
+vendor: google
+kind: accelerator
+attach: usb
+model: Google Coral USB Accelerator
+features: [tpu]
+source: [curated]
+confidence: curated

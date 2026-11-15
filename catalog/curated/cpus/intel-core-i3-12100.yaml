@@ -1,0 +1,12 @@
+id: intel-core-i3-12100
+vendor: intel
+model: Intel Core i3-12100
+cores: 4
+threads: 8
+baseGhz: 3.3
+boostGhz: 4.3
+tdpW: 60
+arch: amd64
+igpu: { model: Intel UHD Graphics 730, features: [quicksync] }
+source: [curated]
+confidence: curated

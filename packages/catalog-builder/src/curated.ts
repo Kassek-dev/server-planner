@@ -5,6 +5,7 @@ import {
   CatalogAppSchema,
   CatalogCpuSchema,
   CatalogDeviceSchema,
+  CatalogGpuSchema,
   CatalogOsSchema,
   type CpuSpec,
 } from '@server-planner/model';
@@ -12,14 +13,18 @@ import { parse } from 'yaml';
 import type { z } from 'zod';
 
 export const CURATED_DIR = resolve(import.meta.dirname, '../../../catalog/curated');
-export const CURATED_KINDS = ['apps', 'devices', 'cpus', 'os'] as const;
+export const CURATED_KINDS = ['apps', 'devices', 'cpus', 'gpus', 'os'] as const;
 type Kind = (typeof CURATED_KINDS)[number];
 
 /** Lists curated YAML files per kind (docs/06-zrodla-danych.md, catalog/curated/). */
 export async function listCuratedFiles(dir = CURATED_DIR): Promise<Record<Kind, string[]>> {
   const entries = await Promise.all(
     CURATED_KINDS.map(async (kind) => {
-      const files = await readdir(join(dir, kind));
+      // A kind without a folder (e.g. gpus in older trees) simply has no entries.
+      const files = await readdir(join(dir, kind)).catch((error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return [];
+        throw error;
+      });
       return [kind, files.filter((f) => f.endsWith('.yaml')).sort()] as const;
     }),
   );
@@ -161,6 +166,9 @@ export async function loadCurated(
     .map((e) => check(CatalogAppSchema, e))
     .filter((x) => x !== undefined);
   const os = (await raw('os')).map((e) => check(CatalogOsSchema, e)).filter((x) => x !== undefined);
+  const gpus = (await raw('gpus'))
+    .map((e) => check(CatalogGpuSchema, e))
+    .filter((x) => x !== undefined);
 
   return {
     catalog: {
@@ -170,6 +178,7 @@ export async function loadCurated(
       apps: apps.sort((a, b) => a.name.localeCompare(b.name)),
       devices,
       cpus,
+      gpus: gpus.sort((a, b) => a.model.localeCompare(b.model)),
       os,
     },
     errors,

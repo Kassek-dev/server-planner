@@ -1,0 +1,10 @@
+id: nvidia-quadro-p400
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA Quadro P400
+vramBytes: 2 GiB
+features: [nvenc, cuda]
+tdpW: 30
+source: [curated]
+confidence: curated

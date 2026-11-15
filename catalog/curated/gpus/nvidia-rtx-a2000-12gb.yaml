@@ -1,0 +1,10 @@
+id: nvidia-rtx-a2000-12gb
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA RTX A2000 12 GB
+vramBytes: 12 GiB
+features: [nvenc, cuda]
+tdpW: 70
+source: [curated]
+confidence: curated

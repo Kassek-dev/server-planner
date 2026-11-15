@@ -1,0 +1,11 @@
+id: intel-core-ultra-5-125h
+vendor: intel
+model: Intel Core Ultra 5 125H
+cores: 14
+threads: 18
+boostGhz: 4.5
+tdpW: 28
+arch: amd64
+igpu: { model: Intel Arc Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

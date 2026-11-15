@@ -1,0 +1,11 @@
+id: intel-xeon-e3-1230-v3
+vendor: intel
+model: Intel Xeon E3-1230 v3
+cores: 4
+threads: 8
+baseGhz: 3.3
+boostGhz: 3.7
+tdpW: 80
+arch: amd64
+source: [curated]
+confidence: curated

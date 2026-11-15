@@ -90,6 +90,13 @@
     "count": "Count",
     "speed": "MT/s",
     "soldered": "Soldered (uses no slot)",
+    "pick": {
+      "placeholder": "Choose…",
+      "cpu": "Add a CPU from the catalog",
+      "gpu": "Add a GPU or accelerator from the catalog",
+      "ram": "Add memory from a list",
+      "disk": "Common disks"
+    },
     "disksCount": "{count, plural, =0 {Disks} one {# disk} other {# disks}}",
     "disksRaw": "{size} raw in total",
     "noDisks": "No disks yet. Add the drives below, then group them into a storage pool.",

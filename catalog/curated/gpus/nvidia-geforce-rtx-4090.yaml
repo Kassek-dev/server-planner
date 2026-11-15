@@ -1,0 +1,10 @@
+id: nvidia-geforce-rtx-4090
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA GeForce RTX 4090
+vramBytes: 24 GiB
+features: [nvenc, cuda]
+tdpW: 450
+source: [curated]
+confidence: curated

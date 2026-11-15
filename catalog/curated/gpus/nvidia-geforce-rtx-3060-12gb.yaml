@@ -1,0 +1,10 @@
+id: nvidia-geforce-rtx-3060-12gb
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA GeForce RTX 3060 12 GB
+vramBytes: 12 GiB
+features: [nvenc, cuda]
+tdpW: 170
+source: [curated]
+confidence: curated

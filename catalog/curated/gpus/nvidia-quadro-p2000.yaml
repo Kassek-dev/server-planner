@@ -1,0 +1,10 @@
+id: nvidia-quadro-p2000
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA Quadro P2000
+vramBytes: 5 GiB
+features: [nvenc, cuda]
+tdpW: 75
+source: [curated]
+confidence: curated

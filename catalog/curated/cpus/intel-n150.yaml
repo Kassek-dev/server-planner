@@ -1,0 +1,11 @@
+id: intel-n150
+vendor: intel
+model: Intel N150
+cores: 4
+threads: 4
+boostGhz: 3.6
+tdpW: 6
+arch: amd64
+igpu: { model: Intel UHD Graphics (24 EU), features: [quicksync] }
+source: [curated]
+confidence: curated

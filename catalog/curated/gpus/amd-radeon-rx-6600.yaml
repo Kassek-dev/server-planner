@@ -1,0 +1,10 @@
+id: amd-radeon-rx-6600
+vendor: amd
+kind: gpu
+attach: pcie
+model: AMD Radeon RX 6600
+vramBytes: 8 GiB
+features: [vcn]
+tdpW: 132
+source: [curated]
+confidence: curated

@@ -1,0 +1,10 @@
+id: nvidia-geforce-rtx-3090
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA GeForce RTX 3090
+vramBytes: 24 GiB
+features: [nvenc, cuda]
+tdpW: 350
+source: [curated]
+confidence: curated

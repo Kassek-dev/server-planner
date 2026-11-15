@@ -1,0 +1,11 @@
+id: amd-epyc-7302p
+vendor: amd
+model: AMD EPYC 7302P
+cores: 16
+threads: 32
+baseGhz: 3.0
+boostGhz: 3.3
+tdpW: 155
+arch: amd64
+source: [curated]
+confidence: curated

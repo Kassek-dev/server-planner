@@ -40,6 +40,13 @@ import {
   useTransaction,
 } from '../parts';
 import { useMoveDevice } from './moveDevice';
+import {
+  byVendorAndModel,
+  cpuFromCatalog,
+  DISK_PRESETS,
+  gpuFromCatalog,
+  RAM_PRESETS,
+} from './parts';
 import { SaveTemplate } from './SaveTemplate';
 
 const GiB = 1024 ** 3;
@@ -63,6 +70,11 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
   const { t } = useTranslation('inspector');
   const run = useCommand();
   const hw = device.hardware;
+  // Predefined CPUs and GPUs (HW-09) come from the catalog, loaded on first use.
+  const catalog = useCatalog((s) => s.catalog);
+  useEffect(() => {
+    void useCatalog.getState().load();
+  }, []);
   const setHw = (next: Hardware) =>
     run(updateDevice, { id: device.id, changes: { hardware: next } });
   const setUps = (changes: {
@@ -125,6 +137,27 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
           />
         }
       >
+        {catalog ? (
+          <PickFromList
+            label={t('hardware.pick.cpu')}
+            options={[...catalog.cpus].sort(byVendorAndModel).map((c) => ({
+              value: c.id,
+              label: [
+                c.model,
+                `${c.cores}C/${c.threads}T`,
+                c.tdpW ? `${c.tdpW} W` : '',
+                c.perf ? `perf ${Math.round(c.perf.score)}` : '',
+              ]
+                .filter(Boolean)
+                .join(' · '),
+            }))}
+            onPick={(id) => {
+              const cpu = catalog.cpus.find((c) => c.id === id);
+              if (cpu)
+                setHw({ ...hw, cpus: [...hw.cpus, cpuFromCatalog(cpu, catalog.catalogVersion)] });
+            }}
+          />
+        ) : null}
         {hw.cpus.map((cpu, i) => {
           const setCpu = (changes: Partial<typeof cpu>) =>
             setHw({ ...hw, cpus: hw.cpus.map((c, j) => (j === i ? { ...c, ...changes } : c)) });
@@ -197,6 +230,25 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
           />
         }
       >
+        <PickFromList
+          label={t('hardware.pick.ram')}
+          options={RAM_PRESETS.map((r) => ({
+            value: r.id,
+            label: `${r.module.count} × ${formatSize(r.module.sizeBytes)} ${r.type}-${r.module.speedMts}`,
+          }))}
+          onPick={(id) => {
+            const preset = RAM_PRESETS.find((r) => r.id === id);
+            if (!preset) return;
+            setHw({
+              ...hw,
+              memory: {
+                ...(hw.memory ?? {}),
+                type: hw.memory?.type ?? preset.type,
+                modules: [...(hw.memory?.modules ?? []), { ...preset.module }],
+              },
+            });
+          }}
+        />
         <Row
           label={t('hardware.total')}
           value={`${formatSize(memoryTotal)}${hw.memory?.slotsTotal !== undefined ? ` · ${t('hardware.slots', { used: slotsUsed, total: hw.memory.slotsTotal })}` : ''}`}
@@ -449,6 +501,7 @@ function PurchaseSection({ device }: { device: Device }) {
 /** HW-05: GPUs and accelerators (iGPU, discrete, Coral) with the features apps can use. */
 function GpuSection({ device, setHw }: { device: Device; setHw: (hw: Hardware) => void }) {
   const { t } = useTranslation('inspector');
+  const catalog = useCatalog((s) => s.catalog);
   const hw = device.hardware;
   const setGpu = (i: number, changes: Partial<Hardware['gpus'][number]>) =>
     setHw({ ...hw, gpus: hw.gpus.map((g, j) => (j === i ? { ...g, ...changes } : g)) });
@@ -467,6 +520,26 @@ function GpuSection({ device, setHw }: { device: Device; setHw: (hw: Hardware) =
         />
       }
     >
+      {catalog ? (
+        <PickFromList
+          label={t('hardware.pick.gpu')}
+          options={[...catalog.gpus].sort(byVendorAndModel).map((g) => ({
+            value: g.id,
+            label: [
+              g.model,
+              g.vramBytes ? formatSize(g.vramBytes) : '',
+              g.features.join('/'),
+              g.tdpW ? `${g.tdpW} W` : '',
+            ]
+              .filter(Boolean)
+              .join(' · '),
+          }))}
+          onPick={(id) => {
+            const gpu = catalog.gpus.find((g) => g.id === id);
+            if (gpu) setHw({ ...hw, gpus: [...hw.gpus, gpuFromCatalog(gpu)] });
+          }}
+        />
+      ) : null}
       {hw.gpus.length === 0 ? (
         <p className="m-0 text-body-sm text-text-muted">{t('hardware.noGpu')}</p>
       ) : null}
@@ -746,6 +819,19 @@ function AddDisksForm({
         if (bytes !== undefined) onAdd(count, type, bytes);
       }}
     >
+      <PickFromList
+        label={t('hardware.pick.disk')}
+        options={DISK_PRESETS.map((d) => ({
+          value: d.id,
+          label: `${t(`hardware.diskTypes.${d.type}`)} ${formatSize(d.sizeBytes, true)}`,
+        }))}
+        onPick={(id) => {
+          const preset = DISK_PRESETS.find((d) => d.id === id);
+          if (!preset) return;
+          setType(preset.type);
+          setSize(formatSize(preset.sizeBytes, true));
+        }}
+      />
       <div className="grid grid-cols-[64px_minmax(0,1fr)] items-start gap-2">
         <Select
           label={t('hardware.diskCount')}
@@ -968,5 +1054,28 @@ function ModelSection({ device }: { device: Device }) {
         />
       ) : null}
     </Section>
+  );
+}
+
+/** HW-09: a list that adds a predefined part; it returns to its placeholder after each pick. */
+function PickFromList({
+  label,
+  options,
+  onPick,
+}: {
+  label: string;
+  options: { value: string; label: string }[];
+  onPick: (value: string) => void;
+}) {
+  const { t } = useTranslation('inspector');
+  return (
+    <Select
+      label={label}
+      value=""
+      options={[{ value: '', label: t('hardware.pick.placeholder') }, ...options]}
+      onChange={(e) => {
+        if (e.target.value) onPick(e.target.value);
+      }}
+    />
   );
 }

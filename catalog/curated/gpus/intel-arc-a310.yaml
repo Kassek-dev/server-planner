@@ -1,0 +1,10 @@
+id: intel-arc-a310
+vendor: intel
+kind: gpu
+attach: pcie
+model: Intel Arc A310
+vramBytes: 4 GiB
+features: [quicksync]
+tdpW: 75
+source: [curated]
+confidence: curated

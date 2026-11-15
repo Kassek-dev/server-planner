@@ -1,0 +1,11 @@
+id: intel-n97
+vendor: intel
+model: Intel N97
+cores: 4
+threads: 4
+boostGhz: 3.6
+tdpW: 12
+arch: amd64
+igpu: { model: Intel UHD Graphics (24 EU), features: [quicksync] }
+source: [curated]
+confidence: curated

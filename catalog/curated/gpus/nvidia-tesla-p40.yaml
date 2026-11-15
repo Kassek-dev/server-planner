@@ -1,0 +1,10 @@
+id: nvidia-tesla-p40
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA Tesla P40
+vramBytes: 24 GiB
+features: [nvenc, cuda]
+tdpW: 250
+source: [curated]
+confidence: curated
