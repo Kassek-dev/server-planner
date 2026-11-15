@@ -235,7 +235,7 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 - [x] M‑04 pełnoekranowa lista problemów (cel zamyka listę, bez Fix w trybie tylko do odczytu); poprawka: synchronizacja `?sel=` czyta bieżący URL (wcześniej mogła przywrócić zamknięty panel)
 - [x] M‑05 karty w `DataTable` (Inventory), IP Plan bez kolumn interfejs/typ, macierz Access jako lista źródeł
 
-## Wersja 1.3 — zakres (2026-11-15)
+## Wersja 1.3 — zakres (2026-11-15), wydana jako v1.3.0
 
 Zadania dodane przez użytkownika po wydaniu 1.2.
 
@@ -255,6 +255,20 @@ Zadania dodane przez użytkownika po wydaniu 1.2.
 - [x] Eksport Markdown: sekcje Reverse proxy i Local DNS
 - [x] Przepływy: krok DNS z lokalną nazwą celu (trasa proxy lub rekord A) i serwerem DNS z rekordu (`FlowHop.name`); ruch przez proxy w przepływach — nadal poza zakresem
 - D11: numeracja `X.Y.Z`, `Z` = liczba poprawek od `X.Y.0` (`docs/01`, skill `release`)
+
+## Wersja 1.4 — plan (2026-11-16)
+
+Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów i wydanie (D11 — `1.4.Z`, `Z` = liczba poprawek).
+
+### Etap 24 — Analiza awarii (SIM‑07)
+- [ ] „Co jeśli padnie X?” — wyłączenie urządzenia, łącza lub zasilania (UPS) i ponowna symulacja: utracony internet, niedostępne aplikacje i asercje
+- [ ] Wykrywanie pojedynczych punktów awarii (SPOF): urządzenia i łącza, których awaria odcina klientów od internetu lub aplikacji
+
+### Etap 25 — Eksport konfiguracji sieci (EXP‑07)
+- [ ] Proxmox `/etc/network/interfaces` (mosty, VLAN‑aware, adresy), Netplan (Ubuntu), Debian `interfaces`, lista rezerwacji DHCP
+
+### Etap 26 — Front szafy (LOC‑09)
+- [ ] Widok i wydruk frontu racka (rack elevation): U, urządzenia, półki, wolne miejsca; eksport SVG/PNG i druk (PDF z przeglądarki)
 
 ## Dziennik
 
@@ -298,4 +312,5 @@ Zadania dodane przez użytkownika po wydaniu 1.2.
 | 2026-11-15 | Etap 22: telefon — pełnoekranowe problemy (M‑04), karty zamiast tabel (M‑05); plan 1.2 zamknięty | #39 |
 | 2026-11-15 | **Wydanie v1.2.0** (etapy 18–22; schemat projektu v2 z automatyczną migracją), `CHANGELOG.md`, wersja w `apps/web/package.json`; zakres 1.3: predefiniowane podzespoły, edycja dysków i pul | tag `v1.2.0` |
 | 2026-11-16 | Etap 23: dodawanie wielu dysków, pojemność pul, `VAL_POOL`; listy predefiniowanych CPU (46), GPU/akceleratorów (18), RAM i dysków (HW‑09) | #41 |
-| 2026-11-16 | Pakiet poprawek: izolacja Wi‑Fi (NET‑12), `blocking` IndexedDB, duplikaty i18n, proxy/DNS w Markdown, lokalne nazwy w krokach DNS; D11 | — |
+| 2026-11-16 | Pakiet poprawek: izolacja Wi‑Fi (NET‑12), `blocking` IndexedDB, duplikaty i18n, proxy/DNS w Markdown, lokalne nazwy w krokach DNS; D11 | #42 |
+| 2026-11-16 | **Wydanie v1.3.0** (etap 23 i pakiet poprawek), `CHANGELOG.md`, wersja w `apps/web/package.json`; plan 1.4 (SIM‑07, EXP‑07, LOC‑09) | tag `v1.3.0` |

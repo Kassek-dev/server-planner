@@ -2,6 +2,22 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.3.0] — 2026-11-16
+
+Easier hardware entry — disks, storage pools and predefined parts — and a maintenance pack.
+
+### Features
+
+- **Disks and storage pools** — add several identical disks at once (e.g. 4 × 8 TB HDD); a new pool takes the free disks with a layout suited to their number and shows its usable and raw capacity, or why it cannot hold data. A new issue reports pools with fewer disks than their RAID layout needs (#41).
+- **Predefined parts** — pick CPUs (46, most with measured performance) and GPUs or AI accelerators (18) from the catalog, memory kits (DDR3–DDR5) and common disks from built-in lists; manual entry stays (#41).
+- **Documentation export** — the Markdown export lists reverse proxy routes and local DNS records (#42).
+- **Flows** — the DNS step shows the local name of the target and asks the DNS server its record names (#42).
+
+### Fixes
+
+- Wi-Fi client isolation is simulated: stations on an isolating SSID no longer reach each other directly (#42).
+- An open tab of an older version no longer blocks a newer version from upgrading the browser database (#42).
+
 ## [1.2.0] — 2026-11-15
 
 Finishes the planned features of the 1.x line: cable routing, moving workloads, reverse proxies and local DNS, defaults for new projects and a better phone view.
@@ -77,6 +93,7 @@ First public release: a local-first home lab planner running entirely in the bro
 
 - pnpm monorepo (`apps/web`, `packages/model`, `packages/engine`, `packages/catalog-builder`), Vite, React, TypeScript strict, Biome, Vitest and Playwright; CI on every pull request and automatic deployment to GitHub Pages; Dependabot updates for GitHub Actions (#1–#5).
 
+[1.3.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.0.0
