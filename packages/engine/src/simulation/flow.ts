@@ -1,7 +1,7 @@
 import type { CatalogFlow, Transport } from '@server-planner/model';
 import type { EngineContext } from '../context';
 import type { EntityRef } from '../types';
-import { type ReachabilityResult, reach, type SimStep, subnetOf } from './reach';
+import { addressesOf, type ReachabilityResult, reach, type SimStep, subnetOf } from './reach';
 
 /**
  * Application flows (FLW-01…05, docs/03 § 5.3): a catalog process expanded into a chain of
@@ -20,6 +20,8 @@ export interface FlowHop {
   protocol: Transport;
   port?: number;
   bandwidthMbps?: number;
+  /** DNS hops: the local name looked up for the next step's target (NET-14), when it has one. */
+  name?: string;
   result: ReachabilityResult;
 }
 
@@ -78,6 +80,28 @@ function dnsServer(ctx: EngineContext, from: EntityRef): EntityRef | undefined {
   return iface ? { type: iface.owner.type, id: iface.owner.id } : undefined;
 }
 
+/**
+ * NET-14: the local name a target is known by — a reverse proxy host name for an app, else an A
+ * record for one of its addresses — and the DNS app that answers it, if the record names one.
+ */
+function localName(
+  ctx: EngineContext,
+  to: EntityRef,
+): { name: string; server?: EntityRef } | undefined {
+  const p = ctx.project;
+  const records = Object.values(p.dnsRecords);
+  const route =
+    to.type === 'app'
+      ? Object.values(p.proxyRoutes).find((r) => r.target.appId === to.id)
+      : undefined;
+  const addresses = addressesOf(ctx, to);
+  const name =
+    route?.hostname ?? records.find((r) => r.type === 'A' && addresses.includes(r.value))?.name;
+  if (!name) return undefined;
+  const serverId = records.find((r) => r.name === name && r.serverAppId)?.serverAppId;
+  return serverId && p.apps[serverId] ? { name, server: { type: 'app', id: serverId } } : { name };
+}
+
 export function runFlow(
   ctx: EngineContext,
   { flow, bindings }: { flow: CatalogFlow; bindings: Record<string, FlowTarget | undefined> },
@@ -118,7 +142,8 @@ export function runFlow(
       return;
     }
     if (step.resolveDns) {
-      const dns = dnsServer(ctx, from);
+      const local = to !== 'internet' ? localName(ctx, to) : undefined;
+      const dns = local?.server ?? dnsServer(ctx, from);
       if (dns)
         hops.push({
           step: index,
@@ -127,6 +152,7 @@ export function runFlow(
           to: dns,
           protocol: 'udp',
           port: 53,
+          ...(local ? { name: local.name } : {}),
           result: reach(ctx, { from, to: dns, protocol: 'udp', port: 53 }),
         });
     }

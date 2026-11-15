@@ -164,25 +164,41 @@ export interface L2Search {
   reached: Map<string, { from?: string; linkId?: string }>;
   /** First link that refused the segment next to the reached area. */
   blocked?: { linkId: string; ifaceId?: string };
+  /** NET-12: stations not reached because their SSID isolates clients (link → SSID name). */
+  isolated: Map<string, string>;
 }
 
-/** Breadth-first search over links carrying `segment`, through switching devices. */
+/**
+ * Breadth-first search over links carrying `segment`, through switching devices. NET-12: a frame
+ * that entered an access point from a station on an SSID with client isolation does not leave it
+ * to another station of that SSID (any radio of the AP); wired destinations stay reachable.
+ */
 export function searchL2(ctx: EngineContext, startIface: string, segment: SegmentKey): L2Search {
   const reached = new Map<string, { from?: string; linkId?: string }>([[startIface, {}]]);
+  // SSID whose isolation applies while the search moves inside one access point.
+  const isolatedBy = new Map<string, string>();
   const queue = [startIface];
   let blocked: L2Search['blocked'];
+  const isolated = new Map<string, string>();
   while (queue.length > 0) {
     const id = queue.shift() as string;
     const iface = ctx.project.interfaces[id];
     if (!iface) continue;
+    const isolating = isolatedBy.get(id);
     for (const member of switchGroup(ctx, iface)) {
       if (reached.has(member.id)) continue;
       reached.set(member.id, { from: id });
+      if (isolating) isolatedBy.set(member.id, isolating);
       queue.push(member.id);
     }
     for (const link of ctx.linksByInterface.get(id) ?? []) {
       const peer = peerOf(link, id);
       if (reached.has(peer)) continue;
+      const ssid = ssidOf(ctx, link);
+      if (isolating && ssid?.id === isolating) {
+        isolated.set(link.id, ssid.name);
+        continue;
+      }
       const carries = linkCarries(ctx, link, segment);
       if (!carries.ok) {
         if (!blocked && carries.refusedBy)
@@ -190,10 +206,11 @@ export function searchL2(ctx: EngineContext, startIface: string, segment: Segmen
         continue;
       }
       reached.set(peer, { from: id, linkId: link.id });
+      if (ssid?.clientIsolation) isolatedBy.set(peer, ssid.id);
       queue.push(peer);
     }
   }
-  return blocked ? { reached, blocked } : { reached };
+  return blocked ? { reached, isolated, blocked } : { reached, isolated };
 }
 
 /** Links and interfaces from the search start to `target`. */

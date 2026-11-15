@@ -5,7 +5,10 @@ import { appRows, deviceRows, workloadRows } from '../inventory/rows';
 import { ipPlan } from '../ipplan/plan';
 import { endpointLabel } from '../simulation/FixDialog';
 
-/** Project documentation as Markdown (EXP-05): inventory, networks, firewall, IP plan, issues. */
+/**
+ * Project documentation as Markdown (EXP-05): inventory, networks, firewall, reverse proxy and local
+ * DNS (NET-11, NET-14), IP plan, issues.
+ */
 
 const esc = (v: string | number) => String(v).replaceAll('|', '\\|').replaceAll('\n', ' ');
 function table(header: string[], rows: (string | number)[][]): string {
@@ -115,6 +118,34 @@ export function projectMarkdown(
             : `${r.protocol}${r.ports?.length ? `/${r.ports.map((p) => (p.from === p.to ? p.from : `${p.from}-${p.to}`)).join(',')}` : ''}`,
           r.description ?? '',
         ]),
+      ),
+    );
+  }
+
+  const appName = (id: string) => project.apps[id]?.name ?? '?';
+  const routes = Object.values(project.proxyRoutes);
+  if (routes.length > 0) {
+    out.push('## Reverse proxy', '');
+    out.push(
+      table(
+        ['Host name', 'Proxy', 'App', 'Port', 'HTTPS'],
+        routes.map((r) => [
+          r.hostname,
+          appName(r.proxyAppId),
+          appName(r.target.appId),
+          r.target.port,
+          r.tls ? 'yes' : 'no',
+        ]),
+      ),
+    );
+  }
+  const records = Object.values(project.dnsRecords);
+  if (records.length > 0) {
+    out.push('## Local DNS', '');
+    out.push(
+      table(
+        ['Name', 'Type', 'Value', 'Server'],
+        records.map((r) => [r.name, r.type, r.value, r.serverAppId ? appName(r.serverAppId) : '']),
       ),
     );
   }

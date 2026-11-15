@@ -5,6 +5,8 @@ import { routes } from './router';
 import { createServices, ServicesProvider } from './services';
 
 let n = 0;
+// Project routes load the editor as a lazy chunk — slow on a cold CI runner.
+const LAZY = { timeout: 5000 };
 async function renderAt(path: string) {
   const services = await createServices(`test-router-${++n}`);
   const router = createMemoryRouter(routes, { initialEntries: [path] });
@@ -29,6 +31,6 @@ describe('router', () => {
 
   it('shows Project not found for an unknown project id', async () => {
     await renderAt('/p/prj_missing');
-    expect(await screen.findByRole('heading', { name: 'Project not found' })).toBeTruthy();
+    expect(await screen.findByRole('heading', { name: 'Project not found' }, LAZY)).toBeTruthy();
   });
 });

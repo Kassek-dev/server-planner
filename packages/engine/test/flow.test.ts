@@ -1,5 +1,8 @@
 import {
+  addApp,
+  addDnsRecord,
   type CatalogFlow,
+  execute,
   type Project,
   updateInterface,
   updateSubnet,
@@ -99,5 +102,60 @@ describe('runFlow (FLW-03)', () => {
     const run = runFlow(buildContext(p), { flow: playMovie, bindings: { server: jellyfin(p) } });
     expect(run.hops[0]?.result.steps[0]?.code).toBe('SIM_FLOW_UNBOUND');
     expect(run.verdict).toBe('unknown');
+  });
+});
+
+describe('local DNS in flows (NET-14)', () => {
+  function withRecord(server: boolean) {
+    let p = lab();
+    const pihole = execute(p, addApp, {
+      app: {
+        name: 'Pi-hole',
+        runsOn: device(p, 'pi-dns'),
+        role: 'dns',
+        tagIds: [],
+        listeners: [{ port: 53, protocol: 'udp', purpose: 'dns' }],
+        requirements: {
+          min: { cpu: 0.1, memoryBytes: 128 * 1024 ** 2, diskBytes: 1e9 },
+          recommended: { cpu: 0.5, memoryBytes: 512 * 1024 ** 2, diskBytes: 2e9 },
+        },
+        dependencies: [],
+        trafficPatterns: [],
+        confidence: 'estimated',
+      },
+    });
+    p = pihole.project;
+    p = apply(p, addDnsRecord, {
+      record: {
+        type: 'A',
+        name: 'jellyfin.home.arpa',
+        value: '192.168.20.15',
+        ...(server ? { serverAppId: pihole.result } : {}),
+      },
+    });
+    return { p, pihole: pihole.result };
+  }
+
+  it('the DNS hop names the local record and asks the server that holds it', () => {
+    const { p, pihole } = withRecord(true);
+    const run = runFlow(buildContext(p), {
+      flow: playMovie,
+      bindings: { client: device(p, 'nas-01'), server: jellyfin(p), storage: undefined },
+    });
+    expect(run.hops[0]).toMatchObject({
+      kind: 'dns',
+      name: 'jellyfin.home.arpa',
+      to: { type: 'app', id: pihole },
+    });
+  });
+
+  it('without a server on the record the subnet DNS answers it', () => {
+    const { p } = withRecord(false);
+    const run = runFlow(buildContext(p), {
+      flow: playMovie,
+      bindings: { client: device(p, 'nas-01'), server: jellyfin(p), storage: undefined },
+    });
+    expect(run.hops[0]).toMatchObject({ kind: 'dns', name: 'jellyfin.home.arpa' });
+    expect(run.hops[0]?.to).toEqual(device(p, 'pi-dns'));
   });
 });

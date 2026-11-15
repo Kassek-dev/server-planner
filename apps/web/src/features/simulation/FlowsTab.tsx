@@ -45,7 +45,10 @@ export function FlowsTab({ project }: { project: Project }) {
     const result = await simulator.runFlow(project, { flow: process, bindings });
     const labels = result.hops.map((h) => {
       const service = h.port ? `${h.protocol}/${h.port}` : h.protocol;
-      const prefix = h.kind === 'dns' ? `${t('flows.dns')} · ` : '';
+      const prefix =
+        h.kind === 'dns'
+          ? `${h.name ? t('flows.dnsName', { name: h.name }) : t('flows.dns')} · `
+          : '';
       return `${prefix}${endpointName(project, h.from)} → ${endpointName(project, h.to)} · ${service}`;
     });
     useSimulation.setState({ flow: { run: result, labels, index: 0, playing: false } });

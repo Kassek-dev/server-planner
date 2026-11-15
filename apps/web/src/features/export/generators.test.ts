@@ -1,6 +1,7 @@
 import { analyze } from '@server-planner/engine';
-import { updateDevice } from '@server-planner/model';
+import { parseProjectFile, updateDevice } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
+import reverseProxyRaw from '../../../../../fixtures/schema/v2/reverse-proxy.json';
 import { deviceByName, homeLab, sessionWith } from '../canvas/testSupport';
 import { deviceRows } from '../inventory/rows';
 import { ipPlan } from '../ipplan/plan';
@@ -99,5 +100,16 @@ describe('Markdown documentation', () => {
       expect(md).toContain(heading);
     expect(md).toContain('| 4 | deny | IoT | LAN | any | IoT → LAN |');
     expect(md).toContain('issue VAL_01');
+  });
+
+  it('lists reverse proxy routes and local DNS records', () => {
+    const file = parseProjectFile(reverseProxyRaw).file.project;
+    const md = projectMarkdown(file, null, null, () => '', '2026-11-16');
+    expect(md).toContain('## Reverse proxy');
+    expect(md).toContain('| jellyfin.home.arpa | Caddy | Jellyfin | 8096 | yes |');
+    expect(md).toContain('## Local DNS');
+    expect(md).toContain('| media.home.arpa | CNAME | jellyfin.home.arpa | — |');
+    // Without proxy routes or records the sections are left out.
+    expect(projectMarkdown(lab, null, null, () => '', 'x')).not.toContain('## Local DNS');
   });
 });

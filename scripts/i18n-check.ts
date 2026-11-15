@@ -2,7 +2,8 @@
  * i18n check — docs/01 § 7 rule 8.
  * - every literal key passed to t() exists in the file's namespace,
  * - every key in locales/en is used somewhere (literal, or covered by a dynamic `prefix.${x}` key),
- * - every language has the same keys and ICU arguments as `en`.
+ * - every language has the same keys and ICU arguments as `en`,
+ * - no JSON object repeats a key (JSON.parse would silently keep the last one).
  */
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
@@ -15,6 +16,8 @@ const LOCALES = join(SRC, 'i18n/locales');
 const BASE_LANG = 'en';
 
 type Dict = Map<string, string>; // "ns:key" -> message
+
+const errors: string[] = [];
 
 async function walk(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -37,12 +40,48 @@ function flatten(obj: unknown, prefix: string, out: Dict) {
   }
 }
 
+/** Keys repeated inside one JSON object, as dotted paths (a small scanner over the raw text). */
+export function duplicateKeys(text: string): string[] {
+  const out: string[] = [];
+  // One frame per open object ({ keys, path }) or array (null).
+  const stack: ({ keys: Set<string>; path: string } | null)[] = [];
+  let lastKey: string | undefined;
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (c === '"') {
+      let j = i + 1;
+      while (j < text.length && text[j] !== '"') j += text[j] === '\\' ? 2 : 1;
+      const value = JSON.parse(text.slice(i, j + 1)) as string;
+      i = j + 1;
+      while (/\s/.test(text[i] ?? '')) i += 1;
+      const frame = stack.at(-1);
+      if (text[i] === ':' && frame) {
+        const path = frame.path ? `${frame.path}.${value}` : value;
+        if (frame.keys.has(value)) out.push(path);
+        frame.keys.add(value);
+        lastKey = path;
+      }
+      continue;
+    }
+    if (c === '{') {
+      const parent = stack.at(-1);
+      stack.push({ keys: new Set(), path: parent === null ? '' : (lastKey ?? '') });
+    } else if (c === '[') stack.push(null);
+    else if (c === '}' || c === ']') stack.pop();
+    i += 1;
+  }
+  return out;
+}
+
 async function loadLang(lang: string): Promise<Dict> {
   const dict: Dict = new Map();
   for (const file of await readdir(join(LOCALES, lang))) {
     if (!file.endsWith('.json')) continue;
     const ns = file.replace(/\.json$/, '');
-    flatten(JSON.parse(await readFile(join(LOCALES, lang, file), 'utf8')), `${ns}:`, dict);
+    const text = await readFile(join(LOCALES, lang, file), 'utf8');
+    for (const key of duplicateKeys(text)) errors.push(`[${lang}] duplicate key "${ns}:${key}"`);
+    flatten(JSON.parse(text), `${ns}:`, dict);
   }
   return dict;
 }
@@ -50,7 +89,6 @@ async function loadLang(lang: string): Promise<Dict> {
 const icuArgs = (msg: string) =>
   new Set([...msg.matchAll(/\{\s*([A-Za-z_]\w*)/g)].map((m) => m[1]));
 
-const errors: string[] = [];
 const langs = (await readdir(LOCALES, { withFileTypes: true }))
   .filter((d) => d.isDirectory())
   .map((d) => d.name);
