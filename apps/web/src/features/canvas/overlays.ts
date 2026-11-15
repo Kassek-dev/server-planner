@@ -101,6 +101,8 @@ export interface OverlayInput {
   view: Pick<CanvasViewState, 'links' | 'devices'>;
   capacity?: Record<string, CapacityReport> | undefined;
   highlight?: ReachabilityResult | null;
+  /** SIM-07: failed devices and cables (blocked), devices cut off by them (highlighted). */
+  failure?: { devices: string[]; links: string[]; affected: string[] } | null;
 }
 
 /** Device of the failing step and the link it refused, if the result is blocked. */
@@ -123,7 +125,19 @@ function blockedAt(project: Project, result: ReachabilityResult) {
 }
 
 export function decorateNodes(nodes: CanvasNode[], input: OverlayInput): CanvasNode[] {
-  const { project, view, capacity, highlight } = input;
+  const { project, view, capacity, highlight, failure } = input;
+  if (failure && !highlight) {
+    const failed = new Set(failure.devices);
+    const affected = new Set(failure.affected);
+    return nodes.map((n) =>
+      n.type !== 'device'
+        ? n
+        : ({
+            ...n,
+            className: failed.has(n.id) ? 'sp-blocked' : affected.has(n.id) ? 'sp-path' : 'sp-dim',
+          } as CanvasNode),
+    );
+  }
   if (highlight) {
     const onPath = new Set(highlight.path.devices);
     const blocked = blockedAt(project, highlight).device;
@@ -150,7 +164,16 @@ export function decorateEdges(
   edges: Edge<LinkEdgeData>[],
   input: OverlayInput,
 ): Edge<LinkEdgeData>[] {
-  const { project, view, highlight } = input;
+  const { project, view, highlight, failure } = input;
+  if (failure && !highlight) {
+    const failed = new Set(failure.links);
+    const down = new Set(failure.devices);
+    return edges.map((e) => ({
+      ...e,
+      className:
+        failed.has(e.id) || down.has(e.source) || down.has(e.target) ? 'sp-blocked' : 'sp-dim',
+    }));
+  }
   if (highlight) {
     const onPath = new Set(highlight.path.links);
     const blocked = blockedAt(project, highlight).link;

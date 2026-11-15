@@ -5,7 +5,8 @@
     "label": "Simulation mode",
     "reach": "Reachability",
     "access": "Access",
-    "flows": "Flows"
+    "flows": "Flows",
+    "failures": "Failures"
   },
   "kinds": {
     "vm": "VM",
@@ -143,5 +144,25 @@
     "play": "Play",
     "pause": "Pause",
     "next": "Next step"
+  },
+  "failures": {
+    "hint": "Take devices or cables down — or cut the power — and see who loses the internet or their apps. Devices behind a UPS keep running in a power cut.",
+    "devices": "Devices that fail",
+    "cable": "Cables that fail",
+    "addCable": "Add a cable…",
+    "cableDown": "{cable} unplugged",
+    "powerCut": "Power cut (only devices on a UPS keep running)",
+    "run": "Simulate failure",
+    "findSpof": "Find single points of failure",
+    "impact": "Impact",
+    "down": "{devices, plural, one {# device} other {# devices}} and {links, plural, one {# cable} other {# cables}} down.",
+    "noImpact": "Nothing else is affected.",
+    "internetLost": "{count, plural, one {# loses} other {# lose}} the internet: {names}",
+    "appDown": "{app} is down — its host failed.",
+    "appCutOff": "{app}: {count, plural, one {# client} other {# clients}} cut off ({names})",
+    "assertion": "Assertion “{name}” {result, select, true {now holds} false {now fails} other {can no longer be checked}}",
+    "spofTitle": "Single points of failure",
+    "noSpof": "No single device or cable cuts anything off on its own.",
+    "spofSummary": "{internet} offline · {clients} cut off"
   }
 }

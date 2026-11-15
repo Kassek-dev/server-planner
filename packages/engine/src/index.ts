@@ -47,6 +47,15 @@ export {
   MATRIX_PROBES,
   type MatrixCell,
 } from './simulation/assertions';
+export {
+  type AppImpact,
+  affectsOthers,
+  type FailureImpact,
+  type FailureScenario,
+  failureImpact,
+  type SinglePointOfFailure,
+  singlePointsOfFailure,
+} from './simulation/failure';
 export { type FlowHop, type FlowRunResult, type FlowTarget, runFlow } from './simulation/flow';
 export { exposureWithRoutes, proxyRoutes, resolveLocalName } from './simulation/proxy';
 export {

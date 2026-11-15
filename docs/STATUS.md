@@ -261,8 +261,9 @@ Zadania dodane przez użytkownika po wydaniu 1.2.
 Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów i wydanie (D11 — `1.4.Z`, `Z` = liczba poprawek).
 
 ### Etap 24 — Analiza awarii (SIM‑07)
-- [ ] „Co jeśli padnie X?” — wyłączenie urządzenia, łącza lub zasilania (UPS) i ponowna symulacja: utracony internet, niedostępne aplikacje i asercje
-- [ ] Wykrywanie pojedynczych punktów awarii (SPOF): urządzenia i łącza, których awaria odcina klientów od internetu lub aplikacji
+- [x] Silnik `simulation/failure.ts`: `failureImpact` (urządzenia z interfejsami wyłączonymi razem z tym, co hostują; kable usunięte; zanik zasilania = poza UPS‑ami i chronionymi), porównanie przed / po: internet, dostęp klientów do aplikacji (pierwszy listener), asercje
+- [x] `singlePointsOfFailure`: każde urządzenie (poza klientami i Internetem) i kabel osobno, tylko z wpływem na inne elementy, posortowane wg szkody
+- [x] Zakładka X‑01d Failures w panelu symulacji (worker: `failure`, `spof`), podświetlenie awarii na canvasie
 
 ### Etap 25 — Eksport konfiguracji sieci (EXP‑07)
 - [ ] Proxmox `/etc/network/interfaces` (mosty, VLAN‑aware, adresy), Netplan (Ubuntu), Debian `interfaces`, lista rezerwacji DHCP
@@ -313,4 +314,5 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 | 2026-11-15 | **Wydanie v1.2.0** (etapy 18–22; schemat projektu v2 z automatyczną migracją), `CHANGELOG.md`, wersja w `apps/web/package.json`; zakres 1.3: predefiniowane podzespoły, edycja dysków i pul | tag `v1.2.0` |
 | 2026-11-16 | Etap 23: dodawanie wielu dysków, pojemność pul, `VAL_POOL`; listy predefiniowanych CPU (46), GPU/akceleratorów (18), RAM i dysków (HW‑09) | #41 |
 | 2026-11-16 | Pakiet poprawek: izolacja Wi‑Fi (NET‑12), `blocking` IndexedDB, duplikaty i18n, proxy/DNS w Markdown, lokalne nazwy w krokach DNS; D11 | #42 |
-| 2026-11-16 | **Wydanie v1.3.0** (etap 23 i pakiet poprawek), `CHANGELOG.md`, wersja w `apps/web/package.json`; plan 1.4 (SIM‑07, EXP‑07, LOC‑09) | tag `v1.3.0` |
+| 2026-11-16 | **Wydanie v1.3.0** (etap 23 i pakiet poprawek), `CHANGELOG.md`, wersja w `apps/web/package.json`; plan 1.4 (SIM‑07, EXP‑07, LOC‑09) | tag `v1.3.0` (#43) |
+| 2026-11-16 | Etap 24: analiza awarii i SPOF (SIM‑07), zakładka Failures | — |
