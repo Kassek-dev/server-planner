@@ -3,6 +3,7 @@ import {
   checkRackFit,
   type Interface,
   type OsId,
+  POOL_MIN_DISKS,
   SINGLE_LINK_KINDS,
   type Subnet,
   type Workload,
@@ -708,6 +709,34 @@ const proxyAndDns: ValidationRule = {
   },
 };
 
+/** HW-03 storage pool with fewer disks than its layout needs (0 disks: nothing to store on). */
+const poolDisks: ValidationRule = {
+  code: 'VAL_POOL',
+  run(ctx) {
+    const out: Issue[] = [];
+    for (const device of Object.values(ctx.project.devices)) {
+      const disks = new Set(device.hardware.disks.map((d) => d.id));
+      for (const pool of device.hardware.pools) {
+        const count = pool.diskIds.filter((id) => disks.has(id)).length;
+        const needed = POOL_MIN_DISKS[pool.layout];
+        if (count >= needed) continue;
+        out.push(
+          issue(
+            'VAL_POOL',
+            count === 0 ? 'error' : 'warning',
+            [
+              { type: 'pool', id: pool.id },
+              { type: 'device', id: device.id },
+            ],
+            { device: device.name, pool: pool.name, layout: pool.layout, needed, count },
+          ),
+        );
+      }
+    }
+    return out;
+  },
+};
+
 const RESOURCE_LABEL = { cpu: 'CPU', memory: 'memory' } as const;
 
 /** VAL-13 capacity above thresholds (critical/over = error from 100 %, warning band = warning). */
@@ -924,6 +953,7 @@ export const rules: ValidationRule[] = [
   osCompatibility,
   archCompatibility,
   proxyAndDns,
+  poolDisks,
   capacityRule,
   gpuRule,
   dependencies,
@@ -956,6 +986,7 @@ export const ISSUE_CODES = [
   'VAL_PROXY',
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
+  'VAL_POOL',
   'VAL_12',
   'VAL_12_UPS',
   'VAL_13',

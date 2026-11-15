@@ -1,10 +1,13 @@
+import { poolUsableBytes } from '@server-planner/engine';
 import {
   applyDeviceModel,
   createId,
   type Device,
+  defaultPoolLayout,
   GpuFeatureSchema,
   type Hardware,
   modelSpecChanges,
+  POOL_MIN_DISKS,
   type Project,
   STANDALONE_SHAPES,
   type StandaloneShape,
@@ -22,6 +25,7 @@ import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Segmented } from '../../../ui/Segmented';
 import { Select } from '../../../ui/Select';
+import { TextField } from '../../../ui/TextField';
 import { DeviceModelPicker, modelName } from '../../catalog/DeviceModelPicker';
 import {
   AddButton,
@@ -515,30 +519,37 @@ function DisksSection({ device, setHw }: { device: Device; setHw: (hw: Hardware)
   const { t } = useTranslation('inspector');
   const hw = device.hardware;
   const sizeValidator = (v: string) => (parseSize(v) === undefined ? t('errors.size') : null);
+  const pooled = new Set(hw.pools.flatMap((p) => p.diskIds));
+  const raw = hw.disks.reduce((sum, d) => sum + d.sizeBytes, 0);
+
+  const addPool = () => {
+    // A new pool takes the disks no pool uses yet, with a layout that suits their number.
+    const free = hw.disks.filter((d) => !pooled.has(d.id)).map((d) => d.id);
+    setHw({
+      ...hw,
+      pools: [
+        ...hw.pools,
+        {
+          id: createId('storagePool'),
+          name: hw.pools.length ? `pool${hw.pools.length}` : 'local',
+          layout: defaultPoolLayout(free.length),
+          diskIds: free,
+          ...(free.length > 1 ? { filesystem: 'zfs' as const } : {}),
+        },
+      ],
+    });
+  };
+
   return (
     <>
-      <Section
-        title={t('hardware.disks')}
-        action={
-          <AddButton
-            label={t('hardware.addDisk')}
-            onClick={() =>
-              setHw({
-                ...hw,
-                disks: [
-                  ...hw.disks,
-                  {
-                    id: createId('disk'),
-                    name: `disk${hw.disks.length}`,
-                    type: 'ssd-nvme',
-                    sizeBytes: 500e9,
-                  },
-                ],
-              })
-            }
-          />
-        }
-      >
+      <Section title={t('hardware.disksCount', { count: hw.disks.length })}>
+        {hw.disks.length === 0 ? (
+          <p className="m-0 text-body-sm text-text-muted">{t('hardware.noDisks')}</p>
+        ) : (
+          <span className="font-mono text-data-sm text-text-secondary">
+            {t('hardware.disksRaw', { size: formatSize(raw, true) })}
+          </span>
+        )}
         {hw.disks.map((disk) => {
           const setDisk = (changes: Partial<typeof disk>) =>
             setHw({
@@ -559,7 +570,10 @@ function DisksSection({ device, setHw }: { device: Device; setHw: (hw: Hardware)
                     label={t('hardware.type')}
                     mono
                     value={disk.type}
-                    options={DISK_TYPES.map((v) => ({ value: v, label: v }))}
+                    options={DISK_TYPES.map((v) => ({
+                      value: v,
+                      label: t(`hardware.diskTypes.${v}`),
+                    }))}
                     onChange={(e) => setDisk({ type: e.target.value as typeof disk.type })}
                   />
                   <CommitField
@@ -571,7 +585,7 @@ function DisksSection({ device, setHw }: { device: Device; setHw: (hw: Hardware)
                   />
                 </Grid>
                 <RemoveButton
-                  label={t('actions.remove')}
+                  label={t('hardware.removeDisk', { name: disk.name })}
                   onClick={() =>
                     setHw({
                       ...hw,
@@ -587,94 +601,177 @@ function DisksSection({ device, setHw }: { device: Device; setHw: (hw: Hardware)
             </Card>
           );
         })}
+        <AddDisksForm
+          onAdd={(count, type, sizeBytes) =>
+            setHw({
+              ...hw,
+              disks: [
+                ...hw.disks,
+                ...Array.from({ length: count }, (_, i) => ({
+                  id: createId('disk'),
+                  name: `disk${hw.disks.length + i}`,
+                  type,
+                  sizeBytes,
+                })),
+              ],
+            })
+          }
+        />
       </Section>
       <Section
         title={t('hardware.pools')}
-        action={
-          <AddButton
-            label={t('hardware.addPool')}
-            onClick={() =>
-              setHw({
-                ...hw,
-                pools: [
-                  ...hw.pools,
-                  {
-                    id: createId('storagePool'),
-                    name: hw.pools.length ? `pool${hw.pools.length}` : 'local',
-                    layout: 'single',
-                    diskIds: [],
-                  },
-                ],
-              })
-            }
-          />
-        }
+        action={<AddButton label={t('hardware.addPool')} onClick={addPool} />}
       >
+        {hw.pools.length === 0 ? (
+          <p className="m-0 text-body-sm text-text-muted">
+            {hw.disks.length === 0 ? t('hardware.noPoolsNoDisks') : t('hardware.noPools')}
+          </p>
+        ) : null}
         {hw.pools.map((pool) => {
           const setPool = (changes: Partial<typeof pool>) =>
             setHw({
               ...hw,
               pools: hw.pools.map((p) => (p.id === pool.id ? { ...p, ...changes } : p)),
             });
+          const members = pool.diskIds.filter((id) => hw.disks.some((d) => d.id === id)).length;
+          const needed = POOL_MIN_DISKS[pool.layout];
+          const usable = poolUsableBytes(device, pool);
+          const poolRaw = hw.disks
+            .filter((d) => pool.diskIds.includes(d.id))
+            .reduce((sum, d) => sum + d.sizeBytes, 0);
           return (
             <Card key={pool.id}>
               <div className="flex items-end gap-2">
-                <Grid cols={3}>
+                <div className="min-w-0 flex-1">
                   <CommitField
                     label={t('hardware.name')}
                     mono
                     value={pool.name}
                     onCommit={(name) => name && setPool({ name })}
                   />
-                  <Select
-                    label={t('hardware.layout')}
-                    mono
-                    value={pool.layout}
-                    options={POOL_LAYOUTS.map((v) => ({ value: v, label: v }))}
-                    onChange={(e) => setPool({ layout: e.target.value as typeof pool.layout })}
-                  />
-                  <Select
-                    label={t('hardware.filesystem')}
-                    mono
-                    value={pool.filesystem ?? ''}
-                    options={[
-                      { value: '', label: '—' },
-                      ...FILESYSTEMS.map((v) => ({ value: v, label: v })),
-                    ]}
-                    onChange={(e) =>
-                      setPool({
-                        filesystem: (e.target.value || undefined) as typeof pool.filesystem,
-                      })
-                    }
-                  />
-                </Grid>
+                </div>
                 <RemoveButton
-                  label={t('actions.remove')}
+                  label={t('hardware.removePool', { name: pool.name })}
                   onClick={() => setHw({ ...hw, pools: hw.pools.filter((p) => p.id !== pool.id) })}
                 />
               </div>
-              <fieldset className="m-0 flex flex-wrap gap-x-4 gap-y-1 border-0 p-0">
-                <legend className="sr-only">{t('hardware.poolDisks')}</legend>
-                {hw.disks.map((disk) => (
-                  <Checkbox
-                    key={disk.id}
-                    label={disk.name}
-                    checked={pool.diskIds.includes(disk.id)}
-                    onChange={(e) =>
-                      setPool({
-                        diskIds: e.target.checked
-                          ? [...pool.diskIds, disk.id]
-                          : pool.diskIds.filter((id) => id !== disk.id),
-                      })
-                    }
-                  />
-                ))}
-              </fieldset>
+              <Grid>
+                <Select
+                  label={t('hardware.layout')}
+                  mono
+                  value={pool.layout}
+                  options={POOL_LAYOUTS.map((v) => ({ value: v, label: v }))}
+                  onChange={(e) => setPool({ layout: e.target.value as typeof pool.layout })}
+                />
+                <Select
+                  label={t('hardware.filesystem')}
+                  mono
+                  value={pool.filesystem ?? ''}
+                  options={[
+                    { value: '', label: '—' },
+                    ...FILESYSTEMS.map((v) => ({ value: v, label: v })),
+                  ]}
+                  onChange={(e) =>
+                    setPool({
+                      filesystem: (e.target.value || undefined) as typeof pool.filesystem,
+                    })
+                  }
+                />
+              </Grid>
+              {members < needed ? (
+                <p className="m-0 text-body-sm text-warning-text">
+                  {members === 0
+                    ? hw.disks.length === 0
+                      ? t('hardware.poolNoDisksAtAll')
+                      : t('hardware.poolNoDisks')
+                    : t('hardware.poolTooFew', { layout: pool.layout, needed, count: members })}
+                </p>
+              ) : (
+                <span className="font-mono text-data-sm text-text-secondary">
+                  {t('hardware.poolCapacity', {
+                    usable: formatSize(usable, true),
+                    raw: formatSize(poolRaw, true),
+                    count: members,
+                  })}
+                </span>
+              )}
+              {hw.disks.length > 0 ? (
+                <fieldset className="m-0 flex flex-wrap gap-x-4 gap-y-1 border-0 p-0">
+                  <legend className="mb-1 text-body-sm text-text-secondary">
+                    {t('hardware.poolDisks')}
+                  </legend>
+                  {hw.disks.map((disk) => (
+                    <Checkbox
+                      key={disk.id}
+                      label={`${disk.name} · ${formatSize(disk.sizeBytes, true)}`}
+                      checked={pool.diskIds.includes(disk.id)}
+                      onChange={(e) =>
+                        setPool({
+                          diskIds: e.target.checked
+                            ? [...pool.diskIds, disk.id]
+                            : pool.diskIds.filter((id) => id !== disk.id),
+                        })
+                      }
+                    />
+                  ))}
+                </fieldset>
+              ) : null}
             </Card>
           );
         })}
       </Section>
     </>
+  );
+}
+
+const DISK_COUNTS = Array.from({ length: 12 }, (_, i) => i + 1);
+
+/** Several identical disks at once (e.g. 4 × 8 TB HDD) — HW-03. */
+function AddDisksForm({
+  onAdd,
+}: {
+  onAdd: (count: number, type: (typeof DISK_TYPES)[number], sizeBytes: number) => void;
+}) {
+  const { t } = useTranslation('inspector');
+  const [count, setCount] = useState(1);
+  const [type, setType] = useState<(typeof DISK_TYPES)[number]>('ssd-nvme');
+  const [size, setSize] = useState('1 TB');
+  const bytes = parseSize(size);
+  return (
+    <form
+      aria-label={t('hardware.addDisks')}
+      className="flex flex-col gap-2 rounded-md border border-dashed border-border-default p-2.5"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (bytes !== undefined) onAdd(count, type, bytes);
+      }}
+    >
+      <div className="grid grid-cols-[64px_minmax(0,1fr)] items-start gap-2">
+        <Select
+          label={t('hardware.diskCount')}
+          mono
+          value={String(count)}
+          options={DISK_COUNTS.map((n) => ({ value: String(n), label: `${n}×` }))}
+          onChange={(e) => setCount(Number(e.target.value))}
+        />
+        <Select
+          label={t('hardware.type')}
+          value={type}
+          options={DISK_TYPES.map((v) => ({ value: v, label: t(`hardware.diskTypes.${v}`) }))}
+          onChange={(e) => setType(e.target.value as (typeof DISK_TYPES)[number])}
+        />
+      </div>
+      <TextField
+        label={t('hardware.size')}
+        mono
+        value={size}
+        {...(bytes === undefined ? { error: t('errors.size') } : {})}
+        onChange={(e) => setSize(e.target.value)}
+      />
+      <Button type="submit" size="sm" disabled={bytes === undefined}>
+        {t('hardware.addDisks')}
+      </Button>
+    </form>
   );
 }
 

@@ -96,3 +96,30 @@ test('move a VM to another Proxmox host (SW-11)', async ({ page }) => {
   ).toBeVisible();
   await expect(panel.getByLabel('net0 bridge')).toHaveValue(/.+/);
 });
+
+test('add several disks at once and build a pool with its capacity', async ({ page }) => {
+  await openExample(page);
+  await page
+    .getByRole('complementary', { name: 'Library' })
+    .getByRole('button', { name: /^NAS/ })
+    .click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Hardware' }).click();
+  await expect(panel.getByText(/^No disks yet/)).toBeVisible();
+  await expect(panel.getByText(/^No storage pools. Add disks first/)).toBeVisible();
+
+  const form = panel.getByRole('form', { name: 'Add disks' });
+  await form.getByLabel('Count').selectOption('4');
+  await form.getByLabel('Type').selectOption('hdd');
+  await form.getByLabel('Size').fill('8 TB');
+  await form.getByRole('button', { name: 'Add disks' }).click();
+  await expect(panel.getByRole('heading', { name: '4 disks' })).toBeVisible();
+  await expect(panel.getByText('32 TB raw in total')).toBeVisible();
+
+  await panel.getByRole('button', { name: 'Add pool' }).click();
+  await expect(panel.getByLabel('Layout')).toHaveValue('raidz1');
+  await expect(panel.getByText('24 TB usable of 32 TB raw · 4 disks')).toBeVisible();
+  await panel.getByLabel('Layout').selectOption('raidz3');
+  await expect(panel.getByText('raidz3 needs at least 5 disks; this pool has 4.')).toBeVisible();
+  await page.screenshot({ path: 'test-results/disks-pool.png', fullPage: true });
+});

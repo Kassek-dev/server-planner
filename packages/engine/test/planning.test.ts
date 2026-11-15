@@ -141,3 +141,25 @@ describe('GPU (HW-05)', () => {
     expect(codes(p)).toEqual([]);
   });
 });
+
+describe('storage pool disks (VAL_POOL)', () => {
+  it('flags a pool with fewer disks than its layout needs', () => {
+    const lab = homeLab();
+    const host = Object.values(lab.devices).find((d) => d.hardware.pools.length > 0);
+    if (!host) throw new Error('no pool');
+    const pool = host.hardware.pools[0];
+    if (!pool) throw new Error('no pool');
+    expect(analyzeWith(lab).issues.map((i) => i.code)).not.toContain('VAL_POOL');
+    const broken = apply(lab, updateDevice, {
+      id: host.id,
+      changes: {
+        hardware: {
+          ...host.hardware,
+          pools: [{ ...pool, layout: 'raidz2' }, ...host.hardware.pools.slice(1)],
+        },
+      },
+    });
+    const found = analyzeWith(broken).issues.find((i) => i.code === 'VAL_POOL');
+    expect(found?.params).toMatchObject({ pool: pool.name, layout: 'raidz2', needed: 4 });
+  });
+});

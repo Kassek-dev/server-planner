@@ -163,6 +163,10 @@
     "title": "DNS record for an unknown address",
     "description": "{name} points to {address}, which no device or container in the project has."
   },
+  "VAL_POOL": {
+    "title": "Storage pool without enough disks",
+    "description": "Pool {pool} on {device} has {count, plural, =0 {no disks} one {# disk} other {# disks}}; {layout} needs at least {needed}."
+  },
   "VAL_GPU": {
     "title": "No accelerator for an app",
     "description": "{app} needs {features}, but {host} cannot give it{behindVm, select, yes { (it runs in a VM without GPU passthrough)} other {}}."
