@@ -10,6 +10,7 @@ import {
 import ipaddr from 'ipaddr.js';
 import { capacity as computeCapacity } from '../capacity';
 import { type CpuArch, carriedVlans, type EngineContext, hostedBy, peerOf } from '../context';
+import { addressesOf, proxyRoutes, resolveLocalName } from '../simulation/proxy';
 import type { EntityRef, Issue, Severity } from '../types';
 
 /** Validation rules — docs/01 § 8a (VAL-01…14) and docs/02 § 4.3 (rack). Codes map to issues.<code>. */
@@ -635,6 +636,78 @@ const archCompatibility: ValidationRule = {
   },
 };
 
+/**
+ * NET-11 / NET-14: a proxy route whose proxy cannot reach the app behind it (VAL_PROXY), a local
+ * A record for an address nothing in the project has (VAL_DNS_ADDRESS), and a proxied host name
+ * whose local record points elsewhere than the proxy (VAL_PROXY_DNS).
+ */
+const proxyAndDns: ValidationRule = {
+  code: 'VAL_PROXY',
+  run(ctx) {
+    const p = ctx.project;
+    const out: Issue[] = [];
+    const appName = (id: string) => p.apps[id]?.name ?? '?';
+    for (const r of proxyRoutes(ctx)) {
+      if (r.result.verdict === 'reachable') continue;
+      out.push(
+        issue(
+          'VAL_PROXY',
+          'error',
+          [
+            { type: 'app', id: r.appId },
+            { type: 'app', id: r.proxyAppId },
+          ],
+          {
+            hostname: r.hostname,
+            proxy: appName(r.proxyAppId),
+            app: appName(r.appId),
+            port: r.port,
+          },
+        ),
+      );
+    }
+    const used = new Set(
+      Object.values(p.interfaces).flatMap((i) =>
+        i.addresses.flatMap((a) => (a.address ? [a.address] : [])),
+      ),
+    );
+    for (const w of Object.values(p.workloads))
+      if (w.kind === 'container' && w.network.mode === 'docker-network' && w.network.ip)
+        used.add(w.network.ip);
+    for (const record of Object.values(p.dnsRecords)) {
+      if (record.type !== 'A' || used.has(record.value)) continue;
+      out.push(
+        issue('VAL_DNS_ADDRESS', 'warning', [{ type: 'dnsRecord', id: record.id }], {
+          name: record.name,
+          address: record.value,
+        }),
+      );
+    }
+    for (const route of Object.values(p.proxyRoutes)) {
+      const resolved = resolveLocalName(ctx, route.hostname);
+      if (!resolved) continue;
+      const proxy = addressesOf(ctx, { type: 'app', id: route.proxyAppId });
+      if (resolved.some((ip) => proxy.includes(ip))) continue;
+      out.push(
+        issue(
+          'VAL_PROXY_DNS',
+          'warning',
+          [
+            { type: 'proxyRoute', id: route.id },
+            { type: 'app', id: route.proxyAppId },
+          ],
+          {
+            hostname: route.hostname,
+            proxy: appName(route.proxyAppId),
+            resolved: resolved.join(', ') || '—',
+          },
+        ),
+      );
+    }
+    return out;
+  },
+};
+
 const RESOURCE_LABEL = { cpu: 'CPU', memory: 'memory' } as const;
 
 /** VAL-13 capacity above thresholds (critical/over = error from 100 %, warning band = warning). */
@@ -850,6 +923,7 @@ export const rules: ValidationRule[] = [
   portConflict,
   osCompatibility,
   archCompatibility,
+  proxyAndDns,
   capacityRule,
   gpuRule,
   dependencies,
@@ -879,6 +953,9 @@ export const ISSUE_CODES = [
   'VAL_11_NOT_COMPUTE',
   'VAL_ARCH',
   'VAL_ARCH_OS',
+  'VAL_PROXY',
+  'VAL_PROXY_DNS',
+  'VAL_DNS_ADDRESS',
   'VAL_12',
   'VAL_12_UPS',
   'VAL_13',

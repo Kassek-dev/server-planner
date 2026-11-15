@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 17: phones are view-only (docs/05 § 12) — canvas, bottom sheet, reachability. */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v1/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
 const node = (page: Page, name: string) =>
   page.locator('.react-flow__node', { has: page.getByText(name, { exact: true }) }).first();
 

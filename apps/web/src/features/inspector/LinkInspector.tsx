@@ -158,7 +158,12 @@ export function LinkInspector({ project, link }: { project: Project; link: Link 
             onClick={() =>
               run(updateLink, {
                 id: link.id,
-                changes: { cable: { ...link.cable, label: cableLabel(project, link) } },
+                changes: {
+                  cable: {
+                    ...link.cable,
+                    label: cableLabel(project, link, project.settings.cableLabelPattern),
+                  },
+                },
               })
             }
           >

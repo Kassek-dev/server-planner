@@ -594,6 +594,11 @@ const passed = (r: ReachabilityResult) => r.steps.filter((s) => s.decision === '
 
 /** Reachability of `q.to` from `q.from`; tries every address pair and keeps the best outcome. */
 /** Subnet of the first network attachment of an endpoint (for its DNS server). */
+/** IP addresses an element is reachable at (its attachments; for an app, those of its host). */
+export function addressesOf(ctx: EngineContext, ref: EntityRef): string[] {
+  return resolve(ctx, ref).attachments.flatMap((a) => (a.ip ? [a.ip] : []));
+}
+
 export function subnetOf(ctx: EngineContext, ref: EntityRef): string | undefined {
   return resolve(ctx, ref).attachments.find((a) => a.subnetId)?.subnetId;
 }
@@ -630,6 +635,18 @@ export interface Exposure {
   externalPort: number;
   /** The forwarded-to element: an app, or the owner of the target address. */
   target?: EntityRef;
+  result: ReachabilityResult;
+  /** NET-11: host names a reverse proxy behind this forward serves, with the proxy → app leg. */
+  routes?: ProxyRouteResult[];
+}
+
+/** One reverse proxy route and whether the proxy reaches the app behind it. */
+export interface ProxyRouteResult {
+  routeId: string;
+  hostname: string;
+  proxyAppId: string;
+  appId: string;
+  port: number;
   result: ReachabilityResult;
 }
 

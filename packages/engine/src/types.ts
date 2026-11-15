@@ -18,7 +18,9 @@ export type EntityRef = {
     | 'rule'
     | 'pool'
     | 'location'
-    | 'assertion';
+    | 'assertion'
+    | 'proxyRoute'
+    | 'dnsRecord';
   id: Id;
 };
 

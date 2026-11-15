@@ -32,6 +32,10 @@ export function useRevealTarget(project: Project | null) {
       case 'zone':
         open({ kind: 'vlans' });
         return;
+      case 'proxyRoute':
+      case 'dnsRecord':
+        open({ kind: 'services' });
+        return;
       case 'rule': {
         const router = Object.values(project.devices).find((d) =>
           d.firewall?.rules.some((r) => r.id === target.id),
@@ -71,6 +75,10 @@ export function targetLabel(project: Project, target: EntityRef): string {
     }
     case 'link':
       return 'link';
+    case 'proxyRoute':
+      return project.proxyRoutes[target.id]?.hostname ?? '?';
+    case 'dnsRecord':
+      return project.dnsRecords[target.id]?.name ?? '?';
     default:
       return target.type;
   }

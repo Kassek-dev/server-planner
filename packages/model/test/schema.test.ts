@@ -13,12 +13,17 @@ import {
   restoreSnapshot,
   sequentialContext,
   updateWorkload,
+  upgradeProjectV1,
 } from '../src';
 import { buildHomeLab } from './support/home-lab';
 import { homeLabFile } from './support/project-file';
+import { buildReverseProxyLab } from './support/reverse-proxy';
 
-const fixturePath = join(import.meta.dirname, '../../../fixtures/schema/v1/home-lab.json');
-const fixture = JSON.parse(readFileSync(fixturePath, 'utf8'));
+const readFixture = (path: string) =>
+  JSON.parse(readFileSync(join(import.meta.dirname, '../../../fixtures/schema', path), 'utf8'));
+const fixture = readFixture('v2/home-lab.json');
+const fixtureV1 = readFixture('v1/home-lab.json');
+const reverseProxy = readFixture('v2/reverse-proxy.json');
 
 function expectFileError(raw: unknown, code: string) {
   try {
@@ -32,14 +37,46 @@ function expectFileError(raw: unknown, code: string) {
 }
 
 describe('project file', () => {
-  it('parses the v1 home-lab fixture without migration', () => {
+  it('parses the v2 home-lab fixture without migration', () => {
     const { file, migratedFrom } = parseProjectFile(fixture);
     expect(migratedFrom).toBeUndefined();
     expect(Object.keys(file.project.devices)).toHaveLength(8);
   });
 
-  it('fixture is up to date with the builder (run `pnpm --filter @server-planner/model fixtures:write`)', () => {
+  it('fixtures are up to date with the builders (run `pnpm --filter @server-planner/model fixtures:write`)', () => {
     expect(JSON.parse(JSON.stringify(homeLabFile(buildHomeLab())))).toEqual(fixture);
+    expect(JSON.parse(JSON.stringify(homeLabFile(buildReverseProxyLab())))).toEqual(reverseProxy);
+  });
+
+  it('migrates a v1 file to v2 with empty proxy routes and DNS records', () => {
+    const { file, migratedFrom } = parseProjectFile(fixtureV1);
+    expect(migratedFrom).toBe(1);
+    expect(file.schemaVersion).toBe(2);
+    expect(file.project).toEqual(fixture.project);
+  });
+
+  it('migrates snapshots of a v1 file and is idempotent', () => {
+    const { id: _, ...content } = fixtureV1.project;
+    const withSnapshot = {
+      ...fixtureV1,
+      snapshots: [
+        { id: 'snap_0001', name: 'before', createdAt: fixtureV1.exportedAt, project: content },
+      ],
+    };
+    const { file } = parseProjectFile(withSnapshot);
+    expect(file.snapshots?.[0]?.project.proxyRoutes).toEqual({});
+    expect(upgradeProjectV1(upgradeProjectV1(fixtureV1.project))).toEqual(
+      upgradeProjectV1(fixtureV1.project),
+    );
+    // Data already in a v2 shape is kept.
+    expect(upgradeProjectV1(reverseProxy.project)).toEqual(reverseProxy.project);
+  });
+
+  it('round-trips the reverse proxy fixture', () => {
+    const { file } = parseProjectFile(reverseProxy);
+    expect(Object.values(file.project.proxyRoutes)).toHaveLength(1);
+    expect(Object.values(file.project.dnsRecords).map((r) => r.type)).toEqual(['A', 'A', 'CNAME']);
+    expect(parseProjectFile(JSON.parse(JSON.stringify(file))).file).toEqual(file);
   });
 
   it('rejects files that are not projects', () => {
@@ -49,7 +86,7 @@ describe('project file', () => {
   });
 
   it('rejects files from a newer app version', () => {
-    expectFileError({ ...fixture, schemaVersion: 2 }, 'SCHEMA_TOO_NEW');
+    expectFileError({ ...fixture, schemaVersion: 3 }, 'SCHEMA_TOO_NEW');
   });
 
   it('reports invalid content with Zod issues', () => {

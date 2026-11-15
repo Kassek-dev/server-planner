@@ -102,9 +102,18 @@ export function CommandPalette({ project }: { project: Project }) {
           ['issues', () => setPanel('issues')],
           ['export', () => useExportDialog.getState().setOpen(true)],
           ['vlans', () => openDrawer({ kind: 'vlans' })],
+          ['services', () => openDrawer({ kind: 'services' })],
           ['tags', () => openDrawer({ kind: 'tags' })],
           ['settings', () => openDrawer({ kind: 'settings' })],
-          ['labelCables', () => session.dispatch(labelCables, {})],
+          [
+            'labelCables',
+            () =>
+              session.dispatch(labelCables, {
+                ...(project.settings.cableLabelPattern
+                  ? { pattern: project.settings.cableLabelPattern }
+                  : {}),
+              }),
+          ],
         ] as const
       ).map(
         ([key, run]): Entry => ({

@@ -1,4 +1,9 @@
-import { type Project, updateProject } from '@server-planner/model';
+import {
+  cableLabel,
+  DEFAULT_CABLE_PATTERN,
+  type Project,
+  updateProject,
+} from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
 import { CommitField, Grid, Section, useCommand } from '../inspector/parts';
 
@@ -14,6 +19,9 @@ export function SettingsDrawer({ project }: { project: Project }) {
     const n = Number(v);
     return Number.isFinite(n) && n >= min && n <= max ? null : t('errors.percent', { min, max });
   };
+  const sample = Object.values(project.links).find(
+    (l) => l.medium !== 'wifi' && l.medium !== 'virtual',
+  );
   const ratio = (v: string) => (Number(v) > 0 && Number(v) <= 32 ? null : t('errors.ratio'));
 
   return (
@@ -109,6 +117,25 @@ export function SettingsDrawer({ project }: { project: Project }) {
             }
           />
         </Grid>
+      </Section>
+      <Section title={t('settings.labels')}>
+        <CommitField
+          label={t('settings.cablePattern')}
+          mono
+          value={s.cableLabelPattern ?? DEFAULT_CABLE_PATTERN}
+          validate={(v) => (v.trim() && v.length <= 120 ? null : t('errors.pattern'))}
+          onCommit={(v) =>
+            set({
+              cableLabelPattern:
+                v.trim() === DEFAULT_CABLE_PATTERN || !v.trim() ? undefined : v.trim(),
+            })
+          }
+        />
+        <p className="m-0 text-body-sm text-text-muted">
+          {t('settings.cablePatternHint', {
+            example: sample ? cableLabel(project, sample, s.cableLabelPattern) : '—',
+          })}
+        </p>
       </Section>
     </>
   );

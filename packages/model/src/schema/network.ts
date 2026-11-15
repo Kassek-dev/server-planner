@@ -203,6 +203,42 @@ export const RouteSchema = z.object({
   interfaceId: IdSchema.optional(),
 });
 
+/** DNS names: labels of letters, digits and hyphens, dot-separated (no trailing dot). */
+export const HostnameSchema = z
+  .string()
+  .max(253)
+  .regex(
+    /^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i,
+    'Invalid host name',
+  );
+
+/** NET-11 reverse proxy route: a host name served by a proxy app and passed to an app port. */
+export const ProxyRouteSchema = z.object({
+  id: IdSchema,
+  hostname: HostnameSchema,
+  proxyAppId: IdSchema,
+  target: z.object({ appId: IdSchema, port: PortSchema }),
+  tls: z.boolean(),
+});
+
+/** NET-14 local DNS record, answered by a DNS app (Pi-hole, AdGuard…) when one is set. */
+export const DnsRecordSchema = z.discriminatedUnion('type', [
+  z.object({
+    id: IdSchema,
+    type: z.literal('A'),
+    name: HostnameSchema,
+    value: IpAddressSchema,
+    serverAppId: IdSchema.optional(),
+  }),
+  z.object({
+    id: IdSchema,
+    type: z.literal('CNAME'),
+    name: HostnameSchema,
+    value: HostnameSchema,
+    serverAppId: IdSchema.optional(),
+  }),
+]);
+
 export type InterfaceKind = z.infer<typeof InterfaceKindSchema>;
 export type Switchport = z.infer<typeof SwitchportSchema>;
 export type IpAssignment = z.infer<typeof IpAssignmentSchema>;
@@ -220,3 +256,5 @@ export type FirewallRule = z.infer<typeof FirewallRuleSchema>;
 export type NatRule = z.infer<typeof NatRuleSchema>;
 export type Firewall = z.infer<typeof FirewallSchema>;
 export type Route = z.infer<typeof RouteSchema>;
+export type ProxyRoute = z.infer<typeof ProxyRouteSchema>;
+export type DnsRecord = z.infer<typeof DnsRecordSchema>;

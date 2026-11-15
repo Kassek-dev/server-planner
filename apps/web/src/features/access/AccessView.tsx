@@ -321,6 +321,27 @@ function ExposureList({ project, exposure }: { project: Project; exposure: Expos
                     <StepList project={project} result={e.result} />
                   </div>
                 ) : null}
+                {e.routes?.length ? (
+                  // NET-11: host names the proxy behind this forward serves, each with its own leg.
+                  <ul
+                    aria-label={t('access.proxied')}
+                    className="m-0 flex list-none flex-col gap-1 px-3 pb-2 pl-10"
+                  >
+                    {e.routes.map((r) => (
+                      <li key={r.routeId} className="flex items-center gap-2 text-body-sm">
+                        <Led status={verdictLed[r.result.verdict]} size={7} />
+                        <span className="font-mono text-data">{r.hostname}</span>
+                        <span className="text-text-secondary">
+                          {t('access.proxiedTo', {
+                            app: project.apps[r.appId]?.name ?? '?',
+                            port: r.port,
+                            verdict: r.result.verdict,
+                          })}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </li>
             );
           })}

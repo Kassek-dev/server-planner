@@ -1,5 +1,5 @@
 import { type Project, parseProjectFile, sequentialContext } from '@server-planner/model';
-import raw from '../../../../../fixtures/schema/v1/home-lab.json';
+import raw from '../../../../../fixtures/schema/v2/home-lab.json';
 import { createProjectSession } from '../../store/projectSession';
 
 export const homeLab = (): Project => parseProjectFile(raw).file.project;

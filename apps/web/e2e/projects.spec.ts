@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v1/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
 
 test('create, rename with undo, autosave, export, delete', async ({ page }) => {
   await page.goto('./');

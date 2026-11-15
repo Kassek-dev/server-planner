@@ -1,6 +1,6 @@
 # Server Planner — mapa widoków i sitemapa (v0.1)
 
-> Status: **zaakceptowany, v0.1** · Data: 2026-11-11
+> Status: **zaakceptowany, v0.2** (v0.2: S‑06 Proxy & DNS) · Data: 2026-11-15
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (ID funkcji), `05-projekt-ui.md` v0.2 (zachowania), `04-design-system.md` (komponenty)
 > Cel: kompletny spis **każdego osobnego widoku**, który trzeba zaprojektować i zbudować — podstawa sitemapy, routingu, makiet i planu prac.
 
@@ -54,7 +54,7 @@ flowchart TD
   PRJ --> V6["snapshots (V-06)"]
 
   V1 --> PAN["Right column: Inspector I-01…I-08 · Simulation X-01 · Issues X-02"]
-  V1 --> DRW["Drawers: VLANs S-01 · Firewall S-02 · Tags S-03 · Project settings S-04"]
+  V1 --> DRW["Drawers: VLANs S-01 · Firewall S-02 · Tags S-03 · Project settings S-04 · Proxy & DNS S-06"]
 ```
 
 Drzewo tekstowe (dla README / dokumentacji):
@@ -150,6 +150,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | S-03 | **Tags**             | `tags`                | Lista tagów (kolor, nazwa, liczba użyć), scalanie                                             | LBL‑01         | P0   | —       |
 | S-04 | **Project settings** | `settings`            | Progi capacity, overcommit, rezerwa storage, waluta/energia projektu                          | CAP‑04, SET‑02 | P0   | —       |
 | S-05 | Assertions           | `assertions`          | Lista asercji (jeśli brak widoku Access)                                                      | SIM‑06         | P1   | —       |
+| S-06 | **Proxy & DNS**      | `services`            | Trasy reverse proxy (nazwa hosta → aplikacja:port, TLS) i lokalne rekordy DNS (A, CNAME, serwer); otwierana z podsumowania projektu, palety i z problemów `VAL_PROXY*`/`VAL_DNS*` | NET‑11, NET‑14 | P1   | — (bez makiety) |
 
 ---
 

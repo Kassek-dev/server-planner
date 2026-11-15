@@ -3,9 +3,11 @@ import { ColorRefSchema, IdSchema, IsoDateSchema, PortSchema, ProtocolSchema } f
 import { DeviceSchema } from './device';
 import { LocationSchema } from './location';
 import {
+  DnsRecordSchema,
   EndpointSchema,
   InterfaceSchema,
   LinkSchema,
+  ProxyRouteSchema,
   RouteSchema,
   SubnetSchema,
   VlanSchema,
@@ -68,6 +70,8 @@ export const ProjectSettingsSchema = z.object({
   storageFreeReserve: z.number().min(0).max(1),
   energyPrice: z.object({ perKwh: z.number().nonnegative(), currency: z.string() }).optional(),
   currency: z.string().min(1),
+  /** LBL-03 cable label pattern; tokens {a.device} {a.port} {b.device} {b.port}. */
+  cableLabelPattern: z.string().min(1).max(120).optional(),
 });
 
 export const ProjectSchema = z.object({
@@ -90,6 +94,8 @@ export const ProjectSchema = z.object({
   subnets: z.record(IdSchema, SubnetSchema),
   zones: z.record(IdSchema, ZoneSchema),
   routes: z.record(IdSchema, RouteSchema),
+  proxyRoutes: z.record(IdSchema, ProxyRouteSchema),
+  dnsRecords: z.record(IdSchema, DnsRecordSchema),
   tags: z.record(IdSchema, TagSchema),
   assertions: z.record(IdSchema, AssertionSchema),
   locations: z.record(IdSchema, LocationSchema),
@@ -108,7 +114,7 @@ export const PROJECT_FILE_FORMAT = 'server-planner/project';
 
 export const ProjectFileSchema = z.object({
   format: z.literal(PROJECT_FILE_FORMAT),
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
   appVersion: z.string(),
   exportedAt: IsoDateSchema,
   project: ProjectSchema,

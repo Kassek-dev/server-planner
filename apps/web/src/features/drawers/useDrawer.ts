@@ -1,15 +1,17 @@
 import { useCallback } from 'react';
 import { useSearchParams } from 'react-router';
 
-/** Open drawer kept in `?panel=` (docs/07 § 0): vlans | firewall:<deviceId> | tags | settings. */
+/** Open drawer kept in `?panel=` (docs/07 § 0): vlans | firewall:<deviceId> | tags | settings | services. */
 export type DrawerPanel =
   | { kind: 'vlans' }
   | { kind: 'firewall'; deviceId: string }
   | { kind: 'tags' }
-  | { kind: 'settings' };
+  | { kind: 'settings' }
+  | { kind: 'services' };
 
 export function parsePanel(value: string | null): DrawerPanel | null {
-  if (value === 'vlans' || value === 'tags' || value === 'settings') return { kind: value };
+  if (value === 'vlans' || value === 'tags' || value === 'settings' || value === 'services')
+    return { kind: value };
   if (value?.startsWith('firewall:'))
     return { kind: 'firewall', deviceId: value.slice('firewall:'.length) };
   return null;

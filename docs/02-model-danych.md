@@ -1,6 +1,6 @@
 # Server Planner — model danych (v0.3)
 
-> Status: **zaakceptowany, v0.4** (v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5) · Data: 2026-11-11
+> Status: **zaakceptowany, v0.5** (v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (decyzje D1–D9)
 > Notacja: typy w składni TypeScript — to opis struktury, nie decyzja o implementacji (ta zapadnie w `03-architektura.md`).
 
@@ -53,9 +53,9 @@ type Confidence = 'curated' | 'imported' | 'estimated';
 | `pool_` | StoragePool                | `nat_`  | NatRule      |
 | `dsk_`  | Disk                       | `rte_`  | Route        |
 | `wl_`   | Workload (VM/LXC/kontener) | `tag_`  | Tag          |
-| `dnet_` | DockerNetwork              |         |              |
+| `dnet_` | DockerNetwork              | `prx_`  | ProxyRoute   |
 | `stk_`  | Stack                      | `note_` | Note         |
-| `loc_`  | Location                   |         |              |
+| `loc_`  | Location                   | `dns_`  | DnsRecord    |
 | `app_`  | AppInstance                | `asr_`  | Assertion    |
 | `snap_` | Snapshot                   |         |              |
 
@@ -105,7 +105,7 @@ erDiagram
 ```ts
 interface ProjectFile {
   format: 'server-planner/project';
-  schemaVersion: 1;
+  schemaVersion: 2; // v2 (wersja 1.2): proxyRoutes, dnsRecords — § 6.5, § 11
   appVersion: string; // wersja aplikacji, która zapisała plik
   exportedAt: IsoDate;
   project: Project;
@@ -133,6 +133,8 @@ interface Project {
   subnets: Record<Id, Subnet>;
   zones: Record<Id, Zone>;
   routes: Record<Id, Route>;
+  proxyRoutes: Record<Id, ProxyRoute>; // NET-11, § 6.5
+  dnsRecords: Record<Id, DnsRecord>; // NET-14, § 6.5
   tags: Record<Id, Tag>;
   assertions: Record<Id, Assertion>;
   locations: Record<Id, Location>; // rozdz. 4.3
@@ -147,6 +149,7 @@ interface ProjectSettings {
   storageFreeReserve: number; // 0.1 = 10% puli zostaje wolne
   energyPrice?: { perKwh: number; currency: string };
   currency: string; // "PLN"
+  cableLabelPattern?: string; // LBL-03; tokeny {a.device} {a.port} {b.device} {b.port}; brak = domyślny wzorzec
 }
 ```
 
@@ -729,6 +732,27 @@ interface Route {
 
 Urządzenie `kind: 'internet'` z jednym interfejsem `wan` i strefą typu `wan`. Symbolizuje cały internet: jest celem testu „ma internet?” i źródłem dla „ekspozycji z internetu”. W projekcie może być najwyżej jedno (walidacja).
 
+### 6.5 Reverse proxy i lokalny DNS (schemat v2)
+
+```ts
+// NET-11: nazwa hosta obsługiwana przez aplikację proxy (Caddy, Traefik, NPM…) i przekazywana do portu aplikacji
+interface ProxyRoute {
+  id: Id; // prx_
+  hostname: string; // "jellyfin.home.arpa" — małe litery, unikalna w projekcie
+  proxyAppId: Id; // AppInstance (zwykle role 'proxy')
+  target: { appId: Id; port: Port }; // nie może wskazywać samego proxy
+  tls: boolean; // HTTPS kończony na proxy
+}
+
+// NET-14: rekord lokalnego DNS (Pi-hole, AdGuard, router)
+type DnsRecord =
+  | { id: Id; type: 'A'; name: string; value: IpAddress; serverAppId?: Id }
+  | { id: Id; type: 'CNAME'; name: string; value: string; serverAppId?: Id }; // CNAME jedyny dla nazwy
+```
+
+- Usunięcie aplikacji usuwa trasy, w których jest proxy lub celem; rekord DNS traci tylko `serverAppId`.
+- Silnik: `proxyRoutes()` sprawdza połączenie proxy → aplikacja (`reach`), `exposureWithRoutes()` dopisuje do przekierowania portu na proxy obsługiwane nazwy (SIM‑05); walidacja `VAL_PROXY`, `VAL_PROXY_DNS`, `VAL_DNS_ADDRESS`.
+
 ---
 
 ## 7. Oznaczenia, układ, asercje, snapshoty
@@ -1122,7 +1146,7 @@ interface CatalogOs {
 | ------------- | ------------------------- | ---------------------------------------------------------------------------- |
 | `projects`    | `id`                      | metadane: nazwa, daty, miniatura, rozmiar (szybka lista PRJ‑02)              |
 | `projectData` | `id`                      | pełny `Project`                                                              |
-| `snapshots`   | `id` (indeks `projectId`) | `Snapshot`                                                                   |
+| `snapshots`   | `id` (indeks `projectId`) | `Snapshot` (baza v2; v3 = projekty i snapshoty w schemacie projektu v2)       |
 | `history`     | `projectId`               | stos undo/redo (opcjonalnie — przetrwanie odświeżenia strony)                |
 | `catalog`     | `catalogVersion`          | pliki katalogu; trzymane 2 ostatnie wersje (cofnięcie)                       |
 | `settings`    | klucz                     | ustawienia aplikacji (motyw, język, data ostatniego sprawdzenia katalogu, …); `deviceTemplates` — własne szablony urządzeń (LIB‑04, `DeviceTemplateSchema`) |
@@ -1135,8 +1159,13 @@ interface CatalogOs {
 - `schemaVersion` projektu i katalogu są **niezależne**.
 - Każda zmiana niekompatybilna = nowa wersja + funkcja migracji `migrate_vN_to_vN+1(data)`; import uruchamia łańcuch migracji.
 - Plik z **nowszą** wersją niż obsługiwana → czytelny błąd „Update the app to open this file”.
-- Migracje pokryte testami na zapisanych przykładowych plikach (`fixtures/schema/v1/*.json`, generowane przez `pnpm --filter @server-planner/model fixtures:write`).
-- Projekty w IndexedDB migrowane przy otwarciu (z kopią zapasową wersji sprzed migracji).
+- Migracje pokryte testami na zapisanych przykładowych plikach: `fixtures/schema/v1/*.json` zamrożone (wejście migracji), `fixtures/schema/v2/*.json` generowane przez `pnpm --filter @server-planner/model fixtures:write`.
+- Projekty i snapshoty w IndexedDB migrowane przy aktualizacji bazy (`DB_VERSION`), w transakcji `upgrade`.
+
+| Wersja | Wydanie | Zmiana | Migracja |
+| ------ | ------- | ------ | -------- |
+| 1 | 1.0 | pierwszy format | — |
+| 2 | 1.2 | `proxyRoutes`, `dnsRecords` (§ 6.5), `settings.cableLabelPattern?` | `migrateV1toV2`: puste kolekcje w projekcie i snapshotach; IndexedDB v3 migruje zapisane projekty |
 
 ---
 

@@ -1,11 +1,11 @@
-import type { Project, Snapshot } from '@server-planner/model';
+import { type Project, type Snapshot, upgradeProjectV1 } from '@server-planner/model';
 import { type DBSchema, type IDBPDatabase, openDB } from 'idb';
 import type { ProjectPreview } from '../features/canvas/preview';
 
 /** IndexedDB layout — docs/02-model-danych.md § 10. Bump DB_VERSION and extend `upgrade` on changes. */
 
 export const DB_NAME = 'server-planner';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 
 /** Lightweight row for the projects list (PRJ-02) — avoids loading full projects. */
 export interface ProjectMeta {
@@ -42,7 +42,7 @@ export type AppDatabase = IDBPDatabase<AppDb>;
 
 export function openAppDb(name: string = DB_NAME): Promise<AppDatabase> {
   return openDB<AppDb>(name, DB_VERSION, {
-    upgrade(db, oldVersion) {
+    async upgrade(db, oldVersion, _newVersion, tx) {
       if (oldVersion < 1) {
         db.createObjectStore('projects', { keyPath: 'id' }).createIndex('by-updated', 'updatedAt');
         db.createObjectStore('projectData', { keyPath: 'id' });
@@ -50,6 +50,24 @@ export function openAppDb(name: string = DB_NAME): Promise<AppDatabase> {
       }
       if (oldVersion < 2) {
         db.createObjectStore('snapshots', { keyPath: 'id' }).createIndex('by-project', 'projectId');
+      }
+      if (oldVersion >= 1 && oldVersion < 3) {
+        // Project schema v2 (proxy routes, DNS records): stored projects and snapshots are
+        // migrated in place, inside the upgrade transaction.
+        let project = await tx.objectStore('projectData').openCursor();
+        while (project) {
+          await project.update(upgradeProjectV1(project.value as never) as unknown as Project);
+          project = await project.continue();
+        }
+        let snapshot = await tx.objectStore('snapshots').openCursor();
+        while (snapshot) {
+          const value = snapshot.value;
+          await snapshot.update({
+            ...value,
+            project: upgradeProjectV1(value.project as never) as unknown as Snapshot['project'],
+          });
+          snapshot = await snapshot.continue();
+        }
       }
     },
   });
