@@ -182,6 +182,8 @@ Dla urządzeń bez zasobów (switch, AP, klient) domyślna zakładka to **Networ
 
 Ścieżka nad tytułem: `pve1 › docker-vm › jellyfin`. Sekcje: Resources (vCPU, RAM, dyski z puli — z paskami „of host”), Network devices (lista vNIC: bridge, tag VLAN, IP — M2 w `02` § 13), Guest OS (VM), Docker (dla VM/LXC: runtime, sieci), Containers / Apps (lista), dla kontenera: Image, Ports (`host:container/proto`), Volumes, Network mode, Limits.
 
+**Runs on** (SW‑11): lista hostów, na które można przenieść workload — VM/LXC na urządzenia z Proxmox VE, kontener na urządzenia i VM/LXC z Dockerem. Komenda `workload.move` przepina vNIC na most nowego urządzenia, dyski i wolumeny na jego pierwszą pulę (gdy dotychczasowej tam nie ma), a kontener wychodzi ze stosu i dołącza do sieci Dockera nowego hosta (o tej samej nazwie, jeśli jest). Przeciąganie w drzewie zastąpione tą listą (dostępna z klawiatury).
+
 ### 5.4 Aplikacja
 
 Opis z katalogu (z linkiem do źródła i `confidence`), Listeners (porty), Requirements (min / recommended vs przydział), Dependencies (np. Immich → PostgreSQL: zielone / czerwone), Traffic patterns (lista; edycja P1), akcje: Run a flow ▸ (lista procesów z katalogu, FLW‑01), Test reachability to this app.

@@ -5,6 +5,7 @@ import {
   deleteLink,
   deleteWorkload,
   type HostRef,
+  moveWorkload,
   OS_IDS,
   type OsId,
   type PortMapping,
@@ -65,6 +66,44 @@ export function useOpenHost() {
   };
 }
 
+/**
+ * SW-11 hosts a workload can move to: VMs and LXC to Proxmox devices, containers to devices and
+ * VMs/LXC with Docker. The current host is always listed, even when it no longer qualifies.
+ */
+export function moveTargets(
+  project: Project,
+  workload: Workload,
+): { value: string; label: string }[] {
+  const key = (ref: HostRef) => `${ref.type}:${ref.id}`;
+  const hosts: { ref: HostRef; label: string }[] =
+    workload.kind === 'container'
+      ? [
+          ...Object.values(project.devices)
+            .filter((d) => d.docker)
+            .map((d) => ({ ref: { type: 'device', id: d.id } as HostRef, label: d.name })),
+          ...Object.values(project.workloads)
+            .filter((w) => w.kind !== 'container' && w.docker && w.id !== workload.id)
+            .map((w) => ({
+              ref: { type: 'workload', id: w.id } as HostRef,
+              label: hostPath(project, { type: 'workload', id: w.id })
+                .map((p) => p.label)
+                .join(' › '),
+            })),
+        ]
+      : Object.values(project.devices)
+          .filter((d) => d.os?.osId === 'proxmox-ve')
+          .map((d) => ({ ref: { type: 'device', id: d.id } as HostRef, label: d.name }));
+  const current = key(workload.host);
+  if (!hosts.some((h) => key(h.ref) === current))
+    hosts.unshift({
+      ref: workload.host,
+      label: hostPath(project, workload.host)
+        .map((p) => p.label)
+        .join(' › '),
+    });
+  return hosts.map((h) => ({ value: key(h.ref), label: h.label }));
+}
+
 /** I-03 Workload (docs/05 § 5.3). */
 export function WorkloadInspector({ project, workload }: { project: Project; workload: Workload }) {
   const { t } = useTranslation('inspector');
@@ -92,6 +131,16 @@ export function WorkloadInspector({ project, workload }: { project: Project; wor
         label={t('workload.name')}
         value={workload.name}
         onCommit={(name) => name && update({ name })}
+      />
+      <Select
+        label={t('workload.host')}
+        value={`${workload.host.type}:${workload.host.id}`}
+        options={moveTargets(project, workload)}
+        onChange={(e) => {
+          const [type, id] = e.target.value.split(':');
+          if ((type === 'device' || type === 'workload') && id)
+            run(moveWorkload, { id: workload.id, host: { type, id } });
+        }}
       />
       {workload.kind === 'container' ? (
         <ContainerSections project={project} workload={workload} update={update} />

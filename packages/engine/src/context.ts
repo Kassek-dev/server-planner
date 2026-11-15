@@ -16,7 +16,13 @@ export interface EngineOptions {
   osOverhead?: Partial<Record<OsId, Resources>>;
   /** Load profiles per catalog app ID (SW-08) for the "expected" capacity mode (CAP-05). */
   loadProfiles?: Record<string, CatalogLoadProfile[]>;
+  /** CPU architectures per container image (catalog components, without tag) — SW-12. */
+  imageArch?: Record<string, CpuArch[]>;
+  /** CPU architectures an OS installs on (CatalogOs.arch) — SW-12. */
+  osArch?: Partial<Record<OsId, CpuArch[]>>;
 }
+
+export type CpuArch = 'amd64' | 'arm64';
 
 /**
  * EngineContext — derived indexes shared by all analyses (docs/03 § 5.1, steps 1–3).
@@ -26,6 +32,8 @@ export interface EngineContext {
   project: Project;
   osOverhead: Partial<Record<OsId, Resources>>;
   loadProfiles: Record<string, CatalogLoadProfile[]>;
+  imageArch: Record<string, CpuArch[]>;
+  osArch: Partial<Record<OsId, CpuArch[]>>;
   interfacesByOwner: Map<string, Interface[]>;
   linksByInterface: Map<string, Link[]>;
   vlanByVid: Map<number, Vlan>;
@@ -95,6 +103,8 @@ export function buildContext(project: Project, options: EngineOptions = {}): Eng
     project,
     osOverhead: options.osOverhead ?? {},
     loadProfiles: options.loadProfiles ?? {},
+    imageArch: options.imageArch ?? {},
+    osArch: options.osArch ?? {},
     interfacesByOwner,
     linksByInterface,
     vlanByVid,

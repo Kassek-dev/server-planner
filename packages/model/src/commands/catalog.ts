@@ -3,6 +3,7 @@ import type { ModelContext } from '../factories';
 import { checkRackFit } from '../rack';
 import type { CatalogApp, CatalogDevice } from '../schema/catalog';
 import type { Bytes } from '../schema/common';
+import type { Device } from '../schema/device';
 import type { Interface } from '../schema/network';
 import type { Project } from '../schema/project';
 import type { AppInstance, HostRef, PortMapping, Workload } from '../schema/workload';
@@ -70,6 +71,26 @@ export const applyDeviceModel = defineCommand(
     applyPorts(draft, id, model.ports, ctx);
   },
 );
+
+/** Parts of a device that `device.applyModel` takes from a catalog model. */
+export type ModelSpecField = 'cpu' | 'gpu' | 'memory' | 'power' | 'formFactor' | 'switching';
+
+/**
+ * LIB-03: what applying the catalog model again would change on a device built from it (projects
+ * keep their copy, so a newer catalog only offers the update). Empty when nothing differs.
+ */
+export function modelSpecChanges(device: Device, model: CatalogDevice): ModelSpecField[] {
+  const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+  const { cpus, gpus, memory, power } = model.hardware;
+  const changes: ModelSpecField[] = [];
+  if (!same(device.hardware.cpus, cpus)) changes.push('cpu');
+  if (!same(device.hardware.gpus, gpus)) changes.push('gpu');
+  if (!same(device.hardware.memory, memory)) changes.push('memory');
+  if (power && !same(device.hardware.power, power)) changes.push('power');
+  if (!same(device.formFactor, model.formFactor)) changes.push('formFactor');
+  if (model.switching && !same(device.switching, model.switching)) changes.push('switching');
+  return changes;
+}
 
 /** A physical port to create (catalog model or own template). */
 export interface PortSpec {

@@ -73,6 +73,10 @@ export function engineOptions(catalog: Catalog | null): EngineOptions {
     loadProfiles: Object.fromEntries(
       catalog.apps.flatMap((a) => (a.loadProfiles?.length ? [[a.id, a.loadProfiles]] : [])),
     ),
+    imageArch: Object.fromEntries(
+      catalog.apps.flatMap((a) => a.deployment.components.map((c) => [c.image, c.arch])),
+    ),
+    osArch: Object.fromEntries(catalog.os.map((o) => [o.id, o.arch])),
   };
 }
 

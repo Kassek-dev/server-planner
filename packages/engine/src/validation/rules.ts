@@ -2,13 +2,14 @@ import {
   COMPUTE_KINDS,
   checkRackFit,
   type Interface,
+  type OsId,
   SINGLE_LINK_KINDS,
   type Subnet,
   type Workload,
 } from '@server-planner/model';
 import ipaddr from 'ipaddr.js';
 import { capacity as computeCapacity } from '../capacity';
-import { carriedVlans, type EngineContext, hostedBy, peerOf } from '../context';
+import { type CpuArch, carriedVlans, type EngineContext, hostedBy, peerOf } from '../context';
 import type { EntityRef, Issue, Severity } from '../types';
 
 /** Validation rules — docs/01 § 8a (VAL-01…14) and docs/02 § 4.3 (rack). Codes map to issues.<code>. */
@@ -588,6 +589,52 @@ const osCompatibility: ValidationRule = {
   },
 };
 
+/**
+ * SW-12 architecture: a host OS or VM guest OS for another CPU architecture, and container images
+ * not built for the CPU of the device that finally runs them. Unknown images and OSes are skipped.
+ */
+const archCompatibility: ValidationRule = {
+  code: 'VAL_ARCH',
+  run(ctx) {
+    const out: Issue[] = [];
+    const cpuArch = (deviceId: string | undefined) =>
+      deviceId ? ctx.project.devices[deviceId]?.hardware.cpus[0]?.arch : undefined;
+    const checkOs = (osId: OsId, arch: CpuArch, targets: EntityRef[], host: string) => {
+      const supported = ctx.osArch[osId];
+      if (supported && !supported.includes(arch))
+        out.push(issue('VAL_ARCH_OS', 'error', targets, { host, os: osId, arch }));
+    };
+    for (const device of Object.values(ctx.project.devices)) {
+      const arch = cpuArch(device.id);
+      if (arch && device.os)
+        checkOs(device.os.osId, arch, [{ type: 'device', id: device.id }], device.name);
+    }
+    for (const w of Object.values(ctx.project.workloads)) {
+      const device = ctx.deviceOfWorkload.get(w.id);
+      const arch = cpuArch(device?.id);
+      if (!device || !arch) continue;
+      const targets: EntityRef[] = [
+        { type: 'workload', id: w.id },
+        { type: 'device', id: device.id },
+      ];
+      if (w.kind === 'vm') checkOs(w.guestOs.osId, arch, targets, w.name);
+      if (w.kind !== 'container') continue;
+      const supported = ctx.imageArch[w.image];
+      if (supported && !supported.includes(arch))
+        out.push(
+          issue('VAL_ARCH', 'error', targets, {
+            container: w.name,
+            image: w.image,
+            host: device.name,
+            arch,
+            supported: supported.join(', '),
+          }),
+        );
+    }
+    return out;
+  },
+};
+
 const RESOURCE_LABEL = { cpu: 'CPU', memory: 'memory' } as const;
 
 /** VAL-13 capacity above thresholds (critical/over = error from 100 %, warning band = warning). */
@@ -802,6 +849,7 @@ export const rules: ValidationRule[] = [
   overlappingSubnets,
   portConflict,
   osCompatibility,
+  archCompatibility,
   capacityRule,
   gpuRule,
   dependencies,
@@ -829,6 +877,8 @@ export const ISSUE_CODES = [
   'VAL_11_DOCKER_PVE',
   'VAL_11_DOCKER_WIN',
   'VAL_11_NOT_COMPUTE',
+  'VAL_ARCH',
+  'VAL_ARCH_OS',
   'VAL_12',
   'VAL_12_UPS',
   'VAL_13',
