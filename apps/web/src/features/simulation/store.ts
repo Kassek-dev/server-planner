@@ -27,6 +27,8 @@ export interface SimulationState {
   } | null;
   /** FLW-04/05: the run being played on the canvas, step by step. */
   flow: { run: FlowRunResult; labels: string[]; index: number; playing: boolean } | null;
+  /** SIM-07 failure scenario on the canvas: what is down and what it cuts off. */
+  failure: { devices: string[]; links: string[]; affected: string[] } | null;
   /** Shows hop `index` of the current flow on the canvas. */
   showHop(index: number, playing?: boolean): void;
   reset(): void;
@@ -37,6 +39,7 @@ export const useSimulation = create<SimulationState>((set) => ({
   internetOverlay: false,
   visible: null,
   flow: null,
+  failure: null,
   showHop: (index, playing) =>
     set((s) => {
       if (!s.flow) return {};
@@ -46,7 +49,8 @@ export const useSimulation = create<SimulationState>((set) => ({
         highlight: hop?.result ?? null,
       };
     }),
-  reset: () => set({ highlight: null, internetOverlay: false, visible: null, flow: null }),
+  reset: () =>
+    set({ highlight: null, internetOverlay: false, visible: null, flow: null, failure: null }),
 }));
 
 /** Physical device that ultimately runs an app or workload (cycle-safe). */

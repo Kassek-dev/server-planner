@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.3** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4) · Data: 2026-11-12
+> Status: **zaakceptowany, v0.4** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -249,7 +249,7 @@ Nacisk na szybkie wprowadzanie: duplikowanie, kopiowanie, wklejanie, P1 widok In
 
 ## 7. Symulacja (SIM / FLW)
 
-**Simulate** otwiera panel symulacji w miejscu inspectora (powrót strzałką), z trzema trybami w segmentach:
+**Simulate** otwiera panel symulacji w miejscu inspectora (powrót strzałką), z trybami w zakładkach (Reachability, Access, Flows, Failures):
 
 | Tryb                      | Zawartość                                                                                                                                                                                                | Prio |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
@@ -267,6 +267,8 @@ Nacisk na szybkie wprowadzanie: duplikowanie, kopiowanie, wklejanie, P1 widok In
 **Flow** (P1): oś kroków na dole canvasu (pasek 120 px) z przyciskami ⏮ ⏯ ⏭, każdy krok podświetla odcinek; zablokowany krok zatrzymuje odtwarzanie.
 
 ---
+
+**Failures** (SIM‑07, X‑01d): wybór urządzeń (checkboksy) i kabli (lista) do „wyłączenia” oraz „Power cut” — działają tylko UPS‑y, urządzenia przez nie chronione i Internet. „Simulate failure” porównuje projekt przed i po: kto traci internet, które aplikacje są wyłączone (host padł) albo odcinają klientów, które asercje zmieniają wynik. „Find single points of failure” sprawdza każde urządzenie (poza klientami) i każdy kabel z osobna i listuje te, których awaria odcina coś innego (od największej szkody); kliknięcie uruchamia ten scenariusz. Canvas: awaria — czerwony obrys, odcięte — podświetlone, reszta przygaszona.
 
 ## 8. Panel Issues
 

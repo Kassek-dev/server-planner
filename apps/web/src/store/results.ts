@@ -5,17 +5,22 @@ import {
   type EngineOptions,
   type EntityRef,
   type Exposure,
+  type FailureImpact,
+  type FailureScenario,
   type FlowRunResult,
   type FlowTarget,
+  failureImpact,
   type ReachabilityResult,
   type ReachQuery,
   type ServiceVisibility,
+  type SinglePointOfFailure,
   sameDomain,
   simulateExposure,
   simulateFlow,
   simulateMatrix,
   simulateReach,
   simulateVisibleFrom,
+  singlePointsOfFailure,
 } from '@server-planner/engine';
 import type { CatalogFlow, Project } from '@server-planner/model';
 import { type Remote, wrap } from 'comlink';
@@ -43,6 +48,9 @@ export interface Simulator {
   ): Promise<FlowRunResult>;
   matrix(project: Project, refs?: EntityRef[]): Promise<AccessMatrix>;
   exposure(project: Project): Promise<Exposure[]>;
+  /** SIM-07 "what if X fails?" and single points of failure. */
+  failure(project: Project, scenario: FailureScenario): Promise<FailureImpact>;
+  spof(project: Project): Promise<SinglePointOfFailure[]>;
 }
 
 let shared: Remote<EngineWorkerApi> | null | undefined;
@@ -80,6 +88,8 @@ export function createSimulator(): Simulator {
       runFlow: (p, input) => api.runFlow(p, input),
       matrix: (p, refs) => api.matrix(p, refs),
       exposure: (p) => api.exposure(p),
+      failure: (p, scenario) => api.failure(p, scenario),
+      spof: (p) => api.spof(p),
     };
   return {
     reach: async (p, q) => simulateReach(p, q),
@@ -87,6 +97,8 @@ export function createSimulator(): Simulator {
     runFlow: async (p, input) => simulateFlow(p, input),
     matrix: async (p, refs) => simulateMatrix(p, refs),
     exposure: async (p) => simulateExposure(p),
+    failure: async (p, scenario) => failureImpact(p, scenario),
+    spof: async (p) => singlePointsOfFailure(p),
   };
 }
 

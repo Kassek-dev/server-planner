@@ -281,6 +281,7 @@ function Workspace() {
   const deviceColoring = useCanvasView((s) => s.devices);
   const capacity = useResults((s) => s.result?.capacity);
   const highlight = useSimulation((s) => s.highlight);
+  const failure = useSimulation((s) => s.failure);
   const minimap = useCanvasView((s) => s.minimap);
   // Phones are view-only (docs/05 § 12): pan, pinch and tap; no dragging or cabling.
   const readOnly = useSession((s) => s.readOnly);
@@ -292,9 +293,10 @@ function Workspace() {
             view: { links: linkColoring, devices: deviceColoring },
             capacity,
             highlight,
+            failure,
           })
         : nodes,
-    [nodes, project, linkColoring, deviceColoring, capacity, highlight],
+    [nodes, project, linkColoring, deviceColoring, capacity, highlight, failure],
   );
   const shownEdges = useMemo(
     () =>
@@ -303,9 +305,10 @@ function Workspace() {
             project,
             view: { links: linkColoring, devices: deviceColoring },
             highlight,
+            failure,
           })
         : edges,
-    [edges, project, linkColoring, deviceColoring, highlight],
+    [edges, project, linkColoring, deviceColoring, highlight, failure],
   );
 
   if (!project) return null;

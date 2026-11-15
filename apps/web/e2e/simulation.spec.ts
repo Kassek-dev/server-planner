@@ -120,3 +120,24 @@ test('flows: a catalog process played step by step (FLW-01…05)', async ({ page
   await expect(panel.getByText(/Flow works/)).toBeVisible();
   await timeline.getByRole('button', { name: 'First step' }).isVisible();
 });
+
+test('failure analysis: a failed router and single points of failure (SIM-07)', async ({
+  page,
+}) => {
+  await openExample(page);
+  await page.getByRole('button', { name: 'Simulate' }).click();
+  const panel = page.getByRole('complementary', { name: 'Inspector' });
+  await panel.getByRole('tab', { name: 'Failures' }).click();
+  await panel.getByRole('checkbox', { name: 'gw-01' }).check();
+  await panel.getByRole('button', { name: 'Simulate failure' }).click();
+  const impact = panel.getByRole('region', { name: 'Impact' });
+  await expect(impact.getByText(/lose the internet: .*nas-01/)).toBeVisible();
+  await expect(page.locator('.react-flow__node.sp-blocked', { hasText: 'gw-01' })).toBeVisible();
+
+  await panel.getByRole('button', { name: 'Find single points of failure' }).click();
+  const spof = panel.getByRole('region', { name: 'Single points of failure' });
+  await expect(spof.getByRole('button', { name: /sw-core/ })).toBeVisible();
+  await spof.getByRole('button', { name: /sw-core/ }).click();
+  await expect(page.locator('.react-flow__node.sp-blocked', { hasText: 'sw-core' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/failures.png' });
+});

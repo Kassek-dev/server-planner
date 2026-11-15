@@ -1,10 +1,12 @@
 import {
   analyze,
+  failureImpact,
   simulateExposure,
   simulateFlow,
   simulateMatrix,
   simulateReach,
   simulateVisibleFrom,
+  singlePointsOfFailure,
 } from '@server-planner/engine';
 import { expose } from 'comlink';
 
@@ -16,6 +18,8 @@ const api = {
   runFlow: simulateFlow,
   matrix: simulateMatrix,
   exposure: simulateExposure,
+  failure: failureImpact,
+  spof: singlePointsOfFailure,
 };
 
 export type EngineWorkerApi = typeof api;
