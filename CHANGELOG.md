@@ -2,6 +2,29 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.2.0] — 2026-11-15
+
+Finishes the planned features of the 1.x line: cable routing, moving workloads, reverse proxies and local DNS, defaults for new projects and a better phone view.
+
+### Project file format
+
+- **Schema version 2.** Projects gain reverse proxy routes and local DNS records. Files from 1.0 and 1.1 are upgraded automatically on import, and projects and snapshots stored in the browser are upgraded on the first start. Version 1.1 cannot open files saved by 1.2 (#37).
+
+### Features
+
+- **Canvas** — bend points on cables (double-click to add, drag or arrow keys to move, Delete to remove), alignment guides while dragging and "Group by: Location / None" (#35).
+- **Software** — move a VM, LXC or container to another host with "Runs on"; virtual NICs, disks and Docker networks follow. New issues when a container image or an OS is not built for the CPU architecture (amd64 / arm64). "Update specification" when the catalog has newer data for a device model (#36).
+- **Reverse proxy and local DNS** — host names served by a proxy app (Caddy, Traefik, Nginx Proxy Manager…) and passed to an app port; A and CNAME records. A new Proxy & DNS drawer; the Access view lists the host names behind a forwarded proxy; issues when the proxy cannot reach its app or a name does not point to the proxy (#37).
+- **Cable labels** — an own label pattern per project, with a preview (#37).
+- **Defaults for new projects** — Settings › Units & costs sets thresholds, overcommit, storage reserve, currency, energy price and the label pattern new projects start with (#38).
+- **Locations** — the inspector shows occupied rack units, the power draw of the devices inside and the UPS units that carry them (#38).
+- **Device model picker** — filters by CPU architecture, cores, maximum RAM, wired ports, port speed and idle power (#38).
+- **Phones** — the issue list opens on the whole screen; Inventory shows cards, the IP plan fits the screen and the access matrix is a list (#39).
+
+### Fixes
+
+- Choosing an issue target could reopen the panel that had just been closed (#39).
+
 ## [1.1.0] — 2026-11-12
 
 The first feature release after the MVP: more views, a catalog that updates itself, application flows, access checks, power and capacity planning, snapshots and an installable offline app. Project files are unchanged (schema v1) — files from 1.0.0 open as they are.
@@ -54,5 +77,6 @@ First public release: a local-first home lab planner running entirely in the bro
 
 - pnpm monorepo (`apps/web`, `packages/model`, `packages/engine`, `packages/catalog-builder`), Vite, React, TypeScript strict, Biome, Vitest and Playwright; CI on every pull request and automatic deployment to GitHub Pages; Dependabot updates for GitHub Actions (#1–#5).
 
+[1.2.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.0.0
