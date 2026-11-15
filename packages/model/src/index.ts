@@ -21,4 +21,5 @@ export * from './schema/location';
 export * from './schema/network';
 export * from './schema/project';
 export * from './schema/workload';
+export * from './storage';
 export * from './templates';

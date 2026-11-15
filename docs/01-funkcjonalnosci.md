@@ -1,6 +1,6 @@
 # Server Planner — specyfikacja funkcjonalna (v0.4)
 
-> Status: **zaakceptowany zakres, v0.5** (D10: numeracja wydań) · Ostatnia zmiana: 2026-11-12
+> Status: **zaakceptowany zakres, v0.6** (D10: numeracja wydań; v0.6: HW‑09 predefiniowane podzespoły) · Ostatnia zmiana: 2026-11-16
 > Kolejne dokumenty: `02-model-danych.md`, `03-architektura.md`, `04-design-system.md`, `05-projekt-ui.md`
 > Dokumentacja prowadzona po polsku; interfejs aplikacji i kod — po angielsku.
 
@@ -177,6 +177,7 @@ Walidacja (rozszerza M8): nakładające się urządzenia w racku, urządzenie po
 | HW-06 | **Zasilanie**: pobór idle/load; UPS: VA/W, bateria; switch: budżet PoE                                                                                | P1   |
 | HW-07 | **Fizyczne**: forma i lokalizacja — patrz M2b (LOC)                                                                                                   | P0   |
 | HW-08 | **Zakup**: cena, status (posiadam / do kupienia / opcjonalne), link                                                                                   | P1   |
+| HW-09 | **Predefiniowane podzespoły**: wybór CPU i GPU/akceleratorów z katalogu (kopiowane do projektu z `catalogRef` dla CPU) oraz typowych zestawów RAM i dysków; „Add disks” z liczbą i pojemnością naraz | P1   |
 
 ### M5. Oprogramowanie: OS, workloady, aplikacje
 

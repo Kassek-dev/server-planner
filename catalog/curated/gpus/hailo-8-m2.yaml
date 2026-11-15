@@ -1,0 +1,8 @@
+id: hailo-8-m2
+vendor: hailo
+kind: accelerator
+attach: m2
+model: Hailo-8 M.2 AI accelerator
+features: [npu]
+source: [curated]
+confidence: curated

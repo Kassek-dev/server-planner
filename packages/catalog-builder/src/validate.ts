@@ -15,5 +15,5 @@ if (errors.length > 0) {
   process.exit(1);
 }
 console.log(
-  `catalog:validate — OK (${catalog.apps.length} apps, ${catalog.devices.length} devices, ${catalog.cpus.length} CPUs, ${catalog.os.length} OS)`,
+  `catalog:validate — OK (${catalog.apps.length} apps, ${catalog.devices.length} devices, ${catalog.cpus.length} CPUs, ${catalog.gpus.length} GPUs, ${catalog.os.length} OS)`,
 );

@@ -22,7 +22,7 @@ test('build a Proxmox host with a VM from the inspector', async ({ page }) => {
 
   await panel.getByRole('tab', { name: 'Hardware' }).click();
   await panel.getByRole('button', { name: 'Add module' }).click();
-  await expect(panel.getByText('8 GiB', { exact: false }).first()).toBeVisible();
+  await expect(panel.getByText('8 GiB', { exact: true })).toBeVisible();
 
   await panel.getByRole('tab', { name: 'Software' }).click();
   await panel.getByLabel('System').selectOption('proxmox-ve');
@@ -96,3 +96,63 @@ test('move a VM to another Proxmox host (SW-11)', async ({ page }) => {
   ).toBeVisible();
   await expect(panel.getByLabel('net0 bridge')).toHaveValue(/.+/);
 });
+
+test('add several disks at once and build a pool with its capacity', async ({ page }) => {
+  await openExample(page);
+  await page
+    .getByRole('complementary', { name: 'Library' })
+    .getByRole('button', { name: /^NAS/ })
+    .click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Hardware' }).click();
+  await expect(panel.getByText(/^No disks yet/)).toBeVisible();
+  await expect(panel.getByText(/^No storage pools. Add disks first/)).toBeVisible();
+
+  const form = panel.getByRole('form', { name: 'Add disks' });
+  await form.getByLabel('Count').selectOption('4');
+  await form.getByLabel('Type').selectOption('hdd');
+  await form.getByLabel('Size').fill('8 TB');
+  await form.getByRole('button', { name: 'Add disks' }).click();
+  await expect(panel.getByRole('heading', { name: '4 disks' })).toBeVisible();
+  await expect(panel.getByText('32 TB raw in total')).toBeVisible();
+
+  await panel.getByRole('button', { name: 'Add pool' }).click();
+  await expect(panel.getByLabel('Layout')).toHaveValue('raidz1');
+  await expect(panel.getByText('24 TB usable of 32 TB raw · 4 disks')).toBeVisible();
+  await panel.getByLabel('Layout').selectOption('raidz3');
+  await expect(panel.getByText('raidz3 needs at least 5 disks; this pool has 4.')).toBeVisible();
+  await page.screenshot({ path: 'test-results/disks-pool.png', fullPage: true });
+});
+
+test('add CPU, memory, GPU and disks from predefined lists (HW-09)', async ({ page }) => {
+  await openExample(page);
+  await page
+    .getByRole('complementary', { name: 'Library' })
+    .getByRole('button', { name: /^Mini PC/ })
+    .click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Hardware' }).click();
+
+  const cpu = panel.getByLabel('Add a CPU from the catalog');
+  await cpu.selectOption({ label: await optionLabel(cpu, /^Intel N100 · /) });
+  await expect(panel.getByRole('textbox', { name: 'Model' }).first()).toHaveValue('Intel N100');
+  await expect(cpu).toHaveValue('');
+
+  await panel.getByLabel('Add memory from a list').selectOption('DDR5-5600-2x16');
+  await expect(panel.getByText('32 GiB', { exact: true })).toBeVisible();
+
+  const gpu = panel.getByLabel('Add a GPU or accelerator from the catalog');
+  await gpu.selectOption({ label: await optionLabel(gpu, /^Google Coral USB/) });
+  await expect(panel.getByRole('group', { name: 'Google Coral USB Accelerator' })).toBeVisible();
+
+  const form = panel.getByRole('form', { name: 'Add disks' });
+  await form.getByLabel('Common disks').selectOption('hdd-8000');
+  await expect(form.getByLabel('Type')).toHaveValue('hdd');
+  await expect(form.getByLabel('Size')).toHaveValue('8 TB');
+});
+
+async function optionLabel(select: import('@playwright/test').Locator, pattern: RegExp) {
+  const option = await select.locator('option', { hasText: pattern }).first().textContent();
+  if (!option) throw new Error(`no option ${pattern}`);
+  return option;
+}

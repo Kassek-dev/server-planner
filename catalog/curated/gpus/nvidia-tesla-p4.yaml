@@ -1,0 +1,10 @@
+id: nvidia-tesla-p4
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA Tesla P4
+vramBytes: 8 GiB
+features: [nvenc, cuda]
+tdpW: 75
+source: [curated]
+confidence: curated

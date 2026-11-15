@@ -1,0 +1,11 @@
+id: intel-core-i3-n305
+vendor: intel
+model: Intel Core i3-N305
+cores: 8
+threads: 8
+boostGhz: 3.8
+tdpW: 15
+arch: amd64
+igpu: { model: Intel UHD Graphics (32 EU), features: [quicksync] }
+source: [curated]
+confidence: curated

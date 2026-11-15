@@ -1,0 +1,9 @@
+id: rockchip-rk3588
+vendor: arm
+model: Rockchip RK3588 (4× Cortex-A76 + 4× Cortex-A55)
+cores: 8
+threads: 8
+boostGhz: 2.4
+arch: arm64
+source: [curated]
+confidence: curated

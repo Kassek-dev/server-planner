@@ -237,13 +237,13 @@ Zakres: funkcje P1 nieukończone w 1.1 i rzeczy odłożone w etapach 13–17. Ko
 
 ## Wersja 1.3 — zakres (2026-11-15)
 
-Zadania dodane przez użytkownika po wydaniu 1.2; kolejność i szczegóły do ustalenia przed wdrożeniem.
+Zadania dodane przez użytkownika po wydaniu 1.2.
 
 ### Etap 23 — Predefiniowane podzespoły i edycja dysków (HW)
 
-- [ ] Listy predefiniowanych podzespołów do wyboru w Hardware: CPU (z katalogu, z wydajnością i iGPU), GPU / akceleratory, moduły RAM (typ, pojemność), dyski (typ, pojemność); wybór z listy wypełnia pola, wpis ręczny zostaje
-- [ ] Dyski: „Add disks” z liczbą i pojemnością naraz (np. 4 × 8 TB HDD), czytelny pusty stan sekcji Disks i Storage pools (dziś tylko mały przycisk „Add disk” w nagłówku — łatwo przeoczyć)
-- [ ] Pula: wybór dysków przy tworzeniu, wyliczona pojemność użytkowa wg RAID (single / mirror / RAIDZ…) widoczna przy puli; podpowiedź, gdy pula nie ma dysków (dziś pokazuje tylko RAID i system plików)
+- [x] 23a dyski: formularz „Add disks” (liczba × typ × pojemność), puste stany Disks / Storage pools, suma surowa; nowa pula bierze wolne dyski z układem wg liczby (`defaultPoolLayout`, `POOL_MIN_DISKS` w `packages/model`), przy puli pojemność użytkowa / surowa albo powód; reguła `VAL_POOL` (za mało dysków dla układu)
+- [x] 23b HW‑09 listy: CPU z katalogu (35 nowych kurowanych → 46, 36 z wydajnością Blendera; kopiowane z `catalogRef`), GPU / akceleratory — nowa kolekcja `catalog/curated/gpus/` (18: karty NVENC/QuickSync/VCN, Coral, Hailo) i `Catalog.gpus`, zestawy RAM (DDR3–DDR5) i typowe dyski jako stałe aplikacji; wpis ręczny zostaje
+- Decyzje (2026-11-16): dane CPU/GPU tylko pewne (zegary pominięte, gdy niepewne); RAM i dyski to konfiguracje, nie dane z zewnętrznego źródła — bez wpisu w `06`; GPU bez `catalogRef` (schemat projektu bez zmian)
 - Diagnoza (2026-11-15): pola pojemności i typu istnieją na każdym dysku, ale nowe urządzenie nie ma dysków, a pula nie pokazuje pojemności ani tego, że trzeba najpierw dodać dyski
 
 ## Dziennik
@@ -287,3 +287,4 @@ Zadania dodane przez użytkownika po wydaniu 1.2; kolejność i szczegóły do u
 | 2026-11-15 | Etap 21: domyślne ustawienia nowych projektów (SET‑02), inspector lokalizacji (LOC‑06), filtry modeli sprzętu (LIB‑02) | #38 |
 | 2026-11-15 | Etap 22: telefon — pełnoekranowe problemy (M‑04), karty zamiast tabel (M‑05); plan 1.2 zamknięty | #39 |
 | 2026-11-15 | **Wydanie v1.2.0** (etapy 18–22; schemat projektu v2 z automatyczną migracją), `CHANGELOG.md`, wersja w `apps/web/package.json`; zakres 1.3: predefiniowane podzespoły, edycja dysków i pul | tag `v1.2.0` |
+| 2026-11-16 | Etap 23: dodawanie wielu dysków, pojemność pul, `VAL_POOL`; listy predefiniowanych CPU (46), GPU/akceleratorów (18), RAM i dysków (HW‑09) | — |

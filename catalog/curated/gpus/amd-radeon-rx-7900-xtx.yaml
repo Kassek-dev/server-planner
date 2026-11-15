@@ -1,0 +1,10 @@
+id: amd-radeon-rx-7900-xtx
+vendor: amd
+kind: gpu
+attach: pcie
+model: AMD Radeon RX 7900 XTX
+vramBytes: 24 GiB
+features: [vcn, rocm]
+tdpW: 355
+source: [curated]
+confidence: curated

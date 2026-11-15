@@ -1,0 +1,10 @@
+id: intel-arc-a380
+vendor: intel
+kind: gpu
+attach: pcie
+model: Intel Arc A380
+vramBytes: 6 GiB
+features: [quicksync]
+tdpW: 75
+source: [curated]
+confidence: curated

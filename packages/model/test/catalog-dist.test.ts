@@ -29,6 +29,7 @@ const curated: Catalog = {
       confidence: 'curated',
     },
   ],
+  gpus: [],
   os: [],
 };
 const dist: CatalogDist = {

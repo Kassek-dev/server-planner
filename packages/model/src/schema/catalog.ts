@@ -8,6 +8,7 @@ import {
   PortSchema,
   ResourcesSchema,
   TransportSchema,
+  WattsSchema,
 } from './common';
 import { DeviceKindSchema } from './device';
 import { CpuSpecSchema, DiskSchema, GpuSpecSchema, MemorySpecSchema, OsIdSchema } from './hardware';
@@ -181,6 +182,18 @@ export const CatalogCpuSchema = CpuSpecSchema.omit({ catalogRef: true }).extend(
   confidence: ConfidenceSchema,
 });
 
+/** HW-05 / HW-09: a GPU or AI accelerator to pick in the Hardware tab (curated). */
+export const CatalogGpuSchema = GpuSpecSchema.extend({
+  id: SlugSchema,
+  vendor: z.enum(['nvidia', 'amd', 'intel', 'google', 'hailo', 'other']),
+  kind: z.enum(['gpu', 'accelerator']),
+  /** How it is attached: a PCIe card, an M.2 module or a USB stick. */
+  attach: z.enum(['pcie', 'm2', 'usb']),
+  tdpW: WattsSchema.optional(),
+  source: SourcesSchema,
+  confidence: ConfidenceSchema,
+});
+
 export const CatalogDeviceSchema = z.object({
   id: SlugSchema,
   kind: DeviceKindSchema,
@@ -291,6 +304,8 @@ export const CatalogSchema = z.object({
   apps: z.array(CatalogAppSchema),
   devices: z.array(CatalogDeviceSchema),
   cpus: z.array(CatalogCpuSchema),
+  /** Curated layer only; catalogs stored before 1.3 have none. */
+  gpus: z.array(CatalogGpuSchema).default([]),
   os: z.array(CatalogOsSchema),
   /** Builder sources behind this catalog (absent for the curated layer alone). */
   sources: z.array(CatalogSourceSchema).optional(),
@@ -301,6 +316,7 @@ export type CatalogLoadProfile = z.infer<typeof CatalogLoadProfileSchema>;
 export type CatalogFlow = z.infer<typeof CatalogFlowSchema>;
 export type CatalogApp = z.infer<typeof CatalogAppSchema>;
 export type CatalogCpu = z.infer<typeof CatalogCpuSchema>;
+export type CatalogGpu = z.infer<typeof CatalogGpuSchema>;
 export type CatalogDevice = z.infer<typeof CatalogDeviceSchema>;
 export type CatalogOs = z.infer<typeof CatalogOsSchema>;
 export type Catalog = z.infer<typeof CatalogSchema>;

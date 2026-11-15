@@ -1,0 +1,11 @@
+id: intel-core-i5-12450h
+vendor: intel
+model: Intel Core i5-12450H
+cores: 8
+threads: 12
+boostGhz: 4.4
+tdpW: 45
+arch: amd64
+igpu: { model: Intel UHD Graphics (48 EU), features: [quicksync] }
+source: [curated]
+confidence: curated

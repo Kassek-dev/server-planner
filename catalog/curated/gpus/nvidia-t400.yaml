@@ -1,0 +1,10 @@
+id: nvidia-t400
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA T400 4 GB
+vramBytes: 4 GiB
+features: [nvenc, cuda]
+tdpW: 30
+source: [curated]
+confidence: curated

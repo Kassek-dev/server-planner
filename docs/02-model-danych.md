@@ -1,6 +1,6 @@
 # Server Planner — model danych (v0.3)
 
-> Status: **zaakceptowany, v0.5** (v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
+> Status: **zaakceptowany, v0.6** (v0.6: `CatalogGpu`, § 9.4; v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (decyzje D1–D9)
 > Notacja: typy w składni TypeScript — to opis struktury, nie decyzja o implementacji (ta zapadnie w `03-architektura.md`).
 
@@ -1121,6 +1121,19 @@ interface CatalogCpu extends CpuSpec {
   source: string[];
   confidence: Confidence;
 }
+
+// HW-09: GPU / akcelerator do wyboru w Hardware (tylko warstwa kurowana, `catalog/curated/gpus/`)
+interface CatalogGpu extends GpuSpec {
+  id: string;
+  vendor: 'nvidia' | 'amd' | 'intel' | 'google' | 'hailo' | 'other';
+  kind: 'gpu' | 'accelerator';
+  attach: 'pcie' | 'm2' | 'usb';
+  tdpW?: Watts;
+  source: string[];
+  confidence: Confidence;
+}
+// Catalog.gpus: CatalogGpu[] (domyślnie [] — katalogi zapisane przed 1.3 go nie mają). Zestawy RAM i dysków
+// to stałe aplikacji (apps/web, `device/parts.ts`), nie dane katalogu.
 
 interface CatalogOs {
   id: OsId;

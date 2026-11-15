@@ -1,0 +1,10 @@
+id: nvidia-t1000-8gb
+vendor: nvidia
+kind: gpu
+attach: pcie
+model: NVIDIA T1000 8 GB
+vramBytes: 8 GiB
+features: [nvenc, cuda]
+tdpW: 50
+source: [curated]
+confidence: curated

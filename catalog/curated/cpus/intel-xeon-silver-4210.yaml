@@ -1,0 +1,11 @@
+id: intel-xeon-silver-4210
+vendor: intel
+model: Intel Xeon Silver 4210
+cores: 10
+threads: 20
+baseGhz: 2.2
+boostGhz: 3.2
+tdpW: 85
+arch: amd64
+source: [curated]
+confidence: curated

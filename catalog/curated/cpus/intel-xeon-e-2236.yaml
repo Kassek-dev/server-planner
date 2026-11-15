@@ -1,0 +1,11 @@
+id: intel-xeon-e-2236
+vendor: intel
+model: Intel Xeon E-2236
+cores: 6
+threads: 12
+baseGhz: 3.4
+boostGhz: 4.8
+tdpW: 80
+arch: amd64
+source: [curated]
+confidence: curated

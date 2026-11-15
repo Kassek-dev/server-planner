@@ -1,0 +1,11 @@
+id: amd-ryzen-9-5950x
+vendor: amd
+model: AMD Ryzen 9 5950X
+cores: 16
+threads: 32
+baseGhz: 3.4
+boostGhz: 4.9
+tdpW: 105
+arch: amd64
+source: [curated]
+confidence: curated
