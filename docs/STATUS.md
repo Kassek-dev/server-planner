@@ -372,3 +372,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 33: IPv6 — adresacja, walidacja, IP Plan, eksport (NET‑17) | #55 |
 | 2026-11-16 | **Wydanie v1.6.0** (etapy 31–33, schemat v3 z automatyczną migracją → `minor`; D11: `Z` = 0) | tag `v1.6.0` (#56) |
 | 2026-11-16 | Sprawdzenie na żywo 1.6.0 (wersja, projekt z 1.5, wariant, IPv6): 2 poprawki (prefiks IPv6, odmiana w Compare) | #57 |
+| 2026-11-16 | **Wydanie v1.6.2** (D11: 2 poprawki od 1.6.0) | tag `v1.6.2` (#58) |
