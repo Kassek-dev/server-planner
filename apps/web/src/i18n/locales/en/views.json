@@ -103,7 +103,7 @@
       "idle": "Idle power",
       "toBuyCost": "Cost to buy"
     },
-    "issueCount": "{errors} errors · {warnings} warnings",
+    "issueCount": "{errors, plural, one {# error} other {# errors}} · {warnings, plural, one {# warning} other {# warnings}}",
     "toBuy": "Parts to buy",
     "nothingToBuy": "No new devices or parts compared with the base project.",
     "changes": "Changes",

@@ -185,8 +185,9 @@ function SubnetList({ project }: { project: Project }) {
     const used = new Set(subnets.map((s) => s.cidr));
     const vlan = vlans.find((v) => !subnets.some((s) => s.vlanId === v.id && isIpv6Cidr(s.cidr)));
     let n = vlan?.vid ?? 1;
-    while (used.has(`fd00:0:0:${n.toString(16)}::/64`)) n += 1;
-    const prefix = `fd00:0:0:${n.toString(16)}`;
+    while (used.has(`fd00:0:0:${n}::/64`)) n += 1;
+    // The VLAN ID written as is (VLAN 10 → fd00:0:0:10::/64), the usual readable convention.
+    const prefix = `fd00:0:0:${n}`;
     run(addSubnet, {
       subnet: {
         cidr: `${prefix}::/64`,

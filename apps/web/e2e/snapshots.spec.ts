@@ -73,6 +73,7 @@ test('variant: create, change and compare with the base (PRJ-10)', async ({ page
   await dialog.getByRole('button', { name: 'Create variant' }).click();
   await expect(page).toHaveURL(/\/compare/);
   await expect(page.getByText('Variant of')).toBeVisible();
+  await expect(page.getByRole('cell', { name: '2 errors · 1 warning' }).first()).toBeVisible();
   await expect(
     page.getByText('No new devices or parts compared with the base project.'),
   ).toBeVisible();
