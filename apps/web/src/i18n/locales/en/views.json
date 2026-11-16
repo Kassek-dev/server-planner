@@ -80,6 +80,40 @@
     "poolRow": "{from} – {to} · DHCP pool ({count, plural, one {# address} other {# addresses}})",
     "freeRow": "{from} – {to} · free ({count, plural, one {# address} other {# addresses}})"
   },
+  "compare": {
+    "title": "Compare with base",
+    "create": "Create variant",
+    "notVariant": "This project is not a variant. Create a variant to try a change and compare it with this project.",
+    "baseMissing": "The project this variant was made from no longer exists, so there is nothing to compare with.",
+    "loading": "Loading the base project…",
+    "variantOf": "Variant of",
+    "totals": "Totals of the base project and this variant",
+    "metric": "Metric",
+    "base": "Base",
+    "variant": "Variant",
+    "rows": {
+      "cores": "CPU cores",
+      "memory": "Memory",
+      "storage": "Storage",
+      "memoryUse": "Memory allocated",
+      "cpuUse": "CPU allocated",
+      "issues": "Issues",
+      "idle": "Idle power",
+      "toBuyCost": "Cost to buy"
+    },
+    "issueCount": "{errors} errors · {warnings} warnings",
+    "toBuy": "Parts to buy",
+    "nothingToBuy": "No new devices or parts compared with the base project.",
+    "changes": "Changes",
+    "upgrade": {
+      "device": "new device",
+      "deviceModel": "new device · {model}",
+      "memory": "memory {before} → {after} (+{added})",
+      "disks": "new disks: {list}",
+      "gpu": "new GPU: {list}",
+      "cpu": "CPU {before} → {after}"
+    }
+  },
   "services": {
     "title": "Services",
     "map": "Services map",

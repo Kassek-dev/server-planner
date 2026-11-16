@@ -59,3 +59,36 @@ test('own device template and straight cable', async ({ page }) => {
   await panel.getByText('Straight', { exact: true }).click();
   await expect(page.locator('.react-flow__edge').first()).toBeVisible();
 });
+
+test('variant: create, change and compare with the base (PRJ-10)', async ({ page }) => {
+  await page.goto('./');
+  await page
+    .getByTestId('import-input')
+    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json'));
+  await page.getByRole('button', { name: 'Open project' }).click();
+  await expect(page.locator('.react-flow__node').first()).toBeVisible();
+  await page.getByRole('button', { name: 'Create variant' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Create variant' });
+  await dialog.getByRole('textbox', { name: 'Variant name' }).fill('Home lab — second node');
+  await dialog.getByRole('button', { name: 'Create variant' }).click();
+  await expect(page).toHaveURL(/\/compare/);
+  await expect(page.getByText('Variant of')).toBeVisible();
+  await expect(
+    page.getByText('No new devices or parts compared with the base project.'),
+  ).toBeVisible();
+
+  // A new device in the variant shows up as a part to buy and a change.
+  await page.getByRole('link', { name: 'Topology' }).click();
+  await library(page)
+    .getByRole('button', { name: /^Mini PC/ })
+    .click();
+  await page.getByRole('link', { name: 'Compare' }).click();
+  const toBuy = page.getByRole('region', { name: 'Parts to buy' });
+  await expect(toBuy.getByText(/new device/)).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Changes' }).getByText(/1 added/)).toBeVisible();
+  await page.screenshot({ path: 'test-results/compare.png' });
+
+  // The projects list marks the variant.
+  await page.getByRole('link', { name: 'Server Planner' }).click();
+  await expect(page.getByText('Variant of Home lab')).toBeVisible();
+});

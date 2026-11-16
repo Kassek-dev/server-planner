@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.6** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.7** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -201,6 +201,8 @@ LOC‑06: rack pokazuje zajętość („5 of 12 U occupied”, pasek z progami c
 Front szafy (LOC‑09, D‑16): „Front view” przy zajętości racka otwiera rysunek racka — od góry: urządzenia, półki z tym, co na nich stoi, wolne zakresy („7U free”). Rysunek mieści się w oknie; SVG i PNG są pobierane w jasnych kolorach (do druku), „Print” drukuje sam rysunek na całą stronę.
 
 Etykiety (LBL‑04, D‑17): „Print labels” w podsumowaniu projektu (Manage) i w palecie. Wybór arkusza A4 (siatka wyśrodkowana na stronie), kable (z „One label for each end”), urządzenia, pominięcie etykiet na zaczętym arkuszu. Tekst dopasowany do szerokości etykiety (mono); długa etykieta kabla dzielona po „↔” na dwie linie. Druk: strony A4 renderowane poza ekranem (`[data-print-pages]`, nazwana strona `@page labels`, margines 0), reszta aplikacji ukryta; PDF przez „Save as PDF”, skala 100%.
+
+Warianty (PRJ‑10, D12): „Create variant” (podsumowanie projektu › Manage, paleta, widok Compare) zapisuje bieżący projekt i tworzy jego kopię powiązaną z bazą (`variantOf` w metadanych IndexedDB; wariant wariantu wskazuje tę samą bazę); kopia otwiera się na widoku **Compare** (V‑09), widocznym w przełączniku widoków tylko dla wariantów. Compare liczy silnikiem obie strony i pokazuje tabelę baza / wariant (wartość wariantu pogrubiona, gdy się różni; ostrzeżenie, gdy zajętość lub liczba problemów rośnie), „Parts to buy” i listę zmian (kliknięcie zaznacza element). Karta projektu na liście ma dopisek „Variant of <baza>”. Eksport JSON wariantu to zwykły projekt (bez powiązania). Pasek: na ekranach < 1536 px status zapisu to sama dioda (tekst dla czytników ekranu), zakładki nie łamią linii.
 
 ### 5.7 Edytory globalne (otwierane z podsumowania projektu, z menu routera lub skrótem)
 

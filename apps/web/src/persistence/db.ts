@@ -18,6 +18,8 @@ export interface ProjectMeta {
   sizeBytes: number;
   /** Card thumbnail; absent for empty projects and rows saved before stage 3. */
   preview?: ProjectPreview;
+  /** PRJ-10: this project is a variant of another one (its ID); kept across saves. */
+  variantOf?: string;
 }
 
 /** PRJ-07 snapshot stored per project. */

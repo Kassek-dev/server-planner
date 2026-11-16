@@ -1161,7 +1161,7 @@ interface CatalogOs {
 
 | Store         | Klucz                     | Zawartość                                                                    |
 | ------------- | ------------------------- | ---------------------------------------------------------------------------- |
-| `projects`    | `id`                      | metadane: nazwa, daty, miniatura, rozmiar (szybka lista PRJ‑02)              |
+| `projects`    | `id`                      | metadane: nazwa, daty, miniatura, rozmiar (szybka lista PRJ‑02); `variantOf?` — ID projektu bazowego wariantu (PRJ‑10, 1.6; zachowywane przy zapisie, nie trafia do pliku projektu) |
 | `projectData` | `id`                      | pełny `Project`                                                              |
 | `snapshots`   | `id` (indeks `projectId`) | `Snapshot` (baza v2; v3 = projekty i snapshoty w schemacie projektu v2)       |
 | `history`     | `projectId`               | stos undo/redo (opcjonalnie — przetrwanie odświeżenia strony)                |

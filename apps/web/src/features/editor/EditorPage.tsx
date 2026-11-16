@@ -30,6 +30,8 @@ import { SnapshotsView } from '../snapshots/SnapshotsView';
 import { describeCommit } from '../toasts/describe';
 import { useToasts } from '../toasts/store';
 import { Toaster } from '../toasts/Toaster';
+import { CompareView } from '../variants/CompareView';
+import { CreateVariantDialog, useVariantOf } from '../variants/variants';
 import { CommandPalette } from './CommandPalette';
 import { useOtherTabs } from './otherTabs';
 
@@ -97,7 +99,15 @@ function EditorLoading() {
   );
 }
 
-type View = 'topology' | 'dashboard' | 'inventory' | 'ip' | 'access' | 'services' | 'snapshots';
+type View =
+  | 'topology'
+  | 'dashboard'
+  | 'inventory'
+  | 'ip'
+  | 'access'
+  | 'services'
+  | 'compare'
+  | 'snapshots';
 const VIEWS: { id: View; path: string }[] = [
   { id: 'topology', path: '' },
   { id: 'dashboard', path: 'dashboard' },
@@ -111,6 +121,7 @@ function useView(): View {
   const rest = useParams()['*'] ?? '';
   // Snapshots (V-06) open from the project summary and the palette, not from the tabs.
   if (rest.startsWith('snapshots')) return 'snapshots';
+  if (rest.startsWith('compare')) return 'compare';
   return VIEWS.find((v) => v.path && rest.startsWith(v.path))?.id ?? 'topology';
 }
 
@@ -119,11 +130,15 @@ function ViewTabs() {
   const { t } = useTranslation('editor');
   const { projectId = '' } = useParams();
   const view = useView();
+  const views = useViewList();
   const [params] = useSearchParams();
   const search = params.toString();
   return (
-    <nav aria-label={t('views.label')} className="ml-4 flex rounded-md border border-border-subtle">
-      {VIEWS.map((v) => (
+    <nav
+      aria-label={t('views.label')}
+      className="ml-2 flex min-w-0 overflow-x-auto rounded-md border border-border-subtle"
+    >
+      {views.map((v) => (
         <Link
           key={v.id}
           to={{
@@ -131,7 +146,7 @@ function ViewTabs() {
             search: search ? `?${search}` : '',
           }}
           aria-current={v.id === view ? 'page' : undefined}
-          className={`px-3 py-1.5 no-underline ${v.id === view ? 'bg-tile-header font-medium text-text-primary' : 'text-text-secondary hover:text-text-primary'}`}
+          className={`px-2.5 py-1.5 whitespace-nowrap no-underline ${v.id === view ? 'bg-tile-header font-medium text-text-primary' : 'text-text-secondary hover:text-text-primary'}`}
         >
           {t(`views.${v.id}`)}
         </Link>
@@ -140,11 +155,21 @@ function ViewTabs() {
   );
 }
 
+const COMPARE: { id: View; path: string } = { id: 'compare', path: 'compare' };
+
+/** The view tabs; Compare (V-09) only for a variant (PRJ-10). */
+function useViewList() {
+  const { projectId = '' } = useParams();
+  const link = useVariantOf(projectId);
+  return link?.baseId ? [...VIEWS, COMPARE] : VIEWS;
+}
+
 /** Views as a select on phones, where the tab strip does not fit (docs/05 § 12). */
 function ViewSelect() {
   const { t } = useTranslation('editor');
   const { projectId = '' } = useParams();
   const view = useView();
+  const views = useViewList();
   const navigate = useNavigate();
   return (
     <div className="w-32">
@@ -153,10 +178,10 @@ function ViewSelect() {
         hideLabel
         value={view}
         onChange={(e) => {
-          const next = VIEWS.find((v) => v.id === e.target.value);
+          const next = views.find((v) => v.id === e.target.value);
           navigate(`/p/${projectId}${next?.path ? `/${next.path}` : ''}`);
         }}
-        options={VIEWS.map((v) => ({ value: v.id, label: t(`views.${v.id}`) }))}
+        options={views.map((v) => ({ value: v.id, label: t(`views.${v.id}`) }))}
       />
     </div>
   );
@@ -335,6 +360,8 @@ function Editor() {
           <AccessView />
         ) : view === 'services' ? (
           <ServicesView />
+        ) : view === 'compare' ? (
+          <CompareView />
         ) : (
           <CanvasWorkspace />
         )}
@@ -343,6 +370,7 @@ function Editor() {
       <DrawerHost />
       <ExportDialog />
       <LabelsDialog />
+      <CreateVariantDialog />
       <CommandPalette project={project} />
       <Toaster />
     </div>
@@ -392,7 +420,7 @@ function ProjectName({ name }: { name: string }) {
         setValue(name);
         setEditing(true);
       }}
-      className="rounded-md border border-border-subtle px-2 py-0.75 font-mono text-data text-text-secondary hover:text-text-primary"
+      className="max-w-40 truncate rounded-md border border-border-subtle px-2 py-0.75 font-mono text-data whitespace-nowrap text-text-secondary hover:text-text-primary"
     >
       {name}
     </button>
@@ -410,12 +438,13 @@ function SaveIndicator({ state }: { state: 'saved' | 'pending' | 'saving' | 'err
   const { t } = useTranslation('editor');
   return (
     <span
-      className="flex items-center gap-1.5 text-body-sm text-text-muted"
+      className="flex items-center gap-1.5 text-body-sm whitespace-nowrap text-text-muted"
       role="status"
       aria-live="polite"
     >
       <Led status={saveLed[state] ?? 'off'} size={7} />
-      {t(`save.${state}`)}
+      {/* Narrow screens keep the LED; the text stays for screen readers. */}
+      <span className="max-2xl:sr-only">{t(`save.${state}`)}</span>
     </span>
   );
 }

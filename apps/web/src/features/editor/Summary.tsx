@@ -6,6 +6,7 @@ import { Button } from '../../ui/Button';
 import { Led } from '../../ui/Led';
 import { useDrawer } from '../drawers/useDrawer';
 import { useLabelsDialog } from '../labels/LabelsDialog';
+import { useVariantDialog } from '../variants/variants';
 
 /** I-01 Project summary (nothing selected) — counts for now; resources and issues arrive with the engines. */
 export function Summary({ project }: { project: Project }) {
@@ -52,6 +53,9 @@ export function Summary({ project }: { project: Project }) {
         <Button onClick={() => open({ kind: 'tags' })}>{t('summary.tags')}</Button>
         <Button onClick={() => useLabelsDialog.getState().setOpen(true)}>
           {t('summary.labels')}
+        </Button>
+        <Button onClick={() => useVariantDialog.getState().setOpen(true)}>
+          {t('summary.variant')}
         </Button>
         <Button onClick={() => open({ kind: 'settings' })}>{t('summary.settings')}</Button>
         <Button onClick={() => navigate(`/p/${projectId}/snapshots`)}>
