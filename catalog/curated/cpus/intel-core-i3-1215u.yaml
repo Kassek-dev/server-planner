@@ -1,0 +1,12 @@
+id: intel-core-i3-1215u
+vendor: intel
+model: Intel Core i3-1215U
+cores: 6
+threads: 8
+baseGhz: 1.2
+boostGhz: 4.4
+tdpW: 15
+arch: amd64
+igpu: { model: Intel UHD Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

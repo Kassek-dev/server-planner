@@ -1,0 +1,12 @@
+id: intel-celeron-n5095
+vendor: intel
+model: Intel Celeron N5095
+cores: 4
+threads: 4
+baseGhz: 2.0
+boostGhz: 2.9
+tdpW: 15
+arch: amd64
+igpu: { model: Intel UHD Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

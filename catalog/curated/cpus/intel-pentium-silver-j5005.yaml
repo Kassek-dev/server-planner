@@ -1,0 +1,12 @@
+id: intel-pentium-silver-j5005
+vendor: intel
+model: Intel Pentium Silver J5005
+cores: 4
+threads: 4
+baseGhz: 1.5
+boostGhz: 2.8
+tdpW: 10
+arch: amd64
+igpu: { model: Intel UHD Graphics 605, features: [quicksync] }
+source: [curated]
+confidence: curated

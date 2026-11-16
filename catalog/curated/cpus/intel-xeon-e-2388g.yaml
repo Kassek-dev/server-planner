@@ -1,0 +1,12 @@
+id: intel-xeon-e-2388g
+vendor: intel
+model: Intel Xeon E-2388G
+cores: 8
+threads: 16
+baseGhz: 3.2
+boostGhz: 5.1
+tdpW: 95
+arch: amd64
+igpu: { model: Intel UHD Graphics P750, features: [quicksync] }
+source: [curated]
+confidence: curated

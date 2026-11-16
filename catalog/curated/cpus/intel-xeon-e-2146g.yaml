@@ -1,0 +1,12 @@
+id: intel-xeon-e-2146g
+vendor: intel
+model: Intel Xeon E-2146G
+cores: 6
+threads: 12
+baseGhz: 3.5
+boostGhz: 4.5
+tdpW: 80
+arch: amd64
+igpu: { model: Intel UHD Graphics P630, features: [quicksync] }
+source: [curated]
+confidence: curated

@@ -1,0 +1,12 @@
+id: intel-core-i5-9600t
+vendor: intel
+model: Intel Core i5-9600T
+cores: 6
+threads: 6
+baseGhz: 2.3
+boostGhz: 3.9
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

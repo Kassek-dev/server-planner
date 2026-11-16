@@ -1,6 +1,6 @@
 # Server Planner — źródła danych katalogu (v0.1)
 
-> Status: **zaakceptowany, adaptery zweryfikowane na żywo (v0.2)** · Data: 2026-11-12
+> Status: **zaakceptowany, adaptery zweryfikowane na żywo (v0.3: Wikidata odrzucone, CAT‑05 = warstwa kurowana)** · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` rozdz. 5 (D3, D6, D7), `02-model-danych.md` rozdz. 9, `03-architektura.md` (catalog builder, `SourceAdapter`)
 > Zamyka otwarte kwestie z `01` rozdz. 8: licencje źródeł i źródło wydajności CPU.
 
@@ -25,7 +25,7 @@
 | **LinuxServer.io API**                     | obrazy, architektury, **porty, wolumeny**, wersje                                       | brak opublikowanej licencji; oficjalne publiczne API                           | `GET https://api.linuxserver.io/api/v1/images?include_config=true` | ✅ tylko dane techniczne (fakty), z atrybucją                        |
 | **Docker Hub API**                         | tagi, architektury, rozmiar obrazu, data aktualizacji                                   | warunki Docker Hub; limit **100 zapytań / 6 h / IP** bez logowania             | `hub.docker.com/v2/repositories/{ns}/{repo}/tags`                  | ✅ tylko dla obrazów z katalogu                                      |
 | **Blender Open Data**                      | **wydajność CPU i GPU** z wyników użytkowników                                          | **CC0 1.0** (plik licencji w zrzucie)                                           | codzienny zrzut JSON / eksport CSV                                 | ✅ automatyczne źródło `perf`                                        |
-| **Wikidata**                               | specyfikacje CPU (rdzenie, wątki, taktowanie, TDP — pokrycie nierówne)                  | **CC0**                                                                        | SPARQL (`query.wikidata.org`)                                      | ✅ uzupełniająco, do weryfikacji pokrycia                            |
+| **Wikidata**                               | specyfikacje CPU (rdzenie, wątki, taktowanie, TDP — pokrycie nierówne)                  | **CC0**                                                                        | SPARQL (`query.wikidata.org`)                                      | ❌ odrzucone 2026-11-16 (§ 3.2)                                      |
 | **Warstwa kurowana (nasza)**               | wzorce ruchu, przepływy, poprawki wymagań, modele mini PC / NAS / sieci, CPU homelabowe, GPU i akceleratory (HW‑09) | CC‑BY‑SA 4.0                                                                   | YAML w `catalog/curated/`                                          | ✅                                                                   |
 | selfh.st                                   | katalog aplikacji                                                                       | brak licencji danych i API („©2026 selfh.st”)                                  | —                                                                  | ❌ nie pobieramy; link w README i na stronie About                   |
 | PassMark                                   | wydajność CPU                                                                           | dane wymagają płatnej licencji; zakaz odtwarzania i przedstawiania jako własne | —                                                                  | ❌                                                                   |
@@ -92,7 +92,7 @@ Odpowiedź na wymaganie: **automatycznie, z wyników użytkowników, bez ręczne
 
 ### 3.2 Specyfikacje CPU
 
-- **Wikidata (CC0)**: zapytanie SPARQL o procesory Intel/AMD z liczbą rdzeni, wątków, taktowaniem, TDP. Pokrycie nierówne — adapter raportuje braki.
+- **Wikidata (CC0) — odrzucone (2026-11-16, decyzja użytkownika).** Sprawdzenie na żywo: ok. 75 elementów „CPU model” Intel/AMD z liczbą rdzeni, głównie desktop/HEDT/serwer (brak i5‑8500T, N100, N5105); **brak właściwości z liczbą wątków** (pole wymagane w `CpuSpec`); taktowanie w GHz albo MHz bez reguły, duplikaty, wpisy typu „2× Xeon”. Uzupełnianie wątków szacunkiem łamie zasadę „dane CPU tylko pewne” (etap 23), więc adaptera nie ma.
 - **Warstwa kurowana**: ~100 CPU popularnych w homelabach (Intel N100/N150/N305, i3/i5/i7 T‑series 6.–14. gen., Ryzen 5/7 mobilne i desktopowe, Xeon E3/E5/E‑2xxx, Raspberry Pi SoC) wpisanych z kart producentów (fakty, nie kopia bazy). Priorytet: `curated` > Wikidata.
 - **Automatyczne podpowiedzi braków:** CPU, które pojawiają się w Blender Open Data z dużą liczbą wyników, a nie mają specyfikacji, trafiają do raportu „do uzupełnienia” w Issue tworzonym przez workflow.
 
@@ -115,7 +115,6 @@ P2 — bez źródła automatycznego; pole ręczne w projekcie.
 | 3         | LinuxServer.io          | 1                       | < 1 min      |
 | 4         | Docker Hub              | ≤ 300 (token)           | ~5 min       |
 | 5         | Blender Open Data       | 1 (zrzut, strumieniowo) | ~5–10 min    |
-| 6         | Wikidata                | 1–3 (SPARQL)            | < 1 min      |
 
 Każde zapytanie z nagłówkiem `User-Agent: server-planner-catalog/<wersja> (+https://github.com/<user>/server-planner)`. Limit czasu workflow: 30 min.
 

@@ -1,0 +1,12 @@
+id: intel-core-i3-10100t
+vendor: intel
+model: Intel Core i3-10100T
+cores: 4
+threads: 8
+baseGhz: 3.0
+boostGhz: 3.8
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

@@ -1,0 +1,11 @@
+id: intel-xeon-silver-4214
+vendor: intel
+model: Intel Xeon Silver 4214
+cores: 12
+threads: 24
+baseGhz: 2.2
+boostGhz: 3.2
+tdpW: 85
+arch: amd64
+source: [curated]
+confidence: curated

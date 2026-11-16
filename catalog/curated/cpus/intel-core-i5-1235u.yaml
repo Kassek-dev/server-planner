@@ -1,0 +1,12 @@
+id: intel-core-i5-1235u
+vendor: intel
+model: Intel Core i5-1235U
+cores: 10
+threads: 12
+baseGhz: 1.3
+boostGhz: 4.4
+tdpW: 15
+arch: amd64
+igpu: { model: Intel Iris Xe Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

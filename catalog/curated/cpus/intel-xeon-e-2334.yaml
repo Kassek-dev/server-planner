@@ -1,0 +1,11 @@
+id: intel-xeon-e-2334
+vendor: intel
+model: Intel Xeon E-2334
+cores: 4
+threads: 8
+baseGhz: 3.4
+boostGhz: 4.8
+tdpW: 65
+arch: amd64
+source: [curated]
+confidence: curated

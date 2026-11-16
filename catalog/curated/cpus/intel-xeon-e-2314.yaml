@@ -1,0 +1,11 @@
+id: intel-xeon-e-2314
+vendor: intel
+model: Intel Xeon E-2314
+cores: 4
+threads: 4
+baseGhz: 2.8
+boostGhz: 4.5
+tdpW: 65
+arch: amd64
+source: [curated]
+confidence: curated

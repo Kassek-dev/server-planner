@@ -1,0 +1,12 @@
+id: intel-pentium-gold-8505
+vendor: intel
+model: Intel Pentium Gold 8505
+cores: 5
+threads: 6
+baseGhz: 1.2
+boostGhz: 4.4
+tdpW: 15
+arch: amd64
+igpu: { model: Intel UHD Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

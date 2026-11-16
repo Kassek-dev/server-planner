@@ -1,0 +1,12 @@
+id: intel-core-i5-11500t
+vendor: intel
+model: Intel Core i5-11500T
+cores: 6
+threads: 12
+baseGhz: 1.5
+boostGhz: 3.9
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 750, features: [quicksync] }
+source: [curated]
+confidence: curated

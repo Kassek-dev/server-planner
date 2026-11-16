@@ -1,0 +1,12 @@
+id: intel-core-i7-7700t
+vendor: intel
+model: Intel Core i7-7700T
+cores: 4
+threads: 8
+baseGhz: 2.9
+boostGhz: 3.8
+tdpW: 35
+arch: amd64
+igpu: { model: Intel HD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

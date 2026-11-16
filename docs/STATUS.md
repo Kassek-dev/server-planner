@@ -286,8 +286,9 @@ Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zm
 ### Etap 29 — Wydruk etykiet (LBL‑04)
 - [x] D‑17 Print labels: `features/labels/sheet.ts` (4 układy A4, `projectLabels`, `layoutSheets` z pominięciem etykiet), podgląd, druk stron A4 przez `@page labels` (PDF z okna druku); wejścia: podsumowanie projektu, paleta
 
-### Etap 30 — Katalog sprzętu: import specyfikacji CPU (CAT‑05)
-- [ ] Adapter Wikidata (CC0, SPARQL): rdzenie, wątki, taktowanie, TDP; priorytet `curated` > Wikidata
+### Etap 30 — Katalog sprzętu: CPU (CAT‑05)
+- [x] Wikidata sprawdzone na żywo i odrzucone (ok. 75 modeli, brak liczby wątków, niespójne jednostki) — decyzja użytkownika 2026-11-16, `06` § 3.2
+- [x] Warstwa kurowana: +65 CPU (Intel T‑series 6.–13. gen., mobilne U, Celeron/Pentium, Xeon E3/E‑2xxx/E5 v4/Silver, Ryzen mobilne H/U/HS, Ryzen PRO GE i desktopowe) → 111; 82 z wynikiem Blender Open Data, reszta z heurystyki
 
 ## Wersja 1.6 — plan (2026-11-16)
 
@@ -353,3 +354,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Decyzja D12 (zakres P2 1.5–1.6), plan 1.5 i 1.6; etap 27: filtr SPOF „Infrastructure only”, ruch przez reverse proxy w przepływach | #48 |
 | 2026-11-16 | Etap 28: mapa usług V‑07 (VIEW‑07) | #49 |
 | 2026-11-16 | Etap 29: wydruk etykiet na arkuszu A4 (LBL‑04, D‑17) | #50 |
+| 2026-11-16 | Etap 30: Wikidata odrzucone; +65 kurowanych CPU (CAT‑05) | #51 |

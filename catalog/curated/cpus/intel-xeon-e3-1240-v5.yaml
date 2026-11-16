@@ -1,0 +1,11 @@
+id: intel-xeon-e3-1240-v5
+vendor: intel
+model: Intel Xeon E3-1240 v5
+cores: 4
+threads: 8
+baseGhz: 3.5
+boostGhz: 3.9
+tdpW: 80
+arch: amd64
+source: [curated]
+confidence: curated

@@ -1,0 +1,11 @@
+id: intel-xeon-silver-4114
+vendor: intel
+model: Intel Xeon Silver 4114
+cores: 10
+threads: 20
+baseGhz: 2.2
+boostGhz: 3.0
+tdpW: 85
+arch: amd64
+source: [curated]
+confidence: curated

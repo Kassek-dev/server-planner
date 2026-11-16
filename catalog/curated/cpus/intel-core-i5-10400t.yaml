@@ -1,0 +1,12 @@
+id: intel-core-i5-10400t
+vendor: intel
+model: Intel Core i5-10400T
+cores: 6
+threads: 12
+baseGhz: 2.0
+boostGhz: 3.6
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated
