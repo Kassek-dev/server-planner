@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.9** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion; v0.9: IPv6 dual‑stack) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.10** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion; v0.9: IPv6 dual‑stack; v0.10: Auto layout) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -115,6 +115,7 @@ Zgodnie z `04` § 4.2 i makietą „Chosen — E canvas + D device inspector”.
 - Przesuwanie z przyciąganiem do siatki (16 px); `Alt` podczas przeciągania — bez przyciągania.
 - Prowadnice (CAN‑08): przy przeciąganiu jednego elementu linia w kolorze `selection` pokazuje wyrównanie krawędzi lub środka z innym elementem (tolerancja 2 px).
 - **Group by** w kontrolkach canvasu (O‑11, LOC‑08): *Location* (domyślnie) albo *None* — ramki lokalizacji ukryte, urządzenia jako kafelki w pozycjach bezwzględnych (z racka ułożone jedno pod drugim); urządzenia z `placement` nie są wtedy przeciągane (zmiana lokalizacji w widoku *Location*). Ustawienie zapisane w `layout.groupByLocation`, z cofaniem.
+- **Auto layout** w kontrolkach canvasu (CAN‑10): odległość kablowa od Internetu (BFS po kablach i Wi‑Fi; VM liczą się jako ich host; bez Internetu — od routerów) wyznacza rzędy; przesuwane są lokalizacje najwyższego poziomu (z zawartością) i wolne urządzenia; w rzędzie kolejność wg średniej pozycji tego, do czego element jest podłączony (mniej skrzyżowań), rzędy wyśrodkowane, puste lokalizacje na końcu. Jedno cofnięcie, potem widok dopasowuje się do całości.
 - Przeciągnięcie urządzenia **między lokalizacjami** zmienia `placement` (komenda `device.place`); poza wszystkie lokalizacje → „Unplaced”.
 - Przeciągnięcie **pojemnika** przenosi go z zawartością. Zmiana rozmiaru pomieszczenia/półki — uchwyty w narożnikach; rack zmienia rozmiar tylko przez liczbę U w inspectorze.
 - Usuwanie: `Delete` / `Backspace`. Usunięcie lokalizacji nie usuwa urządzeń — zostają na swoich pozycjach jako „Unplaced”; toast z Undo.

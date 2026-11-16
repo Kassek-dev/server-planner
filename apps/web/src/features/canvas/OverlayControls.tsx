@@ -1,7 +1,11 @@
-import { setGroupByLocation } from '@server-planner/model';
+import { moveNode, setGroupByLocation, setLocationRect } from '@server-planner/model';
+import { useReactFlow } from '@xyflow/react';
+import { Network } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useServices, useSession } from '../../app/services';
+import { Button } from '../../ui/Button';
 import { Select } from '../../ui/Select';
+import { autoLayout } from './autoLayout';
 import { type DeviceColoring, type LinkColoring, SPEED_CLASSES, useCanvasView } from './overlays';
 
 /**
@@ -13,6 +17,19 @@ export function OverlayControls() {
   const { links, devices, set } = useCanvasView();
   const { session } = useServices();
   const grouped = useSession((s) => s.project?.layout.groupByLocation ?? true);
+  const flow = useReactFlow();
+  /** CAN-10: one undo step for the whole arrangement, then the view fits it. */
+  const arrange = () => {
+    const project = session.getState().project;
+    if (!project) return;
+    const layout = autoLayout(project);
+    session.transaction(t('overlay.autoLayout'), (run) => {
+      for (const l of layout.locations) run(setLocationRect, l);
+      for (const d of layout.devices) run(moveNode, d);
+    });
+    // React Flow measures the moved nodes first; fit once they are laid out.
+    setTimeout(() => void flow.fitView({ padding: 0.1, duration: 200 }), 80);
+  };
   return (
     <div className="absolute top-4 right-4 flex w-52 flex-col gap-2 rounded-md border border-border-default bg-raised p-2.5">
       <Select
@@ -44,6 +61,9 @@ export function OverlayControls() {
           label: t(`overlay.deviceOptions.${v}`),
         }))}
       />
+      <Button size="sm" icon={<Network size={14} aria-hidden="true" />} onClick={arrange}>
+        {t('overlay.autoLayout')}
+      </Button>
       {links === 'speed' ? (
         <ul className="m-0 flex list-none flex-col gap-1 p-0 text-body-sm text-text-secondary">
           {SPEED_CLASSES.map((c) => (

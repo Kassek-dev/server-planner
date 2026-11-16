@@ -65,3 +65,29 @@ test('group by none hides location frames and keeps devices', async ({ page }) =
   await page.keyboard.press('Control+z');
   await expect(page.getByText('7U free')).toBeVisible();
 });
+
+test('auto layout arranges the lab from the Internet down, in one undo step (CAN-10)', async ({
+  page,
+}) => {
+  await openExample(page);
+  /** Top edge of the canvas node whose text starts with `name` (case-insensitive). */
+  const top = (name: string) =>
+    page.evaluate((prefix) => {
+      const node = [...document.querySelectorAll('.react-flow__node')].find((n) =>
+        (n.textContent ?? '').toLowerCase().startsWith(prefix.toLowerCase()),
+      );
+      return node?.getBoundingClientRect().top;
+    }, name);
+  await page.getByRole('button', { name: 'Auto layout' }).click();
+  await page.waitForTimeout(400);
+  const internet = await top('Internet');
+  const rack = await top('Closet rack');
+  const room = await top('Living room');
+  expect(internet).toBeDefined();
+  expect((internet ?? 0) < (rack ?? 0) && (rack ?? 0) < (room ?? 0)).toBe(true);
+  await page.screenshot({ path: 'test-results/auto-layout.png' });
+  // One step back undoes the whole arrangement.
+  await page.getByRole('button', { name: 'Undo' }).click();
+  await expect(page.getByRole('button', { name: 'Redo' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Undo' })).toBeDisabled();
+});
