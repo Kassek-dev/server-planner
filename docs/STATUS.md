@@ -314,6 +314,42 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 - [x] Compare: liczba problemów z odmianą („1 error”, nie „1 errors”)
 - D11: 2 poprawki → wydanie 1.6.2
 
+## Wersja 1.7 — plan (2026-11-16)
+
+Reszta P2 bez zmiany formatu projektu (D13).
+
+### Etap 34 — Auto‑layout (CAN‑10)
+- [x] `features/canvas/autoLayout.ts` (`deviceDepths` — BFS od Internetu, `autoLayout` — rzędy wg głębokości, kolejność barycentryczna, lokalizacje najwyższego poziomu jako bloki); przycisk „Auto layout” w O‑11, jedna transakcja, potem `fitView`
+
+### Etap 35 — Diagram L3 (VIEW‑06)
+- [ ] Widok `#/p/:id/logical`: strefy, podsieci i routery z interfejsami; reguły firewalla między strefami
+
+### Etap 36 — Sugestie rozmieszczenia (CAP‑10)
+- [ ] Bin packing workloadów na hostach (zalecane wymagania), propozycja przeniesień i rekomendacje rozbudowy (RAM, rdzenie, dyski)
+
+### Etap 37 — Hyper‑V (SW‑14)
+- [ ] Windows Server jako hypervisor: VM (bez LXC), vSwitch, narzut; obrazy Linux w kontenerach Windows nadal niezgodne
+
+### Etap 38 — Katalog i pliki (CAT‑06, PRJ‑09)
+- [ ] „Suggest a correction” przy pozycji katalogu → gotowe zgłoszenie GitHub (link, bez zapytań z aplikacji)
+- [ ] Zapis i otwieranie pliku na dysku (File System Access API; autozapis do pliku, gdzie dostępne)
+
+## Wersja 1.8 — plan (2026-11-16)
+
+Schemat projektu v4 (D13).
+
+### Etap 39 — Firewall hosta (NET‑15)
+- [ ] Polityka wejścia + reguły allow/deny na urządzeniu i VM/LXC, symulacja u celu
+
+### Etap 40 — VPN, LACP, mDNS (NET‑16)
+- [ ] VPN (WireGuard/Tailscale) jako strefa zdalnych klientów; bond/LACP (suma prędkości, brak SPOF); reflektor mDNS między VLANami
+
+### Etap 41 — Obciążenie łączy (FLW‑06/07)
+- [ ] Scenariusze (proces × liczba) zapisane w projekcie, obciążenie łączy i hostów, wąskie gardło, nakładka
+
+### Etap 42 — Konwencje nazw (LBL‑05)
+- [ ] Wzorce z tokenami na typ urządzenia, reguły hostname, walidacja z poprawką, nazywanie nowych urządzeń
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -373,3 +409,5 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | **Wydanie v1.6.0** (etapy 31–33, schemat v3 z automatyczną migracją → `minor`; D11: `Z` = 0) | tag `v1.6.0` (#56) |
 | 2026-11-16 | Sprawdzenie na żywo 1.6.0 (wersja, projekt z 1.5, wariant, IPv6): 2 poprawki (prefiks IPv6, odmiana w Compare) | #57 |
 | 2026-11-16 | **Wydanie v1.6.2** (D11: 2 poprawki od 1.6.0) | tag `v1.6.2` (#58) |
+| 2026-11-16 | Decyzja D13 (reszta P2), plan 1.7 i 1.8 | #59 |
+| 2026-11-16 | Etap 34: auto‑layout (CAN‑10) | #59 |

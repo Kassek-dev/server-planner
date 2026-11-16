@@ -199,7 +199,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | O-08 | Simulation result card | ALLOWED / BLOCKED / NO ROUTE na canvasie                         | P0   |
 | O-09 | Access overlays        | plakietki Internet access / Visible from na kafelkach            | P0   |
 | O-10 | Flow timeline          | pasek kroków na dole canvasu ⏮ ⏯ ⏭                               | P1   |
-| O-11 | Canvas controls        | zoom, legenda, Group by; (P1) minimapa                           | P0   |
+| O-11 | Canvas controls        | zoom, legenda, Group by, Auto layout (CAN‑10, 1.7); (P1) minimapa | P0   |
 | O-12 | Toasts                 | potwierdzenia z Undo, aktualizacje                               | P0   |
 | O-13 | Banners                | ochrona danych, druga karta, brak miejsca, nowa wersja aplikacji | P0   |
 | O-14 | Inline rename          | edycja nazwy w nagłówku inspectora / na kafelku                  | P0   |

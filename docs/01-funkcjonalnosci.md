@@ -1,6 +1,6 @@
 # Server Planner — specyfikacja funkcjonalna (v0.4)
 
-> Status: **zaakceptowany zakres, v0.7** (D10: numeracja wydań; v0.6: HW‑09 predefiniowane podzespoły, D11: numer poprawek; v0.7: D12 zakres P2 1.5–1.6) · Ostatnia zmiana: 2026-11-16
+> Status: **zaakceptowany zakres, v0.8** (D10: numeracja wydań; v0.6: HW‑09 predefiniowane podzespoły, D11: numer poprawek; v0.7: D12 zakres P2 1.5–1.6; v0.8: D13 reszta P2 1.7–1.8) · Ostatnia zmiana: 2026-11-16
 > Kolejne dokumenty: `02-model-danych.md`, `03-architektura.md`, `04-design-system.md`, `05-projekt-ui.md`
 > Dokumentacja prowadzona po polsku; interfejs aplikacji i kod — po angielsku.
 
@@ -22,6 +22,7 @@
 | D10 | **Ukończone MVP = wydanie 1.0.0** (SemVer); funkcje P1 trafiają do wersji **1.1**, kolejne do 1.x. | „1.0” nie oznacza już fazy po MVP — teksty UI i dokumentacja mówią o wersji 1.1. Zmiana `schemaVersion` po 1.0: z automatyczną migracją → `minor`, bez → `major` (skill `release`). Decyzja z 2026-11-12. |
 | D11 | **Numeracja `X.Y.Z`: `Z` = liczba poprawek** od wydania `X.Y.0` (narastająco), `Y` = wydanie z nowymi funkcjami, `X` = wersja generalna. | Wydanie poprawek z 4 poprawkami po 1.3.0 to 1.3.4 (skill `release`). Decyzja z 2026-11-16. |
 | D12 | **Zakres P2 w wersjach 1.5–1.6 (2026-11-16):** warianty projektu = **powiązana kopia** projektu z widokiem porównania; IPv6 = **adresacja i walidacja** (dual‑stack, SLAAC/DHCPv6, IP Plan, eksport), symulacja dalej IPv4; konfigurator = **sloty i karty rozszerzeń z walidacją**; wydruk etykiet = **arkusz A4**. | PRJ‑10 bez zmiany pliku projektu (powiązanie w metadanych IndexedDB); NET‑17 i LIB‑05 wspólnie w schemacie v3. Drukarki taśmowe i flagi kabli, IPv6 w symulacji, ceny komponentów — poza zakresem. |
+| D13 | **Reszta P2 w wersjach 1.7–1.8 (2026-11-16):** firewall hosta = **polityka wejścia + reguły allow/deny** (sprawdzane u celu, po firewallu routera; wyjście bez ograniczeń); NET‑16 = **VPN jako strefa, LACP/bond, reflektor mDNS** (wykrywanie między VLANami bez symulacji multicastu); scenariusze obciążenia (FLW‑07) **zapisane w projekcie**; konwencje nazw = **wzorce z tokenami** + reguły hostname (RFC 1123). | 1.7.0 bez zmiany formatu: CAN‑10, VIEW‑06, CAP‑10, CAT‑06, PRJ‑09, SW‑14. 1.8.0: schemat v4 (NET‑15, NET‑16, FLW‑06/07, LBL‑05). |
 
 ---
 
