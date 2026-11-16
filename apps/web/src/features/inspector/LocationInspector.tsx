@@ -5,12 +5,14 @@ import {
   type Project,
   updateLocation,
 } from '@server-planner/model';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
 import { SegmentBar } from '../../ui/SegmentBar';
 import { Select } from '../../ui/Select';
 import { useSelection } from '../canvas/selection';
+import { RackElevationDialog } from '../rack/RackElevationDialog';
 import {
   AddButton,
   CommitField,
@@ -31,6 +33,7 @@ export function LocationInspector({ project, location }: { project: Project; loc
   const { t } = useTranslation('inspector');
   const run = useCommand();
   const power = useResults((s) => s.result?.power);
+  const [elevation, setElevation] = useState(false);
   // A room also counts what stands in its racks and shelves.
   const inside = new Set([
     location.id,
@@ -136,7 +139,14 @@ export function LocationInspector({ project, location }: { project: Project; loc
         </>
       ) : null}
       {location.kind === 'rack' ? (
-        <Section title={t('location.occupancy')}>
+        <Section
+          title={t('location.occupancy')}
+          action={
+            <Button size="sm" variant="ghost" onClick={() => setElevation(true)}>
+              {t('elevation.open')}
+            </Button>
+          }
+        >
           <OccupancyBar
             used={location.units - freeUnits(project, location.id)}
             of={location.units}
@@ -146,6 +156,13 @@ export function LocationInspector({ project, location }: { project: Project; loc
       ) : null}
       {power && devices.length > 0 ? (
         <PowerSection deviceIds={devices.map((d) => d.id)} power={power} project={project} />
+      ) : null}
+      {elevation ? (
+        <RackElevationDialog
+          project={project}
+          rackId={location.id}
+          onClose={() => setElevation(false)}
+        />
       ) : null}
       <Section title={t('location.devices', { count: devices.length })}>
         {devices.map((d) => (

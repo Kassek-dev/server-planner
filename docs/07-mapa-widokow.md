@@ -1,6 +1,6 @@
 # Server Planner — mapa widoków i sitemapa (v0.1)
 
-> Status: **zaakceptowany, v0.3** (v0.2: S‑06 Proxy & DNS; v0.3: X‑01d Failures) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.3** (v0.2: S‑06 Proxy & DNS; v0.3: X‑01d Failures, D‑16 Rack elevation) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (ID funkcji), `05-projekt-ui.md` v0.2 (zachowania), `04-design-system.md` (komponenty)
 > Cel: kompletny spis **każdego osobnego widoku**, który trzeba zaprojektować i zbudować — podstawa sitemapy, routingu, makiet i planu prac.
 
@@ -174,6 +174,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | D-13 | Command palette         | `Ctrl K`                                       | Wyszukiwarka akcji, elementów i widoków                                                                                              | CAN‑09      | P1                            |
 | D-14 | Catalog changelog       | P‑02b                                          | Lista zmian w wersji katalogu (dodane / zmienione / usunięte)                                                                        | CAT         | P1                            |
 | D-15 | Save device template    | menu urządzenia                                | Nazwa szablonu                                                                                                                       | LIB‑04      | P1                            |
+| D-16 | Rack elevation          | I‑06 rack › Occupancy „Front view”          | Front szafy w prawdziwych proporcjach (1U = 44,45 mm): numeracja U po obu stronach, urządzenia (nazwa, model / typ, U), półki z urządzeniami, wolne miejsca; pobranie SVG / PNG (jasne kolory tokenów) i druk tylko rysunku | LOC‑09 | P2 | ✅ kod (bez makiety) |
 
 ---
 

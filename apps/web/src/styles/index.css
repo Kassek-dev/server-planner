@@ -204,3 +204,23 @@
     animation: none;
   }
 }
+
+/* LOC-09: printing a rack elevation shows only the drawing. */
+@media print {
+  body.sp-printing * {
+    visibility: hidden;
+  }
+  body.sp-printing [data-print-area],
+  body.sp-printing [data-print-area] * {
+    visibility: visible;
+  }
+  body.sp-printing [data-print-area] {
+    position: fixed;
+    inset: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  body.sp-printing [data-print-area] svg {
+    height: 100vh;
+  }
+}

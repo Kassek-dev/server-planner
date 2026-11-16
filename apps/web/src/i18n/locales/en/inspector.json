@@ -366,6 +366,17 @@
     "upsLoad": "{name}: {load} of {capacity} W",
     "delete": "Delete location"
   },
+  "elevation": {
+    "open": "Front view",
+    "title": "{name} — front view",
+    "description": "{free} of {total} U free. Download or print it for the rack door.",
+    "close": "Close",
+    "svg": "SVG",
+    "png": "PNG",
+    "print": "Print",
+    "label": "Front view of {name}",
+    "free": "{count}U free"
+  },
   "multi": {
     "title": "{count} selected",
     "delete": "Delete selected",
