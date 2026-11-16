@@ -1,0 +1,12 @@
+id: intel-celeron-j6412
+vendor: intel
+model: Intel Celeron J6412
+cores: 4
+threads: 4
+baseGhz: 2.0
+boostGhz: 2.6
+tdpW: 10
+arch: amd64
+igpu: { model: Intel UHD Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

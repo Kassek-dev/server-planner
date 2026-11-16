@@ -1,0 +1,12 @@
+id: intel-core-i5-8350u
+vendor: intel
+model: Intel Core i5-8350U
+cores: 4
+threads: 8
+baseGhz: 1.7
+boostGhz: 3.6
+tdpW: 15
+arch: amd64
+igpu: { model: Intel UHD Graphics 620, features: [quicksync] }
+source: [curated]
+confidence: curated

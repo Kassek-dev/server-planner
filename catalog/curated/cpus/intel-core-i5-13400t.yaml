@@ -1,0 +1,12 @@
+id: intel-core-i5-13400t
+vendor: intel
+model: Intel Core i5-13400T
+cores: 10
+threads: 16
+baseGhz: 1.3
+boostGhz: 4.4
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 730, features: [quicksync] }
+source: [curated]
+confidence: curated

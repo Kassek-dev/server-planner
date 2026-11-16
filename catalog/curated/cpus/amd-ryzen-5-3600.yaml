@@ -1,0 +1,11 @@
+id: amd-ryzen-5-3600
+vendor: amd
+model: AMD Ryzen 5 3600
+cores: 6
+threads: 12
+baseGhz: 3.6
+boostGhz: 4.2
+tdpW: 65
+arch: amd64
+source: [curated]
+confidence: curated

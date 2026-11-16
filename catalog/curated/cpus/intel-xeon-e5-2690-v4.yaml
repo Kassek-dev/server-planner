@@ -1,0 +1,11 @@
+id: intel-xeon-e5-2690-v4
+vendor: intel
+model: Intel Xeon E5-2690 v4
+cores: 14
+threads: 28
+baseGhz: 2.6
+boostGhz: 3.5
+tdpW: 135
+arch: amd64
+source: [curated]
+confidence: curated

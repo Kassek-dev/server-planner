@@ -1,0 +1,12 @@
+id: intel-core-i7-1255u
+vendor: intel
+model: Intel Core i7-1255U
+cores: 10
+threads: 12
+baseGhz: 1.7
+boostGhz: 4.7
+tdpW: 15
+arch: amd64
+igpu: { model: Intel Iris Xe Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

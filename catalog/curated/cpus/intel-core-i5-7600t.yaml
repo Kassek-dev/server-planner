@@ -1,0 +1,12 @@
+id: intel-core-i5-7600t
+vendor: intel
+model: Intel Core i5-7600T
+cores: 4
+threads: 4
+baseGhz: 2.8
+boostGhz: 3.7
+tdpW: 35
+arch: amd64
+igpu: { model: Intel HD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

@@ -1,0 +1,12 @@
+id: amd-ryzen-5-3550h
+vendor: amd
+model: AMD Ryzen 5 3550H
+cores: 4
+threads: 8
+baseGhz: 2.1
+boostGhz: 3.7
+tdpW: 35
+arch: amd64
+igpu: { model: AMD Radeon Vega 8, features: [vcn] }
+source: [curated]
+confidence: curated

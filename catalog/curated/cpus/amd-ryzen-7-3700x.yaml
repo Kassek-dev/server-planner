@@ -1,0 +1,11 @@
+id: amd-ryzen-7-3700x
+vendor: amd
+model: AMD Ryzen 7 3700X
+cores: 8
+threads: 16
+baseGhz: 3.6
+boostGhz: 4.4
+tdpW: 65
+arch: amd64
+source: [curated]
+confidence: curated

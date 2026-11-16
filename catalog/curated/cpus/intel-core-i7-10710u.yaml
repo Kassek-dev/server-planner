@@ -1,0 +1,12 @@
+id: intel-core-i7-10710u
+vendor: intel
+model: Intel Core i7-10710U
+cores: 6
+threads: 12
+baseGhz: 1.1
+boostGhz: 4.7
+tdpW: 15
+arch: amd64
+igpu: { model: Intel UHD Graphics, features: [quicksync] }
+source: [curated]
+confidence: curated

@@ -1,0 +1,11 @@
+id: intel-core-i3-8100t
+vendor: intel
+model: Intel Core i3-8100T
+cores: 4
+threads: 4
+baseGhz: 3.1
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

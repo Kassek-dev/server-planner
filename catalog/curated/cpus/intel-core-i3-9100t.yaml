@@ -1,0 +1,12 @@
+id: intel-core-i3-9100t
+vendor: intel
+model: Intel Core i3-9100T
+cores: 4
+threads: 4
+baseGhz: 3.1
+boostGhz: 3.7
+tdpW: 35
+arch: amd64
+igpu: { model: Intel UHD Graphics 630, features: [quicksync] }
+source: [curated]
+confidence: curated

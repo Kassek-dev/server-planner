@@ -1,0 +1,11 @@
+id: intel-xeon-e5-2620-v4
+vendor: intel
+model: Intel Xeon E5-2620 v4
+cores: 8
+threads: 16
+baseGhz: 2.1
+boostGhz: 3.0
+tdpW: 85
+arch: amd64
+source: [curated]
+confidence: curated

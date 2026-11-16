@@ -1,0 +1,12 @@
+id: intel-core-i5-6600t
+vendor: intel
+model: Intel Core i5-6600T
+cores: 4
+threads: 4
+baseGhz: 2.7
+boostGhz: 3.5
+tdpW: 35
+arch: amd64
+igpu: { model: Intel HD Graphics 530, features: [quicksync] }
+source: [curated]
+confidence: curated

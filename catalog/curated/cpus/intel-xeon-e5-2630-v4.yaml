@@ -1,0 +1,11 @@
+id: intel-xeon-e5-2630-v4
+vendor: intel
+model: Intel Xeon E5-2630 v4
+cores: 10
+threads: 20
+baseGhz: 2.2
+boostGhz: 3.1
+tdpW: 85
+arch: amd64
+source: [curated]
+confidence: curated
