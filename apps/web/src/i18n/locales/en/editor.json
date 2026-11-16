@@ -22,6 +22,11 @@
   "redo": "Redo",
   "export": "Export",
   "loading": "Loading project…",
+  "file": {
+    "synced": "Saved to {name} on disk",
+    "reconnect": "{name}: allow saving to the file again",
+    "unlink": "Stop saving to {name}"
+  },
   "variant": {
     "title": "Create variant",
     "description": "A copy of this project to try a change — more RAM, another server — without touching the original. The variant opens on its Compare view, side by side with this project.",
@@ -59,6 +64,7 @@
     "tags": "Tags",
     "labels": "Print labels",
     "variant": "Create variant",
+    "saveToFile": "Save to file…",
     "settings": "Project settings",
     "issues": "Issues",
     "issueCount": "{errors, plural, =0 {No errors} one {# error} other {# errors}}, {warnings, plural, =0 {no warnings} one {# warning} other {# warnings}}",
@@ -150,7 +156,8 @@
       "settings": "Project settings",
       "labelCables": "Label all cables",
       "printLabels": "Print labels",
-      "createVariant": "Create variant"
+      "createVariant": "Create variant",
+      "saveToFile": "Save to file…"
     }
   },
   "mobile": {

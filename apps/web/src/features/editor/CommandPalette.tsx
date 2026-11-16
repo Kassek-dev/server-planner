@@ -5,9 +5,11 @@ import { type KeyboardEvent, useEffect, useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useServices } from '../../app/services';
+import { fileAccessSupported } from '../../persistence/fileLink';
 import { useSelection } from '../canvas/selection';
 import { useDrawer } from '../drawers/useDrawer';
 import { useExportDialog } from '../export/store';
+import { saveProjectToFile } from '../files/FileLink';
 import { useLabelsDialog } from '../labels/LabelsDialog';
 import { useVariantDialog } from '../variants/variants';
 
@@ -32,7 +34,8 @@ export function CommandPalette({ project }: { project: Project }) {
   const { projectId = '' } = useParams();
   const [, setParams] = useSearchParams();
   const { open: openDrawer } = useDrawer();
-  const { session } = useServices();
+  const services = useServices();
+  const { session } = services;
   const listId = useId();
 
   useEffect(() => {
@@ -116,6 +119,9 @@ export function CommandPalette({ project }: { project: Project }) {
           ['export', () => useExportDialog.getState().setOpen(true)],
           ['printLabels', () => useLabelsDialog.getState().setOpen(true)],
           ['createVariant', () => useVariantDialog.getState().setOpen(true)],
+          ...(fileAccessSupported()
+            ? ([['saveToFile', () => void saveProjectToFile(services)]] as const)
+            : []),
           ['vlans', () => openDrawer({ kind: 'vlans' })],
           ['services', () => openDrawer({ kind: 'services' })],
           ['tags', () => openDrawer({ kind: 'tags' })],
@@ -140,7 +146,7 @@ export function CommandPalette({ project }: { project: Project }) {
         }),
       ),
     ];
-  }, [project, navigate, projectId, setParams, openDrawer, session, t]);
+  }, [project, navigate, projectId, setParams, openDrawer, session, services, t]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();

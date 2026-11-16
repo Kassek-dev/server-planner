@@ -59,6 +59,9 @@
     "name": "Name",
     "tags": "Tags"
   },
+  "catalog": {
+    "suggest": "Suggest a correction"
+  },
   "hardware": {
     "expansion": {
       "title": "Expansion",
