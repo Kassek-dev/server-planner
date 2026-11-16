@@ -2,6 +2,16 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.4.0] — 2026-11-16
+
+What happens when something breaks, configuration you can copy to your hosts, and a front view of your racks.
+
+### Features
+
+- **Failure analysis** — a Failures tab in the simulation panel: take devices or cables down, or cut the power (only devices on a UPS keep running), and see who loses the internet, which apps go down or are cut off from clients, and which network assertions change. "Find single points of failure" lists every device and cable whose failure alone cuts something off, most damaging first; the canvas shows what failed and what it cuts off (#44).
+- **Network configuration export** — `/etc/network/interfaces` for Proxmox VE (bridges, VLAN-aware) and Debian, Netplan for Ubuntu Server, and DHCP reservations as dnsmasq `dhcp-host` lines. Names from imported projects cannot add lines to the files (#45).
+- **Rack front view** — a drawing of the rack in real proportions with devices, shelves and free units; download it as SVG or PNG, or print it for the rack door (#46).
+
 ## [1.3.0] — 2026-11-16
 
 Easier hardware entry — disks, storage pools and predefined parts — and a maintenance pack.
@@ -93,6 +103,7 @@ First public release: a local-first home lab planner running entirely in the bro
 
 - pnpm monorepo (`apps/web`, `packages/model`, `packages/engine`, `packages/catalog-builder`), Vite, React, TypeScript strict, Biome, Vitest and Playwright; CI on every pull request and automatic deployment to GitHub Pages; Dependabot updates for GitHub Actions (#1–#5).
 
+[1.4.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Kassek-dev/server-planner/releases/tag/v1.1.0

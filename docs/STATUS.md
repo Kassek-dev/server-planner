@@ -256,7 +256,7 @@ Zadania dodane przez użytkownika po wydaniu 1.2.
 - [x] Przepływy: krok DNS z lokalną nazwą celu (trasa proxy lub rekord A) i serwerem DNS z rekordu (`FlowHop.name`); ruch przez proxy w przepływach — nadal poza zakresem
 - D11: numeracja `X.Y.Z`, `Z` = liczba poprawek od `X.Y.0` (`docs/01`, skill `release`)
 
-## Wersja 1.4 — plan (2026-11-16)
+## Wersja 1.4 — plan (2026-11-16), wydana jako v1.4.0
 
 Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów i wydanie (D11 — `1.4.Z`, `Z` = liczba poprawek).
 
@@ -318,4 +318,5 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 | 2026-11-16 | **Wydanie v1.3.0** (etap 23 i pakiet poprawek), `CHANGELOG.md`, wersja w `apps/web/package.json`; plan 1.4 (SIM‑07, EXP‑07, LOC‑09) | tag `v1.3.0` (#43) |
 | 2026-11-16 | Etap 24: analiza awarii i SPOF (SIM‑07), zakładka Failures | #44 |
 | 2026-11-16 | Etap 25: eksport konfiguracji sieci hostów i rezerwacji DHCP (EXP‑07) | #45 |
-| 2026-11-16 | Etap 26: front szafy — widok, SVG, PNG, druk (LOC‑09); plan 1.4 zrealizowany | — |
+| 2026-11-16 | Etap 26: front szafy — widok, SVG, PNG, druk (LOC‑09); plan 1.4 zrealizowany | #46 |
+| 2026-11-16 | Sprawdzenie na żywo po etapach 24–26: bez błędów (analiza awarii w workerze, aktualizacja PWA); **Wydanie v1.4.0** (D11: nowe funkcje → `Z` = 0) | tag `v1.4.0` |
