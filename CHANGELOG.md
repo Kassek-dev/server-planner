@@ -2,6 +2,19 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.7.0] — 2026-11-16
+
+Tidier diagrams, advice on where things should run, Hyper-V, and saving straight to a file.
+
+### Features
+
+- **Auto layout** — one click arranges the lab from the Internet down: router, switches, hosts and clients in rows by cable distance, locations with everything in them, crossings kept low; undo puts everything back (#59).
+- **Logical L3 view** — a new Logical tab: the Internet, the routers with their firewall policy and each zone with its subnets (VLAN, gateway, addresses; IPv6 too), wired from addressing (#60).
+- **Placement suggestions** — the dashboard suggests moving VMs, LXC or containers off overloaded hosts to ones with room (apply with one click) and says what to add when moves are not enough: memory (also when it is beyond the board's maximum), cores, pool capacity (#61).
+- **Hyper-V** — Windows Server hosts virtual machines on Hyper-V with its External virtual switch; LXC stays on Proxmox VE (#62).
+- **Save to a file** — in Chrome and Edge, link a project to a file on disk: every save also writes the file, and "Open file…" brings a file in and keeps it linked (#63).
+- **Suggest a correction** — catalog device models and apps have a link that opens a prefilled GitHub issue with what the app shows (#63).
+
 ## [1.6.2] — 2026-11-16
 
 Two fixes found after the 1.6.0 release.
