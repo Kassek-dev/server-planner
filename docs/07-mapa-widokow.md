@@ -137,7 +137,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | X-01a | › Reachability      |                              | From / To / Protocol / Port, Run, lista kroków, Suggest fix, Save as assertion                                             | P0      | ✅                   |
 | X-01b | › Access            |                              | Nakładki Internet access i Visible from (wybór punktu widzenia), lista usług                                               | P0      | ✅                   |
 | X-01c | › Flows             |                              | Lista procesów aplikacji, uczestnicy, Play / krok po kroku                                                                 | P1      | —                    |
-| X-01d | › Failures          | `?panel=sim&sim=failures`    | „Co jeśli padnie X”: urządzenia, kable, zanik zasilania (tylko UPS działa); wpływ: utracony internet, aplikacje wyłączone / odcięci klienci, zmienione asercje; lista SPOF z podglądem po kliknięciu; canvas: awaria czerwona, odcięte podświetlone | SIM‑07 | P2 | ✅ kod (bez makiety) |
+| X-01d | › Failures          | `?panel=sim&sim=failures`    | „Co jeśli padnie X”: urządzenia, kable, zanik zasilania (tylko UPS działa); wpływ: utracony internet, aplikacje wyłączone / odcięci klienci, zmienione asercje; lista SPOF z podglądem po kliknięciu i filtrem „Infrastructure only”; canvas: awaria czerwona, odcięte podświetlone | SIM‑07 | P2 | ✅ kod (bez makiety) |
 | X-02  | **Issues**          | liczniki w top barze         | Filtry, grupy, wiersze z Fix, Ignored                                                                                      | P0      | ✅                   |
 
 ---

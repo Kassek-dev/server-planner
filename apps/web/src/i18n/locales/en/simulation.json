@@ -133,6 +133,7 @@
     "run": "Run flow",
     "dns": "DNS",
     "dnsName": "DNS {name}",
+    "proxyLeg": "Proxy {name}",
     "verdict": {
       "reachable": "Flow works · {count, plural, one {# hop} other {# hops}}",
       "blocked": "Flow blocked · {count, plural, one {# hop} other {# hops}}",
@@ -163,6 +164,8 @@
     "assertion": "Assertion “{name}” {result, select, true {now holds} false {now fails} other {can no longer be checked}}",
     "spofTitle": "Single points of failure",
     "noSpof": "No single device or cable cuts anything off on its own.",
+    "infraOnly": "Infrastructure only",
+    "spofHidden": "{count, plural, one {# endpoint hidden} other {# endpoints hidden}} — a failure that cuts off only that device and what runs on it.",
     "spofSummary": "{internet} offline · {clients} cut off"
   }
 }

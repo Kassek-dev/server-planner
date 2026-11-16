@@ -886,8 +886,12 @@ interface ServiceVisibility {
   purpose?: string;
   result: ReachabilityResult;
 }
-// Implementacja (2026-11-12, packages/engine/src/simulation/flow.ts): hops[] = { step, kind: 'dns' | 'step',
-// from, to (EntityRef | 'internet'), protocol, port?, bandwidthMbps?, result }, skipped: number[], verdict.
+// Implementacja (2026-11-12, packages/engine/src/simulation/flow.ts): hops[] = { step, kind: 'dns' | 'step' | 'proxy',
+// from, to (EntityRef | 'internet'), protocol, port?, bandwidthMbps?, name?, result }, skipped: number[], verdict.
+// 1.5: krok z resolveDns do aplikacji na porcie trasy proxy (NET-11) = klient → proxy (443 przy TLS, inaczej 80)
+// + krok `proxy` (proxy → aplikacja, port trasy, name = host).
+// SIM-07 SinglePointOfFailure { ref, impact, scope: 'infrastructure' | 'endpoint' } — endpoint: awaria odcina tylko
+// samo urządzenie (z tym, co hostuje) albo jedyny kabel urządzenia i to urządzenie.
 interface FlowRunResult {
   flowId: string;
   bindings: Record<string, EntityRef>; // rola → konkretna encja

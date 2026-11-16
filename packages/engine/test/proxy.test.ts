@@ -2,13 +2,14 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   addDnsRecord,
+  type CatalogFlow,
   type Project,
   parseProjectFile,
   updateDnsRecord,
   updateProxyRoute,
 } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import { buildContext, exposureWithRoutes, proxyRoutes, resolveLocalName } from '../src';
+import { buildContext, exposureWithRoutes, proxyRoutes, resolveLocalName, runFlow } from '../src';
 import { analyze, apply } from './support';
 
 /** NET-11 reverse proxy routes and NET-14 local DNS records (fixture v2/reverse-proxy). */
@@ -73,5 +74,57 @@ describe('local DNS (NET-14)', () => {
       record: { type: 'A', name: 'printer.home.arpa', value: '192.168.20.2' },
     });
     expect(codes(extra)).not.toContain('VAL_DNS_ADDRESS');
+  });
+});
+
+describe('flows through a reverse proxy (NET-11)', () => {
+  const open: CatalogFlow = {
+    id: 'jellyfin.open',
+    name: { en: 'Open the web UI' },
+    roles: [
+      { key: 'client', name: { en: 'Client' }, selector: { kind: 'lan-clients' }, userPicks: true },
+      { key: 'server', name: { en: 'Jellyfin' }, selector: { kind: 'self' }, userPicks: false },
+    ],
+    steps: [{ from: 'client', to: 'server', protocol: 'tcp', purpose: 'web-ui', resolveDns: true }],
+  };
+  const app = (p: Project, name: string) => {
+    const found = Object.values(p.apps).find((a) => a.name === name);
+    if (!found) throw new Error(`no ${name}`);
+    return { type: 'app' as const, id: found.id };
+  };
+  const nas = (p: Project) => {
+    const d = Object.values(p.devices).find((x) => x.name === 'nas-01');
+    if (!d) throw new Error('no nas-01');
+    return { type: 'device' as const, id: d.id };
+  };
+
+  it('the client opens HTTPS to the proxy, the proxy the route port to the app', () => {
+    const p = lab();
+    const run = runFlow(buildContext(p), {
+      flow: open,
+      bindings: { client: nas(p), server: app(p, 'Jellyfin') },
+    });
+    // No DNS hop here: the fixture's subnets name no DNS server.
+    const [entry, leg] = run.hops.filter((h) => h.kind !== 'dns');
+    expect(entry).toMatchObject({ kind: 'step', to: app(p, 'Caddy'), port: 443 });
+    expect(leg).toMatchObject({
+      kind: 'proxy',
+      from: app(p, 'Caddy'),
+      to: app(p, 'Jellyfin'),
+      port: 8096,
+      name: 'jellyfin.home.arpa',
+    });
+    expect(leg?.result.verdict).toBe('reachable');
+  });
+
+  it('without the route the client goes straight to the app', () => {
+    let p = lab();
+    p = { ...p, proxyRoutes: {} };
+    const run = runFlow(buildContext(p), {
+      flow: open,
+      bindings: { client: nas(p), server: app(p, 'Jellyfin') },
+    });
+    expect(run.hops.map((h) => h.kind)).not.toContain('proxy');
+    expect(run.hops.at(-1)).toMatchObject({ to: app(p, 'Jellyfin'), port: 8096 });
   });
 });

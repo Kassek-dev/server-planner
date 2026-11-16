@@ -48,7 +48,9 @@ export function FlowsTab({ project }: { project: Project }) {
       const prefix =
         h.kind === 'dns'
           ? `${h.name ? t('flows.dnsName', { name: h.name }) : t('flows.dns')} · `
-          : '';
+          : h.kind === 'proxy'
+            ? `${t('flows.proxyLeg', { name: h.name ?? '' })} · `
+            : '';
       return `${prefix}${endpointName(project, h.from)} → ${endpointName(project, h.to)} · ${service}`;
     });
     useSimulation.setState({ flow: { run: result, labels, index: 0, playing: false } });

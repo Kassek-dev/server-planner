@@ -66,4 +66,18 @@ describe('failure analysis (SIM-07)', () => {
     expect(devices).not.toContain(id(p, 'ap-living'));
     expect(spofs.some((s) => s.ref.type === 'link')).toBe(true);
   });
+
+  it('marks the single cable of a lone device as an endpoint, the core switch as infrastructure', () => {
+    const p = withLaptop();
+    const spofs = singlePointsOfFailure(p);
+    const scope = (type: 'device' | 'link', match: (id: string) => boolean) =>
+      spofs.find((s) => s.ref.type === type && match(s.ref.id))?.scope;
+    expect(scope('device', (d) => d === id(p, 'sw-core'))).toBe('infrastructure');
+    expect(scope('device', (d) => d === id(p, 'gw-01'))).toBe('infrastructure');
+    expect(scope('device', (d) => d === id(p, 'pve1'))).toBe('endpoint');
+    const laptopCable = Object.values(p.links).find(
+      (l) => l.a === ifaceOf(p, 'laptop', 'eth0').id || l.b === ifaceOf(p, 'laptop', 'eth0').id,
+    );
+    expect(scope('link', (l) => l === laptopCable?.id)).toBe('endpoint');
+  });
 });

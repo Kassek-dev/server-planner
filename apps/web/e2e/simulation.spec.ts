@@ -137,6 +137,12 @@ test('failure analysis: a failed router and single points of failure (SIM-07)', 
   await panel.getByRole('button', { name: 'Find single points of failure' }).click();
   const spof = panel.getByRole('region', { name: 'Single points of failure' });
   await expect(spof.getByRole('button', { name: /sw-core/ })).toBeVisible();
+  const infra = spof.getByRole('checkbox', { name: 'Infrastructure only' });
+  await expect(infra).toBeChecked();
+  const shown = await spof.getByRole('button').count();
+  await infra.uncheck();
+  expect(await spof.getByRole('button').count()).toBeGreaterThanOrEqual(shown);
+  await infra.check();
   await spof.getByRole('button', { name: /sw-core/ }).click();
   await expect(page.locator('.react-flow__node.sp-blocked', { hasText: 'sw-core' })).toBeVisible();
   await page.screenshot({ path: 'test-results/failures.png' });

@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.4** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.5** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -257,7 +257,7 @@ Nacisk na szybkie wprowadzanie: duplikowanie, kopiowanie, wklejanie, P1 widok In
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
 | **Reachability**          | Źródło (picker: kliknięcie na canvasie lub lista), Cel (urządzenie / workload / aplikacja / Internet), protokół + port (podpowiedzi z listenerów celu), **Run**                                          | P0   |
 | **Internet & LAN access** | Przełącznik nakładki na canvasie: „Internet access” (LED‑plakietka na każdym kafelku: ✓ / ✕ / ◐) i „Visible from” (wybrany punkt widzenia, np. telefon w Guest) — lista usług dostępnych / zablokowanych | P0   |
-| **Flows**                 | Lista procesów z katalogu dla aplikacji w projekcie (FLW‑01), wybór uczestników (FLW‑02), **Play** / krok po kroku                                                                                       | P1   |
+| **Flows**                 | Lista procesów z katalogu dla aplikacji w projekcie (FLW‑01), wybór uczestników (FLW‑02), **Play** / krok po kroku; aplikacja za trasą reverse proxy: krok do proxy + krok „Proxy <host>” do aplikacji                                                                                       | P1   |
 
 **Wynik testu osiągalności:**
 
@@ -270,7 +270,7 @@ Nacisk na szybkie wprowadzanie: duplikowanie, kopiowanie, wklejanie, P1 widok In
 
 ---
 
-**Failures** (SIM‑07, X‑01d): wybór urządzeń (checkboksy) i kabli (lista) do „wyłączenia” oraz „Power cut” — działają tylko UPS‑y, urządzenia przez nie chronione i Internet. „Simulate failure” porównuje projekt przed i po: kto traci internet, które aplikacje są wyłączone (host padł) albo odcinają klientów, które asercje zmieniają wynik. „Find single points of failure” sprawdza każde urządzenie (poza klientami) i każdy kabel z osobna i listuje te, których awaria odcina coś innego (od największej szkody); kliknięcie uruchamia ten scenariusz. Canvas: awaria — czerwony obrys, odcięte — podświetlone, reszta przygaszona.
+**Failures** (SIM‑07, X‑01d): wybór urządzeń (checkboksy) i kabli (lista) do „wyłączenia” oraz „Power cut” — działają tylko UPS‑y, urządzenia przez nie chronione i Internet. „Simulate failure” porównuje projekt przed i po: kto traci internet, które aplikacje są wyłączone (host padł) albo odcinają klientów, które asercje zmieniają wynik. „Find single points of failure” sprawdza każde urządzenie (poza klientami) i każdy kabel z osobna i listuje te, których awaria odcina coś innego (od największej szkody); kliknięcie uruchamia ten scenariusz. Checkbox „Infrastructure only” (domyślnie włączony) ukrywa punkty końcowe — urządzenia i jedyne kable urządzeń, których awaria odcina tylko to urządzenie i to, co na nim działa — z licznikiem ukrytych. Canvas: awaria — czerwony obrys, odcięte — podświetlone, reszta przygaszona.
 
 ## 8. Panel Issues
 
