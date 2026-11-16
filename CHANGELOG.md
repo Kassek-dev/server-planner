@@ -2,6 +2,18 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.5.0] — 2026-11-16
+
+A map of your services, labels to stick on cables and devices, and a sharper failure analysis.
+
+### Features
+
+- **Services map** — a new Services view: host names from reverse proxy routes and local DNS records, the proxies, the apps and what they depend on, from left to right and grouped by host; required dependencies without a provider stand out. Click an app to open it, a name to edit Proxy & DNS (#49).
+- **Label printing** — print cable labels (one for each end, if you like) and device labels on common A4 sheets of self-adhesive labels, skipping labels already used on a sheet; save as PDF from the print dialog (#50).
+- **Single points of failure** — "Infrastructure only" (on by default) hides devices and single cables whose failure only cuts off that device and what runs on it (#48).
+- **Flows through a reverse proxy** — a client opening an app behind a proxy route goes to the proxy first (HTTPS or HTTP), then the proxy to the app; the firewall is checked on both legs (#48).
+- **More CPUs** — 65 more homelab CPUs in the catalog (111 in total; Intel T-series, mobile and Xeon, AMD Ryzen mobile and desktop), 82 with measured performance (#51).
+
 ## [1.4.0] — 2026-11-16
 
 What happens when something breaks, configuration you can copy to your hosts, and a front view of your racks.

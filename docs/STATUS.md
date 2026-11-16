@@ -272,7 +272,7 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 ### Etap 26 — Front szafy (LOC‑09)
 - [x] `features/rack/elevation.ts` (model: urządzenia, półki, wolne zakresy, każde U raz), `RackElevation` (SVG w milimetrach, nazwy jako tekst Reacta — bez wstrzykiwania znaczników), D‑16 z inspectora racka: SVG / PNG z jasnymi kolorami tokenów, druk tylko rysunku (`@media print` + `sp-printing`)
 
-## Wersja 1.5 — plan (2026-11-16)
+## Wersja 1.5 — plan (2026-11-16), wydana jako v1.5.0
 
 Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zmiany schematu projektu.
 
@@ -355,3 +355,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 28: mapa usług V‑07 (VIEW‑07) | #49 |
 | 2026-11-16 | Etap 29: wydruk etykiet na arkuszu A4 (LBL‑04, D‑17) | #50 |
 | 2026-11-16 | Etap 30: Wikidata odrzucone; +65 kurowanych CPU (CAT‑05) | #51 |
+| 2026-11-16 | **Wydanie v1.5.0** (etapy 27–30; D11: nowe funkcje → `Z` = 0) | tag `v1.5.0` (#52) |
