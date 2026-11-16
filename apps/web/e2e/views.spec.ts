@@ -108,4 +108,18 @@ test('exports from any view: CSV, Markdown and docker-compose (EXP-03…06)', as
   expect(await readFile(await file.path(), 'utf8')).toContain(
     'image: "lscr.io/linuxserver/jellyfin:latest"',
   );
+
+  dialog = await open();
+  await dialog.getByText('Network', { exact: true }).click();
+  await page.screenshot({ path: 'test-results/export-network.png' });
+  const target = dialog.getByRole('combobox', { name: 'Host or list' });
+  await expect(target.locator('option')).toHaveText([
+    'pve1 · /etc/network/interfaces',
+    'DHCP reservations (dnsmasq)',
+  ]);
+  download = page.waitForEvent('download');
+  await dialog.getByRole('button', { name: 'Export Network' }).click();
+  file = await download;
+  expect(file.suggestedFilename()).toBe('pve1-interfaces');
+  expect(await readFile(await file.path(), 'utf8')).toContain('    bridge-ports eth0');
 });

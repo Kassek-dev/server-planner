@@ -266,7 +266,8 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 - [x] Zakładka X‑01d Failures w panelu symulacji (worker: `failure`, `spof`), podświetlenie awarii na canvasie
 
 ### Etap 25 — Eksport konfiguracji sieci (EXP‑07)
-- [ ] Proxmox `/etc/network/interfaces` (mosty, VLAN‑aware, adresy), Netplan (Ubuntu), Debian `interfaces`, lista rezerwacji DHCP
+- [x] `features/export/netconfig.ts`: ifupdown (Proxmox VE: mosty z portami, VLAN‑aware przy trunku lub podinterfejsach VLAN; Debian: `vlan-raw-device`), Netplan (ethernets / bridges / vlans, trasa domyślna z bramy podsieci, DNS podsieci), rezerwacje DHCP (`mode: dhcp-reservation`, MAC sprawdzany); nazwy przycinane do znaków dozwolonych w Linuksie, komentarze jednoliniowe (bez wstrzykiwania linii z importu)
+- [x] Format „Network” w D‑04 z wyborem hosta (wg OS) lub listy rezerwacji
 
 ### Etap 26 — Front szafy (LOC‑09)
 - [ ] Widok i wydruk frontu racka (rack elevation): U, urządzenia, półki, wolne miejsca; eksport SVG/PNG i druk (PDF z przeglądarki)
@@ -315,4 +316,5 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 | 2026-11-16 | Etap 23: dodawanie wielu dysków, pojemność pul, `VAL_POOL`; listy predefiniowanych CPU (46), GPU/akceleratorów (18), RAM i dysków (HW‑09) | #41 |
 | 2026-11-16 | Pakiet poprawek: izolacja Wi‑Fi (NET‑12), `blocking` IndexedDB, duplikaty i18n, proxy/DNS w Markdown, lokalne nazwy w krokach DNS; D11 | #42 |
 | 2026-11-16 | **Wydanie v1.3.0** (etap 23 i pakiet poprawek), `CHANGELOG.md`, wersja w `apps/web/package.json`; plan 1.4 (SIM‑07, EXP‑07, LOC‑09) | tag `v1.3.0` (#43) |
-| 2026-11-16 | Etap 24: analiza awarii i SPOF (SIM‑07), zakładka Failures | — |
+| 2026-11-16 | Etap 24: analiza awarii i SPOF (SIM‑07), zakładka Failures | #44 |
+| 2026-11-16 | Etap 25: eksport konfiguracji sieci hostów i rezerwacji DHCP (EXP‑07) | — |

@@ -20,12 +20,13 @@ import { containersOf, dockerCompose } from './compose';
 import { appsCsv, bomCsv, devicesCsv, ipPlanCsv, workloadsCsv } from './csv';
 import { downloadDataUrl, type ExportTheme, renderCanvas } from './image';
 import { projectMarkdown } from './markdown';
+import { dhcpReservations, ifupdown, netConfigFormat, netplan } from './netconfig';
 import { useExportDialog } from './store';
 
-type Format = 'png' | 'svg' | 'json' | 'csv' | 'md' | 'compose';
+type Format = 'png' | 'svg' | 'json' | 'csv' | 'md' | 'compose' | 'network';
 type Scope = 'all' | 'selection';
 type Dataset = 'devices' | 'workloads' | 'apps' | 'ip' | 'bom';
-const FORMATS: Format[] = ['png', 'svg', 'json', 'csv', 'md', 'compose'];
+const FORMATS: Format[] = ['png', 'svg', 'json', 'csv', 'md', 'compose', 'network'];
 const DATASETS: Dataset[] = ['devices', 'workloads', 'apps', 'ip', 'bom'];
 
 const text = (content: string, type: string) =>
@@ -33,7 +34,8 @@ const text = (content: string, type: string) =>
 
 /**
  * D-04 Export (docs/07): PNG / SVG of the canvas or the selection, the project as JSON, tables as
- * CSV (EXP-03/04), documentation as Markdown (EXP-05) and docker-compose.yml (EXP-06).
+ * CSV (EXP-03/04), documentation as Markdown (EXP-05), docker-compose.yml (EXP-06) and host network
+ * configuration with DHCP reservations (EXP-07).
  */
 export function ExportDialog() {
   const { t } = useTranslation('editor');
@@ -47,6 +49,7 @@ export function ExportDialog() {
   const [scope, setScope] = useState<Scope>('all');
   const [dataset, setDataset] = useState<Dataset>('devices');
   const [composeScope, setComposeScope] = useState('');
+  const [networkTarget, setNetworkTarget] = useState('');
   const [theme, setTheme] = useState<ExportTheme>(() => resolveTheme(getThemePreference()));
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -56,6 +59,44 @@ export function ExportDialog() {
   const effectiveScope: Scope = selected.length > 0 ? scope : 'all';
   const base = exportFileName(project).replace(/\.json$/, '');
   const image = format === 'png' || format === 'svg';
+
+  // EXP-07 targets: devices whose OS has a known network configuration, and DHCP reservations.
+  const networkTargets = [
+    ...Object.values(project.devices)
+      .filter((d) => netConfigFormat(project, d.id))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((d) => ({
+        value: d.id,
+        label: t('exportDialog.networkHost', {
+          name: d.name,
+          format:
+            netConfigFormat(project, d.id) === 'netplan' ? 'Netplan' : '/etc/network/interfaces',
+        }),
+      })),
+    { value: 'dhcp', label: t('exportDialog.networkDhcp') },
+  ];
+  const networkValue = networkTargets.some((n) => n.value === networkTarget)
+    ? networkTarget
+    : (networkTargets[0]?.value ?? 'dhcp');
+  const exportNetwork = () => {
+    if (networkValue === 'dhcp') {
+      downloadBlob(text(dhcpReservations(project), 'text/plain'), `${base}-dhcp-reservations.conf`);
+      return;
+    }
+    const device = project.devices[networkValue];
+    const file = (device?.name ?? 'host').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    if (netConfigFormat(project, networkValue) === 'netplan')
+      downloadBlob(
+        text(netplan(project, networkValue), 'application/yaml'),
+        `${file}-netplan.yaml`,
+      );
+    // No extension, like the real file: octet-stream keeps browsers from adding `.txt`.
+    else
+      downloadBlob(
+        text(ifupdown(project, networkValue), 'application/octet-stream'),
+        `${file}-interfaces`,
+      );
+  };
 
   // Compose targets: every host with containers, and every stack.
   const hostKey = (h: HostRef) => `${h.type}:${h.id}`;
@@ -147,6 +188,8 @@ export function ExportDialog() {
       downloadBlob(text(md, 'text/markdown'), `${base}.md`);
     } else if (format === 'compose') {
       exportCompose();
+    } else if (format === 'network') {
+      exportNetwork();
     } else {
       const viewport = document.querySelector<HTMLElement>('.sp-canvas .react-flow__viewport');
       const nodes = (canvas?.getNodes() ?? []).filter(
@@ -258,6 +301,14 @@ export function ExportDialog() {
         ) : (
           <Banner kind="info">{t('exportDialog.noContainers')}</Banner>
         )
+      ) : null}
+      {format === 'network' ? (
+        <Select
+          label={t('exportDialog.networkScope')}
+          value={networkValue}
+          onChange={(e) => setNetworkTarget(e.target.value)}
+          options={networkTargets}
+        />
       ) : null}
       {failed ? <Banner kind="error">{t('exportDialog.failed')}</Banner> : null}
     </Dialog>
