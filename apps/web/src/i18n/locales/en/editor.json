@@ -20,6 +20,22 @@
   "redo": "Redo",
   "export": "Export",
   "loading": "Loading project…",
+  "labels": {
+    "title": "Print labels",
+    "description": "Cable and device labels on an A4 sheet of self-adhesive labels. To get a PDF, choose “Save as PDF” in the print dialog and print at 100% scale.",
+    "close": "Close",
+    "sheet": "Label sheet",
+    "preset": "{w} × {h} mm · {cols} × {rows} ({count} per sheet)",
+    "cables": "Cables",
+    "bothEnds": "One label for each end",
+    "devices": "Devices",
+    "skip": "Skip labels on the first sheet",
+    "summary": "{labels, plural, one {# label} other {# labels}} on {sheets, plural, one {# sheet} other {# sheets}}",
+    "none": "Nothing to print: pick cables or devices.",
+    "preview": "Preview of the first sheet",
+    "page": "Sheet {page}",
+    "print": "{count, plural, =0 {Print} one {Print # sheet} other {Print # sheets}}"
+  },
   "summary": {
     "title": "This project",
     "devices": "Devices",
@@ -31,6 +47,7 @@
     "firewall": "Firewall · {name}",
     "services": "Proxy & DNS",
     "tags": "Tags",
+    "labels": "Print labels",
     "settings": "Project settings",
     "issues": "Issues",
     "issueCount": "{errors, plural, =0 {No errors} one {# error} other {# errors}}, {warnings, plural, =0 {no warnings} one {# warning} other {# warnings}}",
@@ -120,7 +137,8 @@
       "services": "Proxy & DNS",
       "tags": "Tags",
       "settings": "Project settings",
-      "labelCables": "Label all cables"
+      "labelCables": "Label all cables",
+      "printLabels": "Print labels"
     }
   },
   "mobile": {
