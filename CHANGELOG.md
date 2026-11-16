@@ -2,6 +2,24 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.6.0] — 2026-11-16
+
+Try a change before you buy it, configure the hardware inside your devices, and plan IPv6 next to IPv4.
+
+### Features
+
+- **Project variants** — "Create variant" copies the project as a variant linked to it; edit it freely and open Compare to see both side by side: cores, memory, storage, allocation, issues, idle power and cost, the parts to buy (new devices, more memory, new disks, GPUs, another CPU) and every change (#53).
+- **Hardware configurator** — an Expansion section in the Hardware tab: PCIe and M.2 slots and SATA bays (filled in from the catalog model), what uses them, and add-in cards — network cards from 1 to 25 GbE add their own ports, plus storage controllers and M.2 adapters. New issues for more memory than the board takes, more memory modules than slots and more cards or drives than slots (#54).
+- **IPv6** — dual-stack planning: IPv6 subnets next to the IPv4 subnet of a VLAN with their router advertisement mode (SLAAC, DHCPv6 or none), an IPv6 address row on interfaces (static, SLAAC, DHCPv6), IPv6 subnets in the IP plan, checks for SLAAC and DHCPv6 that do not match the subnet, and IPv6 in the exported host network configuration. The simulation still works on IPv4 (#55).
+
+### Project file
+
+- Schema version 3 (add-in cards, expansion slots, SLAAC). Files from earlier versions open and upgrade automatically; projects saved in the browser need no upgrade. Version 1.5 and older cannot open files saved by 1.6 (#54).
+
+### Other
+
+- The view tabs no longer wrap on narrower screens; below 1536 px the save status shows as its LED (#53).
+
 ## [1.5.0] — 2026-11-16
 
 A map of your services, labels to stick on cables and devices, and a sharper failure analysis.

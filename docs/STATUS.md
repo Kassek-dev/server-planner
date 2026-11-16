@@ -290,7 +290,7 @@ Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zm
 - [x] Wikidata sprawdzone na żywo i odrzucone (ok. 75 modeli, brak liczby wątków, niespójne jednostki) — decyzja użytkownika 2026-11-16, `06` § 3.2
 - [x] Warstwa kurowana: +65 CPU (Intel T‑series 6.–13. gen., mobilne U, Celeron/Pentium, Xeon E3/E‑2xxx/E5 v4/Silver, Ryzen mobilne H/U/HS, Ryzen PRO GE i desktopowe) → 111; 82 z wynikiem Blender Open Data, reszta z heurystyki
 
-## Wersja 1.6 — plan (2026-11-16)
+## Wersja 1.6 — plan (2026-11-16), wydana jako v1.6.0
 
 Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 
@@ -364,3 +364,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 31: warianty projektu i widok Compare (PRJ‑10) | #53 |
 | 2026-11-16 | Etap 32: schemat projektu v3, konfigurator sprzętu (LIB‑05) | #54 |
 | 2026-11-16 | Etap 33: IPv6 — adresacja, walidacja, IP Plan, eksport (NET‑17) | #55 |
+| 2026-11-16 | **Wydanie v1.6.0** (etapy 31–33, schemat v3 z automatyczną migracją → `minor`; D11: `Z` = 0) | tag `v1.6.0` (#56) |
