@@ -272,6 +272,36 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 ### Etap 26 — Front szafy (LOC‑09)
 - [x] `features/rack/elevation.ts` (model: urządzenia, półki, wolne zakresy, każde U raz), `RackElevation` (SVG w milimetrach, nazwy jako tekst Reacta — bez wstrzykiwania znaczników), D‑16 z inspectora racka: SVG / PNG z jasnymi kolorami tokenów, druk tylko rysunku (`@media print` + `sp-printing`)
 
+## Wersja 1.5 — plan (2026-11-16)
+
+Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zmiany schematu projektu.
+
+### Etap 27 — Symulacja: filtr SPOF, ruch przez reverse proxy (SIM‑07, NET‑11)
+- [x] Filtr listy SPOF „Infrastructure only” (domyślnie włączony): silnik oznacza `scope` — `endpoint`, gdy awaria odcina tylko samo urządzenie z tym, co hostuje, albo jedyny kabel urządzenia; licznik ukrytych
+- [x] Przepływy do aplikacji za trasą proxy: krok z rozwiązywaniem nazwy na port trasy idzie klient → proxy (443 przy TLS, inaczej 80; port opublikowany kontenera) i krokiem `proxy` proxy → aplikacja; firewall sprawdzany na obu odcinkach
+
+### Etap 28 — Mapa usług (VIEW‑07)
+- [ ] Widok `#/p/:id/services`: aplikacje i ich zależności, trasy proxy, rekordy DNS, hosty
+
+### Etap 29 — Wydruk etykiet (LBL‑04)
+- [ ] Arkusz A4 z etykietami kabli i urządzeń, druk przez przeglądarkę (PDF z okna druku)
+
+### Etap 30 — Katalog sprzętu: import specyfikacji CPU (CAT‑05)
+- [ ] Adapter Wikidata (CC0, SPARQL): rdzenie, wątki, taktowanie, TDP; priorytet `curated` > Wikidata
+
+## Wersja 1.6 — plan (2026-11-16)
+
+Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
+
+### Etap 31 — Warianty projektu (PRJ‑10)
+- [ ] „Create variant” = powiązana kopia (metadane IndexedDB), widok porównania: zmiany, capacity, problemy, lista zakupów
+
+### Etap 32 — Konfigurator sprzętu (LIB‑05)
+- [ ] Sloty PCIe / M.2 / SATA z katalogu, karty rozszerzeń (NIC dodaje porty, GPU, HBA), walidacja RAM / slotów / kieszeni, krok „Configure” w D‑05
+
+### Etap 33 — IPv6 (NET‑17)
+- [ ] Podsieci IPv6 (dual‑stack), adresy statyczne / SLAAC / DHCPv6, IP Plan, konflikty, reguły VAL, eksport konfiguracji sieci; symulacja dalej IPv4
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -320,3 +350,4 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 | 2026-11-16 | Etap 25: eksport konfiguracji sieci hostów i rezerwacji DHCP (EXP‑07) | #45 |
 | 2026-11-16 | Etap 26: front szafy — widok, SVG, PNG, druk (LOC‑09); plan 1.4 zrealizowany | #46 |
 | 2026-11-16 | Sprawdzenie na żywo po etapach 24–26: bez błędów (analiza awarii w workerze, aktualizacja PWA); **Wydanie v1.4.0** (D11: nowe funkcje → `Z` = 0) | tag `v1.4.0` |
+| 2026-11-16 | Decyzja D12 (zakres P2 1.5–1.6), plan 1.5 i 1.6; etap 27: filtr SPOF „Infrastructure only”, ruch przez reverse proxy w przepływach | #48 |

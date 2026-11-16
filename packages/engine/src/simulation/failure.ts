@@ -42,6 +42,11 @@ export interface FailureImpact {
 export interface SinglePointOfFailure {
   ref: { type: 'device' | 'link'; id: Id };
   impact: FailureImpact;
+  /**
+   * `endpoint`: the failure only cuts off the element itself — a device with what it hosts, or the
+   * single cable of a device and that device; `infrastructure`: it cuts off anything else.
+   */
+  scope: 'infrastructure' | 'endpoint';
 }
 
 /** Device a workload or app finally runs on (bounded walk). */
@@ -203,6 +208,58 @@ export function affectsOthers(impact: FailureImpact): boolean {
   return impact.internetLost.length > 0 || impact.apps.some((a) => a.lostClients.length > 0);
 }
 
+/** Devices, workloads and apps that are the given devices or run on them. */
+function ownedBy(project: Project, devices: Set<Id>): Set<Id> {
+  const own = new Set<Id>(devices);
+  for (const w of Object.keys(project.workloads)) {
+    const host = hostDevice(project, { type: 'workload', id: w });
+    if (host && devices.has(host)) own.add(w);
+  }
+  for (const a of Object.keys(project.apps)) {
+    const host = hostDevice(project, { type: 'app', id: a });
+    if (host && devices.has(host)) own.add(a);
+  }
+  return own;
+}
+
+/** Devices whose only physical cable is the given one (cut off with it). */
+function leafEnds(project: Project, linkId: Id): Set<Id> {
+  const link = project.links[linkId];
+  const deviceOf = (ifaceId: Id) => {
+    const owner = project.interfaces[ifaceId]?.owner;
+    return owner?.type === 'device' ? owner.id : undefined;
+  };
+  const cables = new Map<Id, number>();
+  for (const l of Object.values(project.links)) {
+    if (l.medium === 'virtual') continue;
+    for (const end of [l.a, l.b]) {
+      const d = deviceOf(end);
+      if (d) cables.set(d, (cables.get(d) ?? 0) + 1);
+    }
+  }
+  const ends = new Set<Id>();
+  for (const end of link ? [link.a, link.b] : []) {
+    const d = deviceOf(end);
+    if (d && cables.get(d) === 1 && project.devices[d]?.kind !== 'internet') ends.add(d);
+  }
+  return ends;
+}
+
+function scopeOf(
+  project: Project,
+  ref: SinglePointOfFailure['ref'],
+  impact: FailureImpact,
+): SinglePointOfFailure['scope'] {
+  const own = ownedBy(
+    project,
+    ref.type === 'device' ? new Set([ref.id]) : leafEnds(project, ref.id),
+  );
+  const beyond =
+    impact.internetLost.some((id) => !own.has(id)) ||
+    impact.apps.some((a) => !own.has(a.appId) && a.lostClients.some((c) => !own.has(c)));
+  return beyond ? 'infrastructure' : 'endpoint';
+}
+
 /**
  * Single points of failure: every device (except clients and the Internet) and every physical
  * cable whose failure alone cuts something else off; most damaging first.
@@ -234,5 +291,6 @@ export function singlePointsOfFailure(
       ),
     }))
     .filter((s) => affectsOthers(s.impact))
+    .map((s) => ({ ...s, scope: scopeOf(project, s.ref, s.impact) }))
     .sort((a, b) => score(b.impact) - score(a.impact));
 }

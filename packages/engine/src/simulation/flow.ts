@@ -14,13 +14,14 @@ export type FlowTarget = EntityRef | 'internet';
 export interface FlowHop {
   /** Index of the catalog step this hop belongs to. */
   step: number;
-  kind: 'dns' | 'step';
+  /** `proxy`: the leg a reverse proxy opens to the app behind a route (NET-11). */
+  kind: 'dns' | 'step' | 'proxy';
   from: FlowTarget;
   to: FlowTarget;
   protocol: Transport;
   port?: number;
   bandwidthMbps?: number;
-  /** DNS hops: the local name looked up for the next step's target (NET-14), when it has one. */
+  /** DNS hops: the local name looked up for the next step's target (NET-14); proxy hops: the route's host name. */
   name?: string;
   result: ReachabilityResult;
 }
@@ -56,6 +57,17 @@ function listenerPort(
     app?.listeners.find((l) => l.purpose === purpose && l.protocol === protocol) ??
     app?.listeners.find((l) => l.purpose === purpose);
   if (!app || !listener) return undefined;
+  return publishedPort(ctx, appId, listener);
+}
+
+/** Port a listener is reached on: the published host port for bridged containers. */
+function publishedPort(
+  ctx: EngineContext,
+  appId: string,
+  listener: { port: number; protocol: Transport },
+): number {
+  const app = ctx.project.apps[appId];
+  if (!app) return listener.port;
   const runtime = app.runsOn.type === 'workload' ? ctx.project.workloads[app.runsOn.id] : undefined;
   if (runtime?.kind === 'container' && runtime.network.mode === 'docker-network') {
     return (
@@ -65,6 +77,32 @@ function listenerPort(
     );
   }
   return listener.port;
+}
+
+/**
+ * NET-11: a step to an app on the port a reverse proxy route forwards to goes through the proxy —
+ * the client opens HTTPS (or HTTP) to the proxy app, the proxy opens the route's port to the app.
+ */
+function proxyRouteFor(
+  ctx: EngineContext,
+  from: EntityRef,
+  to: EntityRef,
+  port: number | undefined,
+) {
+  if (to.type !== 'app' || port === undefined) return undefined;
+  const route = Object.values(ctx.project.proxyRoutes).find(
+    (r) =>
+      r.target.appId === to.id &&
+      r.target.port === port &&
+      ctx.project.apps[r.proxyAppId] &&
+      !(from.type === 'app' && from.id === r.proxyAppId),
+  );
+  if (!route) return undefined;
+  const proxy = ctx.project.apps[route.proxyAppId];
+  const tcp = proxy?.listeners.filter((l) => l.protocol === 'tcp') ?? [];
+  const listener = tcp.find((l) => l.port === (route.tls ? 443 : 80)) ?? tcp[0];
+  if (!listener) return undefined;
+  return { route, entryPort: publishedPort(ctx, route.proxyAppId, listener) };
 }
 
 /** DNS server of the subnet the source sits in (an app or the owner of the server's address). */
@@ -161,6 +199,33 @@ export function runFlow(
       (to !== 'internet' && to.type === 'app' && step.purpose
         ? listenerPort(ctx, to.id, step.purpose, step.protocol)
         : undefined);
+    const via =
+      step.resolveDns && step.protocol === 'tcp' && to !== 'internet'
+        ? proxyRouteFor(ctx, from, to, port)
+        : undefined;
+    if (via) {
+      const proxy: EntityRef = { type: 'app', id: via.route.proxyAppId };
+      hops.push(
+        {
+          ...base,
+          kind: 'step',
+          from,
+          to: proxy,
+          port: via.entryPort,
+          result: reach(ctx, { from, to: proxy, protocol: 'tcp', port: via.entryPort }),
+        },
+        {
+          ...base,
+          kind: 'proxy',
+          from: proxy,
+          to,
+          port: via.route.target.port,
+          name: via.route.hostname,
+          result: reach(ctx, { from: proxy, to, protocol: 'tcp', port: via.route.target.port }),
+        },
+      );
+      return;
+    }
     hops.push({
       ...base,
       kind: 'step',

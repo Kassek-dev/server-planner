@@ -29,6 +29,7 @@ export function FailuresTab({ project }: { project: Project }) {
   const [impact, setImpact] = useState<FailureImpact | null>(null);
   const [spofs, setSpofs] = useState<SinglePointOfFailure[] | null>(null);
   const [busy, setBusy] = useState(false);
+  const [infraOnly, setInfraOnly] = useState(true);
   useEffect(() => () => useSimulation.setState({ failure: null }), []);
 
   const devices = Object.values(project.devices)
@@ -73,6 +74,8 @@ export function FailuresTab({ project }: { project: Project }) {
   };
   const toggle = (list: string[], id: string) =>
     list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+  const shown = spofs?.filter((s) => !infraOnly || s.scope === 'infrastructure') ?? [];
+  const hidden = (spofs?.length ?? 0) - shown.length;
   const empty = scenario.devices.length + scenario.links.length === 0 && !scenario.powerCut;
 
   return (
@@ -145,10 +148,15 @@ export function FailuresTab({ project }: { project: Project }) {
           <h3 className="m-0 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
             {t('failures.spofTitle')}
           </h3>
-          {spofs.length === 0 ? (
+          <Checkbox
+            label={t('failures.infraOnly')}
+            checked={infraOnly}
+            onChange={(e) => setInfraOnly(e.target.checked)}
+          />
+          {shown.length === 0 ? (
             <p className="m-0 text-body-sm text-text-secondary">{t('failures.noSpof')}</p>
           ) : (
-            spofs.map((s) => (
+            shown.map((s) => (
               <button
                 key={`${s.ref.type}:${s.ref.id}`}
                 type="button"
@@ -174,6 +182,11 @@ export function FailuresTab({ project }: { project: Project }) {
               </button>
             ))
           )}
+          {hidden > 0 ? (
+            <p className="m-0 text-body-sm text-text-secondary">
+              {t('failures.spofHidden', { count: hidden })}
+            </p>
+          ) : null}
         </section>
       ) : null}
     </div>
