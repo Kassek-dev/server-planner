@@ -62,8 +62,12 @@
       "json": "Complete backup of the project — import it here or in another browser.",
       "csv": "Spreadsheet-friendly table — devices, workloads, apps, the IP plan or a bill of materials.",
       "md": "Readable documentation of the whole project: inventory, networks, firewall, IP plan and issues.",
-      "compose": "docker-compose.yml with the containers of one host or one stack, ready to adapt."
+      "compose": "docker-compose.yml with the containers of one host or one stack, ready to adapt.",
+      "network": "Network configuration of a host — /etc/network/interfaces for Proxmox VE and Debian, Netplan for Ubuntu — or the DHCP reservations as dnsmasq lines. Review before applying."
     },
+    "networkScope": "Host or list",
+    "networkHost": "{name} · {format}",
+    "networkDhcp": "DHCP reservations (dnsmasq)",
     "export": "Export {format}",
     "working": "Exporting…",
     "cancel": "Cancel",
@@ -74,7 +78,8 @@
       "json": "JSON",
       "csv": "CSV",
       "md": "Markdown",
-      "compose": "Compose"
+      "compose": "Compose",
+      "network": "Network"
     },
     "dataset": "Table",
     "datasets": {
