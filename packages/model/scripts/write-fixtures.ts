@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { buildDualStackLab } from '../test/support/dual-stack';
 import { buildHomeLab } from '../test/support/home-lab';
 import { homeLabFile } from '../test/support/project-file';
 import { buildReverseProxyLab } from '../test/support/reverse-proxy';
@@ -13,6 +14,7 @@ await mkdir(dir, { recursive: true });
 for (const [name, project] of [
   ['home-lab', buildHomeLab()],
   ['reverse-proxy', buildReverseProxyLab()],
+  ['dual-stack', buildDualStackLab()],
 ] as const) {
   await writeFile(join(dir, `${name}.json`), `${JSON.stringify(homeLabFile(project), null, 2)}\n`);
 }

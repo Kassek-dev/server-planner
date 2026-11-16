@@ -1,7 +1,9 @@
 import {
   COMPUTE_KINDS,
+  canonicalIp,
   checkRackFit,
   type Interface,
+  isIpv6Cidr,
   type OsId,
   POOL_MIN_DISKS,
   SINGLE_LINK_KINDS,
@@ -90,6 +92,16 @@ export function freeAddress(ctx: EngineContext, subnet: Subnet): string | undefi
   return undefined;
 }
 
+/** The interface's addresses with one replaced — a fix keeps the other family (dual-stack). */
+const replaceAddress = (
+  iface: Interface,
+  address: string,
+  next: Interface['addresses'][number],
+): Interface['addresses'] => {
+  const key = canonicalIp(address);
+  return iface.addresses.map((a) => (a.address && canonicalIp(a.address) === key ? next : a));
+};
+
 const staticAddresses = (ctx: EngineContext) =>
   Object.values(ctx.project.interfaces).flatMap((iface) =>
     iface.addresses
@@ -103,9 +115,11 @@ const duplicateIp: ValidationRule = {
   run(ctx) {
     const byAddress = new Map<string, { iface: Interface; subnetId: string | undefined }[]>();
     for (const entry of staticAddresses(ctx)) {
-      const list = byAddress.get(entry.address) ?? [];
+      // IPv6 has many spellings of one address (`2001:db8::1` = `2001:DB8:0::1`).
+      const key = canonicalIp(entry.address);
+      const list = byAddress.get(key) ?? [];
       list.push(entry);
-      byAddress.set(entry.address, list);
+      byAddress.set(key, list);
     }
     return [...byAddress.entries()]
       .filter(([, list]) => list.length > 1)
@@ -131,9 +145,11 @@ const duplicateIp: ValidationRule = {
                 payload: {
                   id: last.iface.id,
                   changes: {
-                    addresses: [
-                      { mode: 'static', address: free, ...(subnet ? { subnetId: subnet.id } : {}) },
-                    ],
+                    addresses: replaceAddress(last.iface, address, {
+                      mode: 'static',
+                      address: free,
+                      ...(subnet ? { subnetId: subnet.id } : {}),
+                    }),
                   },
                 },
               }
@@ -209,7 +225,11 @@ const staticInDhcp: ValidationRule = {
                   payload: {
                     id: iface.id,
                     changes: {
-                      addresses: [{ mode: 'static', address: free, subnetId: subnet.id }],
+                      addresses: replaceAddress(iface, address, {
+                        mode: 'static',
+                        address: free,
+                        subnetId: subnet.id,
+                      }),
                     },
                   },
                 }
@@ -737,6 +757,50 @@ const poolDisks: ValidationRule = {
   },
 };
 
+/**
+ * NET-17 IPv6 addressing: SLAAC only on IPv6 subnets and only where routers announce it, DHCPv6
+ * only on managed (dhcpv6) subnets; SLAAC needs a /64 prefix.
+ */
+const ipv6Rules: ValidationRule = {
+  code: 'VAL_IPV6',
+  run(ctx) {
+    const out: Issue[] = [];
+    const p = ctx.project;
+    for (const iface of Object.values(p.interfaces))
+      for (const a of iface.addresses) {
+        const subnet = a.subnetId ? p.subnets[a.subnetId] : undefined;
+        const v6Subnet = subnet ? isIpv6Cidr(subnet.cidr) : false;
+        const ra = subnet?.ra ?? 'slaac';
+        const target = `${ownerName(ctx, iface)}:${iface.name}`;
+        const refs = [ownerRef(iface), { type: 'interface' as const, id: iface.id }];
+        let problem: string | undefined;
+        if (a.mode === 'slaac' && subnet && !v6Subnet) problem = 'slaac-ipv4';
+        else if (a.mode === 'slaac' && v6Subnet && ra !== 'slaac') problem = 'slaac-off';
+        else if (a.mode === 'dhcp' && v6Subnet && ra !== 'dhcpv6') problem = 'dhcpv6-off';
+        if (problem)
+          out.push(
+            issue('VAL_IPV6_MODE', problem === 'slaac-ipv4' ? 'error' : 'warning', refs, {
+              target,
+              problem,
+              subnet: subnet?.cidr ?? '',
+            }),
+          );
+      }
+    for (const subnet of Object.values(p.subnets)) {
+      const net = parseCidr(subnet.cidr);
+      if (net?.[0].kind() !== 'ipv6' || (subnet.ra ?? 'slaac') !== 'slaac' || net[1] === 64)
+        continue;
+      out.push(
+        issue('VAL_IPV6_PREFIX', 'warning', [{ type: 'subnet', id: subnet.id }], {
+          subnet: subnet.cidr,
+          prefix: net[1],
+        }),
+      );
+    }
+    return out;
+  },
+};
+
 const GIB = 1024 ** 3;
 const gib = (bytes: number) => Math.round((bytes / GIB) * 10) / 10;
 
@@ -1022,6 +1086,7 @@ export const rules: ValidationRule[] = [
   proxyAndDns,
   poolDisks,
   hardwareFit,
+  ipv6Rules,
   capacityRule,
   gpuRule,
   dependencies,
@@ -1055,6 +1120,8 @@ export const ISSUE_CODES = [
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
   'VAL_POOL',
+  'VAL_IPV6_MODE',
+  'VAL_IPV6_PREFIX',
   'VAL_RAM_MAX',
   'VAL_RAM_SLOTS',
   'VAL_SLOTS',

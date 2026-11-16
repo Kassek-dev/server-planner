@@ -167,6 +167,14 @@
     "title": "Storage pool without enough disks",
     "description": "Pool {pool} on {device} has {count, plural, =0 {no disks} one {# disk} other {# disks}}; {layout} needs at least {needed}."
   },
+  "VAL_IPV6_MODE": {
+    "title": "IPv6 addressing does not match the subnet",
+    "description": "{target}: {problem, select, slaac-ipv4 {SLAAC works on IPv6 subnets only, not on {subnet}} slaac-off {SLAAC is off on {subnet} (its router advertisements do not offer it)} other {DHCPv6 is off on {subnet} (set its router advertisements to DHCPv6)}}."
+  },
+  "VAL_IPV6_PREFIX": {
+    "title": "SLAAC needs a /64 subnet",
+    "description": "{subnet} uses SLAAC, which only works with a /64 prefix, not /{prefix}."
+  },
   "VAL_RAM_MAX": {
     "title": "More memory than the board takes",
     "description": "{device} has {total} GiB of memory; its board takes at most {max} GiB."

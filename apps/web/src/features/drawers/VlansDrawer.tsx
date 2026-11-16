@@ -5,6 +5,7 @@ import {
   deleteSubnet,
   deleteVlan,
   deleteZone,
+  isIpv6Cidr,
   isValidCidr,
   isValidIp,
   PALETTE_KEYS,
@@ -179,12 +180,33 @@ function SubnetList({ project }: { project: Project }) {
       },
     });
   };
+  /** NET-17: a unique-local /64 for the first VLAN without an IPv6 prefix. */
+  const add6 = () => {
+    const used = new Set(subnets.map((s) => s.cidr));
+    const vlan = vlans.find((v) => !subnets.some((s) => s.vlanId === v.id && isIpv6Cidr(s.cidr)));
+    let n = vlan?.vid ?? 1;
+    while (used.has(`fd00:0:0:${n.toString(16)}::/64`)) n += 1;
+    const prefix = `fd00:0:0:${n.toString(16)}`;
+    run(addSubnet, {
+      subnet: {
+        cidr: `${prefix}::/64`,
+        gateway: `${prefix}::1`,
+        ra: 'slaac',
+        ...(vlan ? { vlanId: vlan.id } : {}),
+      },
+    });
+  };
   const ipCheck = (v: string) => (v === '' || isValidIp(v) ? null : t('errors.ip'));
 
   return (
     <Section
       title={t('vlans.subnetCount', { count: subnets.length })}
-      action={<AddButton label={t('vlans.addSubnet')} onClick={add} />}
+      action={
+        <span className="flex gap-1">
+          <AddButton label={t('vlans.addSubnet')} onClick={add} />
+          <AddButton label={t('vlans.addSubnet6')} onClick={add6} />
+        </span>
+      }
     >
       {subnets.map((subnet) => {
         const update = (changes: Partial<Omit<Subnet, 'id'>>) =>
@@ -275,45 +297,59 @@ function SubnetList({ project }: { project: Project }) {
                 />
               )}
             </Grid>
-            <Checkbox
-              label={t('vlans.dhcp')}
-              checked={!!subnet.dhcp?.enabled}
-              onChange={(e) => {
-                const base =
-                  subnet.cidr.split('/')[0]?.split('.').slice(0, 3).join('.') ?? '192.168.0';
-                update({
-                  dhcp: e.target.checked
-                    ? {
-                        enabled: true,
-                        rangeStart: subnet.dhcp?.rangeStart ?? `${base}.100`,
-                        rangeEnd: subnet.dhcp?.rangeEnd ?? `${base}.199`,
+            {isIpv6Cidr(subnet.cidr) ? (
+              <Select
+                label={t('vlans.ra')}
+                value={subnet.ra ?? 'slaac'}
+                options={(['slaac', 'dhcpv6', 'none'] as const).map((v) => ({
+                  value: v,
+                  label: t(`vlans.raModes.${v}`),
+                }))}
+                onChange={(e) => update({ ra: e.target.value as NonNullable<Subnet['ra']> })}
+              />
+            ) : (
+              <>
+                <Checkbox
+                  label={t('vlans.dhcp')}
+                  checked={!!subnet.dhcp?.enabled}
+                  onChange={(e) => {
+                    const base =
+                      subnet.cidr.split('/')[0]?.split('.').slice(0, 3).join('.') ?? '192.168.0';
+                    update({
+                      dhcp: e.target.checked
+                        ? {
+                            enabled: true,
+                            rangeStart: subnet.dhcp?.rangeStart ?? `${base}.100`,
+                            rangeEnd: subnet.dhcp?.rangeEnd ?? `${base}.199`,
+                          }
+                        : undefined,
+                    });
+                  }}
+                />
+                {subnet.dhcp?.enabled ? (
+                  <Grid>
+                    <CommitField
+                      label={t('vlans.rangeStart')}
+                      mono
+                      value={subnet.dhcp.rangeStart}
+                      validate={(v) => (isValidIp(v) ? null : t('errors.ip'))}
+                      onCommit={(v) =>
+                        subnet.dhcp && update({ dhcp: { ...subnet.dhcp, rangeStart: v.trim() } })
                       }
-                    : undefined,
-                });
-              }}
-            />
-            {subnet.dhcp?.enabled ? (
-              <Grid>
-                <CommitField
-                  label={t('vlans.rangeStart')}
-                  mono
-                  value={subnet.dhcp.rangeStart}
-                  validate={(v) => (isValidIp(v) ? null : t('errors.ip'))}
-                  onCommit={(v) =>
-                    subnet.dhcp && update({ dhcp: { ...subnet.dhcp, rangeStart: v.trim() } })
-                  }
-                />
-                <CommitField
-                  label={t('vlans.rangeEnd')}
-                  mono
-                  value={subnet.dhcp.rangeEnd}
-                  validate={(v) => (isValidIp(v) ? null : t('errors.ip'))}
-                  onCommit={(v) =>
-                    subnet.dhcp && update({ dhcp: { ...subnet.dhcp, rangeEnd: v.trim() } })
-                  }
-                />
-              </Grid>
-            ) : null}
+                    />
+                    <CommitField
+                      label={t('vlans.rangeEnd')}
+                      mono
+                      value={subnet.dhcp.rangeEnd}
+                      validate={(v) => (isValidIp(v) ? null : t('errors.ip'))}
+                      onCommit={(v) =>
+                        subnet.dhcp && update({ dhcp: { ...subnet.dhcp, rangeEnd: v.trim() } })
+                      }
+                    />
+                  </Grid>
+                ) : null}
+              </>
+            )}
           </Card>
         );
       })}

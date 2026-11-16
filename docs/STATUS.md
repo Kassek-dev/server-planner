@@ -304,7 +304,9 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 - [x] Sekcja Expansion w zakładce Hardware (10 typowych kart, własna karta, slot GPU); osobny krok „Configure” w D‑05 pominięty — sloty modelu są od razu w Hardware
 
 ### Etap 33 — IPv6 (NET‑17)
-- [ ] Podsieci IPv6 (dual‑stack), adresy statyczne / SLAAC / DHCPv6, IP Plan, konflikty, reguły VAL, eksport konfiguracji sieci; symulacja dalej IPv4
+- [x] Model: `assignmentFamily`, `isIpv6`, `isIpv6Cidr`, `canonicalIp`; fixture `v3/dual-stack.json` (podsieć `fd20:4d2:20::/64` na VLAN 20, gw‑01 i pve1 statycznie, pi‑dns SLAAC, karta 10G w pve1)
+- [x] Symulacja tylko na przypisaniach IPv4 (`ipv4Assignments`) — wyniki dual‑stack = IPv4; `VAL_01` po postaci kanonicznej, poprawki Fix zachowują drugi adres; `VAL_IPV6_MODE`, `VAL_IPV6_PREFIX`
+- [x] UI: wiersz IPv6 w zakładce Network, „Add IPv6 subnet” i Router advertisements w S‑01, IP Plan dla IPv6, eksport ifupdown/Netplan z IPv6
 
 ## Dziennik
 
@@ -361,3 +363,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | **Wydanie v1.5.0** (etapy 27–30; D11: nowe funkcje → `Z` = 0) | tag `v1.5.0` (#52) |
 | 2026-11-16 | Etap 31: warianty projektu i widok Compare (PRJ‑10) | #53 |
 | 2026-11-16 | Etap 32: schemat projektu v3, konfigurator sprzętu (LIB‑05) | #54 |
+| 2026-11-16 | Etap 33: IPv6 — adresacja, walidacja, IP Plan, eksport (NET‑17) | #55 |

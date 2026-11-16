@@ -1,4 +1,10 @@
-import { type Interface, type Link, subnetForAddress } from '@server-planner/model';
+import {
+  assignmentFamily,
+  type Interface,
+  isIpv6Cidr,
+  type Link,
+  subnetForAddress,
+} from '@server-planner/model';
 import ipaddr from 'ipaddr.js';
 import type { EngineContext } from '../context';
 import { peerOf } from '../context';
@@ -67,9 +73,13 @@ function effectiveSwitchport(ctx: EngineContext, iface: Interface) {
   return parent?.kind === 'bridge' ? parent.switchport : undefined;
 }
 
-/** Subnet of the interface's first address (explicit, by address, or none). */
+/** NET-17: the simulation works on IPv4; IPv6 assignments (dual-stack) are left out. */
+export const ipv4Assignments = (ctx: EngineContext, iface: Interface) =>
+  iface.addresses.filter((a) => assignmentFamily(ctx.project, a) === 'ipv4');
+
+/** Subnet of the interface's first IPv4 address (explicit, by address, or none). */
 function addressSubnet(ctx: EngineContext, iface: Interface): string | undefined {
-  for (const a of iface.addresses) {
+  for (const a of ipv4Assignments(ctx, iface)) {
     if (a.subnetId && ctx.project.subnets[a.subnetId]) return a.subnetId;
     const byAddress = a.address ? subnetForAddress(ctx.project, a.address) : undefined;
     if (byAddress) return byAddress;
@@ -242,7 +252,8 @@ function neighbourSegment(ctx: EngineContext, iface: Interface): SegmentKey | un
 export function attachmentOf(ctx: EngineContext, iface: Interface): Attachment | undefined {
   if (!iface.enabled) return undefined;
   const p = ctx.project;
-  const address = iface.addresses.find((a) => a.address)?.address;
+  const v4 = ipv4Assignments(ctx, iface);
+  const address = v4.find((a) => a.address)?.address;
   let subnetId = addressSubnet(ctx, iface);
   let l2IfaceId = iface.id;
   let segment: SegmentKey | undefined;
@@ -258,11 +269,13 @@ export function attachmentOf(ctx: EngineContext, iface: Interface): Attachment |
   }
   segment ??= (subnetId ? p.subnets[subnetId]?.vlanId : undefined) ?? neighbourSegment(ctx, iface);
   if (segment === undefined) {
-    if (iface.addresses.length === 0) return undefined;
+    if (v4.length === 0) return undefined;
     segment = '';
   }
-  // DHCP / unaddressed clients take the subnet of their segment.
-  subnetId ??= Object.values(p.subnets).find((s) => (s.vlanId ?? '') === segment)?.id;
+  // DHCP / unaddressed clients take the IPv4 subnet of their segment.
+  subnetId ??= Object.values(p.subnets).find(
+    (s) => (s.vlanId ?? '') === segment && !isIpv6Cidr(s.cidr),
+  )?.id;
   const zoneId = iface.zoneId ?? (subnetId ? p.subnets[subnetId]?.zoneId : undefined);
   return {
     ifaceId: iface.id,
@@ -285,7 +298,7 @@ export function ownerAttachments(ctx: EngineContext, ownerId: string): Attachmen
   for (const iface of owned) {
     if (iface.kind === 'wan' && device?.kind === 'internet') continue;
     const parent = iface.parentId ? ctx.project.interfaces[iface.parentId] : undefined;
-    const addressed = iface.addresses.length > 0;
+    const addressed = ipv4Assignments(ctx, iface).length > 0;
     const plainPort =
       !infra &&
       PHYSICAL.has(iface.kind) &&
