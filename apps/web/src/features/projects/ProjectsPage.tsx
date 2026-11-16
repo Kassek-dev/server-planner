@@ -16,6 +16,12 @@ import {
   prepareImport,
 } from '../../persistence/backup';
 import type { ProjectMeta } from '../../persistence/db';
+import {
+  type FileHandle,
+  fileAccessSupported,
+  linkFile,
+  pickProjectFile,
+} from '../../persistence/fileLink';
 import { requestPersistence } from '../../persistence/storage';
 import { Banner } from '../../ui/Banner';
 import { Button } from '../../ui/Button';
@@ -75,12 +81,14 @@ export function ProjectsPage() {
     navigate(`/p/${project.id}`);
   };
 
-  const importFile = async (file: File) => {
+  const importFile = async (file: File, handle?: FileHandle) => {
     try {
       const known = new Set(list.projects.map((p) => p.id));
       const result = prepareImport(await file.text(), (id) => known.has(id));
       await repository.save(result.project);
       await repository.importSnapshots(result.project.id, result.snapshots);
+      // PRJ-09: a file opened from disk stays linked — later saves go back to it.
+      if (handle) await linkFile(repository, result.project.id, handle);
       await list.refresh();
       setDialog({ kind: 'import', result });
     } catch (error) {
@@ -139,6 +147,16 @@ export function ProjectsPage() {
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="m-0 text-title-lg font-semibold">{t('title')}</h1>
               <div className="grow" />
+              {fileAccessSupported() ? (
+                <Button
+                  onClick={async () => {
+                    const picked = await pickProjectFile();
+                    if (picked) await importFile(picked.file, picked.handle);
+                  }}
+                >
+                  {t('actions.openFile')}
+                </Button>
+              ) : null}
               <Button onClick={() => fileInput.current?.click()}>{t('actions.importJson')}</Button>
               {/* Phones are view-only (docs/05 § 12): import to look at a plan, create on desktop. */}
               <Button

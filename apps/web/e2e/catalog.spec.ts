@@ -81,8 +81,9 @@ test('several apps at once go to the chosen host', async ({ page }) => {
   await expect(page.getByRole('dialog')).toBeHidden();
   const panel = inspector(page);
   await expect(panel.getByRole('heading', { name: 'docker-vm' })).toBeVisible();
-  await expect(panel.getByText('pihole', { exact: true })).toBeVisible();
-  await expect(panel.getByText('unbound', { exact: true })).toBeVisible();
+  // The container rows (the names also show up in the capacity breakdown once it is computed).
+  await expect(panel.getByRole('button', { name: /^CT pihole / })).toBeVisible();
+  await expect(panel.getByRole('button', { name: /^CT unbound / })).toBeVisible();
 });
 
 test('device model from the library and in the Hardware tab (D-05)', async ({ page }) => {
@@ -98,6 +99,10 @@ test('device model from the library and in the Hardware tab (D-05)', async ({ pa
   await expect(panel.getByRole('textbox', { name: 'Model' }).first()).toHaveValue(
     'Intel Core i5-8500T',
   );
+  // CAT-06: a prefilled issue for the catalog entry, opened in a new tab.
+  const suggest = panel.getByRole('link', { name: 'Suggest a correction' });
+  await expect(suggest).toHaveAttribute('href', /issues\/new\?.*lenovo-m720q/);
+  await expect(suggest).toHaveAttribute('target', '_blank');
 
   // An existing NAS takes a Synology model.
   await node(page, 'nas-01').click();

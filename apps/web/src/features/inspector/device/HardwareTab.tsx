@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../../app/format';
+import { catalogCorrectionUrl } from '../../../app/links';
 import { useSession } from '../../../app/services';
 import { catalogDevice, useCatalog } from '../../../catalog/store';
 import { Silhouette, type SilhouetteName } from '../../../icons/devices';
@@ -40,6 +41,7 @@ import {
   useCommand,
   useTransaction,
 } from '../parts';
+import { SuggestCorrection } from '../SuggestCorrection';
 import { ExpansionSection } from './ExpansionSection';
 import { useMoveDevice } from './moveDevice';
 import {
@@ -1037,6 +1039,30 @@ function ModelSection({ device }: { device: Device }) {
             ? device.catalogRef.id
             : t('hardware.genericModel', { kind: t(`canvas:deviceKind.${device.kind}`) })}
       </span>
+      {model && catalog ? (
+        <SuggestCorrection
+          href={catalogCorrectionUrl({
+            kind: 'device',
+            id: model.id,
+            name: modelName(model),
+            catalogVersion: catalog.catalogVersion,
+            facts: {
+              kind: model.kind,
+              cpu: model.hardware.cpus.map((c) => c.model).join(' + '),
+              memory: model.hardware.memory?.maxBytes
+                ? `max ${formatSize(model.hardware.memory.maxBytes)} · ${model.hardware.memory.slotsTotal ?? '?'} slots`
+                : undefined,
+              ports: model.ports.map((p) => `${p.name} ${p.speedMbps ?? ''}`.trim()).join(', '),
+              power: model.hardware.power
+                ? `${model.hardware.power.idleW}–${model.hardware.power.loadW} W`
+                : undefined,
+              expansion: model.expansion
+                ? `PCIe ${model.expansion.pcieSlots ?? 0} · M.2 ${model.expansion.m2Slots ?? 0} · SATA ${model.expansion.sataBays ?? 0}`
+                : undefined,
+            },
+          })}
+        />
+      ) : null}
       {model && catalog && changes.length > 0 ? (
         <Banner
           kind="info"

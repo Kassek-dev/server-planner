@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router';
+import { REPO } from '../../app/links';
 import { useCatalog } from '../../catalog/store';
 import { APP_VERSION } from '../../persistence/backup';
 import { PageTitle, SectionLayout, SettingCard } from './SectionLayout';
 
 const SECTIONS = ['overview', 'data-sources', 'licenses'] as const;
 type Section = (typeof SECTIONS)[number];
-
-const REPO = 'https://github.com/Kassek-dev/server-planner';
 
 /** Catalog sources (docs/06 § 1, § 5); status and dates of builder sources come from the manifest. */
 const SOURCES = [

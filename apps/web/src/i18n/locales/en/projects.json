@@ -9,6 +9,7 @@
   },
   "actions": {
     "newProject": "New project",
+    "openFile": "Open file…",
     "importJson": "Import JSON",
     "open": "Open",
     "rename": "Rename",

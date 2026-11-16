@@ -331,8 +331,9 @@ Reszta P2 bez zmiany formatu projektu (D13).
 - [x] `GUESTS_BY_OS` / `runsGuest` w modelu (Proxmox: VM+LXC, Windows Server: VM); `device.setOs` tworzy most „External”; `VAL_11_HYPERVISOR` wg rodzaju gościa; Software tab, „Runs on” i `placementPlan` korzystają z tej samej tabeli; narzut Windows Server z katalogu bez zmian
 
 ### Etap 38 — Katalog i pliki (CAT‑06, PRJ‑09)
-- [ ] „Suggest a correction” przy pozycji katalogu → gotowe zgłoszenie GitHub (link, bez zapytań z aplikacji)
-- [ ] Zapis i otwieranie pliku na dysku (File System Access API; autozapis do pliku, gdzie dostępne)
+- [x] CAT‑06 `app/links.ts` (`catalogCorrectionUrl`), link przy modelu urządzenia i aplikacji z katalogu
+- [x] PRJ‑09 `persistence/fileLink.ts` (zapis/otwarcie przez File System Access API, uchwyt w `settings`, zapis pliku po autozapisie, ponowna prośba o zgodę), chip pliku w pasku, „Save to file…”, „Open file…”
+- Poprawka testu E2E „several apps at once” (lokator trafiał też w rozbicie capacity)
 
 ## Wersja 1.8 — plan (2026-11-16)
 
@@ -414,3 +415,4 @@ Schemat projektu v4 (D13).
 | 2026-11-16 | Etap 35: diagram L3 V‑08 (VIEW‑06) | #60 |
 | 2026-11-16 | Etap 36: sugestie rozmieszczenia (CAP‑10) | #61 |
 | 2026-11-16 | Etap 37: Hyper‑V na Windows Server (SW‑14) | #62 |
+| 2026-11-16 | Etap 38: zgłaszanie poprawek katalogu (CAT‑06), zapis do pliku (PRJ‑09) | #63 |

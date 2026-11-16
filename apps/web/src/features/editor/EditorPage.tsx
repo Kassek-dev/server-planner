@@ -20,6 +20,7 @@ import { DashboardView } from '../dashboard/DashboardView';
 import { DrawerHost } from '../drawers/DrawerHost';
 import { ExportDialog } from '../export/ExportDialog';
 import { useExportDialog } from '../export/store';
+import { FileLinkIndicator, useFileLinkSync } from '../files/FileLink';
 import { SelectionPanel } from '../inspector/SelectionPanel';
 import { InventoryView } from '../inventory/InventoryView';
 import { IpPlanView } from '../ipplan/IpPlanView';
@@ -235,6 +236,7 @@ function Editor() {
   const canRedo = useSession((s) => s.future.length > 0);
   const saveState = useSession((s) => s.saveState);
   const otherTab = useOtherTabs(project?.id ?? '');
+  useFileLinkSync(project?.id ?? '');
   const mobile = useIsMobile();
   useEffect(() => session.setReadOnly(mobile), [mobile, session]);
 
@@ -303,6 +305,7 @@ function Editor() {
       <TopBar nav={false}>
         <ProjectName name={project.name} />
         {mobile ? <ViewSelect /> : <SaveIndicator state={saveState} />}
+        {mobile ? null : <FileLinkIndicator />}
         {mobile ? null : <ViewTabs />}
         <div className="grow" />
         <IssueCounters />

@@ -8,6 +8,7 @@ import {
 } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../app/format';
+import { catalogCorrectionUrl } from '../../app/links';
 import { catalogApp, useCatalog } from '../../catalog/store';
 import { Button } from '../../ui/Button';
 import { Checkbox } from '../../ui/Checkbox';
@@ -26,6 +27,7 @@ import {
   Section,
   useCommand,
 } from './parts';
+import { SuggestCorrection } from './SuggestCorrection';
 import { hostPath, useOpenHost } from './WorkloadInspector';
 
 const ROLES = ['app', 'database', 'cache', 'worker', 'proxy', 'dns', 'other'] as const;
@@ -58,6 +60,7 @@ export function AppInspector({ project, app }: { project: Project; app: AppInsta
         />
         <h2 className="m-0 text-title font-semibold">{app.name}</h2>
         <span className="text-text-secondary">{t(`app.role.${role}`)}</span>
+        {app.catalogRef ? <AppCorrection app={app} /> : null}
       </div>
       <Grid>
         <CommitField
@@ -295,5 +298,29 @@ function LoadProfileSection({ app, update }: { app: AppInstance; update: (c: Cha
       ) : null}
       <p className="m-0 text-body-sm text-text-muted">{t('app.loadProfileHint')}</p>
     </Section>
+  );
+}
+
+/** CAT-06 for an app from the catalog: the catalog entry as the app shows it. */
+function AppCorrection({ app }: { app: AppInstance }) {
+  const catalog = useCatalog((s) => s.catalog);
+  const entry = app.catalogRef ? catalogApp(catalog, app.catalogRef.id) : undefined;
+  if (!entry || !catalog) return null;
+  const component = entry.deployment.components[0];
+  return (
+    <SuggestCorrection
+      href={catalogCorrectionUrl({
+        kind: 'app',
+        id: entry.id,
+        name: entry.name,
+        catalogVersion: catalog.catalogVersion,
+        facts: {
+          image: component ? `${component.image}:${component.defaultTag}` : undefined,
+          ports: component?.listeners.map((l) => `${l.port}/${l.protocol}`).join(', '),
+          'min cpu / memory': `${entry.requirements.min.cpu} · ${formatSize(entry.requirements.min.memoryBytes)}`,
+          website: entry.website,
+        },
+      })}
+    />
   );
 }

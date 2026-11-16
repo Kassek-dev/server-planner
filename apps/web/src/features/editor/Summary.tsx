@@ -1,10 +1,13 @@
 import type { Project } from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { useServices } from '../../app/services';
+import { fileAccessSupported } from '../../persistence/fileLink';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
 import { Led } from '../../ui/Led';
 import { useDrawer } from '../drawers/useDrawer';
+import { saveProjectToFile } from '../files/FileLink';
 import { useLabelsDialog } from '../labels/LabelsDialog';
 import { useVariantDialog } from '../variants/variants';
 
@@ -12,6 +15,7 @@ import { useVariantDialog } from '../variants/variants';
 export function Summary({ project }: { project: Project }) {
   const { t } = useTranslation('editor');
   const { open } = useDrawer();
+  const services = useServices();
   const navigate = useNavigate();
   const { projectId = '' } = useParams();
   const routers = Object.values(project.devices).filter((d) => d.firewall);
@@ -57,6 +61,11 @@ export function Summary({ project }: { project: Project }) {
         <Button onClick={() => useVariantDialog.getState().setOpen(true)}>
           {t('summary.variant')}
         </Button>
+        {fileAccessSupported() ? (
+          <Button onClick={() => void saveProjectToFile(services)}>
+            {t('summary.saveToFile')}
+          </Button>
+        ) : null}
         <Button onClick={() => open({ kind: 'settings' })}>{t('summary.settings')}</Button>
         <Button onClick={() => navigate(`/p/${projectId}/snapshots`)}>
           {t('summary.snapshots')}
