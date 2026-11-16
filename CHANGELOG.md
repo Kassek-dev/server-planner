@@ -2,6 +2,15 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.6.2] — 2026-11-16
+
+Two fixes found after the 1.6.0 release.
+
+### Fixes
+
+- "Add IPv6 subnet" writes the VLAN ID into the prefix as it is (VLAN 10 → `fd00:0:0:10::/64`), not in hexadecimal (#57).
+- Compare counts issues with proper plurals ("1 error") (#57).
+
 ## [1.6.0] — 2026-11-16
 
 Try a change before you buy it, configure the hardware inside your devices, and plan IPv6 next to IPv4.
