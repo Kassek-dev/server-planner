@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
 
 async function openExample(page: Page) {
   await page.goto('./');
@@ -156,3 +156,38 @@ async function optionLabel(select: import('@playwright/test').Locator, pattern: 
   if (!option) throw new Error(`no option ${pattern}`);
   return option;
 }
+
+test('configurator: slots, a 10G NIC with its ports and a slot conflict (LIB-05)', async ({
+  page,
+}) => {
+  await openExample(page);
+  await node(page, 'pve1').click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Hardware' }).click();
+  const expansion = panel.locator('section', {
+    has: page.getByRole('heading', { name: 'Expansion', exact: true }),
+  });
+  await expansion.getByLabel('PCIe slots').fill('1');
+  await expansion.getByLabel('PCIe slots').press('Enter');
+  await expansion.getByRole('button', { name: 'Add card' }).first().click();
+  await expansion.getByLabel('Common cards').selectOption({ label: 'Intel X520-DA2 · 2× SFP+' });
+  await expect(expansion.getByText('ports card1p0, card1p1')).toBeVisible();
+  await expect(expansion.getByText('PCIe 1/1')).toBeVisible();
+  await page.screenshot({ path: 'test-results/expansion.png' });
+
+  // A second PCIe card does not fit.
+  await expansion.getByRole('button', { name: 'Add card' }).first().click();
+  await expansion.getByLabel('Common cards').selectOption({ label: 'LSI 9207-8i (IT mode)' });
+  await expect(expansion.getByText('PCIe 2/1')).toBeVisible();
+
+  // Removing the NIC removes its ports; the HBA alone fits.
+  await expansion.getByRole('button', { name: 'Remove Intel X520-DA2' }).click();
+  await expect(expansion.getByText('ports card1p0, card1p1')).toBeHidden();
+  await expect(expansion.getByText('PCIe 1/1')).toBeVisible();
+
+  // Over the limit again: the issue names the slots.
+  await expansion.getByRole('button', { name: 'Add card' }).first().click();
+  await expansion.getByLabel('Common cards').selectOption({ label: 'Intel I350-T4 · 4× RJ45' });
+  await page.getByRole('button', { name: /open issues/ }).click();
+  await expect(page.getByText('pve1 uses 2 PCIe slots but has 1.')).toBeVisible();
+});

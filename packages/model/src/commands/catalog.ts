@@ -50,6 +50,7 @@ export const applyDeviceModel = defineCommand(
       device.hardware.disks = (defaultDisks ?? []).map((d) => ({ ...d, id: ctx.createId('disk') }));
     }
     if (model.switching) device.switching = clone(model.switching);
+    if (model.expansion) device.hardware.expansion = clone(model.expansion);
 
     const previousForm = device.formFactor;
     device.formFactor = clone(model.formFactor);
@@ -110,8 +111,16 @@ export function applyPorts(
   ports: readonly PortSpec[],
   ctx: { createId: ModelContext['createId'] },
 ) {
+  // Ports of add-in cards (LIB-05) are not the model's: they stay as they are.
+  const onCards = new Set(draft.devices[id]?.hardware.cards?.flatMap((c) => c.interfaceIds));
   const existingPorts = Object.values(draft.interfaces)
-    .filter((i) => i.owner.type === 'device' && i.owner.id === id && PHYSICAL.includes(i.kind))
+    .filter(
+      (i) =>
+        i.owner.type === 'device' &&
+        i.owner.id === id &&
+        PHYSICAL.includes(i.kind) &&
+        !onCards.has(i.id),
+    )
     .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
   const linked = new Set(Object.values(draft.links).flatMap((l) => [l.a, l.b]));
   ports.forEach((template, index) => {

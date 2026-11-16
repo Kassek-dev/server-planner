@@ -14,6 +14,25 @@ export const GpuSpecSchema = z.object({
   model: z.string(),
   vramBytes: BytesSchema.optional(),
   features: z.array(GpuFeatureSchema),
+  /** LIB-05 (schema v3): the slot it takes — a PCIe card, an M.2 module or a USB stick. */
+  attach: z.enum(['pcie', 'm2', 'usb']).optional(),
+});
+
+/** LIB-05 add-in card (schema v3). A NIC owns the interfaces it adds; removing it removes them. */
+export const AddInCardSchema = z.object({
+  id: IdSchema,
+  kind: z.enum(['nic', 'hba', 'other']),
+  model: z.string().min(1),
+  slot: z.enum(['pcie', 'm2', 'usb']),
+  /** Interfaces this card adds (NIC). */
+  interfaceIds: z.array(IdSchema),
+});
+
+/** LIB-05 (schema v3): slots and bays of the board / chassis, from the catalog model or by hand. */
+export const ExpansionSchema = z.object({
+  pcieSlots: z.number().int().nonnegative().optional(),
+  m2Slots: z.number().int().nonnegative().optional(),
+  sataBays: z.number().int().nonnegative().optional(),
 });
 
 export const CpuSpecSchema = z.object({
@@ -87,6 +106,8 @@ export const HardwareSchema = z.object({
   pools: z.array(StoragePoolSchema),
   gpus: z.array(GpuSpecSchema),
   power: z.object({ idleW: WattsSchema, loadW: WattsSchema }).optional(),
+  expansion: ExpansionSchema.optional(),
+  cards: z.array(AddInCardSchema).optional(),
 });
 
 export const UpsSpecSchema = z.object({
@@ -119,6 +140,8 @@ export type MemorySpec = z.infer<typeof MemorySpecSchema>;
 export type Disk = z.infer<typeof DiskSchema>;
 export type StoragePool = z.infer<typeof StoragePoolSchema>;
 export type Hardware = z.infer<typeof HardwareSchema>;
+export type AddInCard = z.infer<typeof AddInCardSchema>;
+export type Expansion = z.infer<typeof ExpansionSchema>;
 export type UpsSpec = z.infer<typeof UpsSpecSchema>;
 export type Purchase = z.infer<typeof PurchaseSchema>;
 export type OsId = z.infer<typeof OsIdSchema>;

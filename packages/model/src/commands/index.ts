@@ -7,6 +7,7 @@ import * as segmentation from './segmentation';
 import * as services from './services';
 import * as workload from './workload';
 
+export * from './cards';
 export * from './catalog';
 export * from './core';
 export * from './device';

@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.7** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.8** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -203,6 +203,8 @@ Front szafy (LOC‑09, D‑16): „Front view” przy zajętości racka otwiera 
 Etykiety (LBL‑04, D‑17): „Print labels” w podsumowaniu projektu (Manage) i w palecie. Wybór arkusza A4 (siatka wyśrodkowana na stronie), kable (z „One label for each end”), urządzenia, pominięcie etykiet na zaczętym arkuszu. Tekst dopasowany do szerokości etykiety (mono); długa etykieta kabla dzielona po „↔” na dwie linie. Druk: strony A4 renderowane poza ekranem (`[data-print-pages]`, nazwana strona `@page labels`, margines 0), reszta aplikacji ukryta; PDF przez „Save as PDF”, skala 100%.
 
 Warianty (PRJ‑10, D12): „Create variant” (podsumowanie projektu › Manage, paleta, widok Compare) zapisuje bieżący projekt i tworzy jego kopię powiązaną z bazą (`variantOf` w metadanych IndexedDB; wariant wariantu wskazuje tę samą bazę); kopia otwiera się na widoku **Compare** (V‑09), widocznym w przełączniku widoków tylko dla wariantów. Compare liczy silnikiem obie strony i pokazuje tabelę baza / wariant (wartość wariantu pogrubiona, gdy się różni; ostrzeżenie, gdy zajętość lub liczba problemów rośnie), „Parts to buy” i listę zmian (kliknięcie zaznacza element). Karta projektu na liście ma dopisek „Variant of <baza>”. Eksport JSON wariantu to zwykły projekt (bez powiązania). Pasek: na ekranach < 1536 px status zapisu to sama dioda (tekst dla czytników ekranu), zakładki nie łamią linii.
+
+Konfigurator (LIB‑05, D12): sekcja **Expansion** w zakładce Hardware urządzeń obliczeniowych (serwer, mini PC, SBC, NAS) — pola slotów PCIe / M.2 / zatok SATA (z modelu katalogu, edytowalne), zajętość „PCIe 1/1 · M.2 1/2 · SATA 0/1” (na czerwono ponad limit), karty z listy typowych (NIC 1–25G, HBA, adaptery M.2) lub własne (rodzaj, model, slot; NIC: liczba portów, typ, prędkość). Karta NIC dodaje porty `card<n>p<m>` (widoczne na kafelku i w zakładce Network), usunięcie karty usuwa je z kablami. GPU ma pole „Slot” (wbudowany / PCIe / M.2 / USB). Problemy: `VAL_RAM_MAX` (więcej RAM niż maksimum płyty), `VAL_RAM_SLOTS`, `VAL_SLOTS`. Osobny krok „Configure” w D‑05 nie powstał — po wyborze modelu jego sloty i limity są od razu w zakładce Hardware.
 
 ### 5.7 Edytory globalne (otwierane z podsumowania projektu, z menu routera lub skrótem)
 

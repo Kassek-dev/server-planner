@@ -737,6 +737,73 @@ const poolDisks: ValidationRule = {
   },
 };
 
+const GIB = 1024 ** 3;
+const gib = (bytes: number) => Math.round((bytes / GIB) * 10) / 10;
+
+/**
+ * LIB-05 the parts fit the board: memory up to its maximum, modules in its slots, cards, M.2
+ * modules and SATA drives in its slots and bays. NVMe disks count as M.2, HDDs and SATA SSDs as
+ * bays. Only limits the device knows (from its catalog model or entered) are checked.
+ */
+const hardwareFit: ValidationRule = {
+  code: 'VAL_FIT',
+  run(ctx) {
+    const out: Issue[] = [];
+    for (const device of Object.values(ctx.project.devices)) {
+      const hw = device.hardware;
+      const ref = [{ type: 'device' as const, id: device.id }];
+      const memory = hw.memory;
+      if (memory) {
+        const total = memory.modules.reduce((s, m) => s + m.sizeBytes * m.count, 0);
+        if (memory.maxBytes !== undefined && total > memory.maxBytes)
+          out.push(
+            issue('VAL_RAM_MAX', 'warning', ref, {
+              device: device.name,
+              total: gib(total),
+              max: gib(memory.maxBytes),
+            }),
+          );
+        const modules = memory.modules.filter((m) => !m.soldered).reduce((s, m) => s + m.count, 0);
+        if (memory.slotsTotal !== undefined && modules > memory.slotsTotal)
+          out.push(
+            issue('VAL_RAM_SLOTS', 'error', ref, {
+              device: device.name,
+              modules,
+              slots: memory.slotsTotal,
+            }),
+          );
+      }
+      const slots = hw.expansion;
+      if (!slots) continue;
+      const cards = hw.cards ?? [];
+      const used = {
+        pcie:
+          cards.filter((c) => c.slot === 'pcie').length +
+          hw.gpus.filter((g) => g.attach === 'pcie').length,
+        m2:
+          cards.filter((c) => c.slot === 'm2').length +
+          hw.gpus.filter((g) => g.attach === 'm2').length +
+          hw.disks.filter((d) => d.type === 'ssd-nvme').length,
+        sata: hw.disks.filter((d) => d.type === 'hdd' || d.type === 'ssd-sata').length,
+      };
+      const total = { pcie: slots.pcieSlots, m2: slots.m2Slots, sata: slots.sataBays };
+      for (const slot of ['pcie', 'm2', 'sata'] as const) {
+        const limit = total[slot];
+        if (limit !== undefined && used[slot] > limit)
+          out.push(
+            issue('VAL_SLOTS', 'error', ref, {
+              device: device.name,
+              slot,
+              used: used[slot],
+              total: limit,
+            }),
+          );
+      }
+    }
+    return out;
+  },
+};
+
 const RESOURCE_LABEL = { cpu: 'CPU', memory: 'memory' } as const;
 
 /** VAL-13 capacity above thresholds (critical/over = error from 100 %, warning band = warning). */
@@ -954,6 +1021,7 @@ export const rules: ValidationRule[] = [
   archCompatibility,
   proxyAndDns,
   poolDisks,
+  hardwareFit,
   capacityRule,
   gpuRule,
   dependencies,
@@ -987,6 +1055,9 @@ export const ISSUE_CODES = [
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
   'VAL_POOL',
+  'VAL_RAM_MAX',
+  'VAL_RAM_SLOTS',
+  'VAL_SLOTS',
   'VAL_12',
   'VAL_12_UPS',
   'VAL_13',

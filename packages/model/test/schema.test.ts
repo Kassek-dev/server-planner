@@ -21,9 +21,11 @@ import { buildReverseProxyLab } from './support/reverse-proxy';
 
 const readFixture = (path: string) =>
   JSON.parse(readFileSync(join(import.meta.dirname, '../../../fixtures/schema', path), 'utf8'));
-const fixture = readFixture('v2/home-lab.json');
+const fixture = readFixture('v3/home-lab.json');
 const fixtureV1 = readFixture('v1/home-lab.json');
-const reverseProxy = readFixture('v2/reverse-proxy.json');
+const fixtureV2 = readFixture('v2/home-lab.json');
+const reverseProxy = readFixture('v3/reverse-proxy.json');
+const reverseProxyV2 = readFixture('v2/reverse-proxy.json');
 
 function expectFileError(raw: unknown, code: string) {
   try {
@@ -37,7 +39,7 @@ function expectFileError(raw: unknown, code: string) {
 }
 
 describe('project file', () => {
-  it('parses the v2 home-lab fixture without migration', () => {
+  it('parses the v3 home-lab fixture without migration', () => {
     const { file, migratedFrom } = parseProjectFile(fixture);
     expect(migratedFrom).toBeUndefined();
     expect(Object.keys(file.project.devices)).toHaveLength(8);
@@ -48,11 +50,23 @@ describe('project file', () => {
     expect(JSON.parse(JSON.stringify(homeLabFile(buildReverseProxyLab())))).toEqual(reverseProxy);
   });
 
-  it('migrates a v1 file to v2 with empty proxy routes and DNS records', () => {
+  it('migrates a v1 file to v3 with empty proxy routes and DNS records', () => {
     const { file, migratedFrom } = parseProjectFile(fixtureV1);
     expect(migratedFrom).toBe(1);
-    expect(file.schemaVersion).toBe(2);
+    expect(file.schemaVersion).toBe(3);
     expect(file.project).toEqual(fixture.project);
+  });
+
+  it('migrates v2 files to v3 unchanged (only new optional fields in v3)', () => {
+    for (const [old, current] of [
+      [fixtureV2, fixture],
+      [reverseProxyV2, reverseProxy],
+    ]) {
+      const { file, migratedFrom } = parseProjectFile(old);
+      expect(migratedFrom).toBe(2);
+      expect(file.schemaVersion).toBe(3);
+      expect(file.project).toEqual(current.project);
+    }
   });
 
   it('migrates snapshots of a v1 file and is idempotent', () => {
@@ -86,7 +100,7 @@ describe('project file', () => {
   });
 
   it('rejects files from a newer app version', () => {
-    expectFileError({ ...fixture, schemaVersion: 3 }, 'SCHEMA_TOO_NEW');
+    expectFileError({ ...fixture, schemaVersion: 4 }, 'SCHEMA_TOO_NEW');
   });
 
   it('reports invalid content with Zod issues', () => {

@@ -23,6 +23,7 @@ export const ID_PREFIXES = {
   note: 'note',
   assertion: 'asr',
   location: 'loc',
+  card: 'crd',
 } as const;
 
 export type EntityType = keyof typeof ID_PREFIXES;

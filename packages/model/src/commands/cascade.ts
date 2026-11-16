@@ -24,6 +24,11 @@ export function removeInterface(draft: Project, interfaceId: string): void {
   for (const network of Object.values(draft.dockerNetworks)) {
     if (network.parentInterfaceId === interfaceId) delete network.parentInterfaceId;
   }
+  // LIB-05: a port removed on its own leaves the card that added it.
+  const owner = draft.interfaces[interfaceId]?.owner;
+  const cards = owner?.type === 'device' ? draft.devices[owner.id]?.hardware.cards : undefined;
+  for (const card of cards ?? [])
+    card.interfaceIds = card.interfaceIds.filter((id) => id !== interfaceId);
   delete draft.interfaces[interfaceId];
 }
 

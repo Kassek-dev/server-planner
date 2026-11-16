@@ -298,7 +298,10 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 - [x] `ProjectMeta.variantOf` (zachowywane przy zapisie), `repository.createVariant`; D‑18 Create variant; V‑09 Compare (`compareProjects`, `upgrades`: nowe urządzenia, RAM, dyski, GPU, CPU; tabela sum, lista zmian `DiffList`); zakładka tylko dla wariantów; dopisek na karcie projektu; pasek widoków bez łamania linii
 
 ### Etap 32 — Konfigurator sprzętu (LIB‑05)
-- [ ] Sloty PCIe / M.2 / SATA z katalogu, karty rozszerzeń (NIC dodaje porty, GPU, HBA), walidacja RAM / slotów / kieszeni, krok „Configure” w D‑05
+- [x] Schemat v3 (`migrateV2toV3` — tylko numer wersji; fixture'y `v3/`, `v1/` i `v2/` zamrożone): `Hardware.expansion?`, `Hardware.cards?` (`crd_`), `GpuSpec.attach?`; od razu też `slaac` i `Subnet.ra?` dla etapu 33
+- [x] Komendy `device.setExpansion`, `device.addCard` (NIC tworzy porty `card<n>p<m>`), `device.updateCard`, `device.removeCard` (porty i kable znikają); `device.applyModel` kopiuje sloty i nie rusza portów kart
+- [x] Reguły `VAL_RAM_MAX`, `VAL_RAM_SLOTS`, `VAL_SLOTS` (karty, GPU, NVMe → M.2, HDD/SATA SSD → zatoki)
+- [x] Sekcja Expansion w zakładce Hardware (10 typowych kart, własna karta, slot GPU); osobny krok „Configure” w D‑05 pominięty — sloty modelu są od razu w Hardware
 
 ### Etap 33 — IPv6 (NET‑17)
 - [ ] Podsieci IPv6 (dual‑stack), adresy statyczne / SLAAC / DHCPv6, IP Plan, konflikty, reguły VAL, eksport konfiguracji sieci; symulacja dalej IPv4
@@ -357,3 +360,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 30: Wikidata odrzucone; +65 kurowanych CPU (CAT‑05) | #51 |
 | 2026-11-16 | **Wydanie v1.5.0** (etapy 27–30; D11: nowe funkcje → `Z` = 0) | tag `v1.5.0` (#52) |
 | 2026-11-16 | Etap 31: warianty projektu i widok Compare (PRJ‑10) | #53 |
+| 2026-11-16 | Etap 32: schemat projektu v3, konfigurator sprzętu (LIB‑05) | #54 |

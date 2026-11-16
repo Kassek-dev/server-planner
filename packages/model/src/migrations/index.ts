@@ -7,16 +7,18 @@ import {
   ProjectFileSchema,
 } from '../schema/project';
 import { migrateV1toV2 } from './v1-to-v2';
+import { migrateV2toV3 } from './v2-to-v3';
 
 export { upgradeProjectV1 } from './v1-to-v2';
 
 /** Project file versioning and migrations — docs/02-model-danych.md § 11 (Z8). */
 
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 /** `migrations[n]` upgrades a raw v<n> file to v<n+1>. Pure, idempotent, never loses data. */
 const migrations: Record<number, (data: Record<string, unknown>) => Record<string, unknown>> = {
   1: migrateV1toV2,
+  2: migrateV2toV3,
 };
 
 export type ProjectFileErrorCode =

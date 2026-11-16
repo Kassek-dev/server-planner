@@ -38,7 +38,8 @@ export const SwitchportSchema = z.object({
 });
 
 export const IpAssignmentSchema = z.object({
-  mode: z.enum(['static', 'dhcp', 'dhcp-reservation']),
+  /** `slaac` (schema v3, NET-17): IPv6 address from router advertisements; `dhcp` on an IPv6 subnet = DHCPv6. */
+  mode: z.enum(['static', 'dhcp', 'dhcp-reservation', 'slaac']),
   address: IpAddressSchema.optional(),
   subnetId: IdSchema.optional(),
 });
@@ -133,6 +134,11 @@ export const SubnetSchema = z.object({
       domain: z.string().optional(),
     })
     .optional(),
+  /**
+   * NET-17, IPv6 subnets only: how hosts get addresses from router advertisements — SLAAC,
+   * DHCPv6 (managed) or none (static only). Absent = SLAAC.
+   */
+  ra: z.enum(['slaac', 'dhcpv6', 'none']).optional(),
   name: z.string().optional(),
 });
 

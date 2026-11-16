@@ -1,6 +1,6 @@
 # Server Planner — model danych (v0.3)
 
-> Status: **zaakceptowany, v0.6** (v0.6: `CatalogGpu`, § 9.4; v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
+> Status: **zaakceptowany, v0.7** (v0.7: schemat projektu v3 — karty rozszerzeń, sloty, IPv6 SLAAC, § 4.1, § 6, § 11; v0.6: `CatalogGpu`, § 9.4; v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (decyzje D1–D9)
 > Notacja: typy w składni TypeScript — to opis struktury, nie decyzja o implementacji (ta zapadnie w `03-architektura.md`).
 
@@ -57,7 +57,7 @@ type Confidence = 'curated' | 'imported' | 'estimated';
 | `stk_`  | Stack                      | `note_` | Note         |
 | `loc_`  | Location                   | `dns_`  | DnsRecord    |
 | `app_`  | AppInstance                | `asr_`  | Assertion    |
-| `snap_` | Snapshot                   |         |              |
+| `snap_` | Snapshot                   | `crd_`  | AddInCard (v3) |
 
 ---
 
@@ -220,8 +220,22 @@ interface Hardware {
   memory?: MemorySpec;
   disks: Disk[];
   pools: StoragePool[];
-  gpus: GpuSpec[];
+  gpus: GpuSpec[]; // v3: GpuSpec.attach?: 'pcie' | 'm2' | 'usb' — zajmowany slot (brak = wbudowany)
   power?: { idleW: Watts; loadW: Watts };
+  // LIB-05 (schemat v3):
+  expansion?: { pcieSlots?: number; m2Slots?: number; sataBays?: number }; // z modelu katalogu lub ręcznie
+  cards?: AddInCard[];
+}
+
+// LIB-05: karta rozszerzeń. NIC tworzy własne interfejsy (`card<n>p<m>`), usuwane razem z kartą
+// (z kablami); `device.applyModel` ich nie rusza. Zajętość slotów: PCIe = karty PCIe + GPU attach
+// pcie; M.2 = karty M.2 + GPU attach m2 + dyski ssd-nvme; SATA = dyski hdd i ssd-sata (VAL_SLOTS).
+interface AddInCard {
+  id: Id; // crd_
+  kind: 'nic' | 'hba' | 'other';
+  model: string;
+  slot: 'pcie' | 'm2' | 'usb';
+  interfaceIds: Id[];
 }
 
 interface CpuSpec {
@@ -588,7 +602,7 @@ interface Switchport {
 }
 
 interface IpAssignment {
-  mode: 'static' | 'dhcp' | 'dhcp-reservation';
+  mode: 'static' | 'dhcp' | 'dhcp-reservation' | 'slaac'; // v3: slaac (IPv6); dhcp w podsieci IPv6 = DHCPv6
   address?: IpAddress; // static / reservation; dla 'dhcp' — puste (adres dynamiczny)
   subnetId?: Id; // wyliczalne z adresu, zapisywane dla 'dhcp'
 }
@@ -660,6 +674,7 @@ interface Subnet {
     servers: ({ type: 'ip'; value: IpAddress } | { type: 'app'; id: Id })[];
     domain?: string;
   };
+  ra?: 'slaac' | 'dhcpv6' | 'none'; // v3, tylko podsieci IPv6 (NET-17): tryb ogłoszeń routera; brak = slaac
   name?: string;
 }
 
@@ -1183,6 +1198,7 @@ interface CatalogOs {
 | ------ | ------- | ------ | -------- |
 | 1 | 1.0 | pierwszy format | — |
 | 2 | 1.2 | `proxyRoutes`, `dnsRecords` (§ 6.5), `settings.cableLabelPattern?` | `migrateV1toV2`: puste kolekcje w projekcie i snapshotach; IndexedDB v3 migruje zapisane projekty |
+| 3 | 1.6 | `Hardware.expansion?`, `Hardware.cards?` (`crd_`), `GpuSpec.attach?` (LIB‑05); `IpAssignment.mode` + `slaac`, `Subnet.ra?` (NET‑17) | `migrateV2toV3`: tylko numer wersji (wszystkie nowe pola opcjonalne, dane v2 są poprawnymi danymi v3); IndexedDB bez zmian (projekty w bazie nie mają numeru schematu) |
 
 ---
 

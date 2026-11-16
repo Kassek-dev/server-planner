@@ -28,7 +28,7 @@ export function parseCidr4(cidr: string): { network: number; prefix: number } | 
   return { network: base - (base % size), prefix };
 }
 
-export type AddressKind = 'static' | 'dhcp' | 'dhcp-reservation' | 'gateway';
+export type AddressKind = 'static' | 'dhcp' | 'dhcp-reservation' | 'slaac' | 'gateway';
 
 export interface AddressRow {
   type: 'address';
