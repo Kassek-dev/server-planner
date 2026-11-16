@@ -1,6 +1,6 @@
 import { type Project, parseProjectFile } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import raw from '../../../../../fixtures/schema/v2/reverse-proxy.json';
+import raw from '../../../../../fixtures/schema/v3/reverse-proxy.json';
 import { homeLab } from '../canvas/testSupport';
 import { servicesMap } from './servicesMap';
 

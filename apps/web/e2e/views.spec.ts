@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
 
 async function openExample(page: Page) {
   await page.goto('./');
@@ -128,7 +128,7 @@ test('services map: apps behind proxy routes and local names (VIEW-07)', async (
   await page.goto('./');
   await page
     .getByTestId('import-input')
-    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v2/reverse-proxy.json'));
+    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v3/reverse-proxy.json'));
   await page.getByRole('button', { name: 'Open project' }).click();
   await expect(page.locator('.react-flow__node').first()).toBeVisible();
   await page.getByRole('link', { name: 'Services' }).click();

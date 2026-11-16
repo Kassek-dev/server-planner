@@ -1,6 +1,7 @@
 import { poolUsableBytes } from '@server-planner/engine';
 import {
   applyDeviceModel,
+  COMPUTE_KINDS,
   createId,
   type Device,
   defaultPoolLayout,
@@ -39,6 +40,7 @@ import {
   useCommand,
   useTransaction,
 } from '../parts';
+import { ExpansionSection } from './ExpansionSection';
 import { useMoveDevice } from './moveDevice';
 import {
   byVendorAndModel,
@@ -366,6 +368,8 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
 
       <GpuSection device={device} setHw={setHw} />
 
+      {COMPUTE_KINDS.includes(device.kind) ? <ExpansionSection device={device} /> : null}
+
       <Section title={t('hardware.power')}>
         <Grid>
           <CommitField
@@ -551,6 +555,22 @@ function GpuSection({ device, setHw }: { device: Device; setHw: (hw: Hardware) =
                 label={t('hardware.gpuModel')}
                 value={gpu.model}
                 onCommit={(model) => model && setGpu(i, { model })}
+              />
+              <Select
+                label={t('hardware.expansion.slot')}
+                value={gpu.attach ?? ''}
+                options={[
+                  { value: '', label: t('hardware.expansion.integrated') },
+                  ...(['pcie', 'm2', 'usb'] as const).map((s) => ({
+                    value: s,
+                    label: t(`hardware.expansion.cardSlot.${s}`),
+                  })),
+                ]}
+                onChange={(e) =>
+                  setGpu(i, {
+                    attach: (e.target.value || undefined) as Hardware['gpus'][number]['attach'],
+                  })
+                }
               />
               <CommitField
                 label={t('hardware.vram')}
@@ -1058,7 +1078,7 @@ function ModelSection({ device }: { device: Device }) {
 }
 
 /** HW-09: a list that adds a predefined part; it returns to its placeholder after each pick. */
-function PickFromList({
+export function PickFromList({
   label,
   options,
   onPick,

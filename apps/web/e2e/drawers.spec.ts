@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
 
 async function openExample(page: Page) {
   await page.goto('./');

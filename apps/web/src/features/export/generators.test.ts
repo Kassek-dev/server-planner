@@ -1,7 +1,7 @@
 import { analyze } from '@server-planner/engine';
 import { parseProjectFile, updateDevice } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import reverseProxyRaw from '../../../../../fixtures/schema/v2/reverse-proxy.json';
+import reverseProxyRaw from '../../../../../fixtures/schema/v3/reverse-proxy.json';
 import { deviceByName, homeLab, sessionWith } from '../canvas/testSupport';
 import { deviceRows } from '../inventory/rows';
 import { ipPlan } from '../ipplan/plan';

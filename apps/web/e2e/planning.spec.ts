@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 15: expected use from load profiles, storage growth and GPUs (SW-08/09, CAP-05/06, HW-05). */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v2/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 const node = (page: Page, name: string) =>
   page.locator('.react-flow__node', { has: page.getByText(name, { exact: true }) }).first();

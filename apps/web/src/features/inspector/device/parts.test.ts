@@ -5,7 +5,7 @@ import {
   MemoryModuleSchema,
 } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import { cpuFromCatalog, DISK_PRESETS, gpuFromCatalog, RAM_PRESETS } from './parts';
+import { CARD_PRESETS, cpuFromCatalog, DISK_PRESETS, gpuFromCatalog, RAM_PRESETS } from './parts';
 
 describe('predefined parts (HW-09)', () => {
   it('RAM and disk presets are valid model values with unique ids', () => {
@@ -52,6 +52,14 @@ describe('predefined parts (HW-09)', () => {
       model: 'NVIDIA Tesla P4',
       vramBytes: 8 * 1024 ** 3,
       features: ['nvenc', 'cuda'],
+      attach: 'pcie',
     });
+  });
+
+  it('card presets are valid cards with unique ids (LIB-05)', () => {
+    const ids = CARD_PRESETS.map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const { card } of CARD_PRESETS)
+      expect(card.kind === 'nic' ? (card.ports?.count ?? 0) > 0 : !card.ports).toBe(true);
   });
 });

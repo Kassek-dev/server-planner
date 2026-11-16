@@ -114,7 +114,7 @@ export const PROJECT_FILE_FORMAT = 'server-planner/project';
 
 export const ProjectFileSchema = z.object({
   format: z.literal(PROJECT_FILE_FORMAT),
-  schemaVersion: z.literal(2),
+  schemaVersion: z.literal(3),
   appVersion: z.string(),
   exportedAt: IsoDateSchema,
   project: ProjectSchema,

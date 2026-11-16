@@ -4,8 +4,10 @@ import type {
   CpuSpec,
   Disk,
   GpuSpec,
+  Hardware,
   MemoryModule,
   MemorySpec,
+  NewCard,
 } from '@server-planner/model';
 
 /**
@@ -68,6 +70,7 @@ export function gpuFromCatalog(gpu: CatalogGpu): GpuSpec {
   return {
     model: gpu.model,
     features: [...gpu.features],
+    attach: gpu.attach,
     ...(gpu.vramBytes !== undefined ? { vramBytes: gpu.vramBytes } : {}),
   };
 }
@@ -75,3 +78,96 @@ export function gpuFromCatalog(gpu: CatalogGpu): GpuSpec {
 /** Vendor first, then model — the order of the pick lists. */
 export const byVendorAndModel = <T extends { vendor: string; model: string }>(a: T, b: T) =>
   a.vendor.localeCompare(b.vendor) || a.model.localeCompare(b.model, 'en', { numeric: true });
+
+/** LIB-05 common add-in cards (configurations, like RAM kits — not catalog data). */
+export interface CardPreset {
+  id: string;
+  card: NewCard;
+}
+
+export const CARD_PRESETS: CardPreset[] = [
+  {
+    id: 'intel-x520-da2',
+    card: {
+      kind: 'nic',
+      model: 'Intel X520-DA2',
+      slot: 'pcie',
+      ports: { count: 2, kind: 'sfp+', speedMbps: 10000 },
+    },
+  },
+  {
+    id: 'intel-x710-da2',
+    card: {
+      kind: 'nic',
+      model: 'Intel X710-DA2',
+      slot: 'pcie',
+      ports: { count: 2, kind: 'sfp+', speedMbps: 10000 },
+    },
+  },
+  {
+    id: 'intel-x540-t2',
+    card: {
+      kind: 'nic',
+      model: 'Intel X540-T2',
+      slot: 'pcie',
+      ports: { count: 2, kind: 'rj45', speedMbps: 10000 },
+    },
+  },
+  {
+    id: 'mellanox-connectx-4-lx',
+    card: {
+      kind: 'nic',
+      model: 'Mellanox ConnectX-4 Lx',
+      slot: 'pcie',
+      ports: { count: 2, kind: 'sfp28', speedMbps: 25000 },
+    },
+  },
+  {
+    id: 'intel-i350-t4',
+    card: {
+      kind: 'nic',
+      model: 'Intel I350-T4',
+      slot: 'pcie',
+      ports: { count: 4, kind: 'rj45', speedMbps: 1000 },
+    },
+  },
+  {
+    id: 'intel-i226-v',
+    card: {
+      kind: 'nic',
+      model: 'Intel I226-V 2.5GbE',
+      slot: 'pcie',
+      ports: { count: 1, kind: 'rj45', speedMbps: 2500 },
+    },
+  },
+  {
+    id: 'm2-rtl8125b',
+    card: {
+      kind: 'nic',
+      model: 'M.2 2.5GbE adapter (RTL8125B)',
+      slot: 'm2',
+      ports: { count: 1, kind: 'rj45', speedMbps: 2500 },
+    },
+  },
+  { id: 'lsi-9207-8i', card: { kind: 'hba', model: 'LSI 9207-8i (IT mode)', slot: 'pcie' } },
+  { id: 'lsi-9300-8i', card: { kind: 'hba', model: 'LSI 9300-8i (IT mode)', slot: 'pcie' } },
+  {
+    id: 'asm1166-m2',
+    card: { kind: 'hba', model: 'M.2 SATA adapter (ASM1166, 6 ports)', slot: 'm2' },
+  },
+];
+
+/** Slots a device uses — the same count as the engine's VAL_SLOTS rule. */
+export function slotUsage(hw: Hardware): Record<'pcie' | 'm2' | 'sata', number> {
+  const cards = hw.cards ?? [];
+  return {
+    pcie:
+      cards.filter((c) => c.slot === 'pcie').length +
+      hw.gpus.filter((g) => g.attach === 'pcie').length,
+    m2:
+      cards.filter((c) => c.slot === 'm2').length +
+      hw.gpus.filter((g) => g.attach === 'm2').length +
+      hw.disks.filter((d) => d.type === 'ssd-nvme').length,
+    sata: hw.disks.filter((d) => d.type === 'hdd' || d.type === 'ssd-sata').length,
+  };
+}
