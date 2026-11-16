@@ -1,4 +1,11 @@
-import type { Project, Subnet } from '@server-planner/model';
+import {
+  assignmentFamily,
+  canonicalIp,
+  isIpv6Cidr,
+  type Project,
+  type Subnet,
+  subnetForAddress,
+} from '@server-planner/model';
 
 /** IP Plan (V-04, VIEW-03, NET-04): per-subnet address table with pool, conflicts and free ranges. */
 
@@ -66,12 +73,32 @@ const MAX_EXPANDED_HOSTS = 65_534;
 export function ipPlan(project: Project): SubnetPlan[] {
   const all: { ip: string; subnetId?: string; row: Omit<AddressRow, 'conflict' | 'outside'> }[] =
     [];
+  const all6: { key: string; subnetId?: string; row: Omit<AddressRow, 'conflict' | 'outside'> }[] =
+    [];
   for (const iface of Object.values(project.interfaces)) {
     const owner =
       iface.owner.type === 'device'
         ? project.devices[iface.owner.id]
         : project.workloads[iface.owner.id];
     for (const a of iface.addresses) {
+      if (assignmentFamily(project, a) === 'ipv6') {
+        // NET-17: IPv6 rows — SLAAC / DHCPv6 without an address are listed too.
+        const subnetId =
+          a.subnetId ?? (a.address ? subnetForAddress(project, a.address) : undefined);
+        all6.push({
+          key: a.address ? canonicalIp(a.address) : '',
+          ...(subnetId ? { subnetId } : {}),
+          row: {
+            type: 'address',
+            ip: a.address ? canonicalIp(a.address) : '',
+            value: 0,
+            kind: a.mode,
+            owner: owner ? { type: iface.owner.type, id: owner.id, name: owner.name } : undefined,
+            iface: iface.name,
+          },
+        });
+        continue;
+      }
       if (!a.address) continue;
       const value = ipv4ToInt(a.address);
       if (value === undefined) continue;
@@ -92,12 +119,52 @@ export function ipPlan(project: Project): SubnetPlan[] {
   const counts = new Map<string, number>();
   for (const a of all) counts.set(a.ip, (counts.get(a.ip) ?? 0) + 1);
 
+  const counts6 = new Map<string, number>();
+  for (const a of all6) if (a.key) counts6.set(a.key, (counts6.get(a.key) ?? 0) + 1);
+
   return Object.values(project.subnets)
     .sort(
       (a, b) =>
-        (ipv4ToInt(a.cidr.split('/')[0] ?? '') ?? 0) - (ipv4ToInt(b.cidr.split('/')[0] ?? '') ?? 0),
+        Number(isIpv6Cidr(a.cidr)) - Number(isIpv6Cidr(b.cidr)) ||
+        (ipv4ToInt(a.cidr.split('/')[0] ?? '') ?? 0) -
+          (ipv4ToInt(b.cidr.split('/')[0] ?? '') ?? 0) ||
+        a.cidr.localeCompare(b.cidr),
     )
     .map((subnet) => {
+      const vlan6 = subnet.vlanId ? project.vlans[subnet.vlanId] : undefined;
+      if (isIpv6Cidr(subnet.cidr)) {
+        // IPv6: the addresses in use (no host count, pool or free ranges in a /64).
+        const rows: AddressRow[] = all6
+          .filter((a) => a.subnetId === subnet.id)
+          .map((a) => ({
+            ...a.row,
+            conflict: !!a.key && (counts6.get(a.key) ?? 0) > 1,
+            outside: false,
+          }));
+        if (subnet.gateway && !rows.some((r) => r.ip === canonicalIp(subnet.gateway ?? '')))
+          rows.push({
+            type: 'address',
+            ip: canonicalIp(subnet.gateway),
+            value: 0,
+            kind: 'gateway',
+            owner: undefined,
+            iface: '',
+            conflict: false,
+            outside: false,
+          });
+        rows.sort(
+          (a, b) =>
+            Number(!a.ip) - Number(!b.ip) || a.ip.localeCompare(b.ip, 'en', { numeric: true }),
+        );
+        const zone6 = subnet.zoneId ? project.zones[subnet.zoneId] : undefined;
+        return {
+          subnet,
+          vlan: vlan6 ? `${vlan6.vid} · ${vlan6.name}` : '',
+          zone: zone6?.name ?? '',
+          used: rows.length,
+          rows,
+        } satisfies SubnetPlan;
+      }
       const net = parseCidr4(subnet.cidr);
       const vlan = subnet.vlanId ? project.vlans[subnet.vlanId] : undefined;
       const zone = subnet.zoneId ? project.zones[subnet.zoneId] : undefined;

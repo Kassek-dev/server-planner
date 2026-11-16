@@ -2,6 +2,7 @@ import {
   addInterface,
   addNatRule,
   addRoute,
+  assignmentFamily,
   COMPUTE_KINDS,
   type Device,
   deleteInterface,
@@ -9,6 +10,8 @@ import {
   deleteRoute,
   type Interface,
   type IpAssignment,
+  isIpv6,
+  isIpv6Cidr,
   isValidCidr,
   isValidIp,
   type Project,
@@ -127,7 +130,12 @@ export function InterfaceCard({
     ...vlans.map((v) => ({ value: v.id, label: `${v.vid} · ${v.name}` })),
   ];
   const sp = iface.switchport;
-  const address: IpAssignment | undefined = iface.addresses[0];
+  // NET-17 dual-stack: one IPv4 and one IPv6 assignment, each edited on its own row.
+  const v4List = iface.addresses.filter((a) => assignmentFamily(project, a) === 'ipv4');
+  const v6List = iface.addresses.filter((a) => assignmentFamily(project, a) === 'ipv6');
+  const address: IpAssignment | undefined = v4List[0];
+  const address6: IpAssignment | undefined = v6List[0];
+  const v6Subnets = Object.values(project.subnets).filter((s) => isIpv6Cidr(s.cidr));
   const linked = Object.values(project.links).some((l) => l.a === iface.id || l.b === iface.id);
   const bridges = siblings.filter((s) => s.kind === 'bridge' && s.id !== iface.id);
   const showSwitchport = SWITCHED_KINDS.has(iface.kind) && device?.kind !== 'client';
@@ -137,7 +145,10 @@ export function InterfaceCard({
     (iface.kind === 'rj45' || iface.kind.startsWith('sfp')) &&
     bridges.length > 0;
 
-  const setAddress = (next: IpAssignment | undefined) => update({ addresses: next ? [next] : [] });
+  const setAddress = (next: IpAssignment | undefined) =>
+    update({ addresses: [...(next ? [next] : []), ...v6List] });
+  const setAddress6 = (next: IpAssignment | undefined) =>
+    update({ addresses: [...v4List, ...(next ? [next] : [])] });
 
   return (
     <Card label={iface.name}>
@@ -310,7 +321,7 @@ export function InterfaceCard({
               label={t('network.address')}
               mono
               value={address.address ?? ''}
-              validate={(v) => (v === '' || isValidIp(v) ? null : t('errors.ip'))}
+              validate={(v) => (v === '' || (isValidIp(v) && !isIpv6(v)) ? null : t('errors.ipv4'))}
               onCommit={(v) => {
                 const subnetId = v ? subnetForAddress(project, v) : undefined;
                 setAddress({
@@ -325,6 +336,64 @@ export function InterfaceCard({
       ) : null}
       {address?.subnetId && project.subnets[address.subnetId] ? (
         <Row label={t('network.subnet')} value={project.subnets[address.subnetId]?.cidr ?? ''} />
+      ) : null}
+      {iface.kind !== 'wifi-radio' &&
+      !(showMembership && iface.parentId) &&
+      (v6Subnets.length > 0 || address6) ? (
+        <Grid>
+          <Select
+            label={t('network.ipv6')}
+            value={address6?.mode ?? ''}
+            options={[
+              { value: '', label: t('network.noAddress') },
+              { value: 'static', label: t('network.static') },
+              { value: 'slaac', label: t('network.slaac') },
+              { value: 'dhcp', label: t('network.dhcpv6') },
+            ]}
+            onChange={(e) => {
+              const mode = e.target.value as IpAssignment['mode'] | '';
+              const subnetId = address6?.subnetId ?? v6Subnets[0]?.id;
+              setAddress6(
+                mode
+                  ? {
+                      mode,
+                      ...(mode === 'static' && address6?.address
+                        ? { address: address6.address }
+                        : {}),
+                      ...(subnetId ? { subnetId } : {}),
+                    }
+                  : undefined,
+              );
+            }}
+          />
+          {address6?.mode === 'static' ? (
+            <CommitField
+              label={t('network.address6')}
+              mono
+              value={address6.address ?? ''}
+              validate={(v) => (v === '' || isIpv6(v) ? null : t('errors.ipv6'))}
+              onCommit={(v) => {
+                const subnetId = v ? subnetForAddress(project, v) : address6.subnetId;
+                setAddress6({
+                  mode: 'static',
+                  ...(v ? { address: v.trim() } : {}),
+                  ...(subnetId ? { subnetId } : {}),
+                });
+              }}
+            />
+          ) : address6 && v6Subnets.length > 1 ? (
+            <Select
+              label={t('network.subnet6')}
+              mono
+              value={address6.subnetId ?? ''}
+              options={v6Subnets.map((s) => ({ value: s.id, label: s.cidr }))}
+              onChange={(e) => setAddress6({ ...address6, subnetId: e.target.value })}
+            />
+          ) : null}
+        </Grid>
+      ) : null}
+      {address6?.subnetId && project.subnets[address6.subnetId] ? (
+        <Row label={t('network.subnet6')} value={project.subnets[address6.subnetId]?.cidr ?? ''} />
       ) : null}
       {iface.kind === 'rj45' ? <PoeFields iface={iface} update={update} /> : null}
     </Card>

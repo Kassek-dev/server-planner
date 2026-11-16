@@ -20,6 +20,13 @@
     "empty": "No VLANs yet. Untagged traffic uses the native VLAN 1.",
     "subnetCount": "{count, plural, one {# subnet} other {# subnets}}",
     "addSubnet": "Add subnet",
+    "addSubnet6": "Add IPv6 subnet",
+    "ra": "Router advertisements",
+    "raModes": {
+      "slaac": "SLAAC — hosts pick their address",
+      "dhcpv6": "DHCPv6 (managed)",
+      "none": "None — static addresses only"
+    },
     "cidr": "Network",
     "vlan": "VLAN",
     "zone": "Zone",

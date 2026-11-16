@@ -15,6 +15,7 @@ import {
   updateWorkload,
   upgradeProjectV1,
 } from '../src';
+import { buildDualStackLab } from './support/dual-stack';
 import { buildHomeLab } from './support/home-lab';
 import { homeLabFile } from './support/project-file';
 import { buildReverseProxyLab } from './support/reverse-proxy';
@@ -26,6 +27,7 @@ const fixtureV1 = readFixture('v1/home-lab.json');
 const fixtureV2 = readFixture('v2/home-lab.json');
 const reverseProxy = readFixture('v3/reverse-proxy.json');
 const reverseProxyV2 = readFixture('v2/reverse-proxy.json');
+const dualStack = readFixture('v3/dual-stack.json');
 
 function expectFileError(raw: unknown, code: string) {
   try {
@@ -48,6 +50,7 @@ describe('project file', () => {
   it('fixtures are up to date with the builders (run `pnpm --filter @server-planner/model fixtures:write`)', () => {
     expect(JSON.parse(JSON.stringify(homeLabFile(buildHomeLab())))).toEqual(fixture);
     expect(JSON.parse(JSON.stringify(homeLabFile(buildReverseProxyLab())))).toEqual(reverseProxy);
+    expect(JSON.parse(JSON.stringify(homeLabFile(buildDualStackLab())))).toEqual(dualStack);
   });
 
   it('migrates a v1 file to v3 with empty proxy routes and DNS records', () => {
@@ -84,6 +87,19 @@ describe('project file', () => {
     );
     // Data already in a v2 shape is kept.
     expect(upgradeProjectV1(reverseProxy.project)).toEqual(reverseProxy.project);
+  });
+
+  it('round-trips the dual-stack fixture with v3 fields', () => {
+    const { file } = parseProjectFile(dualStack);
+    const v6 = Object.values(file.project.subnets).find((s) => s.cidr.includes(':'));
+    expect(v6?.ra).toBe('slaac');
+    expect(
+      Object.values(file.project.interfaces).some((i) =>
+        i.addresses.some((a) => a.mode === 'slaac'),
+      ),
+    ).toBe(true);
+    expect(Object.values(file.project.devices).some((d) => d.hardware.cards?.length)).toBe(true);
+    expect(parseProjectFile(JSON.parse(JSON.stringify(file))).file).toEqual(file);
   });
 
   it('round-trips the reverse proxy fixture', () => {

@@ -111,7 +111,7 @@ function SubnetCard({ plan }: { plan: SubnetPlan }) {
                 key={`${row.ip}:${row.owner?.id ?? 'gw'}:${row.iface}`}
                 className="border-t border-border-subtle"
               >
-                <td className="px-4 py-1.5 font-mono text-data">{row.ip}</td>
+                <td className="px-4 py-1.5 font-mono text-data">{row.ip || t('ip.auto')}</td>
                 <td className="px-4 py-1.5">
                   {row.owner ? (
                     <button

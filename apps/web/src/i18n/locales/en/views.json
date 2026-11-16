@@ -49,6 +49,7 @@
     }
   },
   "ip": {
+    "auto": "automatic",
     "title": "IP Plan",
     "summary": "{subnets, plural, one {# subnet} other {# subnets}}",
     "editSubnets": "VLANs & subnets",

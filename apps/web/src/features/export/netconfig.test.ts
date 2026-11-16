@@ -1,11 +1,13 @@
 import {
   addInterface,
   type Project,
+  parseProjectFile,
   setDeviceOs,
   updateDevice,
   updateInterface,
 } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
+import dualStack from '../../../../../fixtures/schema/v3/dual-stack.json';
 import { deviceByName, homeLab, sessionWith } from '../canvas/testSupport';
 import { dhcpReservations, ifupdown, linuxName, netConfigFormat, netplan } from './netconfig';
 
@@ -48,7 +50,10 @@ describe('network configuration export (EXP-07)', () => {
 
   it('writes Netplan for Ubuntu with a VLAN on the bridge', () => {
     const project = edit((s) => {
-      s.dispatch(setDeviceOs, { id: pve.id, os: { osId: 'ubuntu-server', version: '24.04' } });
+      s.dispatch(setDeviceOs, {
+        id: pve.id,
+        os: { osId: 'ubuntu-server' as const, version: '24.04' },
+      });
       const bridge = Object.values(s.getState().project?.interfaces ?? {}).find(
         (i) => i.owner.id === pve.id && i.kind === 'bridge',
       );
@@ -105,5 +110,55 @@ describe('network configuration export (EXP-07)', () => {
     });
     expect(dhcpReservations(project)).toContain('dhcp-host=aa:bb:cc:00:11:22,192.168.20.15,nas-01');
     expect(dhcpReservations(lab)).toContain('No interface uses a DHCP reservation');
+  });
+
+  it('writes the IPv6 address of a dual-stack host (NET-17)', () => {
+    const dual = parseProjectFile(dualStack).file.project;
+    const host = deviceByName(dual, 'pve1');
+    const text = ifupdown(dual, host.id);
+    expect(text).toContain('iface vmbr0 inet static');
+    expect(text).toContain(
+      [
+        'iface vmbr0 inet6 static',
+        '    address fd20:4d2:20::5/64',
+        '    gateway fd20:4d2:20::1',
+      ].join('\n'),
+    );
+    // The card's ports show up as unconfigured physical ports.
+    expect(text).not.toContain('inet6 static\n    address 192.');
+
+    const plan = netplan(
+      {
+        ...dual,
+        devices: {
+          ...dual.devices,
+          [host.id]: { ...host, os: { osId: 'ubuntu-server' as const, version: '24.04' } },
+        },
+      },
+      host.id,
+    );
+    expect(plan).toContain('addresses: ["192.168.10.5/24", "fd20:4d2:20::5/64"]');
+    expect(plan).toContain('  - to: "::/0"');
+  });
+
+  it('marks SLAAC and DHCPv6 interfaces', () => {
+    const dual = parseProjectFile(dualStack).file.project;
+    const pi = deviceByName(dual, 'pi-dns');
+    const debian = {
+      ...dual,
+      devices: {
+        ...dual.devices,
+        [pi.id]: { ...pi, os: { osId: 'debian' as const, version: '12' } },
+      },
+    };
+    expect(ifupdown(debian, pi.id)).toContain('iface eth0 inet6 auto');
+    const ubuntu = {
+      ...dual,
+      devices: {
+        ...dual.devices,
+        [pi.id]: { ...pi, os: { osId: 'ubuntu-server' as const, version: '24.04' } },
+      },
+    };
+    expect(netplan(ubuntu, pi.id)).toContain('accept-ra: true');
   });
 });

@@ -1,4 +1,6 @@
+import { parseProjectFile } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
+import dualStack from '../../../../../fixtures/schema/v3/dual-stack.json';
 import { homeLab } from '../canvas/testSupport';
 import { intToIpv4, ipPlan, ipv4ToInt, parseCidr4 } from './plan';
 
@@ -44,5 +46,24 @@ describe('ipPlan', () => {
     });
     expect(ranges?.some((r) => r.type === 'pool' && r.count === 100)).toBe(true);
     expect(ranges?.at(-1)).toMatchObject({ type: 'free', to: '192.168.20.254' });
+  });
+});
+
+describe('ipPlan with IPv6 (NET-17)', () => {
+  it('lists IPv6 subnets after IPv4 ones, with static, SLAAC and gateway rows', () => {
+    const lab = parseProjectFile(dualStack).file.project;
+    const plans = ipPlan(lab);
+    const last = plans[plans.length - 1];
+    expect(last?.subnet.cidr).toBe('fd20:4d2:20::/64');
+    expect(last?.hosts).toBeUndefined();
+    expect(last?.pool).toBeUndefined();
+    const rows = (last?.rows ?? []).flatMap((r) => (r.type === 'address' ? [r] : []));
+    expect(rows.map((r) => [r.ip, r.kind, r.owner?.name])).toEqual([
+      ['fd20:4d2:20::1', 'static', 'gw-01'],
+      ['fd20:4d2:20::5', 'static', 'pve1'],
+      ['', 'slaac', 'pi-dns'],
+    ]);
+    // IPv4 plans are unchanged by the IPv6 addresses.
+    expect(plans.slice(0, -1).map((p) => p.used)).toEqual(ipPlan(homeLab()).map((p) => p.used));
   });
 });

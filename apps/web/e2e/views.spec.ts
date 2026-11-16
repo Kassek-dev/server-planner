@@ -167,3 +167,28 @@ test('print labels: cables and devices on an A4 sheet (LBL-04)', async ({ page }
   await expect(page.getByRole('dialog', { name: 'Print labels' })).toBeHidden();
   await page.emulateMedia({ media: 'screen' });
 });
+
+test('IPv6: dual-stack addressing in the inspector and the IP plan (NET-17)', async ({ page }) => {
+  await page.goto('./');
+  await page
+    .getByTestId('import-input')
+    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v3/dual-stack.json'));
+  await page.getByRole('button', { name: 'Open project' }).click();
+  await expect(page.locator('.react-flow__node').first()).toBeVisible();
+  await page
+    .locator('.react-flow__node', { has: page.getByText('pi-dns', { exact: true }) })
+    .first()
+    .click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Network' }).click();
+  await expect(panel.getByLabel('IPv6').first()).toHaveValue('slaac');
+  await page.screenshot({ path: 'test-results/ipv6-inspector.png' });
+
+  await page.getByRole('link', { name: 'IP Plan' }).click();
+  const card = page.getByRole('heading', { name: 'fd20:4d2:20::/64' });
+  await expect(card).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'fd20:4d2:20::5' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'automatic' })).toBeVisible();
+  await card.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: 'test-results/ipv6-plan.png' });
+});
