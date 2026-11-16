@@ -24,6 +24,7 @@ import { SelectionPanel } from '../inspector/SelectionPanel';
 import { InventoryView } from '../inventory/InventoryView';
 import { IpPlanView } from '../ipplan/IpPlanView';
 import { IssueCounters } from '../issues/IssueCounters';
+import { ServicesView } from '../services/ServicesView';
 import { SnapshotsView } from '../snapshots/SnapshotsView';
 import { describeCommit } from '../toasts/describe';
 import { useToasts } from '../toasts/store';
@@ -95,13 +96,14 @@ function EditorLoading() {
   );
 }
 
-type View = 'topology' | 'dashboard' | 'inventory' | 'ip' | 'access' | 'snapshots';
+type View = 'topology' | 'dashboard' | 'inventory' | 'ip' | 'access' | 'services' | 'snapshots';
 const VIEWS: { id: View; path: string }[] = [
   { id: 'topology', path: '' },
   { id: 'dashboard', path: 'dashboard' },
   { id: 'inventory', path: 'inventory' },
   { id: 'ip', path: 'ip' },
   { id: 'access', path: 'access' },
+  { id: 'services', path: 'services' },
 ];
 
 function useView(): View {
@@ -330,6 +332,8 @@ function Editor() {
           <IpPlanView />
         ) : view === 'access' ? (
           <AccessView />
+        ) : view === 'services' ? (
+          <ServicesView />
         ) : (
           <CanvasWorkspace />
         )}

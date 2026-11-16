@@ -5,6 +5,7 @@
     "inventory": "Inventory",
     "ip": "IP Plan",
     "access": "Access",
+    "services": "Services",
     "dashboard": "Dashboard",
     "snapshots": "Snapshots"
   },

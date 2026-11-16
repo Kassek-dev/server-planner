@@ -123,3 +123,23 @@ test('exports from any view: CSV, Markdown and docker-compose (EXP-03…06)', as
   expect(file.suggestedFilename()).toBe('pve1-interfaces');
   expect(await readFile(await file.path(), 'utf8')).toContain('    bridge-ports eth0');
 });
+
+test('services map: apps behind proxy routes and local names (VIEW-07)', async ({ page }) => {
+  await page.goto('./');
+  await page
+    .getByTestId('import-input')
+    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v2/reverse-proxy.json'));
+  await page.getByRole('button', { name: 'Open project' }).click();
+  await expect(page.locator('.react-flow__node').first()).toBeVisible();
+  await page.getByRole('link', { name: 'Services' }).click();
+  await expect(page).toHaveURL(/\/services/);
+  const map = page.getByRole('list', { name: 'Services map' });
+  await expect(map.getByRole('button', { name: /^Host name jellyfin\.home\.arpa/ })).toBeVisible();
+  const caddy = map.getByRole('button', { name: /^Caddy on .*Leads to Jellyfin/ });
+  await expect(caddy).toBeVisible();
+  await map.getByRole('button', { name: /^Jellyfin on / }).click();
+  await expect(inspector(page).getByRole('textbox', { name: 'Name' })).toHaveValue('Jellyfin');
+  await page.screenshot({ path: 'test-results/services-map.png' });
+  await map.getByRole('button', { name: /^Host name media\.home\.arpa/ }).click();
+  await expect(page).toHaveURL(/panel=services/);
+});

@@ -80,6 +80,24 @@
     "poolRow": "{from} – {to} · DHCP pool ({count, plural, one {# address} other {# addresses}})",
     "freeRow": "{from} – {to} · free ({count, plural, one {# address} other {# addresses}})"
   },
+  "services": {
+    "title": "Services",
+    "map": "Services map",
+    "edit": "Proxy & DNS",
+    "empty": "No apps yet. Add an app to a device or a container, and its dependencies, proxy routes and local DNS names show up here.",
+    "appNode": "{name} on {host}",
+    "nameNode": "Host name {name}",
+    "missingNode": "Missing dependency: {capability}",
+    "missing": "No app provides it",
+    "answeredBy": "answered by {name}",
+    "leadsTo": "Leads to {names}",
+    "legend": {
+      "route": "Reverse proxy route",
+      "record": "Local DNS name",
+      "dependency": "Dependency",
+      "missing": "Missing dependency"
+    }
+  },
   "access": {
     "title": "Access",
     "mode": "Matrix axis",

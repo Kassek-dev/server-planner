@@ -51,6 +51,7 @@ flowchart TD
   PRJ --> V3["inventory (V-03)"]
   PRJ --> V4["ip (V-04)"]
   PRJ --> V5["access (V-05)"]
+  PRJ --> V7["services (V-07)"]
   PRJ --> V6["snapshots (V-06)"]
 
   V1 --> PAN["Right column: Inspector I-01…I-08 · Simulation X-01 · Issues X-02"]
@@ -74,6 +75,7 @@ Drzewo tekstowe (dla README / dokumentacji):
     ├── /inventory              Inventory                    P1
     ├── /ip                     IP Plan                      P1
     ├── /access                 Access                       P1
+    ├── /services               Services map                 P2
     └── /snapshots              Snapshots & diff             P1
 #/dev/design                    Component gallery (dev build only)
 ```
@@ -111,7 +113,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | V-04 | **IP Plan**   | `/ip`        | Karty podsieci z pulą DHCP + tabela adresów, konflikty, wolne zakresy                                                 | VIEW‑03, NET‑04, EXP‑04 | P1   | —                |
 | V-05 | **Access**    | `/access`    | Macierz strefa × strefa / urządzenie × urządzenie + ekspozycja z internetu + lista asercji (✅ kod, etap 13)          | VIEW‑04, SIM‑04…06      | P1   | —                |
 | V-06 | **Snapshots** | `/snapshots` | Lista snapshotów (lewa kolumna) + diff dwóch wersji (dodane / usunięte / zmienione elementy), Restore (✅ kod, etap 16b; podgląd diffu na canvasie — później) | PRJ‑07                  | P1   | —                |
-| V-07 | Services map  | `/services`  | Mapa aplikacji i zależności                                                                                           | VIEW‑07                 | P2   | —                |
+| V-07 | **Services**  | `/services`  | Mapa usług w kolumnach: nazwy hostów (trasy proxy, rekordy DNS) → proxy → aplikacje → zależności; brak wymaganej zależności na czerwono; klik: aplikacja → inspector, nazwa → S‑06 (✅ kod, etap 28) | VIEW‑07                 | P2   | —                |
 | V-08 | Logical L3    | `/logical`   | Automatyczny diagram stref i podsieci                                                                                 | VIEW‑06                 | P2   | —                |
 
 ---

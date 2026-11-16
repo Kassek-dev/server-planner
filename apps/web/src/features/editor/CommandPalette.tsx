@@ -87,7 +87,9 @@ export function CommandPalette({ project }: { project: Project }) {
           sel.setDetail({ type: 'app', id: a.id }),
         ),
       ),
-      ...(['topology', 'dashboard', 'inventory', 'ip', 'access', 'snapshots'] as const).map(
+      ...(
+        ['topology', 'dashboard', 'inventory', 'ip', 'access', 'services', 'snapshots'] as const
+      ).map(
         (v): Entry => ({
           id: `view:${v}`,
           label: t(`views.${v}`),
