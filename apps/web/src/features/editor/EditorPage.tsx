@@ -25,6 +25,7 @@ import { InventoryView } from '../inventory/InventoryView';
 import { IpPlanView } from '../ipplan/IpPlanView';
 import { IssueCounters } from '../issues/IssueCounters';
 import { LabelsDialog } from '../labels/LabelsDialog';
+import { LogicalView } from '../logical/LogicalView';
 import { ServicesView } from '../services/ServicesView';
 import { SnapshotsView } from '../snapshots/SnapshotsView';
 import { describeCommit } from '../toasts/describe';
@@ -106,6 +107,7 @@ type View =
   | 'ip'
   | 'access'
   | 'services'
+  | 'logical'
   | 'compare'
   | 'snapshots';
 const VIEWS: { id: View; path: string }[] = [
@@ -115,6 +117,7 @@ const VIEWS: { id: View; path: string }[] = [
   { id: 'ip', path: 'ip' },
   { id: 'access', path: 'access' },
   { id: 'services', path: 'services' },
+  { id: 'logical', path: 'logical' },
 ];
 
 function useView(): View {
@@ -360,6 +363,8 @@ function Editor() {
           <AccessView />
         ) : view === 'services' ? (
           <ServicesView />
+        ) : view === 'logical' ? (
+          <LogicalView />
         ) : view === 'compare' ? (
           <CompareView />
         ) : (

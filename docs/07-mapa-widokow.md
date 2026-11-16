@@ -1,6 +1,6 @@
 # Server Planner — mapa widoków i sitemapa (v0.1)
 
-> Status: **zaakceptowany, v0.5** (v0.2: S‑06 Proxy & DNS; v0.3: X‑01d Failures, D‑16 Rack elevation; v0.4: V‑07 Services, D‑17 Print labels; v0.5: V‑09 Compare, D‑18 Create variant) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.6** (v0.2: S‑06 Proxy & DNS; v0.3: X‑01d Failures, D‑16 Rack elevation; v0.4: V‑07 Services, D‑17 Print labels; v0.5: V‑09 Compare, D‑18 Create variant; v0.6: V‑08 Logical) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (ID funkcji), `05-projekt-ui.md` v0.2 (zachowania), `04-design-system.md` (komponenty)
 > Cel: kompletny spis **każdego osobnego widoku**, który trzeba zaprojektować i zbudować — podstawa sitemapy, routingu, makiet i planu prac.
 
@@ -52,6 +52,7 @@ flowchart TD
   PRJ --> V4["ip (V-04)"]
   PRJ --> V5["access (V-05)"]
   PRJ --> V7["services (V-07)"]
+  PRJ --> V8["logical (V-08)"]
   PRJ --> V9["compare (V-09)"]
   PRJ --> V6["snapshots (V-06)"]
 
@@ -77,6 +78,7 @@ Drzewo tekstowe (dla README / dokumentacji):
     ├── /ip                     IP Plan                      P1
     ├── /access                 Access                       P1
     ├── /services               Services map                 P2
+    ├── /logical                Logical L3                   P2
     ├── /compare                Compare with base (wariant)  P2
     └── /snapshots              Snapshots & diff             P1
 #/dev/design                    Component gallery (dev build only)
@@ -116,7 +118,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | V-05 | **Access**    | `/access`    | Macierz strefa × strefa / urządzenie × urządzenie + ekspozycja z internetu + lista asercji (✅ kod, etap 13)          | VIEW‑04, SIM‑04…06      | P1   | —                |
 | V-06 | **Snapshots** | `/snapshots` | Lista snapshotów (lewa kolumna) + diff dwóch wersji (dodane / usunięte / zmienione elementy), Restore (✅ kod, etap 16b; podgląd diffu na canvasie — później) | PRJ‑07                  | P1   | —                |
 | V-07 | **Services**  | `/services`  | Mapa usług w kolumnach: nazwy hostów (trasy proxy, rekordy DNS) → proxy → aplikacje → zależności; brak wymaganej zależności na czerwono; klik: aplikacja → inspector, nazwa → S‑06 (✅ kod, etap 28) | VIEW‑07                 | P2   | —                |
-| V-08 | Logical L3    | `/logical`   | Automatyczny diagram stref i podsieci                                                                                 | VIEW‑06                 | P2   | —                |
+| V-08 | **Logical**   | `/logical`   | Diagram L3: Internet → routery (polityka firewalla, liczba reguł) → strefy w kolumnach z podsieciami (CIDR, VLAN, brama, liczba adresów; IPv6 po IPv4); klik: router → inspector, podsieć → S‑01; „Access matrix” → V‑05 (✅ kod, etap 35) | VIEW‑06                 | P2   | —                |
 | V-09 | **Compare**   | `/compare`   | Tylko dla wariantu (PRJ‑10): „Variant of <baza>”, tabela baza / wariant (rdzenie, RAM, dyski, zajętość CPU i RAM, problemy, pobór idle, koszt zakupów), „Parts to buy” (nowe urządzenia, więcej RAM, nowe dyski i GPU, inny CPU), lista zmian jak w V‑06; projekt bez bazy → zachęta do utworzenia wariantu (✅ kod, etap 31) | PRJ‑10                  | P2   | —                |
 
 ---

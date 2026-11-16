@@ -322,7 +322,7 @@ Reszta P2 bez zmiany formatu projektu (D13).
 - [x] `features/canvas/autoLayout.ts` (`deviceDepths` — BFS od Internetu, `autoLayout` — rzędy wg głębokości, kolejność barycentryczna, lokalizacje najwyższego poziomu jako bloki); przycisk „Auto layout” w O‑11, jedna transakcja, potem `fitView`
 
 ### Etap 35 — Diagram L3 (VIEW‑06)
-- [ ] Widok `#/p/:id/logical`: strefy, podsieci i routery z interfejsami; reguły firewalla między strefami
+- [x] Widok `#/p/:id/logical` (zakładka Logical, paleta): `logicalMap()` — Internet, routery (polityka, liczba reguł), strefy z podsieciami, połączenia z adresacji; dostęp między strefami — przycisk do macierzy V‑05 (nie powielamy jej)
 
 ### Etap 36 — Sugestie rozmieszczenia (CAP‑10)
 - [ ] Bin packing workloadów na hostach (zalecane wymagania), propozycja przeniesień i rekomendacje rozbudowy (RAM, rdzenie, dyski)
@@ -411,3 +411,4 @@ Schemat projektu v4 (D13).
 | 2026-11-16 | **Wydanie v1.6.2** (D11: 2 poprawki od 1.6.0) | tag `v1.6.2` (#58) |
 | 2026-11-16 | Decyzja D13 (reszta P2), plan 1.7 i 1.8 | #59 |
 | 2026-11-16 | Etap 34: auto‑layout (CAN‑10) | #59 |
+| 2026-11-16 | Etap 35: diagram L3 V‑08 (VIEW‑06) | #60 |
