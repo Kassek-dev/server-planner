@@ -6,6 +6,7 @@ import {
   isIpv6Cidr,
   type OsId,
   POOL_MIN_DISKS,
+  runsGuest,
   SINGLE_LINK_KINDS,
   type Subnet,
   type Workload,
@@ -570,7 +571,7 @@ const osCompatibility: ValidationRule = {
     for (const w of Object.values(ctx.project.workloads)) {
       if (w.kind === 'container' || w.host.type !== 'device') continue;
       const host = ctx.project.devices[w.host.id];
-      if (host && host.os?.osId !== 'proxmox-ve') {
+      if (host && !runsGuest(host.os?.osId, w.kind)) {
         out.push(
           issue(
             'VAL_11_HYPERVISOR',
@@ -579,7 +580,13 @@ const osCompatibility: ValidationRule = {
               { type: 'workload', id: w.id },
               { type: 'device', id: host.id },
             ],
-            { workload: w.name, host: host.name, kind: w.kind.toUpperCase() },
+            {
+              workload: w.name,
+              host: host.name,
+              kind: w.kind.toUpperCase(),
+              guest: w.kind,
+              os: host.os?.osId ?? 'none',
+            },
           ),
         );
       }

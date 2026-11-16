@@ -77,7 +77,7 @@
   },
   "VAL_11_HYPERVISOR": {
     "title": "No hypervisor",
-    "description": "{kind} {workload} needs Proxmox VE, but {host} does not run it."
+    "description": "{kind} {workload} needs {guest, select, lxc {Proxmox VE} other {a hypervisor — Proxmox VE or Windows Server with Hyper-V}}, but {host} {os, select, windows-server {runs Windows Server, which has no LXC} none {has no OS} other {does not run one}}."
   },
   "VAL_11_DOCKER_PVE": {
     "title": "Docker on Proxmox",

@@ -1,4 +1,4 @@
-import type { Id, Project, Workload } from '@server-planner/model';
+import { type Id, type Project, runsGuest, type Workload } from '@server-planner/model';
 import type { CapacityReport } from './types';
 
 /**
@@ -42,7 +42,8 @@ interface HostState {
   cpuUsed: number;
   memCap: number;
   memUsed: number;
-  vmHost: boolean;
+  vm: boolean;
+  lxc: boolean;
   dockerHost: boolean;
 }
 
@@ -61,7 +62,7 @@ function movable(project: Project, report: CapacityReport) {
 }
 
 const fits = (w: Workload, host: HostState) =>
-  w.kind === 'container' ? host.dockerHost : host.vmHost;
+  w.kind === 'container' ? host.dockerHost : host[w.kind];
 
 export function placementPlan(
   project: Project,
@@ -82,7 +83,8 @@ export function placementPlan(
           cpuUsed: r.cpu.used,
           memCap: r.memory.capacity,
           memUsed: r.memory.used,
-          vmHost: device?.os?.osId === 'proxmox-ve',
+          vm: runsGuest(device?.os?.osId, 'vm'),
+          lxc: runsGuest(device?.os?.osId, 'lxc'),
           dockerHost: !!device?.docker,
         },
       ];
