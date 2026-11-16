@@ -295,7 +295,7 @@ Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zm
 Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 
 ### Etap 31 — Warianty projektu (PRJ‑10)
-- [ ] „Create variant” = powiązana kopia (metadane IndexedDB), widok porównania: zmiany, capacity, problemy, lista zakupów
+- [x] `ProjectMeta.variantOf` (zachowywane przy zapisie), `repository.createVariant`; D‑18 Create variant; V‑09 Compare (`compareProjects`, `upgrades`: nowe urządzenia, RAM, dyski, GPU, CPU; tabela sum, lista zmian `DiffList`); zakładka tylko dla wariantów; dopisek na karcie projektu; pasek widoków bez łamania linii
 
 ### Etap 32 — Konfigurator sprzętu (LIB‑05)
 - [ ] Sloty PCIe / M.2 / SATA z katalogu, karty rozszerzeń (NIC dodaje porty, GPU, HBA), walidacja RAM / slotów / kieszeni, krok „Configure” w D‑05
@@ -356,3 +356,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 29: wydruk etykiet na arkuszu A4 (LBL‑04, D‑17) | #50 |
 | 2026-11-16 | Etap 30: Wikidata odrzucone; +65 kurowanych CPU (CAT‑05) | #51 |
 | 2026-11-16 | **Wydanie v1.5.0** (etapy 27–30; D11: nowe funkcje → `Z` = 0) | tag `v1.5.0` (#52) |
+| 2026-11-16 | Etap 31: warianty projektu i widok Compare (PRJ‑10) | #53 |

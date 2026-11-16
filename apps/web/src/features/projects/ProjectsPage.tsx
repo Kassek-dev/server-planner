@@ -192,6 +192,11 @@ export function ProjectsPage() {
                 <li key={project.id}>
                   <ProjectCard
                     project={project}
+                    variantOf={
+                      project.variantOf
+                        ? (list.projects.find((p) => p.id === project.variantOf)?.name ?? null)
+                        : undefined
+                    }
                     onRename={() => setDialog({ kind: 'rename', project })}
                     onDuplicate={async () => {
                       await repository.duplicate(project.id, t('copyName', { name: project.name }));
@@ -306,8 +311,11 @@ function ProjectCard({
   onDuplicate,
   onExport,
   onDelete,
+  variantOf,
 }: {
   project: ProjectMeta;
+  /** PRJ-10: name of the base project; `null` when the base was deleted. */
+  variantOf?: string | null | undefined;
   onRename: () => void;
   onDuplicate: () => void;
   onExport: () => void;
@@ -349,6 +357,13 @@ function ProjectCard({
         <span className="font-mono text-data-sm text-text-secondary">
           {t('card.meta', { devices: project.deviceCount, locations: project.locationCount })}
         </span>
+        {variantOf !== undefined ? (
+          <span className="text-body-sm text-text-secondary">
+            {variantOf === null
+              ? t('card.variantOrphan')
+              : t('card.variantOf', { name: variantOf })}
+          </span>
+        ) : null}
         <span className="text-body-sm text-text-muted">
           {t('card.edited', { when: formatRelative(project.updatedAt) })}
         </span>

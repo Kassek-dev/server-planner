@@ -9,6 +9,7 @@ import { useSelection } from '../canvas/selection';
 import { useDrawer } from '../drawers/useDrawer';
 import { useExportDialog } from '../export/store';
 import { useLabelsDialog } from '../labels/LabelsDialog';
+import { useVariantDialog } from '../variants/variants';
 
 /** CAN-09 command palette (Ctrl+K): find an element or run an action by name. */
 
@@ -105,6 +106,7 @@ export function CommandPalette({ project }: { project: Project }) {
           ['issues', () => setPanel('issues')],
           ['export', () => useExportDialog.getState().setOpen(true)],
           ['printLabels', () => useLabelsDialog.getState().setOpen(true)],
+          ['createVariant', () => useVariantDialog.getState().setOpen(true)],
           ['vlans', () => openDrawer({ kind: 'vlans' })],
           ['services', () => openDrawer({ kind: 'services' })],
           ['tags', () => openDrawer({ kind: 'tags' })],

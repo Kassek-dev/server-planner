@@ -19,7 +19,9 @@
   },
   "card": {
     "meta": "{devices, plural, one {# device} other {# devices}} · {locations, plural, =0 {unplaced} one {# location} other {# locations}}",
-    "edited": "Edited {when}"
+    "edited": "Edited {when}",
+    "variantOf": "Variant of {name}",
+    "variantOrphan": "Variant of a deleted project"
   },
   "copyName": "{name} (copy)",
   "banner": {

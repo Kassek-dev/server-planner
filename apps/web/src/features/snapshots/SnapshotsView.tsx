@@ -168,7 +168,7 @@ const MARK: Record<DiffEntry['change'], { sign: string; className: string }> = {
   changed: { sign: '~', className: 'text-warning-text' },
 };
 
-function DiffList({ diff }: { diff: DiffEntry[] }) {
+export function DiffList({ diff }: { diff: DiffEntry[] }) {
   const { t } = useTranslation('views');
   const reveal = (entry: DiffEntry) => {
     if (entry.change === 'removed') return;

@@ -115,4 +115,20 @@ describe('ProjectRepository', () => {
     expect(released).toBe(1);
     newer.close();
   });
+
+  it('creates a variant linked to its base, kept across saves (PRJ-10)', async () => {
+    const repo = await freshRepo();
+    const base = createProject('Lab');
+    await repo.save(base);
+    const variant = await repo.createVariant(base.id, 'Lab — 32 GB');
+    expect((await repo.getMeta(variant.id))?.variantOf).toBe(base.id);
+    await repo.save({ ...variant, name: 'Lab — 64 GB' });
+    expect(await repo.getMeta(variant.id)).toMatchObject({
+      name: 'Lab — 64 GB',
+      variantOf: base.id,
+    });
+    const second = await repo.createVariant(variant.id, 'Lab — again');
+    expect((await repo.getMeta(second.id))?.variantOf).toBe(base.id);
+    expect((await repo.getMeta(base.id))?.variantOf).toBeUndefined();
+  });
 });

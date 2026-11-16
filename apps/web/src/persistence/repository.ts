@@ -23,9 +23,29 @@ export class ProjectRepository {
     return this.db.get('projectData', id);
   }
 
+  getMeta(id: string): Promise<ProjectMeta | undefined> {
+    return this.db.get('projects', id);
+  }
+
+  /**
+   * PRJ-10: a variant is a copy linked to its base project, edited on its own and compared with
+   * the base. A variant of a variant links to the same base.
+   */
+  async createVariant(baseId: string, name: string): Promise<Project> {
+    const base = await this.getMeta(baseId);
+    const copy = await this.duplicate(baseId, name);
+    const meta = await this.getMeta(copy.id);
+    if (meta) await this.db.put('projects', { ...meta, variantOf: base?.variantOf ?? baseId });
+    return copy;
+  }
+
   async save(project: Project): Promise<ProjectMeta> {
-    const meta = toMeta(project);
     const tx = this.db.transaction(['projects', 'projectData'], 'readwrite');
+    const previous = await tx.objectStore('projects').get(project.id);
+    const meta: ProjectMeta = {
+      ...toMeta(project),
+      ...(previous?.variantOf ? { variantOf: previous.variantOf } : {}),
+    };
     await Promise.all([
       tx.objectStore('projectData').put(project),
       tx.objectStore('projects').put(meta),

@@ -6,6 +6,7 @@
     "ip": "IP Plan",
     "access": "Access",
     "services": "Services",
+    "compare": "Compare",
     "dashboard": "Dashboard",
     "snapshots": "Snapshots"
   },
@@ -20,6 +21,14 @@
   "redo": "Redo",
   "export": "Export",
   "loading": "Loading project…",
+  "variant": {
+    "title": "Create variant",
+    "description": "A copy of this project to try a change — more RAM, another server — without touching the original. The variant opens on its Compare view, side by side with this project.",
+    "name": "Variant name",
+    "defaultName": "{name} — variant",
+    "create": "Create variant",
+    "cancel": "Cancel"
+  },
   "labels": {
     "title": "Print labels",
     "description": "Cable and device labels on an A4 sheet of self-adhesive labels. To get a PDF, choose “Save as PDF” in the print dialog and print at 100% scale.",
@@ -48,6 +57,7 @@
     "services": "Proxy & DNS",
     "tags": "Tags",
     "labels": "Print labels",
+    "variant": "Create variant",
     "settings": "Project settings",
     "issues": "Issues",
     "issueCount": "{errors, plural, =0 {No errors} one {# error} other {# errors}}, {warnings, plural, =0 {no warnings} one {# warning} other {# warnings}}",
@@ -138,7 +148,8 @@
       "tags": "Tags",
       "settings": "Project settings",
       "labelCables": "Label all cables",
-      "printLabels": "Print labels"
+      "printLabels": "Print labels",
+      "createVariant": "Create variant"
     }
   },
   "mobile": {
