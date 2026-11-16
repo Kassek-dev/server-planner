@@ -25,6 +25,9 @@ test('VLANs and subnets drawer', async ({ page }) => {
   await drawer.getByRole('tab', { name: 'Subnets' }).click();
   await drawer.getByRole('button', { name: 'Add subnet' }).click();
   await expect(drawer.getByRole('group', { name: '192.168.40.0/24' })).toBeVisible();
+  // NET-17: the IPv6 prefix carries the VLAN ID as written (VLAN 10 → :10::).
+  await drawer.getByRole('button', { name: 'Add IPv6 subnet' }).click();
+  await expect(drawer.getByRole('group', { name: 'fd00:0:0:10::/64' })).toBeVisible();
 
   await page.keyboard.press('Escape');
   await expect(drawer).toBeHidden();

@@ -308,6 +308,12 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 - [x] Symulacja tylko na przypisaniach IPv4 (`ipv4Assignments`) — wyniki dual‑stack = IPv4; `VAL_01` po postaci kanonicznej, poprawki Fix zachowują drugi adres; `VAL_IPV6_MODE`, `VAL_IPV6_PREFIX`
 - [x] UI: wiersz IPv6 w zakładce Network, „Add IPv6 subnet” i Router advertisements w S‑01, IP Plan dla IPv6, eksport ifupdown/Netplan z IPv6
 
+## Wersja 1.6 — poprawki po sprawdzeniu na żywo (2026-11-16)
+
+- [x] „Add IPv6 subnet” zapisywał VID szesnastkowo (VLAN 10 → `fd00:0:0:a::/64`); teraz VID wprost (`fd00:0:0:10::/64`), zgodnie z `05`
+- [x] Compare: liczba problemów z odmianą („1 error”, nie „1 errors”)
+- D11: 2 poprawki → wydanie 1.6.2
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -365,3 +371,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 32: schemat projektu v3, konfigurator sprzętu (LIB‑05) | #54 |
 | 2026-11-16 | Etap 33: IPv6 — adresacja, walidacja, IP Plan, eksport (NET‑17) | #55 |
 | 2026-11-16 | **Wydanie v1.6.0** (etapy 31–33, schemat v3 z automatyczną migracją → `minor`; D11: `Z` = 0) | tag `v1.6.0` (#56) |
+| 2026-11-16 | Sprawdzenie na żywo 1.6.0 (wersja, projekt z 1.5, wariant, IPv6): 2 poprawki (prefiks IPv6, odmiana w Compare) | #57 |
