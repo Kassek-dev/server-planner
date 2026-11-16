@@ -83,143 +83,141 @@ export function ServicesView() {
         {map.nodes.length === 0 ? (
           <p className="m-0 p-6 text-text-secondary">{t('services.empty')}</p>
         ) : (
-          <>
-            <div className="relative m-4" style={{ width, height }}>
-              <svg
-                width={width}
-                height={height}
-                viewBox={`0 0 ${width} ${height}`}
-                aria-hidden="true"
-                className="absolute inset-0"
-              >
-                <defs>
-                  <marker
-                    id="sp-svc-arrow"
-                    viewBox="0 0 8 8"
-                    refX={8}
-                    refY={4}
-                    markerWidth={8}
-                    markerHeight={8}
-                    orient="auto"
-                  >
-                    <path d="M0,0 L8,4 L0,8 z" fill="var(--sp-text-muted)" />
-                  </marker>
-                </defs>
-                {map.edges.map((e) => {
-                  const a = byId.get(e.from);
-                  const b = byId.get(e.to);
-                  if (!a || !b) return null;
-                  const x1 = x(a.column) + W;
-                  const y1 = y(a.row) + H / 2;
-                  const x2 = x(b.column);
-                  const y2 = y(b.row) + H / 2;
-                  const mid = (x1 + x2) / 2;
-                  const style = EDGE_STYLE[e.kind];
-                  return (
-                    <g key={`${e.from}>${e.to}:${e.kind}`}>
-                      <path
-                        d={`M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}`}
-                        fill="none"
-                        stroke={style.stroke}
-                        strokeWidth={1.5}
-                        strokeDasharray={style.dash}
-                        markerEnd="url(#sp-svc-arrow)"
-                      />
-                      {e.label ? (
-                        <text
-                          x={mid}
-                          y={(y1 + y2) / 2 - 4}
-                          textAnchor="middle"
-                          fontSize={10}
-                          fontFamily="var(--sp-font-mono)"
-                          fill="var(--sp-text-secondary)"
-                        >
-                          {e.label}
-                        </text>
-                      ) : null}
-                    </g>
-                  );
-                })}
-              </svg>
-              <ul aria-label={t('services.map')} className="m-0 list-none p-0">
-                {map.nodes.map((n) => {
-                  const selected = n.kind === 'app' && detail?.type === 'app' && detail.id === n.id;
-                  const targets = map.edges
-                    .filter((e) => e.from === n.id)
-                    .map((e) => {
-                      const to = byId.get(e.to);
-                      return to ? (to.kind === 'missing' ? to.capability : to.name) : '';
-                    });
-                  const lines =
-                    n.kind === 'app'
-                      ? [n.host.join(' · '), n.ports.join(' ')]
-                      : n.kind === 'name'
-                        ? [
-                            [n.addresses.join(', '), n.host].filter(Boolean).join(' · '),
-                            n.dnsAppId
-                              ? t('services.answeredBy', {
-                                  name: project.apps[n.dnsAppId]?.name ?? '?',
-                                })
-                              : '',
-                          ]
-                        : [t('services.missing')];
-                  const body = (
-                    <>
-                      <span
-                        className={`truncate font-semibold text-text-primary ${n.kind === 'name' ? 'font-mono text-data' : 'text-body'}`}
+          <div className="relative m-4" style={{ width, height }}>
+            <svg
+              width={width}
+              height={height}
+              viewBox={`0 0 ${width} ${height}`}
+              aria-hidden="true"
+              className="absolute inset-0"
+            >
+              <defs>
+                <marker
+                  id="sp-svc-arrow"
+                  viewBox="0 0 8 8"
+                  refX={8}
+                  refY={4}
+                  markerWidth={8}
+                  markerHeight={8}
+                  orient="auto"
+                >
+                  <path d="M0,0 L8,4 L0,8 z" fill="var(--sp-text-muted)" />
+                </marker>
+              </defs>
+              {map.edges.map((e) => {
+                const a = byId.get(e.from);
+                const b = byId.get(e.to);
+                if (!a || !b) return null;
+                const x1 = x(a.column) + W;
+                const y1 = y(a.row) + H / 2;
+                const x2 = x(b.column);
+                const y2 = y(b.row) + H / 2;
+                const mid = (x1 + x2) / 2;
+                const style = EDGE_STYLE[e.kind];
+                return (
+                  <g key={`${e.from}>${e.to}:${e.kind}`}>
+                    <path
+                      d={`M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}`}
+                      fill="none"
+                      stroke={style.stroke}
+                      strokeWidth={1.5}
+                      strokeDasharray={style.dash}
+                      markerEnd="url(#sp-svc-arrow)"
+                    />
+                    {e.label ? (
+                      <text
+                        x={mid}
+                        y={(y1 + y2) / 2 - 4}
+                        textAnchor="middle"
+                        fontSize={10}
+                        fontFamily="var(--sp-font-mono)"
+                        fill="var(--sp-text-secondary)"
                       >
-                        {n.kind === 'missing' ? n.capability : n.name}
-                      </span>
-                      {lines
-                        .filter((line) => line)
-                        .map((line) => (
-                          <span
-                            key={line}
-                            className="truncate font-mono text-data-sm text-text-secondary"
-                          >
-                            {line}
-                          </span>
-                        ))}
-                    </>
-                  );
-                  const box = `absolute flex flex-col justify-center gap-0.5 overflow-hidden rounded-md px-2.5 text-left ${
-                    n.kind === 'missing'
-                      ? 'border border-dashed border-error-border bg-error-bg'
-                      : selected
-                        ? 'border-2 border-accent bg-tile'
-                        : `border bg-tile ${n.kind === 'name' ? 'border-dashed border-border-strong' : 'border-border-default'}`
-                  }`;
-                  const place = { left: x(n.column), top: y(n.row), width: W, height: H };
-                  const description =
-                    targets.length > 0 ? t('services.leadsTo', { names: targets.join(', ') }) : '';
-                  return (
-                    <li key={n.id}>
-                      {n.kind === 'missing' ? (
-                        <div className={box} style={place} title={label(n)}>
-                          {body}
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          aria-label={description ? `${label(n)}. ${description}` : label(n)}
-                          aria-pressed={n.kind === 'app' ? selected : undefined}
-                          onClick={
-                            n.kind === 'app'
-                              ? () => useSelection.getState().setDetail({ type: 'app', id: n.id })
-                              : openDrawer
-                          }
-                          className={`${box} cursor-pointer hover:border-border-strong`}
-                          style={place}
+                        {e.label}
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+            </svg>
+            <ul aria-label={t('services.map')} className="m-0 list-none p-0">
+              {map.nodes.map((n) => {
+                const selected = n.kind === 'app' && detail?.type === 'app' && detail.id === n.id;
+                const targets = map.edges
+                  .filter((e) => e.from === n.id)
+                  .map((e) => {
+                    const to = byId.get(e.to);
+                    return to ? (to.kind === 'missing' ? to.capability : to.name) : '';
+                  });
+                const lines =
+                  n.kind === 'app'
+                    ? [n.host.join(' · '), n.ports.join(' ')]
+                    : n.kind === 'name'
+                      ? [
+                          [n.addresses.join(', '), n.host].filter(Boolean).join(' · '),
+                          n.dnsAppId
+                            ? t('services.answeredBy', {
+                                name: project.apps[n.dnsAppId]?.name ?? '?',
+                              })
+                            : '',
+                        ]
+                      : [t('services.missing')];
+                const body = (
+                  <>
+                    <span
+                      className={`truncate font-semibold text-text-primary ${n.kind === 'name' ? 'font-mono text-data' : 'text-body'}`}
+                    >
+                      {n.kind === 'missing' ? n.capability : n.name}
+                    </span>
+                    {lines
+                      .filter((line) => line)
+                      .map((line) => (
+                        <span
+                          key={line}
+                          className="truncate font-mono text-data-sm text-text-secondary"
                         >
-                          {body}
-                        </button>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </>
+                          {line}
+                        </span>
+                      ))}
+                  </>
+                );
+                const box = `absolute flex flex-col justify-center gap-0.5 overflow-hidden rounded-md px-2.5 text-left ${
+                  n.kind === 'missing'
+                    ? 'border border-dashed border-error-border bg-error-bg'
+                    : selected
+                      ? 'border-2 border-accent bg-tile'
+                      : `border bg-tile ${n.kind === 'name' ? 'border-dashed border-border-strong' : 'border-border-default'}`
+                }`;
+                const place = { left: x(n.column), top: y(n.row), width: W, height: H };
+                const description =
+                  targets.length > 0 ? t('services.leadsTo', { names: targets.join(', ') }) : '';
+                return (
+                  <li key={n.id}>
+                    {n.kind === 'missing' ? (
+                      <div className={box} style={place} title={label(n)}>
+                        {body}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        aria-label={description ? `${label(n)}. ${description}` : label(n)}
+                        aria-pressed={n.kind === 'app' ? selected : undefined}
+                        onClick={
+                          n.kind === 'app'
+                            ? () => useSelection.getState().setDetail({ type: 'app', id: n.id })
+                            : openDrawer
+                        }
+                        className={`${box} cursor-pointer hover:border-border-strong`}
+                        style={place}
+                      >
+                        {body}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         )}
       </div>
     </section>

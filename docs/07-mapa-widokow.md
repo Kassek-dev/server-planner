@@ -1,6 +1,6 @@
 # Server Planner — mapa widoków i sitemapa (v0.1)
 
-> Status: **zaakceptowany, v0.3** (v0.2: S‑06 Proxy & DNS; v0.3: X‑01d Failures, D‑16 Rack elevation) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.4** (v0.2: S‑06 Proxy & DNS; v0.3: X‑01d Failures, D‑16 Rack elevation; v0.4: V‑07 Services, D‑17 Print labels) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (ID funkcji), `05-projekt-ui.md` v0.2 (zachowania), `04-design-system.md` (komponenty)
 > Cel: kompletny spis **każdego osobnego widoku**, który trzeba zaprojektować i zbudować — podstawa sitemapy, routingu, makiet i planu prac.
 
@@ -177,6 +177,7 @@ Wspólna powłoka: top bar (logo, nazwa projektu ▾, zakładki widoków, liczni
 | D-14 | Catalog changelog       | P‑02b                                          | Lista zmian w wersji katalogu (dodane / zmienione / usunięte)                                                                        | CAT         | P1                            |
 | D-15 | Save device template    | menu urządzenia                                | Nazwa szablonu                                                                                                                       | LIB‑04      | P1                            |
 | D-16 | Rack elevation          | I‑06 rack › Occupancy „Front view”          | Front szafy w prawdziwych proporcjach (1U = 44,45 mm): numeracja U po obu stronach, urządzenia (nazwa, model / typ, U), półki z urządzeniami, wolne miejsca; pobranie SVG / PNG (jasne kolory tokenów) i druk tylko rysunku | LOC‑09 | P2 | ✅ kod (bez makiety) |
+| D-17 | Print labels            | Project summary › Manage „Print labels”, paleta | Arkusz A4 etykiet samoprzylepnych (70×37 · 63,5×38,1 · 48,5×25,4 · 38,1×21,2 mm): kable (etykieta lub wzorzec projektu; opcjonalnie po jednej na koniec), urządzenia (etykieta fizyczna lub nazwa + adres IP); pominięcie N etykiet na zaczętym arkuszu; podgląd pierwszego arkusza; druk samych stron A4 (PDF z okna druku) | LBL‑04 | P2 | ✅ kod (bez makiety) |
 
 ---
 

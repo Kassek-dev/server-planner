@@ -24,6 +24,7 @@ import { SelectionPanel } from '../inspector/SelectionPanel';
 import { InventoryView } from '../inventory/InventoryView';
 import { IpPlanView } from '../ipplan/IpPlanView';
 import { IssueCounters } from '../issues/IssueCounters';
+import { LabelsDialog } from '../labels/LabelsDialog';
 import { ServicesView } from '../services/ServicesView';
 import { SnapshotsView } from '../snapshots/SnapshotsView';
 import { describeCommit } from '../toasts/describe';
@@ -341,6 +342,7 @@ function Editor() {
       </main>
       <DrawerHost />
       <ExportDialog />
+      <LabelsDialog />
       <CommandPalette project={project} />
       <Toaster />
     </div>

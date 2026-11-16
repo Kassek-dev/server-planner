@@ -224,3 +224,28 @@
     height: 100vh;
   }
 }
+
+/* LBL-04: label sheets are A4 pages, rendered off screen and printed alone. */
+@media screen {
+  [data-print-pages] {
+    display: none;
+  }
+}
+@page labels {
+  size: A4;
+  margin: 0;
+}
+@media print {
+  body.sp-print-pages > :not([data-print-pages]) {
+    display: none;
+  }
+  body.sp-print-pages [data-print-pages] {
+    page: labels;
+  }
+  body.sp-print-pages [data-print-pages] svg {
+    display: block;
+    width: 210mm;
+    height: 297mm;
+    break-after: page;
+  }
+}

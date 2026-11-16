@@ -200,6 +200,8 @@ LOC‑06: rack pokazuje zajętość („5 of 12 U occupied”, pasek z progami c
 
 Front szafy (LOC‑09, D‑16): „Front view” przy zajętości racka otwiera rysunek racka — od góry: urządzenia, półki z tym, co na nich stoi, wolne zakresy („7U free”). Rysunek mieści się w oknie; SVG i PNG są pobierane w jasnych kolorach (do druku), „Print” drukuje sam rysunek na całą stronę.
 
+Etykiety (LBL‑04, D‑17): „Print labels” w podsumowaniu projektu (Manage) i w palecie. Wybór arkusza A4 (siatka wyśrodkowana na stronie), kable (z „One label for each end”), urządzenia, pominięcie etykiet na zaczętym arkuszu. Tekst dopasowany do szerokości etykiety (mono); długa etykieta kabla dzielona po „↔” na dwie linie. Druk: strony A4 renderowane poza ekranem (`[data-print-pages]`, nazwana strona `@page labels`, margines 0), reszta aplikacji ukryta; PDF przez „Save as PDF”, skala 100%.
+
 ### 5.7 Edytory globalne (otwierane z podsumowania projektu, z menu routera lub skrótem)
 
 Edytory pełnoekranowe nad canvasem (panel 720 px wysuwany z prawej, canvas widoczny i przyciemniony):

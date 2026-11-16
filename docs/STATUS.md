@@ -284,7 +284,7 @@ Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zm
 - [x] Widok `#/p/:id/services` (zakładka Services, paleta poleceń): `servicesMap()` — nazwy hostów → proxy → aplikacje → zależności w kolumnach, grupowanie po hoście, brakujące wymagane zależności; węzły jako przyciski (aplikacja → inspector, nazwa → S‑06); legenda
 
 ### Etap 29 — Wydruk etykiet (LBL‑04)
-- [ ] Arkusz A4 z etykietami kabli i urządzeń, druk przez przeglądarkę (PDF z okna druku)
+- [x] D‑17 Print labels: `features/labels/sheet.ts` (4 układy A4, `projectLabels`, `layoutSheets` z pominięciem etykiet), podgląd, druk stron A4 przez `@page labels` (PDF z okna druku); wejścia: podsumowanie projektu, paleta
 
 ### Etap 30 — Katalog sprzętu: import specyfikacji CPU (CAT‑05)
 - [ ] Adapter Wikidata (CC0, SPARQL): rdzenie, wątki, taktowanie, TDP; priorytet `curated` > Wikidata
@@ -352,3 +352,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Sprawdzenie na żywo po etapach 24–26: bez błędów (analiza awarii w workerze, aktualizacja PWA); **Wydanie v1.4.0** (D11: nowe funkcje → `Z` = 0) | tag `v1.4.0` |
 | 2026-11-16 | Decyzja D12 (zakres P2 1.5–1.6), plan 1.5 i 1.6; etap 27: filtr SPOF „Infrastructure only”, ruch przez reverse proxy w przepływach | #48 |
 | 2026-11-16 | Etap 28: mapa usług V‑07 (VIEW‑07) | #49 |
+| 2026-11-16 | Etap 29: wydruk etykiet na arkuszu A4 (LBL‑04, D‑17) | #50 |

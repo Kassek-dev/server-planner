@@ -143,3 +143,27 @@ test('services map: apps behind proxy routes and local names (VIEW-07)', async (
   await map.getByRole('button', { name: /^Host name media\.home\.arpa/ }).click();
   await expect(page).toHaveURL(/panel=services/);
 });
+
+test('print labels: cables and devices on an A4 sheet (LBL-04)', async ({ page }) => {
+  await openExample(page);
+  await page.getByRole('button', { name: 'Print labels' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Print labels' });
+  await expect(dialog.getByText(/labels on 1 sheet/)).toBeVisible();
+  await dialog.getByRole('checkbox', { name: 'Devices' }).uncheck();
+  await dialog.getByRole('checkbox', { name: 'One label for each end' }).uncheck();
+  await dialog.getByRole('checkbox', { name: 'Cables' }).uncheck();
+  await expect(dialog.getByText('Nothing to print: pick cables or devices.')).toBeVisible();
+  await expect(dialog.getByRole('button', { name: /^Print/ })).toBeDisabled();
+  await dialog.getByRole('checkbox', { name: 'Cables' }).check();
+  await dialog
+    .getByRole('combobox', { name: 'Label sheet' })
+    .selectOption({ label: '38.1 × 21.2 mm · 5 × 13 (65 per sheet)' });
+  await expect(dialog.getByRole('img', { name: 'Preview of the first sheet' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/labels.png' });
+  // Printing shows the pages alone.
+  await page.emulateMedia({ media: 'print' });
+  await page.evaluate(() => document.body.classList.add('sp-print-pages'));
+  await expect(page.locator('[data-print-pages] svg').first()).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Print labels' })).toBeHidden();
+  await page.emulateMedia({ media: 'screen' });
+});
