@@ -1,10 +1,15 @@
-import type { AnalysisResult, CapacityReport } from '@server-planner/engine';
-import type { Project } from '@server-planner/model';
+import {
+  type AnalysisResult,
+  type CapacityReport,
+  type PlacementUpgrade,
+  placementPlan,
+} from '@server-planner/engine';
+import { moveWorkload, type Project } from '@server-planner/model';
 import { type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { formatSize } from '../../app/format';
-import { useSession } from '../../app/services';
+import { useServices, useSession } from '../../app/services';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
 import { Led } from '../../ui/Led';
@@ -39,6 +44,7 @@ export function DashboardView() {
             <AssertionsTile project={project} result={result} />
             <HostsTile project={project} reports={reports} />
             <PowerTile project={project} result={result} />
+            <SuggestionsTile project={project} result={result} />
           </div>
         )}
       </div>
@@ -394,6 +400,85 @@ function PowerTile({ project, result }: { project: Project; result: AnalysisResu
           </li>
         ))}
       </ul>
+    </Tile>
+  );
+}
+
+/** CAP-10 placement suggestions: moves to apply and upgrades still needed. */
+function SuggestionsTile({ project, result }: { project: Project; result: AnalysisResult }) {
+  const { t } = useTranslation('views');
+  const { session } = useServices();
+  const plan = useMemo(() => placementPlan(project, result.capacity), [project, result]);
+  const name = (id: string) => project.devices[id]?.name ?? project.workloads[id]?.name ?? id;
+  const upgrade = (u: PlacementUpgrade) => {
+    if (u.kind === 'memory')
+      return u.exceedsMax
+        ? t('dashboard.suggest.memoryMax', { size: formatSize(u.addBytes) })
+        : t('dashboard.suggest.memory', { size: formatSize(u.addBytes) });
+    if (u.kind === 'cpu') return t('dashboard.suggest.cpu', { count: u.addCores });
+    const pool = project.devices[u.deviceId]?.hardware.pools.find((p) => p.id === u.poolId);
+    return t('dashboard.suggest.storage', {
+      size: formatSize(u.addBytes, true),
+      pool: pool?.name ?? '?',
+    });
+  };
+  const empty = plan.moves.length === 0 && plan.upgrades.length === 0;
+  return (
+    <Tile title={t('dashboard.suggestions')} wide>
+      {empty ? (
+        <p className="m-0 flex items-center gap-2 text-body-sm text-text-secondary">
+          <Led status="ok" size={7} />
+          {t('dashboard.suggest.none')}
+        </p>
+      ) : null}
+      {plan.moves.length > 0 ? (
+        <ul
+          aria-label={t('dashboard.suggest.moves')}
+          className="m-0 flex list-none flex-col gap-1.5 p-0"
+        >
+          {plan.moves.map((m) => (
+            <li key={m.workloadId} className="flex items-center gap-3">
+              <span className="min-w-0 flex-1 text-body">
+                {t('dashboard.suggest.move', {
+                  workload: name(m.workloadId),
+                  from: name(m.from),
+                  to: name(m.to),
+                  size: formatSize(m.memoryBytes),
+                })}
+              </span>
+              <Button
+                size="sm"
+                onClick={() =>
+                  session.dispatch(moveWorkload, {
+                    id: m.workloadId,
+                    host: { type: 'device', id: m.to },
+                  })
+                }
+              >
+                {t('dashboard.suggest.apply')}
+              </Button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {plan.upgrades.length > 0 ? (
+        <ul
+          aria-label={t('dashboard.suggest.upgrades')}
+          className="m-0 flex list-none flex-col gap-1.5 p-0"
+        >
+          {plan.upgrades.map((u) => (
+            <li
+              key={`${u.kind}:${u.deviceId}:${u.kind === 'storage' ? u.poolId : ''}`}
+              className="flex items-start gap-2 text-body"
+            >
+              <Led status="warning" size={7} />
+              <span>
+                <strong className="font-semibold">{name(u.deviceId)}</strong> — {upgrade(u)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </Tile>
   );
 }
