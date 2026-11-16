@@ -270,7 +270,7 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 - [x] Format „Network” w D‑04 z wyborem hosta (wg OS) lub listy rezerwacji
 
 ### Etap 26 — Front szafy (LOC‑09)
-- [ ] Widok i wydruk frontu racka (rack elevation): U, urządzenia, półki, wolne miejsca; eksport SVG/PNG i druk (PDF z przeglądarki)
+- [x] `features/rack/elevation.ts` (model: urządzenia, półki, wolne zakresy, każde U raz), `RackElevation` (SVG w milimetrach, nazwy jako tekst Reacta — bez wstrzykiwania znaczników), D‑16 z inspectora racka: SVG / PNG z jasnymi kolorami tokenów, druk tylko rysunku (`@media print` + `sp-printing`)
 
 ## Dziennik
 
@@ -317,4 +317,5 @@ Wybrane z P2 przez użytkownika. Po wdrożeniu: poprawki ewentualnych błędów 
 | 2026-11-16 | Pakiet poprawek: izolacja Wi‑Fi (NET‑12), `blocking` IndexedDB, duplikaty i18n, proxy/DNS w Markdown, lokalne nazwy w krokach DNS; D11 | #42 |
 | 2026-11-16 | **Wydanie v1.3.0** (etap 23 i pakiet poprawek), `CHANGELOG.md`, wersja w `apps/web/package.json`; plan 1.4 (SIM‑07, EXP‑07, LOC‑09) | tag `v1.3.0` (#43) |
 | 2026-11-16 | Etap 24: analiza awarii i SPOF (SIM‑07), zakładka Failures | #44 |
-| 2026-11-16 | Etap 25: eksport konfiguracji sieci hostów i rezerwacji DHCP (EXP‑07) | — |
+| 2026-11-16 | Etap 25: eksport konfiguracji sieci hostów i rezerwacji DHCP (EXP‑07) | #45 |
+| 2026-11-16 | Etap 26: front szafy — widok, SVG, PNG, druk (LOC‑09); plan 1.4 zrealizowany | — |

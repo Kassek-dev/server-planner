@@ -198,6 +198,8 @@ Rack: nazwa, U (6–42), szerokość, głębokość, Space bar, Power (P1), list
 
 LOC‑06: rack pokazuje zajętość („5 of 12 U occupied”, pasek z progami capacity projektu); każda lokalizacja — szacowany pobór (idle / expected) urządzeń w niej (pomieszczenie liczy też swoje racki i półki), urządzenia bez danych o mocy, UPS‑y chroniące te urządzenia z obciążeniem vs pojemność. Lista urządzeń otwiera urządzenie.
 
+Front szafy (LOC‑09, D‑16): „Front view” przy zajętości racka otwiera rysunek racka — od góry: urządzenia, półki z tym, co na nich stoi, wolne zakresy („7U free”). Rysunek mieści się w oknie; SVG i PNG są pobierane w jasnych kolorach (do druku), „Print” drukuje sam rysunek na całą stronę.
+
 ### 5.7 Edytory globalne (otwierane z podsumowania projektu, z menu routera lub skrótem)
 
 Edytory pełnoekranowe nad canvasem (panel 720 px wysuwany z prawej, canvas widoczny i przyciemniony):

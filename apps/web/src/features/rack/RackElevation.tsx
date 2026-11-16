@@ -63,7 +63,8 @@ export const RackElevation = forwardRef<
       role="img"
       aria-label={label}
       fontFamily={c.font}
-      className="h-auto w-full"
+      // The whole rack fits the dialog: scaled by height, never wider than the dialog.
+      className="mx-auto block h-[56vh] w-auto max-w-full"
     >
       <rect x={0} y={0} width={width} height={height} fill={c.paper} />
       <text x={RAIL} y={20} fontSize={14} fontWeight={600} fill={c.text}>

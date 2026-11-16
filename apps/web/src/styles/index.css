@@ -220,4 +220,7 @@
     max-height: none;
     overflow: visible;
   }
+  body.sp-printing [data-print-area] svg {
+    height: 100vh;
+  }
 }

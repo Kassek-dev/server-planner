@@ -141,7 +141,11 @@ export function LocationInspector({ project, location }: { project: Project; loc
       {location.kind === 'rack' ? (
         <Section
           title={t('location.occupancy')}
-          action={<AddButton label={t('elevation.open')} onClick={() => setElevation(true)} />}
+          action={
+            <Button size="sm" variant="ghost" onClick={() => setElevation(true)}>
+              {t('elevation.open')}
+            </Button>
+          }
         >
           <OccupancyBar
             used={location.units - freeUnits(project, location.id)}

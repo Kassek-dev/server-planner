@@ -139,7 +139,7 @@ export function RackElevationDialog({
         </>
       }
     >
-      <div data-print-area className="max-h-[60vh] overflow-auto">
+      <div data-print-area>
         <RackElevation
           ref={svg}
           elevation={elevation}
