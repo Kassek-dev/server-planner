@@ -281,7 +281,7 @@ Wybrane przez użytkownika: kolejne funkcje P2 i rzeczy odłożone (D12). Bez zm
 - [x] Przepływy do aplikacji za trasą proxy: krok z rozwiązywaniem nazwy na port trasy idzie klient → proxy (443 przy TLS, inaczej 80; port opublikowany kontenera) i krokiem `proxy` proxy → aplikacja; firewall sprawdzany na obu odcinkach
 
 ### Etap 28 — Mapa usług (VIEW‑07)
-- [ ] Widok `#/p/:id/services`: aplikacje i ich zależności, trasy proxy, rekordy DNS, hosty
+- [x] Widok `#/p/:id/services` (zakładka Services, paleta poleceń): `servicesMap()` — nazwy hostów → proxy → aplikacje → zależności w kolumnach, grupowanie po hoście, brakujące wymagane zależności; węzły jako przyciski (aplikacja → inspector, nazwa → S‑06); legenda
 
 ### Etap 29 — Wydruk etykiet (LBL‑04)
 - [ ] Arkusz A4 z etykietami kabli i urządzeń, druk przez przeglądarkę (PDF z okna druku)
@@ -351,3 +351,4 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 | 2026-11-16 | Etap 26: front szafy — widok, SVG, PNG, druk (LOC‑09); plan 1.4 zrealizowany | #46 |
 | 2026-11-16 | Sprawdzenie na żywo po etapach 24–26: bez błędów (analiza awarii w workerze, aktualizacja PWA); **Wydanie v1.4.0** (D11: nowe funkcje → `Z` = 0) | tag `v1.4.0` |
 | 2026-11-16 | Decyzja D12 (zakres P2 1.5–1.6), plan 1.5 i 1.6; etap 27: filtr SPOF „Infrastructure only”, ruch przez reverse proxy w przepływach | #48 |
+| 2026-11-16 | Etap 28: mapa usług V‑07 (VIEW‑07) | #49 |
