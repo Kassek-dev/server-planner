@@ -188,7 +188,9 @@ export const setDeviceOs = defineCommand(
       return;
     }
     device.os = { ...os };
-    if (os.osId !== 'proxmox-ve') return;
+    // Proxmox: vmbr0; Windows Server: the Hyper-V external virtual switch (SW-14).
+    const hyperV = os.osId === 'windows-server';
+    if (os.osId !== 'proxmox-ve' && !hyperV) return;
     const owned = Object.values(draft.interfaces).filter(
       (i) => i.owner.type === 'device' && i.owner.id === id,
     );
@@ -197,7 +199,7 @@ export const setDeviceOs = defineCommand(
     draft.interfaces[bridgeId] = {
       id: bridgeId,
       owner: { type: 'device', id },
-      name: 'vmbr0',
+      name: hyperV ? 'External' : 'vmbr0',
       kind: 'bridge',
       index: owned.length,
       switchport: { mode: 'trunk', allowedVlanIds: 'all' },

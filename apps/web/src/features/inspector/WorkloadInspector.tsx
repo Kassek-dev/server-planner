@@ -10,6 +10,7 @@ import {
   type OsId,
   type PortMapping,
   type Project,
+  runsGuest,
   updateWorkload,
   type Volume,
   type Workload,
@@ -70,6 +71,9 @@ export function useOpenHost() {
  * SW-11 hosts a workload can move to: VMs and LXC to Proxmox devices, containers to devices and
  * VMs/LXC with Docker. The current host is always listed, even when it no longer qualifies.
  */
+/** VM/LXC hosts their own containers only. */
+const NO_GUESTS = { vm: false, lxc: false };
+
 export function moveTargets(
   project: Project,
   workload: Workload,
@@ -91,7 +95,7 @@ export function moveTargets(
             })),
         ]
       : Object.values(project.devices)
-          .filter((d) => d.os?.osId === 'proxmox-ve')
+          .filter((d) => runsGuest(d.os?.osId, workload.kind === 'lxc' ? 'lxc' : 'vm'))
           .map((d) => ({ ref: { type: 'device', id: d.id } as HostRef, label: d.name }));
   const current = key(workload.host);
   if (!hosts.some((h) => key(h.ref) === current))
@@ -369,7 +373,7 @@ function GuestSections({
       <WorkloadList
         project={project}
         host={host}
-        canVirtualize={false}
+        canVirtualize={NO_GUESTS}
         hasDocker={!!workload.docker}
       />
     </>
@@ -608,7 +612,7 @@ function ContainerSections({
       <WorkloadList
         project={project}
         host={{ type: 'workload', id: workload.id }}
-        canVirtualize={false}
+        canVirtualize={NO_GUESTS}
         hasDocker={false}
       />
     </>

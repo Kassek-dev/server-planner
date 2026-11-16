@@ -10,6 +10,7 @@ import {
   OS_IDS,
   type OsId,
   type Project,
+  runsGuest,
   setDeviceOs,
   updateDevice,
   type Workload,
@@ -57,6 +58,7 @@ export function SoftwareTab({ project, device }: { project: Project; device: Dev
   }
   const host: HostRef = { type: 'device', id: device.id };
   const isProxmox = device.os?.osId === 'proxmox-ve';
+  const guests = { vm: runsGuest(device.os?.osId, 'vm'), lxc: runsGuest(device.os?.osId, 'lxc') };
 
   return (
     <>
@@ -120,7 +122,7 @@ export function SoftwareTab({ project, device }: { project: Project; device: Dev
       <WorkloadList
         project={project}
         host={host}
-        canVirtualize={isProxmox}
+        canVirtualize={guests}
         hasDocker={!!device.docker}
       />
     </>
@@ -138,7 +140,8 @@ export function WorkloadList({
 }: {
   project: Project;
   host: HostRef;
-  canVirtualize: boolean;
+  /** Guests the host runs: Proxmox VMs and LXC, Hyper-V VMs only (SW-14). */
+  canVirtualize: { vm: boolean; lxc: boolean };
   hasDocker: boolean;
 }) {
   const { t } = useTranslation('inspector');
@@ -273,10 +276,10 @@ export function WorkloadList({
         />
       ))}
       <div className="flex flex-wrap gap-1">
-        {canVirtualize ? (
+        {canVirtualize.vm ? (
           <AddButton label={t('software.addVm')} onClick={() => addGuest('vm')} />
         ) : null}
-        {canVirtualize ? (
+        {canVirtualize.lxc ? (
           <AddButton label={t('software.addLxc')} onClick={() => addGuest('lxc')} />
         ) : null}
         {hasDocker ? <AddButton label={t('software.addContainer')} onClick={addContainer} /> : null}
@@ -286,7 +289,7 @@ export function WorkloadList({
       {catalogOpen ? (
         <AppCatalogDialog project={project} host={host} open onOpenChange={setCatalogOpen} />
       ) : null}
-      {!canVirtualize && !hasDocker && host.type === 'device' ? (
+      {!(canVirtualize.vm || canVirtualize.lxc) && !hasDocker && host.type === 'device' ? (
         <p className="m-0 text-body-sm text-text-muted">{t('software.howToAdd')}</p>
       ) : null}
     </Section>

@@ -126,6 +126,20 @@ export const PurchaseSchema = z.object({
 export const OS_IDS = ['proxmox-ve', 'debian', 'ubuntu-server', 'windows-server'] as const;
 export const OsIdSchema = z.enum(OS_IDS);
 
+/**
+ * D2 / SW-14: which guests a host OS runs — Proxmox VE: VMs and LXC; Windows Server: VMs on
+ * Hyper-V (no LXC). Mirrors `capabilities` of the catalog OS entries.
+ */
+export const GUESTS_BY_OS: Record<(typeof OS_IDS)[number], { vm: boolean; lxc: boolean }> = {
+  'proxmox-ve': { vm: true, lxc: true },
+  'windows-server': { vm: true, lxc: false },
+  debian: { vm: false, lxc: false },
+  'ubuntu-server': { vm: false, lxc: false },
+};
+
+export const runsGuest = (osId: string | undefined, kind: 'vm' | 'lxc'): boolean =>
+  !!osId && osId in GUESTS_BY_OS && GUESTS_BY_OS[osId as (typeof OS_IDS)[number]][kind];
+
 export const OsInstallSchema = z.object({
   osId: OsIdSchema,
   version: z.string(),

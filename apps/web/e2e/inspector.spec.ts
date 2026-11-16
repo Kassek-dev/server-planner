@@ -191,3 +191,16 @@ test('configurator: slots, a 10G NIC with its ports and a slot conflict (LIB-05)
   await page.getByRole('button', { name: /open issues/ }).click();
   await expect(page.getByText('pve1 uses 2 PCIe slots but has 1.')).toBeVisible();
 });
+
+test('Hyper-V: Windows Server runs VMs, not LXC (SW-14)', async ({ page }) => {
+  await openExample(page);
+  await page.getByRole('button', { name: 'Mini PC' }).click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Software' }).click();
+  await panel.getByLabel('System').selectOption('windows-server');
+  await expect(panel.getByRole('button', { name: 'Add VM' })).toBeVisible();
+  await expect(panel.getByRole('button', { name: 'Add LXC' })).toHaveCount(0);
+  await panel.getByRole('button', { name: 'Add VM' }).click();
+  await expect(panel.getByRole('heading', { name: 'vm-1' })).toBeVisible();
+  await expect(panel.getByLabel('net0 bridge')).toHaveValue(/.+/);
+});

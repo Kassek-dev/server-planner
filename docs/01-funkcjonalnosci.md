@@ -104,7 +104,7 @@ Każdy poziom **konsumuje** zasoby rodzica i **udostępnia** je dzieciom. Capaci
 | Proxmox VE     | hypervisor | ✅           | ✅  | ⚠️ możliwy, ale odradzany na hoście → ostrzeżenie z sugestią VM/LXC   | VLAN‑aware bridge (`vmbr`)                                    |
 | Debian         | serwer     | —            | —   | ✅                                                                    |                                                               |
 | Ubuntu Server  | serwer     | —            | —   | ✅                                                                    |                                                               |
-| Windows Server | serwer     | P2 (Hyper‑V) | —   | ⚠️ tylko kontenery Windows — Linuxowe obrazy oznaczone jako niezgodne | Aplikacje natywne Windows (np. AD DS, File Server) w katalogu |
+| Windows Server | serwer / hypervisor (Hyper‑V, 1.7) | ✅ Hyper‑V | —   | ⚠️ tylko kontenery Windows — Linuxowe obrazy oznaczone jako niezgodne | Aplikacje natywne Windows (np. AD DS, File Server) w katalogu |
 
 ---
 

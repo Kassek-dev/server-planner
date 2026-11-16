@@ -328,7 +328,7 @@ Reszta P2 bez zmiany formatu projektu (D13).
 - [x] `placementPlan()` w silniku (zachłannie: największe workloady z hostów ≥ critical na zgodne hosty ≤ warning; potem rozbudowa RAM/rdzenie/pule), kafel „Placement suggestions” na Dashboardzie z „Apply”
 
 ### Etap 37 — Hyper‑V (SW‑14)
-- [ ] Windows Server jako hypervisor: VM (bez LXC), vSwitch, narzut; obrazy Linux w kontenerach Windows nadal niezgodne
+- [x] `GUESTS_BY_OS` / `runsGuest` w modelu (Proxmox: VM+LXC, Windows Server: VM); `device.setOs` tworzy most „External”; `VAL_11_HYPERVISOR` wg rodzaju gościa; Software tab, „Runs on” i `placementPlan` korzystają z tej samej tabeli; narzut Windows Server z katalogu bez zmian
 
 ### Etap 38 — Katalog i pliki (CAT‑06, PRJ‑09)
 - [ ] „Suggest a correction” przy pozycji katalogu → gotowe zgłoszenie GitHub (link, bez zapytań z aplikacji)
@@ -413,3 +413,4 @@ Schemat projektu v4 (D13).
 | 2026-11-16 | Etap 34: auto‑layout (CAN‑10) | #59 |
 | 2026-11-16 | Etap 35: diagram L3 V‑08 (VIEW‑06) | #60 |
 | 2026-11-16 | Etap 36: sugestie rozmieszczenia (CAP‑10) | #61 |
+| 2026-11-16 | Etap 37: Hyper‑V na Windows Server (SW‑14) | #62 |
