@@ -90,7 +90,16 @@ export function CommandPalette({ project }: { project: Project }) {
         ),
       ),
       ...(
-        ['topology', 'dashboard', 'inventory', 'ip', 'access', 'services', 'snapshots'] as const
+        [
+          'topology',
+          'dashboard',
+          'inventory',
+          'ip',
+          'access',
+          'services',
+          'logical',
+          'snapshots',
+        ] as const
       ).map(
         (v): Entry => ({
           id: `view:${v}`,

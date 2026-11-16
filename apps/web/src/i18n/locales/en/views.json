@@ -116,6 +116,23 @@
       "cpu": "CPU {before} → {after}"
     }
   },
+  "logical": {
+    "title": "Logical L3",
+    "map": "Routers, zones and subnets",
+    "access": "Access matrix",
+    "empty": "No subnets or routers yet. Add VLANs and subnets, and give the router an address in each, to see the layer 3 picture.",
+    "internet": "Internet",
+    "routerLabel": "Router {name}, {count, plural, one {# subnet} other {# subnets}}",
+    "firewall": "firewall: {policy, select, allow {allow} other {deny}} by default · {rules, plural, one {# rule} other {# rules}}",
+    "noFirewall": "no firewall",
+    "noZone": "No zone",
+    "isolated": "· isolated",
+    "subnetLabel": "Subnet {cidr}, {hosts, plural, one {# address} other {# addresses}}",
+    "vlan": "VLAN {vlan}",
+    "untagged": "untagged",
+    "gateway": "gw {gateway}",
+    "hosts": "{count, plural, one {# address} other {# addresses}}"
+  },
   "services": {
     "title": "Services",
     "map": "Services map",

@@ -192,3 +192,17 @@ test('IPv6: dual-stack addressing in the inspector and the IP plan (NET-17)', as
   await card.scrollIntoViewIfNeeded();
   await page.screenshot({ path: 'test-results/ipv6-plan.png' });
 });
+
+test('logical L3: routers, zones and subnets (VIEW-06)', async ({ page }) => {
+  await openExample(page);
+  await page.getByRole('link', { name: 'Logical' }).click();
+  await expect(page).toHaveURL(/\/logical/);
+  const map = page.getByRole('list', { name: 'Routers, zones and subnets' });
+  await expect(map.getByRole('button', { name: 'Router gw-01, 3 subnets' })).toBeVisible();
+  await expect(
+    map.getByRole('list', { name: 'LAN' }).getByRole('button', { name: /192\.168\.20\.0\/24/ }),
+  ).toBeVisible();
+  await page.screenshot({ path: 'test-results/logical.png' });
+  await map.getByRole('button', { name: /192\.168\.10\.0\/24/ }).click();
+  await expect(page).toHaveURL(/panel=vlans/);
+});

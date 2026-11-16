@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.10** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion; v0.9: IPv6 dual‑stack; v0.10: Auto layout) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.11** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion; v0.9: IPv6 dual‑stack; v0.10: Auto layout; v0.11: Logical V‑08) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -300,6 +300,7 @@ Otwierany z liczników w top barze lub `Ctrl Shift M`. Zastępuje inspector.
 | **IP Plan**   | Lista podsieci (karty: VLAN, CIDR, użycie puli DHCP pasek), pod nią tabela adresów: IP, host, interfejs, typ (static / DHCP / reservation), konflikt; wolne zakresy jako wiersze „.20–.99 free”                                                                   |
 | **Access**    | Macierz strefa × strefa (komórka: ✓ / ✕ / ◐ + liczba reguł; klik → szczegóły jak w Reachability), przełącznik na urządzenie × urządzenie z filtrami; pod spodem lista asercji z wynikiem                                                                          |
 | **Services** (V‑07, P2) | Kolumny od lewej: nazwy hostów (trasy reverse proxy i lokalne rekordy DNS; CNAME → nazwa docelowa, A → aplikacja, gdy pod adresem jest jedna, inaczej nazwa hosta w kafelku), proxy, aplikacje, zależności (kolumna = najdłuższy łańcuch prowadzący do węzła; w kolumnie grupowanie po urządzeniu i workloadzie). Krawędzie: trasa (accent, z portem), nazwa DNS (przerywana), zależność (z capability), brak wymaganej zależności (czerwony kafelek). Klik aplikacji → inspector; klik nazwy lub „Proxy & DNS” → S‑06. Pusty stan z podpowiedzią. Węzły to przyciski z opisem „Leads to …” dla czytników ekranu. |
+| **Logical** (V‑08, P2) | Diagram L3 liczony z adresacji (`logicalMap`): Internet (gdy router ma interfejs WAN) → routery i firewalle (polityka domyślna, liczba reguł) → kolumny stref (kolor, „isolated” przy `intraZone: deny`; podsieci bez strefy w „No zone”) z kartami podsieci (CIDR, nazwa, VLAN, brama, liczba adresów; IPv6 po IPv4). Router łączy się z podsiecią, gdy ma w niej adres albo jest jej bramą. Klik routera → inspector, podsieci → S‑01; przycisk „Access matrix” → V‑05. |
 
 ---
 

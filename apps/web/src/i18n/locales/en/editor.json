@@ -6,6 +6,7 @@
     "ip": "IP Plan",
     "access": "Access",
     "services": "Services",
+    "logical": "Logical",
     "compare": "Compare",
     "dashboard": "Dashboard",
     "snapshots": "Snapshots"
