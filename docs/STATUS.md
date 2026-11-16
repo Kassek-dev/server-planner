@@ -314,7 +314,7 @@ Schemat projektu v3 (jedna migracja dla NET‑17 i LIB‑05).
 - [x] Compare: liczba problemów z odmianą („1 error”, nie „1 errors”)
 - D11: 2 poprawki → wydanie 1.6.2
 
-## Wersja 1.7 — plan (2026-11-16)
+## Wersja 1.7 — plan (2026-11-16), wydana jako v1.7.0
 
 Reszta P2 bez zmiany formatu projektu (D13).
 
@@ -416,3 +416,4 @@ Schemat projektu v4 (D13).
 | 2026-11-16 | Etap 36: sugestie rozmieszczenia (CAP‑10) | #61 |
 | 2026-11-16 | Etap 37: Hyper‑V na Windows Server (SW‑14) | #62 |
 | 2026-11-16 | Etap 38: zgłaszanie poprawek katalogu (CAT‑06), zapis do pliku (PRJ‑09) | #63 |
+| 2026-11-16 | **Wydanie v1.7.0** (etapy 34–38, bez zmiany schematu; D11: `Z` = 0) | tag `v1.7.0` (#64) |
