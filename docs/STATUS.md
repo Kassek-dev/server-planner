@@ -325,7 +325,7 @@ Reszta P2 bez zmiany formatu projektu (D13).
 - [x] Widok `#/p/:id/logical` (zakładka Logical, paleta): `logicalMap()` — Internet, routery (polityka, liczba reguł), strefy z podsieciami, połączenia z adresacji; dostęp między strefami — przycisk do macierzy V‑05 (nie powielamy jej)
 
 ### Etap 36 — Sugestie rozmieszczenia (CAP‑10)
-- [ ] Bin packing workloadów na hostach (zalecane wymagania), propozycja przeniesień i rekomendacje rozbudowy (RAM, rdzenie, dyski)
+- [x] `placementPlan()` w silniku (zachłannie: największe workloady z hostów ≥ critical na zgodne hosty ≤ warning; potem rozbudowa RAM/rdzenie/pule), kafel „Placement suggestions” na Dashboardzie z „Apply”
 
 ### Etap 37 — Hyper‑V (SW‑14)
 - [ ] Windows Server jako hypervisor: VM (bez LXC), vSwitch, narzut; obrazy Linux w kontenerach Windows nadal niezgodne
@@ -412,3 +412,4 @@ Schemat projektu v4 (D13).
 | 2026-11-16 | Decyzja D13 (reszta P2), plan 1.7 i 1.8 | #59 |
 | 2026-11-16 | Etap 34: auto‑layout (CAN‑10) | #59 |
 | 2026-11-16 | Etap 35: diagram L3 V‑08 (VIEW‑06) | #60 |
+| 2026-11-16 | Etap 36: sugestie rozmieszczenia (CAP‑10) | #61 |

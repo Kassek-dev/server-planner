@@ -1,6 +1,6 @@
 # Server Planner — projekt UI (v0.2)
 
-> Status: **zaakceptowany, v0.11** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion; v0.9: IPv6 dual‑stack; v0.10: Auto layout; v0.11: Logical V‑08) · Data: 2026-11-16
+> Status: **zaakceptowany, v0.12** (v0.3: punkty pośrednie kabli, prowadnice, Group by — § 4.3, § 4.4; v0.4: Failures § 7; v0.5: filtr SPOF, krok proxy w przepływach; v0.6: Services V‑07 § 9; v0.7: warianty i Compare V‑09; v0.8: konfigurator Expansion; v0.9: IPv6 dual‑stack; v0.10: Auto layout; v0.11: Logical V‑08; v0.12: sugestie rozmieszczenia) · Data: 2026-11-16
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (moduły, ID funkcji), `02-model-danych.md` v0.3, `04-design-system.md` v0.1 (tokeny i komponenty)
 > Makiety: canvas projektowy, wiersz „UI — key screens” (lista w § 14).
 > Ten dokument opisuje **ekrany, zachowania i przepływy**. Wygląd komponentów — `04`. Teksty UI po angielsku (D5), opisy po polsku.
@@ -293,6 +293,8 @@ Otwierany z liczników w top barze lub `Ctrl Shift M`. Zastępuje inspector.
 ---
 
 ## 9. Widoki tabelaryczne (P1)
+
+Dashboard (V‑02) ma kafel **Placement suggestions** (CAP‑10, 1.7): przeniesienia workloadów z przeciążonych hostów („Move docker‑vm from pve1 to pve2 (24 GiB of memory)” + Apply = `workload.move`) i rekomendacje rozbudowy (pamięć, w tym „ponad maksimum płyty — przenieś na inny host”, rdzenie, pojemność puli); bez potrzeb — „nothing to move or buy”.
 
 | Widok         | Układ                                                                                                                                                                                                                                                             |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

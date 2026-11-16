@@ -224,6 +224,18 @@
     }
   },
   "dashboard": {
+    "suggestions": "Placement suggestions",
+    "suggest": {
+      "none": "Every host is under the warning threshold — nothing to move or buy.",
+      "moves": "Moves",
+      "upgrades": "Upgrades",
+      "move": "Move {workload} from {from} to {to} ({size} of memory)",
+      "apply": "Apply",
+      "memory": "add {size} of memory to get under the warning threshold",
+      "memoryMax": "needs {size} more memory than its board takes — move workloads to another host",
+      "cpu": "needs {count, plural, one {# more core} other {# more cores}} (a bigger CPU or another host)",
+      "storage": "add {size} to pool {pool}"
+    },
     "title": "Dashboard",
     "computing": "Analysing…",
     "resources": "Resources",

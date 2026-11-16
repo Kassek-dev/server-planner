@@ -49,6 +49,9 @@ test('dashboard: power, PoE budget and bill of materials', async ({ page }) => {
   await expect(budgets).toContainText('PoE · sw-core');
   await expect(budgets).toContainText('25.5 / 15 W');
   await expect(view.getByRole('article', { name: 'Issues' })).toContainText('Errors');
+  await expect(view.getByRole('article', { name: 'Placement suggestions' })).toContainText(
+    'nothing to move or buy',
+  );
   await page.screenshot({ path: 'test-results/dashboard.png', fullPage: true });
 
   await energy.getByRole('button', { name: 'Set the energy price to see the cost' }).click();

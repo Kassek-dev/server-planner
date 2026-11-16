@@ -867,6 +867,13 @@ interface CapacityReport {
   gpu?: { required: GpuFeature[]; available: GpuFeature[]; ok: boolean };
   children: CapacityReport[]; // rekurencja: VM/LXC
 }
+// CAP-10 (1.7, packages/engine/src/placement.ts): placementPlan(project, capacity) →
+// { moves: { workloadId, from, to, cpu, memoryBytes }[],
+//   upgrades: ({ kind: 'memory', deviceId, addBytes, exceedsMax } | { kind: 'cpu', deviceId, addCores }
+//              | { kind: 'storage', deviceId, poolId, addBytes })[] }
+// Zachłannie: host ≥ progu critical (CPU lub RAM) oddaje największe workloady (VM/LXC → hosty Proxmox,
+// kontenery → urządzenia z Dockerem) hostowi, który po przeniesieniu zostaje ≤ progu warning;
+// co nie wystarcza → rozbudowa do progu warning (RAM w krokach 8 GiB, z flagą ponad maxBytes).
 interface ResourceUsage {
   capacity: number; // po narzucie i overcommicie
   used: number;

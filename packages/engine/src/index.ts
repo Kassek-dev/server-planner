@@ -115,3 +115,9 @@ export function simulateVisibleFrom(
 ): ServiceVisibility[] {
   return visibleFrom(buildContext(project, options), viewpoint);
 }
+export {
+  type PlacementMove,
+  type PlacementPlan,
+  type PlacementUpgrade,
+  placementPlan,
+} from './placement';
