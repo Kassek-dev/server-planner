@@ -103,3 +103,18 @@ test('typical segmentation adds a Guest network to the home lab', async ({ page 
   const view = page.getByRole('region', { name: 'Access' });
   await expect(view.getByRole('columnheader', { name: 'Guest' })).toBeVisible();
 });
+
+test('mDNS reflector joins LAN and IoT for service discovery (NET-16)', async ({ page }) => {
+  await openExample(page);
+  await page
+    .locator('.react-flow__node', { has: page.getByText('gw-01', { exact: true }) })
+    .first()
+    .click();
+  const panel = page.getByRole('complementary', { name: 'Inspector' });
+  await panel.getByRole('tab', { name: 'Network' }).click();
+  await panel.getByRole('checkbox', { name: '20 · LAN' }).check();
+  await panel.getByRole('checkbox', { name: '30 · IoT' }).check();
+  await page.getByRole('link', { name: 'Access' }).click();
+  const mdns = page.getByRole('region', { name: 'Service discovery (mDNS)' });
+  await expect(mdns.getByText(/20 · LAN ↔ 30 · IoT .*reflected by gw-01/)).toBeVisible();
+});

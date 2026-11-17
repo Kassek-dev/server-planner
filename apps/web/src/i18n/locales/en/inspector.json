@@ -226,6 +226,10 @@
     "interfaces": "{count, plural, one {Interfaces · #} other {Interfaces · #}}",
     "addVlanInterface": "Add VLAN interface",
     "addBridge": "Add bridge",
+    "mdns": {
+      "title": "mDNS reflector",
+      "hint": "Repeats service announcements (Chromecast, AirPlay, printers, Home Assistant discovery) between the checked VLANs; without it mDNS stays inside each VLAN."
+    },
     "addBond": "Add bond",
     "addLag": "Add LAG",
     "memberOf": "Bridge or bond",

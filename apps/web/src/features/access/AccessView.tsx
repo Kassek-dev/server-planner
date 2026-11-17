@@ -1,9 +1,10 @@
-import type {
-  AccessMatrix,
-  EntityRef,
-  Exposure,
-  MatrixCell,
-  ReachabilityResult,
+import {
+  type AccessMatrix,
+  type EntityRef,
+  type Exposure,
+  type MatrixCell,
+  mdnsDomains,
+  type ReachabilityResult,
 } from '@server-planner/engine';
 import {
   type Assertion,
@@ -158,6 +159,7 @@ export function AccessView() {
             ) : null}
           </section>
           <ExposureList project={project} exposure={exposure} />
+          <MdnsList project={project} />
           <AssertionList project={project} />
         </div>
       </div>
@@ -516,6 +518,37 @@ function AssertionList({ project }: { project: Project }) {
         initial={dialog?.initial ?? NEW_ASSERTION}
         {...(dialog?.editId ? { editId: dialog.editId } : {})}
       />
+    </section>
+  );
+}
+
+/** NET-16 service discovery: which VLANs see each other's mDNS services. */
+function MdnsList({ project }: { project: Project }) {
+  const { t } = useTranslation('views');
+  const domains = mdnsDomains(project);
+  if (Object.keys(project.vlans).length === 0) return null;
+  const vlanName = (id: string) => {
+    const v = project.vlans[id];
+    return v ? `${v.vid} · ${v.name}` : '?';
+  };
+  return (
+    <section className="flex flex-col gap-3" aria-label={t('access.mdns')}>
+      <Heading>{t('access.mdns')}</Heading>
+      <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+        {domains.map((d) => (
+          <li key={d.vlanIds.join(',')} className="flex items-start gap-2 text-body">
+            <Led status={d.vlanIds.length > 1 ? 'ok' : 'off'} size={7} />
+            <span>
+              {d.vlanIds.length > 1
+                ? t('access.mdnsShared', {
+                    vlans: d.vlanIds.map(vlanName).join(' ↔ '),
+                    routers: d.reflectors.map((r) => project.devices[r]?.name ?? '?').join(', '),
+                  })
+                : t('access.mdnsAlone', { vlan: vlanName(d.vlanIds[0] ?? '') })}
+            </span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
