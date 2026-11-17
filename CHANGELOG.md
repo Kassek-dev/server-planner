@@ -2,6 +2,16 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.9.0] — 2026-11-17
+
+Power that fills itself in, image facts from Docker Hub, and prices for parts.
+
+### Features
+
+- **Power from parts** — devices without power figures are no longer counted as 0 W: idle and load are estimated from their parts (CPU and GPU from their TDP, typical values for the board, memory, disks and add-in cards). A catalog model keeps its own figures and adds the parts you put in; figures you enter yourself win. Hardware › Power shows the breakdown, and energy, UPS load and variant comparisons follow your hardware changes (#74).
+- **Docker Hub** — the weekly catalog update looks up the images of catalog apps on Docker Hub: newest version, architectures, size and last push. The app catalog shows them and the architecture check uses them (#75).
+- **Prices of parts** — memory, disks, GPUs and add-in cards can be marked to buy with a price; the bill of materials counts them and Compare shows what an upgrade costs (#76).
+
 ## [1.8.1] — 2026-11-17
 
 ### Fixes

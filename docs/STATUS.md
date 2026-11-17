@@ -360,7 +360,7 @@ Schemat projektu v4 (D13).
 - [x] Bezpieczeństwo (recenzja automatyczna): ReDoS w dopasowaniu wzorców nazw — wzorzec z wieloma tokenami numerycznymi z zaimportowanego pliku dawał wyrażenie z wykładniczym backtrackingiem. Teraz dokładnie jeden `{nn}`/`{n}` (schemat, UI, matcher), ograniczone kwantyfikatory `\d{1,6}`, nazwa ≤ 128 znaków; testy regresji
 - D11: 1 poprawka → wydanie 1.8.1
 
-## Wersja 1.9 — plan (2026-11-17)
+## Wersja 1.9 — plan (2026-11-17), wydana jako v1.9.0
 
 Decyzja D14.
 
@@ -463,3 +463,4 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-17 | Etap 43: moc z podzespołów (CAP‑07) | #74 |
 | 2026-11-17 | Etap 44: adapter Docker Hub (CAT‑03) | #75 |
 | 2026-11-17 | Etap 45: ceny podzespołów | #76 |
+| 2026-11-17 | **Wydanie v1.9.0** (etapy 43–45, bez zmiany schematu; D11: `Z` = 0) | tag `v1.9.0` (#77) |
