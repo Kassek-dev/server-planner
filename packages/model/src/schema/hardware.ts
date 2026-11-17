@@ -16,6 +16,8 @@ export const GpuSpecSchema = z.object({
   features: z.array(GpuFeatureSchema),
   /** LIB-05 (schema v3): the slot it takes — a PCIe card, an M.2 module or a USB stick. */
   attach: z.enum(['pcie', 'm2', 'usb']).optional(),
+  /** CAP-07 (1.9): board power from the catalog, for the power estimate. */
+  tdpW: WattsSchema.optional(),
 });
 
 /** LIB-05 add-in card (schema v3). A NIC owns the interfaces it adds; removing it removes them. */

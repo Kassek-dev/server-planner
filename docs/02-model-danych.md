@@ -889,6 +889,15 @@ interface CapacityReport {
   gpu?: { required: GpuFeature[]; available: GpuFeature[]; ok: boolean };
   children: CapacityReport[]; // rekurencja: VM/LXC
 }
+// CAP-07 moc z podzespołów (1.9, D14, packages/engine/src/powerEstimate.ts): DevicePower.source =
+// 'spec' | 'spec+parts' | 'estimate' | 'poe' | 'none', parts?: { kind, label, count, idleW, loadW }[].
+// Wartości typowe (W, spoczynek–obciążenie): płyta/zasilacz wg typu (mini PC 3–6, serwer 35–60, NAS 8–12,
+// router 8–15, switch 8–15, AP 5–12, SBC 1–2, UPS 8–15, modem 6–10); CPU 12% TDP – TDP (brak TDP: wg typu);
+// RAM na moduł DDR3 1,5–3, DDR4 1–3, DDR5 1,5–4, LPDDR 0,3–1; dyski HDD 5–8, SATA SSD 0,5–3, NVMe 1,5–6,
+// eMMC/SD 0,1–0,5; GPU z gniazdem (attach) 10% TDP – TDP (brak TDP: PCIe 75, inne 5; iGPU = część CPU);
+// karty: NIC 2–3 + port ≤2,5G 0,5–1 / ≤10G 2–4 / szybszy 3–6, HBA 7–10, inne 3–5.
+// Ze specyfikacją modelu (bez zmian) dopisywane są tylko części ponad model (EngineOptions.modelBaselines:
+// moc, domyślne dyski, dyskretne GPU modelu); specyfikacja wpisana ręcznie = całość. GpuSpec.tdpW? (1.9).
 // CAP-10 (1.7, packages/engine/src/placement.ts): placementPlan(project, capacity) →
 // { moves: { workloadId, from, to, cpu, memoryBytes }[],
 //   upgrades: ({ kind: 'memory', deviceId, addBytes, exceedsMax } | { kind: 'cpu', deviceId, addCores }

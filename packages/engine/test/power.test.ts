@@ -42,8 +42,10 @@ describe('power (CAP-07)', () => {
     const pve = r.devices[byName(p, 'pve1').id];
     expect(pve?.expectedW).toBeGreaterThan(10);
     expect(pve?.expectedW).toBeLessThanOrEqual(60);
-    expect(r.totalIdleW).toBe(51);
-    expect(r.unknown.map((id) => p.devices[id]?.name).sort()).toEqual(['ap-living', 'tv-salon']);
+    // ap-living has no spec: its draw is estimated from its kind (D14); tv-salon is a client.
+    expect(r.devices[byName(p, 'ap-living').id]).toMatchObject({ idleW: 5, source: 'estimate' });
+    expect(r.totalIdleW).toBe(56);
+    expect(r.unknown.map((id) => p.devices[id]?.name).sort()).toEqual(['tv-salon']);
     expect(r.monthlyKwh).toBeCloseTo((r.totalExpectedW * 730.5) / 1000, 5);
     expect(r.monthlyCost).toEqual({ amount: r.monthlyKwh * 0.3, currency: 'EUR' });
   });
@@ -89,7 +91,9 @@ describe('power (CAP-07)', () => {
     const r = report(p);
     const u = r.ups[0];
     expect(u?.protected.length).toBe(7);
-    expect(u?.loadW).toBeCloseTo(r.totalExpectedW, 5);
+    // The UPS does not protect itself (its own draw is now estimated).
+    const own = r.devices[ups.id]?.expectedW ?? 0;
+    expect(u?.loadW).toBeCloseTo(r.totalExpectedW - own, 5);
     expect(u?.runtimeMin).toBeCloseTo(((100 * 0.8) / (u?.loadW ?? 1)) * 60, 5);
     expect(analyze(p).issues.some((i) => i.code === 'VAL_12_UPS')).toBe(false);
 
@@ -98,5 +102,54 @@ describe('power (CAP-07)', () => {
       changes: { ups: { capacityVa: 100, capacityW: 60, batteryWh: 100 } },
     });
     expect(analyze(p).issues.find((i) => i.code === 'VAL_12_UPS')?.severity).toBe('error');
+  });
+
+  it('estimates a device without a spec from its parts (D14)', () => {
+    let p = homeLab();
+    const pve = byName(p, 'pve1');
+    p = apply(p, updateDevice, {
+      id: pve.id,
+      changes: {
+        hardware: {
+          ...pve.hardware,
+          power: undefined,
+          cpus: [{ model: 'Intel Core i5-8500T', cores: 6, threads: 6, tdpW: 35, arch: 'amd64' }],
+          memory: { type: 'DDR4', modules: [{ sizeBytes: 16 * 1024 ** 3, count: 2 }] },
+          disks: [{ id: 'dsk_a', name: 'nvme0', type: 'ssd-nvme', sizeBytes: 1e12 }],
+        },
+      },
+    });
+    const d = report(p).devices[pve.id];
+    expect(d?.source).toBe('estimate');
+    // platform 3/6 + CPU 4.2/35 + 2 × DDR4 2/6 + NVMe 1.5/6
+    expect(d).toMatchObject({ idleW: 10.7, loadW: 53 });
+    expect(d?.parts?.map((x) => x.kind)).toEqual(['platform', 'cpu', 'memory', 'disk']);
+  });
+
+  it('adds parts beyond the catalog model to its spec', () => {
+    let p = homeLab();
+    const nas = byName(p, 'nas-01');
+    p = apply(p, updateDevice, {
+      id: nas.id,
+      changes: {
+        catalogRef: { id: 'test-nas', version: '2026.47' },
+        hardware: {
+          ...nas.hardware,
+          power: { idleW: 15, loadW: 30 },
+          disks: [
+            { id: 'dsk_1', name: 'd1', type: 'hdd', sizeBytes: 8e12 },
+            { id: 'dsk_2', name: 'd2', type: 'hdd', sizeBytes: 8e12 },
+          ],
+        },
+      },
+    });
+    const ctx = buildContext(p, {
+      modelBaselines: { 'test-nas': { power: { idleW: 15, loadW: 30 }, disks: [], gpus: 0 } },
+    });
+    const d = power(ctx, capacity(ctx)).devices[nas.id];
+    expect(d).toMatchObject({ source: 'spec+parts', idleW: 25, loadW: 46 });
+    // A spec entered by hand is the whole figure.
+    const manual = power(buildContext(p), capacity(buildContext(p))).devices[nas.id];
+    expect(manual).toMatchObject({ source: 'spec', idleW: 15 });
   });
 });

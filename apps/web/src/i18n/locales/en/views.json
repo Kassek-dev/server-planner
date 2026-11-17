@@ -272,6 +272,7 @@
     "expected": "Expected",
     "perMonth": "Per month",
     "setPrice": "Set the energy price to see the cost",
+    "estimatedPower": "≈ {count, plural, one {# device is} other {# devices are}} estimated from their parts — enter measured figures in Hardware › Power to refine.",
     "unknownPower": "{count, plural, one {# device has} other {# devices have}} no power figures ({names}) — add them in Hardware › Power.",
     "powerBudgets": "PoE and UPS",
     "poeOf": "PoE · {name}",

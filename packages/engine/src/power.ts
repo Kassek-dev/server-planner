@@ -1,6 +1,7 @@
 import type { Id } from '@server-planner/model';
 import { usageStatus } from './capacity';
 import { type EngineContext, peerOf } from './context';
+import { estimatePower, type PowerPart } from './powerEstimate';
 import type { CapacityReport, UsageStatus } from './types';
 
 /**
@@ -18,8 +19,13 @@ export interface DevicePower {
   idleW: number;
   loadW: number;
   expectedW: number;
-  /** Where the numbers come from: the hardware spec, the PoE draw of the port, or nothing. */
-  source: 'spec' | 'poe' | 'none';
+  /**
+   * Where the numbers come from: the hardware spec, the spec plus parts added beyond the catalog
+   * model, an estimate from the parts (CAP-07, D14), the PoE draw of the port, or nothing.
+   */
+  source: 'spec' | 'spec+parts' | 'estimate' | 'poe' | 'none';
+  /** The parts behind an estimate (all of them, or those added beyond the model). */
+  parts?: PowerPart[];
   /** Switch port powering this device. */
   poweredBy?: { deviceId: Id; interfaceId: Id };
 }
@@ -92,18 +98,29 @@ export function power(ctx: EngineContext, capacity: Record<Id, CapacityReport>):
   }
 
   const unknown: Id[] = [];
+  const cardPorts = (cardId: Id) => {
+    for (const d of Object.values(p.devices)) {
+      const card = d.hardware.cards?.find((c) => c.id === cardId);
+      if (card) return card.interfaceIds.map((id) => p.interfaces[id]?.speedMbps);
+    }
+    return [];
+  };
   for (const d of Object.values(p.devices)) {
     if (d.kind === 'internet') continue;
     const spec = d.hardware.power;
     const poe = poweredBy.get(d.id);
     const cpu = capacity[d.id]?.cpu.ratio ?? 0;
     const share = Math.min(1, Math.max(0, cpu));
-    if (spec) {
+    const baseline = d.catalogRef ? ctx.modelBaselines[d.catalogRef.id] : undefined;
+    const estimate = estimatePower(d, cardPorts, baseline);
+    if (spec || (estimate && !poe)) {
+      const range = estimate ?? (spec as NonNullable<typeof spec>);
       devices[d.id] = {
-        idleW: spec.idleW,
-        loadW: spec.loadW,
-        expectedW: spec.idleW + (spec.loadW - spec.idleW) * share,
-        source: 'spec',
+        idleW: range.idleW,
+        loadW: range.loadW,
+        expectedW: range.idleW + (range.loadW - range.idleW) * share,
+        source: estimate ? (spec ? 'spec+parts' : 'estimate') : 'spec',
+        ...(estimate ? { parts: estimate.parts } : {}),
         ...(poe ? { poweredBy: { deviceId: poe.deviceId, interfaceId: poe.interfaceId } } : {}),
       };
     } else if (poe) {

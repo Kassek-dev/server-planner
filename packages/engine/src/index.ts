@@ -131,5 +131,6 @@ export {
   type PlacementUpgrade,
   placementPlan,
 } from './placement';
+export * from './powerEstimate';
 export { type LinkLoad, type LoadItem, type ScenarioLoad, scenarioLoad } from './simulation/load';
 export { type MdnsDomain, mdnsDomains, mdnsVisible } from './simulation/mdns';

@@ -360,6 +360,30 @@ Schemat projektu v4 (D13).
 - [x] Bezpieczeństwo (recenzja automatyczna): ReDoS w dopasowaniu wzorców nazw — wzorzec z wieloma tokenami numerycznymi z zaimportowanego pliku dawał wyrażenie z wykładniczym backtrackingiem. Teraz dokładnie jeden `{nn}`/`{n}` (schemat, UI, matcher), ograniczone kwantyfikatory `\d{1,6}`, nazwa ≤ 128 znaków; testy regresji
 - D11: 1 poprawka → wydanie 1.8.1
 
+## Wersja 1.9 — plan (2026-11-17)
+
+Decyzja D14.
+
+### Etap 43 — Pobór mocy z podzespołów (CAP‑07)
+- [x] `powerEstimate.ts` (tabela typowych wartości, `estimatePower`), `power()` ze źródłami `estimate` i `spec+parts`, `EngineOptions.modelBaselines` z katalogu, `GpuSpec.tdpW` kopiowane z katalogu; rozbicie w Hardware › Power, dopisek w Energy
+
+### Etap 44 — Adapter Docker Hub (CAT‑03, `06` § 2.4)
+- [ ] Tagi, architektury, rozmiar obrazów aplikacji z katalogu (budżet zapytań, próbka offline)
+
+### Etap 45 — Ceny podzespołów (`01` § 5 „Ceny”)
+- [ ] Cena przy RAM, dyskach, GPU i kartach; koszt rozbudowy w Compare i BOM
+
+## Wersja 1.10 — plan (2026-11-17)
+
+Rozwinięcie uproszczeń z D12/D13.
+
+### Etap 46 — Firewall hosta: ruch wychodzący (NET‑15)
+### Etap 47 — IPv6 w symulacji (NET‑17)
+### Etap 48 — Internet klientów VPN: pełny / dzielony tunel (NET‑16)
+### Etap 49 — Scenariusze obciążają CPU hostów (FLW‑07, CAP‑05)
+### Etap 50 — Krok „Configure” w D‑05 (LIB‑05)
+### Etap 51 — Etykiety taśmowe i flagi kabli (LBL‑04)
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -435,3 +459,5 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | **Wydanie v1.8.0** (etapy 39–42, schemat v4 z automatyczną migracją → `minor`; D11: `Z` = 0) — cały zakres P2 wdrożony | tag `v1.8.0` (#71) |
 | 2026-11-17 | Poprawka bezpieczeństwa: ReDoS we wzorcach nazw (LBL‑05) | #72 |
 | 2026-11-17 | **Wydanie v1.8.1** (D11: 1 poprawka od 1.8.0) | tag `v1.8.1` (#73) |
+| 2026-11-17 | Decyzja D14, plan 1.9 i 1.10 | #74 |
+| 2026-11-17 | Etap 43: moc z podzespołów (CAP‑07) | #74 |

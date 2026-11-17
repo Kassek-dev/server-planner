@@ -304,6 +304,10 @@ function EnergyTile({ project, result }: { project: Project; result: AnalysisRes
   const { open } = useDrawer();
   const { power } = result;
   const watts = (w: number) => `${Math.round(w)} W`;
+  // D14: devices whose draw comes (partly) from the estimate from parts.
+  const estimated = Object.values(power.devices).filter(
+    (d) => d.source === 'estimate' || d.source === 'spec+parts',
+  ).length;
   return (
     <Tile title={t('dashboard.energy')}>
       <div className="grid grid-cols-3 gap-4">
@@ -326,6 +330,11 @@ function EnergyTile({ project, result }: { project: Project; result: AnalysisRes
         >
           {t('dashboard.setPrice')}
         </Button>
+      ) : null}
+      {estimated > 0 ? (
+        <span className="text-body-sm text-text-muted">
+          {t('dashboard.estimatedPower', { count: estimated })}
+        </span>
       ) : null}
       {power.unknown.length > 0 ? (
         <span className="text-body-sm text-text-muted">
