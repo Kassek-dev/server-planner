@@ -18,7 +18,10 @@ function upgraded(base: Project): Project {
           ...pve.hardware,
           memory: {
             ...pve.hardware.memory,
-            modules: [...(pve.hardware.memory?.modules ?? []), { sizeBytes: 32 * GiB, count: 1, purchase: { status: 'to-buy', price: 80 } }],
+            modules: [
+              ...(pve.hardware.memory?.modules ?? []),
+              { sizeBytes: 32 * GiB, count: 1, purchase: { status: 'to-buy', price: 80 } },
+            ],
           },
           disks: [
             ...pve.hardware.disks,
