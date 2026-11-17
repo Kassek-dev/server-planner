@@ -12,6 +12,7 @@ import {
   TransportSchema,
 } from './common';
 import { OsInstallSchema } from './hardware';
+import { HostFirewallSchema } from './network';
 
 /** Workloads, Docker and apps — docs/02-model-danych.md § 5, traffic patterns § 9.3. */
 
@@ -60,6 +61,8 @@ const WorkloadBase = {
   tagIds: z.array(IdSchema),
   description: z.string().optional(),
   autostart: z.boolean().optional(),
+  /** NET-15 (schema v4), VMs and LXC: their own firewall (ignored on containers). */
+  hostFirewall: HostFirewallSchema.optional(),
 };
 
 export const WorkloadSchema = z.discriminatedUnion('kind', [

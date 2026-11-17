@@ -46,6 +46,10 @@ export const SIM_CODES = [
   'SIM_DST_NO_NETWORK',
   'SIM_FW_DEFAULT_ALLOW',
   'SIM_FW_DEFAULT_DENY',
+  'SIM_HOSTFW_RULE_ALLOW',
+  'SIM_HOSTFW_RULE_DENY',
+  'SIM_HOSTFW_DEFAULT_ALLOW',
+  'SIM_HOSTFW_DEFAULT_DENY',
   'SIM_FW_INTRA_ZONE_ALLOW',
   'SIM_FW_INTRA_ZONE_DENY',
   'SIM_FW_RULE_ALLOW',
@@ -422,7 +426,56 @@ function firewall(
 }
 
 /** Docker publishing and the app listener on the target (layers docker/app). */
-function targetChecks(t: Trace, dst: Endpoint_, q: ReachQuery, local: boolean) {
+/**
+ * NET-15 firewall of the receiving host or VM/LXC (the owner of the target address): rules in
+ * order, then its inbound default. Traffic from the host itself is not filtered.
+ */
+function hostFirewall(
+  ctx: EngineContext,
+  t: Trace,
+  src: Side,
+  dstAtt: Attachment,
+  q: ReachQuery,
+): boolean {
+  const owner = ctx.project.interfaces[dstAtt.ifaceId]?.owner;
+  if (!owner) return true;
+  const entity =
+    owner.type === 'device' ? ctx.project.devices[owner.id] : ctx.project.workloads[owner.id];
+  const fw = entity && 'hostFirewall' in entity ? entity.hostFirewall : undefined;
+  if (!fw?.enabled) return true;
+  const ref: EntityRef = { type: owner.type === 'device' ? 'device' : 'workload', id: owner.id };
+  const params = { host: entity?.name ?? '', protocol: q.protocol, port: q.port ?? '' };
+  const index = fw.rules.findIndex(
+    (rule) =>
+      rule.enabled &&
+      (rule.protocol === 'any' || rule.protocol === q.protocol) &&
+      (!rule.ports?.length ||
+        (q.port !== undefined &&
+          rule.ports.some((r) => q.port !== undefined && q.port >= r.from && q.port <= r.to))) &&
+      endpointMatches(ctx, rule.source, src),
+  );
+  const rule = index >= 0 ? fw.rules[index] : undefined;
+  if (rule?.action === 'allow') {
+    t.pass('firewall', ref, 'SIM_HOSTFW_RULE_ALLOW', { ...params, rule: index + 1 }, rule.id);
+    return true;
+  }
+  if (rule)
+    return t.fail('firewall', ref, 'SIM_HOSTFW_RULE_DENY', { ...params, rule: index + 1 }, rule.id);
+  if (fw.inbound === 'allow') {
+    t.pass('firewall', ref, 'SIM_HOSTFW_DEFAULT_ALLOW', params);
+    return true;
+  }
+  return t.fail('firewall', ref, 'SIM_HOSTFW_DEFAULT_DENY', params);
+}
+
+function targetChecks(
+  t: Trace,
+  dst: Endpoint_,
+  q: ReachQuery,
+  local: boolean,
+  host?: { ctx: EngineContext; src: Side; att: Attachment },
+) {
+  if (host && !local && !hostFirewall(host.ctx, t, host.src, host.att, q)) return false;
   if (q.port === undefined || (q.protocol !== 'tcp' && q.protocol !== 'udp')) return true;
   let port = q.port;
   if (dst.bridged && !local) {
@@ -496,7 +549,7 @@ function attempt(
 
   if (dst && dstAtt && dstAtt.subnetId === srcSubnet.id) {
     if (l2Hop(ctx, t, srcAtt, dstAtt, 'SIM_L2_SAME_SEGMENT', { subnet: srcSubnet.cidr }))
-      targetChecks(t, dst, q, false);
+      targetChecks(t, dst, q, false, { ctx, src: srcSide, att: dstAtt });
     return t.result();
   }
 
@@ -597,7 +650,7 @@ function attempt(
   if (!firewall(ctx, t, router, srcSide, sideOf(ctx, dst, dstAtt), q)) return t.result();
   if (!l2Hop(ctx, t, egress, dstAtt, 'SIM_L2_TO_TARGET', { subnet: dstSubnet?.cidr ?? '' }))
     return t.result();
-  targetChecks(t, dst, q, false);
+  targetChecks(t, dst, q, false, { ctx, src: srcSide, att: dstAtt });
   return t.result();
 }
 
@@ -764,7 +817,7 @@ function inbound(
   const subnet = dstAtt.subnetId ? p.subnets[dstAtt.subnetId]?.cidr : undefined;
   if (!l2Hop(ctx, t, egress, dstAtt, 'SIM_L2_TO_TARGET', { subnet: subnet ?? '' }))
     return done(target);
-  targetChecks(t, dst, q, false);
+  targetChecks(t, dst, q, false, { ctx, src: srcSide, att: dstAtt });
   return done(target);
 }
 

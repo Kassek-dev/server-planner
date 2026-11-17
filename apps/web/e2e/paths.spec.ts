@@ -4,7 +4,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** End-to-end user paths from docs/05 § 6 (A: new lab from scratch, B: will my hardware cope?). */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 const node = (page: Page, name: string) =>
   page.locator('.react-flow__node', { has: page.getByText(name, { exact: true }) }).first();

@@ -17,7 +17,7 @@ test('a project from version 1.1 is upgraded on import', async ({ page }) => {
   await page.goto('./');
   await page.getByTestId('import-input').setInputFiles(join(fixtures, 'v1/home-lab.json'));
   await expect(
-    page.getByText('The file used schema version 1 and was upgraded to version 3.'),
+    page.getByText('The file used schema version 1 and was upgraded to version 4.'),
   ).toBeVisible();
 });
 

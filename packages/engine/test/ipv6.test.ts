@@ -13,7 +13,7 @@ import { analyze, apply, byName, homeLab, ifaceOf } from './support';
 /** NET-17 IPv6 addressing and validation (fixture v3/dual-stack); the simulation stays IPv4. */
 
 const raw = JSON.parse(
-  readFileSync(join(import.meta.dirname, '../../../fixtures/schema/v3/dual-stack.json'), 'utf8'),
+  readFileSync(join(import.meta.dirname, '../../../fixtures/schema/v4/dual-stack.json'), 'utf8'),
 );
 const lab = (): Project => parseProjectFile(raw).file.project;
 const codes = (p: Project) => analyze(p).issues.map((i) => i.code);

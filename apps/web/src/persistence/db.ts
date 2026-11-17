@@ -1,11 +1,16 @@
-import { type Project, type Snapshot, upgradeProjectV1 } from '@server-planner/model';
+import {
+  type Project,
+  type Snapshot,
+  upgradeProjectV1,
+  upgradeProjectV3,
+} from '@server-planner/model';
 import { type DBSchema, type IDBPDatabase, openDB } from 'idb';
 import type { ProjectPreview } from '../features/canvas/preview';
 
 /** IndexedDB layout — docs/02-model-danych.md § 10. Bump DB_VERSION and extend `upgrade` on changes. */
 
 export const DB_NAME = 'server-planner';
-export const DB_VERSION = 3;
+export const DB_VERSION = 4;
 
 /** Lightweight row for the projects list (PRJ-02) — avoids loading full projects. */
 export interface ProjectMeta {
@@ -76,6 +81,24 @@ export async function openAppDb(
           await snapshot.update({
             ...value,
             project: upgradeProjectV1(value.project as never) as unknown as Snapshot['project'],
+          });
+          snapshot = await snapshot.continue();
+        }
+      }
+      if (oldVersion >= 1 && oldVersion < 4) {
+        // Project schema v4 (flow scenarios): the same in-place migration. Idempotent, so data
+        // just upgraded from v2 passes through safely.
+        let project = await tx.objectStore('projectData').openCursor();
+        while (project) {
+          await project.update(upgradeProjectV3(project.value as never) as unknown as Project);
+          project = await project.continue();
+        }
+        let snapshot = await tx.objectStore('snapshots').openCursor();
+        while (snapshot) {
+          const value = snapshot.value;
+          await snapshot.update({
+            ...value,
+            project: upgradeProjectV3(value.project as never) as unknown as Snapshot['project'],
           });
           snapshot = await snapshot.continue();
         }

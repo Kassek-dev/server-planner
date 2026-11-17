@@ -24,6 +24,8 @@ export const ID_PREFIXES = {
   assertion: 'asr',
   location: 'loc',
   card: 'crd',
+  hostFirewallRule: 'hfw',
+  flowScenario: 'fsc',
 } as const;
 
 export type EntityType = keyof typeof ID_PREFIXES;

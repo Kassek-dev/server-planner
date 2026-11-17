@@ -26,7 +26,7 @@ export function toProjectFile(
 ): ProjectFile {
   return {
     format: PROJECT_FILE_FORMAT,
-    schemaVersion: SCHEMA_VERSION as 3,
+    schemaVersion: SCHEMA_VERSION as 4,
     appVersion: APP_VERSION,
     exportedAt: now,
     project,

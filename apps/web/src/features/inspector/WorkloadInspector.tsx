@@ -25,6 +25,7 @@ import { CapacityMeters } from './CapacityMeters';
 import { useHostReport } from './capacityMode';
 import { InterfaceCard } from './device/NetworkTab';
 import { OS_LABELS, rootDevice, WorkloadList } from './device/SoftwareTab';
+import { HostFirewallSection } from './HostFirewallSection';
 import {
   AddButton,
   Breadcrumb,
@@ -369,6 +370,12 @@ function GuestSections({
           <p className="m-0 text-body-sm text-text-muted">{t('workload.noBridge')}</p>
         ) : null}
       </Section>
+
+      <HostFirewallSection
+        project={project}
+        owner={{ type: 'workload', id: workload.id }}
+        firewall={workload.hostFirewall}
+      />
 
       <WorkloadList
         project={project}

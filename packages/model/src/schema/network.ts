@@ -66,6 +66,8 @@ export const InterfaceSchema = z.object({
   addresses: z.array(IpAssignmentSchema),
   zoneId: IdSchema.optional(),
   enabled: z.boolean(),
+  /** NET-16 (schema v4), `bond` interfaces: how the member ports (parentId → bond) work together. */
+  bond: z.object({ mode: z.enum(['lacp', 'active-backup', 'balance-alb']) }).optional(),
 });
 
 export const LinkSchema = z.object({
@@ -145,9 +147,17 @@ export const SubnetSchema = z.object({
 export const ZoneSchema = z.object({
   id: IdSchema,
   name: z.string().min(1),
-  kind: z.enum(['wan', 'internal']),
+  /** `vpn` (schema v4, NET-16): remote clients that come in through a VPN server app. */
+  kind: z.enum(['wan', 'internal', 'vpn']),
   color: ColorRefSchema,
   intraZone: z.enum(['allow', 'deny']),
+  /** VPN zones: the server app the clients connect to (their traffic starts at its host). */
+  vpn: z
+    .object({
+      serverAppId: IdSchema,
+      protocol: z.enum(['wireguard', 'tailscale', 'openvpn']),
+    })
+    .optional(),
 });
 
 export const EndpointSchema = z.discriminatedUnion('type', [
@@ -171,6 +181,27 @@ export const FirewallRuleSchema = z.object({
   ports: z.array(PortRangeSchema).optional(),
   description: z.string().optional(),
   log: z.boolean().optional(),
+});
+
+/** NET-15 host firewall rule (schema v4): inbound only, matched on the source. */
+export const HostFirewallRuleSchema = z.object({
+  id: IdSchema,
+  enabled: z.boolean(),
+  action: z.enum(['allow', 'deny']),
+  protocol: ProtocolSchema,
+  source: EndpointSchema,
+  ports: z.array(PortRangeSchema).optional(),
+  description: z.string().optional(),
+});
+
+/**
+ * NET-15 firewall on a host or VM/LXC (Proxmox firewall, ufw, Windows Firewall), simplified:
+ * a default for incoming traffic and rules checked in order; outgoing traffic is not filtered.
+ */
+export const HostFirewallSchema = z.object({
+  enabled: z.boolean(),
+  inbound: z.enum(['allow', 'deny']),
+  rules: z.array(HostFirewallRuleSchema),
 });
 
 export const NatRuleSchema = z.discriminatedUnion('kind', [
@@ -259,6 +290,8 @@ export type Subnet = z.infer<typeof SubnetSchema>;
 export type Zone = z.infer<typeof ZoneSchema>;
 export type Endpoint = z.infer<typeof EndpointSchema>;
 export type FirewallRule = z.infer<typeof FirewallRuleSchema>;
+export type HostFirewallRule = z.infer<typeof HostFirewallRuleSchema>;
+export type HostFirewall = z.infer<typeof HostFirewallSchema>;
 export type NatRule = z.infer<typeof NatRuleSchema>;
 export type Firewall = z.infer<typeof FirewallSchema>;
 export type Route = z.infer<typeof RouteSchema>;

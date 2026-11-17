@@ -2,7 +2,12 @@ import { z } from 'zod';
 import { CatalogRefSchema, IdSchema } from './common';
 import { HardwareSchema, OsInstallSchema, PurchaseSchema, UpsSpecSchema } from './hardware';
 import { FormFactorSchema, PlacementSchema } from './location';
-import { FirewallSchema, SwitchCapabilitiesSchema, WifiConfigSchema } from './network';
+import {
+  FirewallSchema,
+  HostFirewallSchema,
+  SwitchCapabilitiesSchema,
+  WifiConfigSchema,
+} from './network';
 import { DockerRuntimeSchema } from './workload';
 
 /** Devices — docs/02-model-danych.md § 4. */
@@ -56,6 +61,10 @@ export const DeviceSchema = z.object({
   docker: DockerRuntimeSchema.optional(),
   switching: SwitchCapabilitiesSchema.optional(),
   firewall: FirewallSchema.optional(),
+  /** NET-15 (schema v4): firewall of the host itself. */
+  hostFirewall: HostFirewallSchema.optional(),
+  /** NET-16 (schema v4), routers: VLANs between which mDNS is reflected (service discovery). */
+  mdnsReflector: z.object({ vlanIds: z.array(IdSchema) }).optional(),
   wifi: WifiConfigSchema.optional(),
   ups: UpsSpecSchema.optional(),
   purchase: PurchaseSchema.optional(),

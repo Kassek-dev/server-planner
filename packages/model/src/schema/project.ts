@@ -72,6 +72,40 @@ export const ProjectSettingsSchema = z.object({
   currency: z.string().min(1),
   /** LBL-03 cable label pattern; tokens {a.device} {a.port} {b.device} {b.port}. */
   cableLabelPattern: z.string().min(1).max(120).optional(),
+  /**
+   * LBL-05 (schema v4) naming conventions: a pattern per device kind with tokens {site} {kind}
+   * {nn} (two-digit number), and whether host names must follow RFC 1123.
+   */
+  naming: z
+    .object({
+      site: z.string().max(32).optional(),
+      patterns: z.record(z.string(), z.string().min(1).max(64)),
+      hostnames: z.boolean(),
+    })
+    .optional(),
+});
+
+/** Who plays a flow role in a scenario (FLW-07): an element of the project or the Internet. */
+export const FlowBindingSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.enum(['device', 'workload', 'app']), id: IdSchema }),
+  z.object({ type: z.literal('internet') }),
+]);
+
+/**
+ * FLW-06/07 (schema v4): processes running at the same time — "evening: 3 streams + backup" —
+ * whose traffic is added up on links and hosts.
+ */
+export const FlowScenarioSchema = z.object({
+  id: IdSchema,
+  name: z.string().min(1).max(80),
+  items: z.array(
+    z.object({
+      appId: IdSchema,
+      flowId: z.string().min(1),
+      count: z.number().int().min(1).max(100),
+      bindings: z.record(z.string(), FlowBindingSchema),
+    }),
+  ),
 });
 
 export const ProjectSchema = z.object({
@@ -96,6 +130,7 @@ export const ProjectSchema = z.object({
   routes: z.record(IdSchema, RouteSchema),
   proxyRoutes: z.record(IdSchema, ProxyRouteSchema),
   dnsRecords: z.record(IdSchema, DnsRecordSchema),
+  flowScenarios: z.record(IdSchema, FlowScenarioSchema),
   tags: z.record(IdSchema, TagSchema),
   assertions: z.record(IdSchema, AssertionSchema),
   locations: z.record(IdSchema, LocationSchema),
@@ -114,7 +149,7 @@ export const PROJECT_FILE_FORMAT = 'server-planner/project';
 
 export const ProjectFileSchema = z.object({
   format: z.literal(PROJECT_FILE_FORMAT),
-  schemaVersion: z.literal(3),
+  schemaVersion: z.literal(4),
   appVersion: z.string(),
   exportedAt: IsoDateSchema,
   project: ProjectSchema,
@@ -128,5 +163,7 @@ export type Note = z.infer<typeof NoteSchema>;
 export type Layout = z.infer<typeof LayoutSchema>;
 export type ProjectSettings = z.infer<typeof ProjectSettingsSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
+export type FlowScenario = z.infer<typeof FlowScenarioSchema>;
+export type FlowBinding = z.infer<typeof FlowBindingSchema>;
 export type Snapshot = z.infer<typeof SnapshotSchema>;
 export type ProjectFile = z.infer<typeof ProjectFileSchema>;

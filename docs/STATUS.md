@@ -340,7 +340,8 @@ Reszta P2 bez zmiany formatu projektu (D13).
 Schemat projektu v4 (D13).
 
 ### Etap 39 — Firewall hosta (NET‑15)
-- [ ] Polityka wejścia + reguły allow/deny na urządzeniu i VM/LXC, symulacja u celu
+- [x] Schemat v4 (`migrateV3toV4`, IndexedDB v4, fixture'y `v4/`, `v3/` zamrożone): `flowScenarios`, `hostFirewall`, strefa `vpn`, `bond`, `mdnsReflector`, `settings.naming` — od razu dla etapów 39–42
+- [x] Komendy `hostFirewall.set/addRule/updateRule/deleteRule/moveRule`; symulacja: `hostFirewall()` u celu (kody `SIM_HOSTFW_*`); sekcja „Host firewall” w Network i w VM/LXC
 
 ### Etap 40 — VPN, LACP, mDNS (NET‑16)
 - [ ] VPN (WireGuard/Tailscale) jako strefa zdalnych klientów; bond/LACP (suma prędkości, brak SPOF); reflektor mDNS między VLANami
@@ -417,3 +418,4 @@ Schemat projektu v4 (D13).
 | 2026-11-16 | Etap 37: Hyper‑V na Windows Server (SW‑14) | #62 |
 | 2026-11-16 | Etap 38: zgłaszanie poprawek katalogu (CAT‑06), zapis do pliku (PRJ‑09) | #63 |
 | 2026-11-16 | **Wydanie v1.7.0** (etapy 34–38, bez zmiany schematu; D11: `Z` = 0) | tag `v1.7.0` (#64) |
+| 2026-11-17 | Etap 39: schemat projektu v4, firewall hosta (NET‑15) | #65 |

@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 21: defaults for new projects (SET-02), location inspector (LOC-06), spec filters (LIB-02). */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 
 async function openExample(page: Page) {

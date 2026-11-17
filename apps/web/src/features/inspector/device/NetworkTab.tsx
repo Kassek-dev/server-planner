@@ -26,6 +26,7 @@ import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
 import { Select } from '../../../ui/Select';
 import { useDrawer } from '../../drawers/useDrawer';
+import { HostFirewallSection } from '../HostFirewallSection';
 import {
   AddButton,
   Card,
@@ -103,6 +104,13 @@ export function NetworkTab({ project, device }: { project: Project; device: Devi
         <RoutingSection project={project} device={device} interfaces={interfaces} />
       ) : null}
       {device.wifi ? <WifiSection project={project} device={device} /> : null}
+      {isCompute ? (
+        <HostFirewallSection
+          project={project}
+          owner={{ type: 'device', id: device.id }}
+          firewall={device.hostFirewall}
+        />
+      ) : null}
     </>
   );
 }
