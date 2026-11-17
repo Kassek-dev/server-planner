@@ -70,6 +70,15 @@ export function HostFirewallSection({
               { value: 'allow', label: t('hostFirewall.allow') },
             ]}
           />
+          <Segmented
+            label={t('hostFirewall.outbound')}
+            value={firewall?.outbound ?? 'allow'}
+            onChange={(outbound) => run(setHostFirewall, { owner, outbound })}
+            options={[
+              { value: 'allow', label: t('hostFirewall.outAllow') },
+              { value: 'deny', label: t('hostFirewall.outDeny') },
+            ]}
+          />
           <p className="m-0 text-body-sm text-text-muted">{t('hostFirewall.hint')}</p>
         </>
       ) : null}
@@ -103,7 +112,7 @@ export function HostFirewallSection({
                   onClick={() => run(deleteHostFirewallRule, { owner, id: rule.id })}
                 />
               </div>
-              <Grid>
+              <Grid cols={3}>
                 <Select
                   label={td('firewall.action')}
                   value={rule.action}
@@ -112,6 +121,22 @@ export function HostFirewallSection({
                     { value: 'deny', label: td('firewall.deny') },
                   ]}
                   onChange={(e) => update(rule, { action: e.target.value as 'allow' | 'deny' })}
+                />
+                <Select
+                  label={t('hostFirewall.direction')}
+                  value={rule.direction ?? 'in'}
+                  options={[
+                    { value: 'in', label: t('hostFirewall.in') },
+                    { value: 'out', label: t('hostFirewall.out') },
+                  ]}
+                  onChange={(e) =>
+                    update(
+                      rule,
+                      e.target.value === 'out'
+                        ? { direction: 'out', destination: rule.destination ?? { type: 'any' } }
+                        : { direction: undefined, destination: undefined },
+                    )
+                  }
                 />
                 <Select
                   label={td('firewall.protocol')}
@@ -131,12 +156,21 @@ export function HostFirewallSection({
                 validate={(v) => (parsePorts(v) === null ? td('errors.ports') : null)}
                 onCommit={(v) => update(rule, { ports: parsePorts(v) ?? undefined })}
               />
-              <EndpointPicker
-                label={td('firewall.source')}
-                project={project}
-                value={rule.source}
-                onChange={(source) => update(rule, { source })}
-              />
+              {rule.direction === 'out' ? (
+                <EndpointPicker
+                  label={td('firewall.destination')}
+                  project={project}
+                  value={rule.destination ?? { type: 'any' }}
+                  onChange={(destination) => update(rule, { destination })}
+                />
+              ) : (
+                <EndpointPicker
+                  label={td('firewall.source')}
+                  project={project}
+                  value={rule.source}
+                  onChange={(source) => update(rule, { source })}
+                />
+              )}
             </Card>
           ))
         : null}

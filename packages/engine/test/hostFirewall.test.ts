@@ -57,4 +57,35 @@ describe('host firewall (NET-15)', () => {
       }),
     ).toThrow(/HOST_FIREWALL_CONTAINER/);
   });
+
+  it('filters what a host sends when outgoing traffic is dropped by default (1.10)', () => {
+    let p = homeLab();
+    const nas = { type: 'device' as const, id: byName(p, 'nas-01').id };
+    p = execute(p, setHostFirewall, {
+      owner: nas,
+      enabled: true,
+      inbound: 'allow',
+      outbound: 'deny',
+    }).project;
+    const blocked = dns(p);
+    expect(blocked.verdict).toBe('blocked');
+    expect(blocked.steps.find((s) => s.decision === 'fail')?.code).toBe(
+      'SIM_HOSTFW_OUT_DEFAULT_DENY',
+    );
+    p = execute(p, addHostFirewallRule, {
+      owner: nas,
+      rule: {
+        enabled: true,
+        direction: 'out',
+        action: 'allow',
+        protocol: 'udp',
+        source: { type: 'any' },
+        destination: { type: 'device', id: byName(p, 'pi-dns').id },
+        ports: [{ from: 53, to: 53 }],
+      },
+    }).project;
+    const allowed = dns(p);
+    expect(allowed.verdict).toBe('reachable');
+    expect(allowed.steps.some((s) => s.code === 'SIM_HOSTFW_OUT_RULE_ALLOW')).toBe(true);
+  });
 });

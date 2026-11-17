@@ -23,7 +23,13 @@ export const setHostFirewall = defineCommand(
       owner,
       enabled,
       inbound,
-    }: { owner: HostFirewallOwner; enabled?: boolean; inbound?: 'allow' | 'deny' },
+      outbound,
+    }: {
+      owner: HostFirewallOwner;
+      enabled?: boolean;
+      inbound?: 'allow' | 'deny';
+      outbound?: 'allow' | 'deny';
+    },
   ) => {
     const entity = ownerOf(draft, owner);
     const fw = entity.hostFirewall ?? { enabled: false, inbound: 'deny' as const, rules: [] };
@@ -31,6 +37,7 @@ export const setHostFirewall = defineCommand(
       ...fw,
       ...(enabled !== undefined ? { enabled } : {}),
       ...(inbound !== undefined ? { inbound } : {}),
+      ...(outbound !== undefined ? { outbound } : {}),
     };
   },
 );

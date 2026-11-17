@@ -47,6 +47,9 @@ export const SIM_CODES = [
   'SIM_FW_DEFAULT_ALLOW',
   'SIM_FW_DEFAULT_DENY',
   'SIM_HOSTFW_RULE_ALLOW',
+  'SIM_HOSTFW_OUT_RULE_ALLOW',
+  'SIM_HOSTFW_OUT_RULE_DENY',
+  'SIM_HOSTFW_OUT_DEFAULT_DENY',
   'SIM_VPN_TUNNEL',
   'SIM_VPN_NAT',
   'SIM_VPN_INTERNET',
@@ -462,6 +465,7 @@ function hostFirewall(
   const index = fw.rules.findIndex(
     (rule) =>
       rule.enabled &&
+      (rule.direction ?? 'in') === 'in' &&
       (rule.protocol === 'any' || rule.protocol === q.protocol) &&
       (!rule.ports?.length ||
         (q.port !== undefined &&
@@ -480,6 +484,54 @@ function hostFirewall(
     return true;
   }
   return t.fail('firewall', ref, 'SIM_HOSTFW_DEFAULT_DENY', params);
+}
+
+/**
+ * 1.10 outgoing side of a host firewall: the sender's own firewall checks where its traffic goes
+ * (out rules on the destination, then the outbound default — allow when not set).
+ */
+function hostFirewallOut(
+  ctx: EngineContext,
+  t: Trace,
+  srcAtt: Attachment,
+  dst: Side,
+  q: ReachQuery,
+): boolean {
+  const owner = ctx.project.interfaces[srcAtt.ifaceId]?.owner;
+  if (!owner) return true;
+  const entity =
+    owner.type === 'device' ? ctx.project.devices[owner.id] : ctx.project.workloads[owner.id];
+  const fw = entity && 'hostFirewall' in entity ? entity.hostFirewall : undefined;
+  if (!fw?.enabled) return true;
+  const out = fw.rules.filter((r) => r.direction === 'out');
+  if (out.length === 0 && (fw.outbound ?? 'allow') === 'allow') return true;
+  const ref: EntityRef = { type: owner.type === 'device' ? 'device' : 'workload', id: owner.id };
+  const params = { host: entity?.name ?? '', protocol: q.protocol, port: q.port ?? '' };
+  const index = fw.rules.findIndex(
+    (rule) =>
+      rule.enabled &&
+      rule.direction === 'out' &&
+      (rule.protocol === 'any' || rule.protocol === q.protocol) &&
+      (!rule.ports?.length ||
+        (q.port !== undefined &&
+          rule.ports.some((r) => q.port !== undefined && q.port >= r.from && q.port <= r.to))) &&
+      endpointMatches(ctx, rule.destination ?? { type: 'any' }, dst),
+  );
+  const rule = index >= 0 ? fw.rules[index] : undefined;
+  if (rule?.action === 'allow') {
+    t.pass('firewall', ref, 'SIM_HOSTFW_OUT_RULE_ALLOW', { ...params, rule: index + 1 }, rule.id);
+    return true;
+  }
+  if (rule)
+    return t.fail(
+      'firewall',
+      ref,
+      'SIM_HOSTFW_OUT_RULE_DENY',
+      { ...params, rule: index + 1 },
+      rule.id,
+    );
+  if ((fw.outbound ?? 'allow') === 'allow') return true;
+  return t.fail('firewall', ref, 'SIM_HOSTFW_OUT_DEFAULT_DENY', params);
 }
 
 function targetChecks(
@@ -555,6 +607,15 @@ function attempt(
       return t.result();
     }
     if (!sameBridge) t.pass('docker', ref, 'SIM_DOCKER_NAT', { network });
+  }
+
+  // 1.10: the sender's own firewall, for traffic leaving it (not VPN clients, not local).
+  if (!src.vpnZone && !(dst && dstAtt && dstAtt.ifaceId === srcAtt.ifaceId)) {
+    const target: Side =
+      dst && dstAtt
+        ? sideOf(ctx, dst, dstAtt)
+        : { internet: true, devices: new Set(), workloads: new Set(), apps: new Set() };
+    if (!hostFirewallOut(ctx, t, srcAtt, target, q)) return t.result();
   }
 
   // Same host / same address: no network hop.

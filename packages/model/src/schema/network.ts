@@ -187,9 +187,13 @@ export const FirewallRuleSchema = z.object({
 export const HostFirewallRuleSchema = z.object({
   id: IdSchema,
   enabled: z.boolean(),
+  /** 1.10: `out` rules filter what the host sends and match the destination; absent = `in`. */
+  direction: z.enum(['in', 'out']).optional(),
   action: z.enum(['allow', 'deny']),
   protocol: ProtocolSchema,
   source: EndpointSchema,
+  /** Out rules: where the traffic goes. */
+  destination: EndpointSchema.optional(),
   ports: z.array(PortRangeSchema).optional(),
   description: z.string().optional(),
 });
@@ -201,6 +205,8 @@ export const HostFirewallRuleSchema = z.object({
 export const HostFirewallSchema = z.object({
   enabled: z.boolean(),
   inbound: z.enum(['allow', 'deny']),
+  /** 1.10: default for traffic the host sends; absent = allow (not filtered). */
+  outbound: z.enum(['allow', 'deny']).optional(),
   rules: z.array(HostFirewallRuleSchema),
 });
 

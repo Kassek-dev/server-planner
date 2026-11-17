@@ -234,3 +234,17 @@ test('bond: LACP bond with a port, under the bridge (NET-16)', async ({ page }) 
     /.+/,
   );
 });
+
+test('host firewall: an outgoing rule (1.10)', async ({ page }) => {
+  await openExample(page);
+  await node(page, 'pve1').click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Network' }).click();
+  await panel.getByRole('checkbox', { name: 'Firewall on this host' }).check();
+  await panel.getByText('Block by default').click();
+  await expect(panel.getByRole('radio', { name: 'Block by default' })).toBeChecked();
+  await panel.getByRole('button', { name: 'Add rule' }).click();
+  const rule = panel.getByRole('group', { name: 'Rule 1' });
+  await rule.getByLabel('Direction').selectOption('out');
+  await expect(rule.getByLabel('Destination')).toBeVisible();
+});
