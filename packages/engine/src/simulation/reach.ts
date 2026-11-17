@@ -47,6 +47,10 @@ export const SIM_CODES = [
   'SIM_FW_DEFAULT_ALLOW',
   'SIM_FW_DEFAULT_DENY',
   'SIM_HOSTFW_RULE_ALLOW',
+  'SIM_VPN_TUNNEL',
+  'SIM_VPN_NAT',
+  'SIM_VPN_INTERNET',
+  'SIM_VPN_NOT_TARGET',
   'SIM_HOSTFW_RULE_DENY',
   'SIM_HOSTFW_DEFAULT_ALLOW',
   'SIM_HOSTFW_DEFAULT_DENY',
@@ -118,6 +122,8 @@ interface Endpoint_ {
   app?: AppInstance;
   workloads: Set<string>;
   apps: Set<string>;
+  /** NET-16: remote clients of this VPN zone, starting at the VPN server's host. */
+  vpnZone?: string;
 }
 
 const segmentName = (ctx: EngineContext, segment: SegmentKey) => {
@@ -173,6 +179,14 @@ function resolve(ctx: EngineContext, ref: EntityRef, depth = 0): Endpoint_ {
         ...empty,
         attachments: att ? [{ ...att, ...(ip ? { ip } : {}) }] : [],
       });
+    }
+    case 'zone': {
+      // NET-16: a VPN zone is its remote clients; their traffic starts at the VPN server.
+      const zone = p.zones[ref.id];
+      if (zone?.kind !== 'vpn' || !zone.vpn || !p.apps[zone.vpn.serverAppId]) return empty;
+      const server = resolve(ctx, { type: 'app', id: zone.vpn.serverAppId }, depth + 1);
+      const { app: _app, container: _c, bridged: _b, ...host } = server;
+      return { ...host, apps: new Set(), workloads: new Set(), vpnZone: zone.id };
     }
     default:
       return empty;
@@ -522,6 +536,15 @@ function attempt(
   const dstDevice = dstAtt ? ctx.deviceOfInterface.get(dstAtt.ifaceId) : undefined;
   if (dstDevice) t.target = dstDevice.id;
 
+  if (src.vpnZone) {
+    const zone = p.zones[src.vpnZone];
+    const params = { zone: zone?.name ?? '', server: srcDevice?.name ?? '' };
+    if (srcDevice && (srcDevice.kind === 'router' || srcDevice.kind === 'firewall'))
+      return vpnRouted(ctx, t, q, src.vpnZone, srcDevice, dst, dstAtt);
+    // A VPN server on a host masquerades its clients: they look like the host from here on.
+    t.pass('l3', ifaceRef(srcAtt.ifaceId), 'SIM_VPN_NAT', params);
+  }
+
   const sameBridge =
     !!src.bridged && !!dst?.bridged && src.bridged.networkId === dst.bridged.networkId;
   if (src.bridged) {
@@ -654,6 +677,52 @@ function attempt(
   return t.result();
 }
 
+/**
+ * NET-16 VPN on the router: clients arrive through the tunnel in their own zone — the router
+ * routes them to the target subnet, its firewall sees the VPN zone as the source.
+ */
+function vpnRouted(
+  ctx: EngineContext,
+  t: Trace,
+  q: ReachQuery,
+  zoneId: string,
+  router: Device,
+  dst: Endpoint_ | undefined,
+  dstAtt: Attachment | undefined,
+): ReachabilityResult {
+  const zone = ctx.project.zones[zoneId];
+  const routerRef = deviceRef(router);
+  t.pass('l3', routerRef, 'SIM_VPN_TUNNEL', { zone: zone?.name ?? '', router: router.name });
+  if (!dst || !dstAtt) {
+    t.unknown = true;
+    t.fail('l3', routerRef, 'SIM_VPN_INTERNET', { zone: zone?.name ?? '' });
+    return t.result();
+  }
+  const src: Side = {
+    internet: false,
+    zoneId,
+    devices: new Set(),
+    workloads: new Set(),
+    apps: new Set(),
+  };
+  const dstSubnet = dstAtt.subnetId ? ctx.project.subnets[dstAtt.subnetId] : undefined;
+  const egress = (ctx.interfacesByOwner.get(router.id) ?? [])
+    .map((i) => attachmentOf(ctx, i))
+    .find((a): a is Attachment => !!a && !!a.subnetId && a.subnetId === dstAtt.subnetId);
+  if (!egress) {
+    t.fail('l3', routerRef, 'SIM_L3_NO_ROUTE', {
+      router: router.name,
+      to: dstSubnet?.cidr ?? dstAtt.ip ?? '',
+    });
+    return t.result();
+  }
+  if (!firewall(ctx, t, router, src, sideOf(ctx, dst, dstAtt), q)) return t.result();
+  if (!l2Hop(ctx, t, egress, dstAtt, 'SIM_L2_TO_TARGET', { subnet: dstSubnet?.cidr ?? '' }))
+    return t.result();
+  targetChecks(t, dst, q, false, { ctx, src, att: dstAtt });
+  return t.result();
+}
+
 const passed = (r: ReachabilityResult) => r.steps.filter((s) => s.decision === 'pass').length;
 
 /** Reachability of `q.to` from `q.from`; tries every address pair and keeps the best outcome. */
@@ -679,6 +748,8 @@ export function reach(ctx: EngineContext, q: ReachQuery): ReachabilityResult {
   const dst = q.to === 'internet' ? undefined : resolve(ctx, q.to);
   if (dst && q.to !== 'internet' && dst.attachments.length === 0)
     return empty('SIM_DST_NO_NETWORK', q.to);
+  // Remote VPN clients take connections only through their own tunnel.
+  if (dst?.vpnZone && q.to !== 'internet') return empty('SIM_VPN_NOT_TARGET', q.to);
 
   let best: ReachabilityResult | undefined;
   for (const srcAtt of src.attachments) {
