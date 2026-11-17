@@ -94,3 +94,20 @@ test('a VPN zone with its server (NET-16)', async ({ page }) => {
   await expect(zone.getByLabel('VPN server')).toBeVisible();
   await expect(zone.getByLabel('Protocol')).toHaveValue('wireguard');
 });
+
+test('naming conventions: a pattern names new switches (LBL-05)', async ({ page }) => {
+  await openExample(page);
+  await inspector(page).getByRole('button', { name: 'Project settings' }).click();
+  const drawer = page.getByRole('dialog', { name: 'Project settings' });
+  await drawer.getByLabel('Site').fill('home');
+  await drawer.getByLabel('Site').press('Enter');
+  await drawer.getByLabel('Switch', { exact: true }).fill('{site}-{kind}-{nn}');
+  await drawer.getByLabel('Switch', { exact: true }).press('Enter');
+  await expect(drawer.getByText('e.g. home-sw-01')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page
+    .getByRole('complementary', { name: 'Library' })
+    .getByRole('button', { name: /^Switch/ })
+    .click();
+  await expect(inspector(page).getByRole('heading', { name: 'home-sw-01' })).toBeVisible();
+});

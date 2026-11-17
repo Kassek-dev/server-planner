@@ -167,6 +167,16 @@
     "title": "Storage pool without enough disks",
     "description": "Pool {pool} on {device} has {count, plural, =0 {no disks} one {# disk} other {# disks}}; {layout} needs at least {needed}."
   },
+  "VAL_NAMING": {
+    "title": "Name outside the convention",
+    "description": "{device} does not follow the naming pattern {pattern}.",
+    "fix": "Rename to {suggestion}"
+  },
+  "VAL_HOSTNAME": {
+    "title": "Host name is not valid",
+    "description": "{hostname} on {device} is not a valid host name (lower-case letters, digits and hyphens, up to 63); suggested: {suggestion}.",
+    "fix": "Use {suggestion}"
+  },
   "VAL_MDNS_VLAN": {
     "title": "mDNS reflector without the VLAN",
     "description": "{device} should reflect mDNS on VLAN {vlan}, but has no interface in it."

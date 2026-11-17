@@ -136,6 +136,24 @@
     "used": "{count, plural, =0 {unused} one {# use} other {# uses}}"
   },
   "settings": {
+    "naming": "Naming",
+    "namingHint": "A pattern per device kind names new devices and flags names outside it. Tokens: '{site}', '{kind}' (sw, gw, ap, srv, pc, nas…), '{nn}' (01, 02…), '{n}'.",
+    "site": "Site",
+    "hostnames": "Host names must be valid (lower-case letters, digits, hyphens)",
+    "namingExample": "e.g. {name}",
+    "kinds": {
+      "modem": "Modem",
+      "router": "Router",
+      "firewall": "Firewall",
+      "switch": "Switch",
+      "access-point": "Access point",
+      "server": "Server",
+      "mini-pc": "Mini PC",
+      "sbc": "SBC",
+      "nas": "NAS",
+      "ups": "UPS",
+      "patch-panel": "Patch panel"
+    },
     "title": "Project settings",
     "labels": "Labels",
     "cablePattern": "Cable label pattern",
@@ -155,6 +173,7 @@
     "energyPrice": "Energy price per kWh"
   },
   "errors": {
+    "namingPattern": "Use up to 64 characters with '{nn}' or '{n}', so every device gets its own name.",
     "pattern": "Enter a pattern of up to 120 characters.",
     "cidr": "Enter a network such as 192.168.10.0/24.",
     "ip": "Enter a valid IP address.",

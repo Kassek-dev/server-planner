@@ -3,12 +3,17 @@ import {
   canonicalIp,
   checkRackFit,
   type Interface,
+  isHostname,
   isIpv6Cidr,
+  matchesPattern,
+  namingPattern,
+  nextPatternName,
   type OsId,
   POOL_MIN_DISKS,
   runsGuest,
   SINGLE_LINK_KINDS,
   type Subnet,
+  toHostname,
   type Workload,
 } from '@server-planner/model';
 import ipaddr from 'ipaddr.js';
@@ -944,6 +949,54 @@ const mdnsRules: ValidationRule = {
   },
 };
 
+/**
+ * LBL-05 naming conventions: device names follow the pattern of their kind (info, with a rename to
+ * the next free name) and, when required, host names are RFC 1123 labels (warning, with a fix).
+ */
+const namingRules: ValidationRule = {
+  code: 'VAL_NAMING',
+  run(ctx) {
+    const out: Issue[] = [];
+    const p = ctx.project;
+    const naming = p.settings.naming;
+    if (!naming) return out;
+    for (const device of Object.values(p.devices)) {
+      if (device.kind === 'internet') continue;
+      const ref = [{ type: 'device' as const, id: device.id }];
+      const rule = namingPattern(p, device.kind);
+      if (rule && !matchesPattern(device.name, rule.pattern, device.kind, rule.site)) {
+        const next = nextPatternName(p, device.kind, device.id);
+        out.push(
+          issue(
+            'VAL_NAMING',
+            'info',
+            ref,
+            { device: device.name, pattern: rule.pattern, suggestion: next ?? '' },
+            next
+              ? { command: 'device.update', payload: { id: device.id, changes: { name: next } } }
+              : undefined,
+          ),
+        );
+      }
+      const host = device.hostname ?? device.name;
+      if (naming.hostnames && device.kind !== 'client' && !isHostname(host))
+        out.push(
+          issue(
+            'VAL_HOSTNAME',
+            'warning',
+            ref,
+            { device: device.name, hostname: host, suggestion: toHostname(host) },
+            {
+              command: 'device.update',
+              payload: { id: device.id, changes: { hostname: toHostname(host) } },
+            },
+          ),
+        );
+    }
+    return out;
+  },
+};
+
 const GIB = 1024 ** 3;
 const gib = (bytes: number) => Math.round((bytes / GIB) * 10) / 10;
 
@@ -1233,6 +1286,7 @@ export const rules: ValidationRule[] = [
   bondRules,
   vpnRules,
   mdnsRules,
+  namingRules,
   capacityRule,
   gpuRule,
   dependencies,
@@ -1266,6 +1320,8 @@ export const ISSUE_CODES = [
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
   'VAL_POOL',
+  'VAL_NAMING',
+  'VAL_HOSTNAME',
   'VAL_MDNS_VLAN',
   'VAL_VPN_SERVER',
   'VAL_VPN_EXPOSED',

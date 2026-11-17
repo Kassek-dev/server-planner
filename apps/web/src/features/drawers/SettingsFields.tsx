@@ -1,5 +1,11 @@
-import { DEFAULT_CABLE_PATTERN, type ProjectSettings } from '@server-planner/model';
+import {
+  DEFAULT_CABLE_PATTERN,
+  DEVICE_KINDS,
+  nameFromPattern,
+  type ProjectSettings,
+} from '@server-planner/model';
 import { useTranslation } from 'react-i18next';
+import { Checkbox } from '../../ui/Checkbox';
 import { CommitField, Grid, Section } from '../inspector/parts';
 
 const percent = (v: number) => String(Math.round(v * 100));
@@ -124,6 +130,82 @@ export function SettingsFields({
           })}
         </p>
       </Section>
+      <NamingFields settings={s} onChange={set} />
     </>
+  );
+}
+
+/** Kinds that get a naming pattern (the Internet node and clients keep their own names). */
+const NAMED_KINDS = DEVICE_KINDS.filter((k) => k !== 'internet' && k !== 'client');
+
+/** LBL-05: a pattern per device kind, the site token and RFC 1123 host names. */
+function NamingFields({
+  settings: s,
+  onChange: set,
+}: {
+  settings: ProjectSettings;
+  onChange: (settings: Partial<ProjectSettings>) => void;
+}) {
+  const { t } = useTranslation('drawers');
+  const naming = s.naming ?? { patterns: {}, hostnames: false };
+  const update = (next: Partial<NonNullable<ProjectSettings['naming']>>) => {
+    const merged = { ...naming, ...next };
+    const empty = !merged.site && Object.keys(merged.patterns).length === 0 && !merged.hostnames;
+    set({ naming: empty ? undefined : merged });
+  };
+  return (
+    <Section title={t('settings.naming')}>
+      <p className="m-0 text-body-sm text-text-muted">{t('settings.namingHint')}</p>
+      <Grid>
+        <CommitField
+          label={t('settings.site')}
+          mono
+          value={naming.site ?? ''}
+          validate={(v) => (v.length <= 32 ? null : t('errors.pattern'))}
+          onCommit={(v) => {
+            const { site: _, ...rest } = naming;
+            update(v.trim() ? { ...rest, site: v.trim() } : rest);
+          }}
+        />
+      </Grid>
+      <Checkbox
+        label={t('settings.hostnames')}
+        checked={naming.hostnames}
+        onChange={(e) => update({ hostnames: e.target.checked })}
+      />
+      <div className="grid grid-cols-2 gap-2.5">
+        {NAMED_KINDS.map((kind) => {
+          const pattern = naming.patterns[kind];
+          return (
+            <div key={kind} className="flex flex-col gap-1">
+              <CommitField
+                label={t(`settings.kinds.${kind}`)}
+                mono
+                placeholder={`{site}-{kind}-{nn}`}
+                value={pattern ?? ''}
+                validate={(v) =>
+                  v === '' || (v.length <= 64 && /\{nn?\}/.test(v))
+                    ? null
+                    : t('errors.namingPattern')
+                }
+                onCommit={(v) => {
+                  const patterns = { ...naming.patterns };
+                  if (v.trim()) patterns[kind] = v.trim();
+                  else delete patterns[kind];
+                  update({ patterns });
+                }}
+              />
+              {pattern ? (
+                <span className="font-mono text-data-sm text-text-muted">
+                  {t('settings.namingExample', {
+                    name: nameFromPattern(pattern, kind, naming.site ?? '', 1),
+                  })}
+                </span>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </Section>
   );
 }
