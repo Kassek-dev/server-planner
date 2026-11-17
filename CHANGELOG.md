@@ -2,6 +2,12 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.8.1] — 2026-11-17
+
+### Fixes
+
+- Security: a naming pattern with several number tokens next to each other (possible only in an edited project file) could freeze the app while checking names. Patterns now take exactly one `{nn}` or `{n}`, and name matching stays fast on any input (#72).
+
 ## [1.8.0] — 2026-11-17
 
 Firewalls on hosts, VPN, bonds and mDNS, how busy your cables get, and naming conventions.
