@@ -9,6 +9,7 @@ import type {
   Resources,
   Vlan,
 } from '@server-planner/model';
+import type { ModelBaseline } from './powerEstimate';
 
 /** Inputs from the catalog (docs/02 Z4: engines are `(Project, Catalog) → result`). */
 export interface EngineOptions {
@@ -20,6 +21,8 @@ export interface EngineOptions {
   imageArch?: Record<string, CpuArch[]>;
   /** CPU architectures an OS installs on (CatalogOs.arch) — SW-12. */
   osArch?: Partial<Record<OsId, CpuArch[]>>;
+  /** CAP-07: what each catalog device model ships with (power spec, disks, discrete GPUs). */
+  modelBaselines?: Record<string, ModelBaseline>;
 }
 
 export type CpuArch = 'amd64' | 'arm64';
@@ -34,6 +37,7 @@ export interface EngineContext {
   loadProfiles: Record<string, CatalogLoadProfile[]>;
   imageArch: Record<string, CpuArch[]>;
   osArch: Partial<Record<OsId, CpuArch[]>>;
+  modelBaselines: Record<string, ModelBaseline>;
   interfacesByOwner: Map<string, Interface[]>;
   linksByInterface: Map<string, Link[]>;
   vlanByVid: Map<number, Vlan>;
@@ -105,6 +109,7 @@ export function buildContext(project: Project, options: EngineOptions = {}): Eng
     loadProfiles: options.loadProfiles ?? {},
     imageArch: options.imageArch ?? {},
     osArch: options.osArch ?? {},
+    modelBaselines: options.modelBaselines ?? {},
     interfacesByOwner,
     linksByInterface,
     vlanByVid,

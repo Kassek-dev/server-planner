@@ -71,6 +71,7 @@ export function gpuFromCatalog(gpu: CatalogGpu): GpuSpec {
     model: gpu.model,
     features: [...gpu.features],
     attach: gpu.attach,
+    ...(gpu.tdpW !== undefined ? { tdpW: gpu.tdpW } : {}),
     ...(gpu.vramBytes !== undefined ? { vramBytes: gpu.vramBytes } : {}),
   };
 }

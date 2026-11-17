@@ -77,6 +77,22 @@ export function engineOptions(catalog: Catalog | null): EngineOptions {
       catalog.apps.flatMap((a) => a.deployment.components.map((c) => [c.image, c.arch])),
     ),
     osArch: Object.fromEntries(catalog.os.map((o) => [o.id, o.arch])),
+    modelBaselines: Object.fromEntries(
+      catalog.devices.flatMap((d) =>
+        d.hardware.power
+          ? [
+              [
+                d.id,
+                {
+                  power: d.hardware.power,
+                  disks: (d.hardware.defaultDisks ?? []).map((x) => x.type),
+                  gpus: d.hardware.gpus.filter((g) => g.attach).length,
+                },
+              ],
+            ]
+          : [],
+      ),
+    ),
   };
 }
 

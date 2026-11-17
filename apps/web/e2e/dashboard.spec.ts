@@ -42,8 +42,10 @@ test('dashboard: power, PoE budget and bill of materials', async ({ page }) => {
   await expect(page).toHaveURL(/\/dashboard/);
   const view = page.getByRole('region', { name: 'Dashboard' });
   const energy = view.getByRole('article', { name: 'Energy (estimate)' });
-  // nas-01 idles at 20 W, the AP draws 25.5 W over PoE.
-  await expect(energy).toContainText('Idle46 W');
+  // nas-01 idles at 20 W, the AP draws 25.5 W over PoE; gw-01, sw-core, pi-dns and pve1 have no
+  // figures and are estimated from their parts (D14): 73 W in all.
+  await expect(energy).toContainText('Idle73 W');
+  await expect(energy).toContainText('≈ 4 devices are estimated from their parts');
   await expect(view.getByRole('article', { name: 'Bill of materials' })).toContainText('€450.00');
   const budgets = view.getByRole('article', { name: 'PoE and UPS' });
   await expect(budgets).toContainText('PoE · sw-core');

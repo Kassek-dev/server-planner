@@ -73,6 +73,12 @@
     "rule": "Rule {n}"
   },
   "hardware": {
+    "powerEstimate": {
+      "estimate": "≈ {idle}–{load} W, estimated from the parts below.",
+      "added": "≈ {idle}–{load} W: the model's figures plus the parts added to it.",
+      "platform": "Board, fans and power supply",
+      "hint": "Typical values per part (CPU and GPU from their TDP). Enter idle and load figures above when you have measured them."
+    },
     "expansion": {
       "title": "Expansion",
       "addCard": "Add card",

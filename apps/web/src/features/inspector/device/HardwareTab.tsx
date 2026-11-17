@@ -22,6 +22,7 @@ import { catalogCorrectionUrl } from '../../../app/links';
 import { useSession } from '../../../app/services';
 import { catalogDevice, useCatalog } from '../../../catalog/store';
 import { Silhouette, type SilhouetteName } from '../../../icons/devices';
+import { useResults } from '../../../store/results';
 import { Banner } from '../../../ui/Banner';
 import { Button } from '../../../ui/Button';
 import { Checkbox } from '../../../ui/Checkbox';
@@ -401,6 +402,7 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
             }
           />
         </Grid>
+        <PowerEstimateView deviceId={device.id} />
       </Section>
 
       {device.kind === 'ups' ? (
@@ -1123,5 +1125,39 @@ export function PickFromList({
         if (e.target.value) onPick(e.target.value);
       }}
     />
+  );
+}
+
+/** CAP-07 (D14): the estimate from parts — or what parts added beyond the model add to its spec. */
+function PowerEstimateView({ deviceId }: { deviceId: string }) {
+  const { t } = useTranslation('inspector');
+  const power = useResults((s) => s.result?.power.devices[deviceId]);
+  if (!power?.parts || (power.source !== 'estimate' && power.source !== 'spec+parts')) return null;
+  const w = (v: number) => (Math.round(v * 10) / 10).toString();
+  return (
+    <div className="flex flex-col gap-1 rounded-md border border-dashed border-border-default p-2.5">
+      <span className="text-body-sm text-text-secondary">
+        {power.source === 'estimate'
+          ? t('hardware.powerEstimate.estimate', { idle: w(power.idleW), load: w(power.loadW) })
+          : t('hardware.powerEstimate.added', { idle: w(power.idleW), load: w(power.loadW) })}
+      </span>
+      <ul className="m-0 flex list-none flex-col p-0 font-mono text-data-sm text-text-muted">
+        {power.parts.map((part) => (
+          <li key={`${part.kind}:${part.label}`} className="flex gap-2">
+            <span className="min-w-0 flex-1 truncate">
+              {`${part.count > 1 ? `${part.count}× ` : ''}${
+                part.kind === 'platform'
+                  ? t('hardware.powerEstimate.platform')
+                  : part.kind === 'disk'
+                    ? t(`hardware.diskTypes.${part.label}`)
+                    : part.label
+              }`}
+            </span>
+            <span>{`${w(part.idleW)}–${w(part.loadW)} W`}</span>
+          </li>
+        ))}
+      </ul>
+      <span className="text-body-sm text-text-muted">{t('hardware.powerEstimate.hint')}</span>
+    </div>
   );
 }
