@@ -18,6 +18,14 @@ import { useVariantDialog, useVariantOf } from './variants';
 
 const pct = (ratio: number) => `${Math.round(ratio * 100)}%`;
 
+const money = (amount: number, currency: string) => {
+  try {
+    return new Intl.NumberFormat('en', { style: 'currency', currency }).format(amount);
+  } catch {
+    return `${amount.toFixed(2)} ${currency}`;
+  }
+};
+
 /** Sum of priced purchases per currency, as text. */
 function cost(list: Side['bom']['toBuyCost']): string {
   if (list.length === 0) return '—';
@@ -114,6 +122,17 @@ export function CompareView() {
       <Totals c={c} />
       <section className="flex flex-col gap-2" aria-label={t('compare.toBuy')}>
         <Heading>{t('compare.toBuy')}</Heading>
+        {c.upgrades.length > 0 ? (
+          <p className="m-0 text-body-sm text-text-secondary">
+            {t('compare.upgradeCost', {
+              total: money(
+                c.upgrades.reduce((s, u) => s + (u.price ?? 0), 0),
+                project.settings.currency,
+              ),
+              unpriced: c.upgrades.filter((u) => u.price === undefined).length,
+            })}
+          </p>
+        ) : null}
         {c.upgrades.length === 0 ? (
           <p className="m-0 text-text-secondary">{t('compare.nothingToBuy')}</p>
         ) : (
@@ -132,6 +151,9 @@ export function CompareView() {
                 </button>
                 <span className="flex-1 font-mono text-data-sm text-text-secondary">
                   <UpgradeText upgrade={u} />
+                </span>
+                <span className="font-mono text-data">
+                  {u.price !== undefined ? money(u.price, project.settings.currency) : '—'}
                 </span>
               </li>
             ))}
@@ -177,6 +199,8 @@ function UpgradeText({ upgrade: u }: { upgrade: Upgrade }) {
       );
     case 'gpu':
       return <>{t('compare.upgrade.gpu', { list: u.models.join(', ') })}</>;
+    case 'card':
+      return <>{t('compare.upgrade.card', { list: u.models.join(', ') })}</>;
     case 'cpu':
       return <>{t('compare.upgrade.cpu', { before: u.before, after: u.after })}</>;
   }

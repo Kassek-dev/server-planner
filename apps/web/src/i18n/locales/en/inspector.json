@@ -188,6 +188,7 @@
     "poe": "PoE",
     "poeBudget": "PoE budget W",
     "purchase": "Purchase",
+    "partPrice": "Price per piece ({currency})",
     "purchaseStatus": "Status",
     "purchaseStatuses": {
       "owned": "Owned",

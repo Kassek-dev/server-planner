@@ -84,7 +84,11 @@ export const updateCard = defineCommand(
       deviceId,
       cardId,
       changes,
-    }: { deviceId: string; cardId: string; changes: Partial<Pick<AddInCard, 'model' | 'slot'>> },
+    }: {
+      deviceId: string;
+      cardId: string;
+      changes: Partial<Pick<AddInCard, 'model' | 'slot' | 'purchase'>>;
+    },
   ) => {
     const device = getOrThrow(draft.devices, deviceId, 'device');
     const card = device.hardware.cards?.find((c) => c.id === cardId);

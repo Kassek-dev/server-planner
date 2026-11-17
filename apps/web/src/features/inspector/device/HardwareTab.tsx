@@ -45,6 +45,7 @@ import {
 import { SuggestCorrection } from '../SuggestCorrection';
 import { ExpansionSection } from './ExpansionSection';
 import { useMoveDevice } from './moveDevice';
+import { PartPurchase } from './PartPurchase';
 import {
   byVendorAndModel,
   cpuFromCatalog,
@@ -357,6 +358,10 @@ export function HardwareTab({ project, device }: { project: Project; device: Dev
                   }
                 />
               </div>
+              <PartPurchase
+                value={module.purchase}
+                onChange={(purchase) => setModule({ purchase })}
+              />
               <Checkbox
                 label={t('hardware.soldered')}
                 checked={!!module.soldered}
@@ -606,6 +611,7 @@ function GpuSection({ device, setHw }: { device: Device; setHw: (hw: Hardware) =
               />
             ))}
           </fieldset>
+          <PartPurchase value={gpu.purchase} onChange={(purchase) => setGpu(i, { purchase })} />
         </Card>
       ))}
     </Section>
@@ -695,6 +701,7 @@ function DisksSection({ device, setHw }: { device: Device; setHw: (hw: Hardware)
                   }
                 />
               </div>
+              <PartPurchase value={disk.purchase} onChange={(purchase) => setDisk({ purchase })} />
             </Card>
           );
         })}

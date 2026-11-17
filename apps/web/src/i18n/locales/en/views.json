@@ -105,6 +105,7 @@
     },
     "issueCount": "{errors, plural, one {# error} other {# errors}} · {warnings, plural, one {# warning} other {# warnings}}",
     "toBuy": "Parts to buy",
+    "upgradeCost": "Cost of the upgrade: {total}{unpriced, plural, =0 {} one { · # item without a price} other { · # items without a price}}.",
     "nothingToBuy": "No new devices or parts compared with the base project.",
     "changes": "Changes",
     "upgrade": {
@@ -113,6 +114,7 @@
       "memory": "memory {before} → {after} (+{added})",
       "disks": "new disks: {list}",
       "gpu": "new GPU: {list}",
+      "card": "new card: {list}",
       "cpu": "CPU {before} → {after}"
     }
   },

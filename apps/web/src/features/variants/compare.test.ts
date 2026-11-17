@@ -18,11 +18,20 @@ function upgraded(base: Project): Project {
           ...pve.hardware,
           memory: {
             ...pve.hardware.memory,
-            modules: [...(pve.hardware.memory?.modules ?? []), { sizeBytes: 32 * GiB, count: 1 }],
+            modules: [
+              ...(pve.hardware.memory?.modules ?? []),
+              { sizeBytes: 32 * GiB, count: 1, purchase: { status: 'to-buy', price: 80 } },
+            ],
           },
           disks: [
             ...pve.hardware.disks,
-            { id: 'dsk_new', name: 'nvme1', type: 'ssd-nvme', sizeBytes: 2e12 },
+            {
+              id: 'dsk_new',
+              name: 'nvme1',
+              type: 'ssd-nvme',
+              sizeBytes: 2e12,
+              purchase: { status: 'to-buy', price: 120 },
+            },
           ],
         },
       },
@@ -49,13 +58,18 @@ describe('variant comparison (PRJ-10)', () => {
       name: 'pve1',
       before,
       after: before + 32 * GiB,
+      price: 80,
     });
     expect(list).toContainEqual({
       kind: 'disks',
       deviceId: pve.id,
       name: 'pve1',
       disks: [{ type: 'ssd-nvme', sizeBytes: 2e12 }],
+      price: 120,
     });
+    // Parts marked to buy also count in the bill of materials (1.9).
+    const c = compareProjects(base, variant, null, null);
+    expect(c.variant.bom.toBuyCost).toEqual([{ currency: 'EUR', amount: 200 }]);
     expect(upgrades(base, base)).toEqual([]);
   });
 

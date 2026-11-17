@@ -371,7 +371,7 @@ Decyzja D14.
 - [x] Adapter `dockerhub` (lista obrazów katalogu z buildera, 1 zapytanie na obraz, odstęp 400 ms, przerwanie przy limicie), `dist/images.json` scalany z poprzednim, `CatalogDist.images` + `withDist` (architektury, `imageInfo`), wiersz obrazu w D‑06; próbka `test/samples/dockerhub`
 
 ### Etap 45 — Ceny podzespołów (`01` § 5 „Ceny”)
-- [ ] Cena przy RAM, dyskach, GPU i kartach; koszt rozbudowy w Compare i BOM
+- [x] `purchase?` na modułach RAM, dyskach, GPU i kartach (`PartPurchase`), BOM liczy części, Compare: cena pozycji, karty, koszt rozbudowy
 
 ## Wersja 1.10 — plan (2026-11-17)
 
@@ -462,3 +462,4 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-17 | Decyzja D14, plan 1.9 i 1.10 | #74 |
 | 2026-11-17 | Etap 43: moc z podzespołów (CAP‑07) | #74 |
 | 2026-11-17 | Etap 44: adapter Docker Hub (CAT‑03) | #75 |
+| 2026-11-17 | Etap 45: ceny podzespołów | #76 |

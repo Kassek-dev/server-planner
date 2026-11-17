@@ -10,6 +10,14 @@ import {
 
 /** Hardware and OS — docs/02-model-danych.md § 4.1, § 4.2. */
 
+/** Buying state and price — of a device, or (1.9) of a part: RAM, disk, GPU, add-in card. */
+export const PurchaseSchema = z.object({
+  status: z.enum(['owned', 'to-buy', 'optional']),
+  price: z.number().nonnegative().optional(),
+  currency: z.string().optional(),
+  url: z.url({ protocol: /^https$/ }).optional(),
+});
+
 export const GpuSpecSchema = z.object({
   model: z.string(),
   vramBytes: BytesSchema.optional(),
@@ -18,6 +26,7 @@ export const GpuSpecSchema = z.object({
   attach: z.enum(['pcie', 'm2', 'usb']).optional(),
   /** CAP-07 (1.9): board power from the catalog, for the power estimate. */
   tdpW: WattsSchema.optional(),
+  purchase: PurchaseSchema.optional(),
 });
 
 /** LIB-05 add-in card (schema v3). A NIC owns the interfaces it adds; removing it removes them. */
@@ -28,6 +37,7 @@ export const AddInCardSchema = z.object({
   slot: z.enum(['pcie', 'm2', 'usb']),
   /** Interfaces this card adds (NIC). */
   interfaceIds: z.array(IdSchema),
+  purchase: PurchaseSchema.optional(),
 });
 
 /** LIB-05 (schema v3): slots and bays of the board / chassis, from the catalog model or by hand. */
@@ -62,6 +72,7 @@ export const MemoryModuleSchema = z.object({
   count: z.number().int().positive(),
   speedMts: z.number().int().positive().optional(),
   soldered: z.boolean().optional(),
+  purchase: PurchaseSchema.optional(),
 });
 
 export const MemorySpecSchema = z.object({
@@ -78,6 +89,7 @@ export const DiskSchema = z.object({
   type: z.enum(['hdd', 'ssd-sata', 'ssd-nvme', 'emmc', 'sd']),
   sizeBytes: BytesSchema,
   model: z.string().optional(),
+  purchase: PurchaseSchema.optional(),
 });
 
 export const StoragePoolSchema = z.object({
@@ -116,13 +128,6 @@ export const UpsSpecSchema = z.object({
   capacityVa: z.number().positive(),
   capacityW: WattsSchema,
   batteryWh: z.number().positive().optional(),
-});
-
-export const PurchaseSchema = z.object({
-  status: z.enum(['owned', 'to-buy', 'optional']),
-  price: z.number().nonnegative().optional(),
-  currency: z.string().optional(),
-  url: z.url({ protocol: /^https$/ }).optional(),
 });
 
 export const OS_IDS = ['proxmox-ve', 'debian', 'ubuntu-server', 'windows-server'] as const;

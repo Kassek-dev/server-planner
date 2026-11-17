@@ -27,6 +27,7 @@ import {
   useCommand,
 } from '../parts';
 import { PickFromList } from './HardwareTab';
+import { PartPurchase } from './PartPurchase';
 import { CARD_PRESETS, slotUsage } from './parts';
 
 const SLOTS = ['pcie', 'm2', 'sata'] as const;
@@ -161,6 +162,12 @@ export function ExpansionSection({ device }: { device: Device }) {
               ? ` · ${t('hardware.expansion.ports', { names: card.interfaceIds.map(portName).join(', ') })}`
               : ''}
           </span>
+          <PartPurchase
+            value={card.purchase}
+            onChange={(purchase) =>
+              run(updateCard, { deviceId: device.id, cardId: card.id, changes: { purchase } })
+            }
+          />
         </Card>
       ))}
     </Section>
