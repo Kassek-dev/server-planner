@@ -161,4 +161,58 @@ describe('network configuration export (EXP-07)', () => {
     };
     expect(netplan(ubuntu, pi.id)).toContain('accept-ra: true');
   });
+
+  it('writes a bond of two ports under the Proxmox bridge (NET-16)', () => {
+    const project = edit((s) => {
+      const eth1 = s.dispatch(addInterface, {
+        iface: { owner: { type: 'device', id: pve.id }, name: 'eth1', kind: 'rj45' },
+      });
+      const vmbr0 = Object.values(lab.interfaces).find(
+        (i) => i.owner.id === pve.id && i.name === 'vmbr0',
+      );
+      const eth0 = Object.values(lab.interfaces).find(
+        (i) => i.owner.id === pve.id && i.name === 'eth0',
+      );
+      const bond = s.dispatch(addInterface, {
+        iface: {
+          owner: { type: 'device', id: pve.id },
+          name: 'bond0',
+          kind: 'bond',
+          bond: { mode: 'lacp' },
+          ...(vmbr0 ? { parentId: vmbr0.id } : {}),
+        },
+      });
+      for (const id of [eth0?.id ?? '', eth1])
+        s.dispatch(updateInterface, { id, changes: { parentId: bond } });
+    });
+    const text = ifupdown(project, pve.id);
+    expect(text).toContain('iface eth0 inet manual');
+    expect(text).toContain('iface eth1 inet manual');
+    expect(text).toContain(
+      [
+        'auto bond0',
+        'iface bond0 inet manual',
+        '    bond-slaves eth0 eth1',
+        '    bond-miimon 100',
+        '    bond-mode 802.3ad',
+      ].join('\n'),
+    );
+    expect(text).toContain('    bridge-ports bond0');
+    const ubuntu = netplan(
+      {
+        ...project,
+        devices: {
+          ...project.devices,
+          [pve.id]: {
+            ...(project.devices[pve.id] ?? pve),
+            os: { osId: 'ubuntu-server' as const, version: '24.04' },
+          },
+        },
+      },
+      pve.id,
+    );
+    expect(ubuntu).toContain('  bonds:');
+    expect(ubuntu).toContain('      interfaces: ["eth0", "eth1"]');
+    expect(ubuntu).toContain('        mode: 802.3ad');
+  });
 });

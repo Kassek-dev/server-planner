@@ -50,6 +50,7 @@ export function NetworkTab({ project, device }: { project: Project; device: Devi
     .sort((a, b) => (a.index ?? 0) - (b.index ?? 0) || a.name.localeCompare(b.name));
   const isRouter = device.kind === 'router' || device.kind === 'firewall';
   const isCompute = COMPUTE_KINDS.includes(device.kind);
+  const isSwitch = device.kind === 'switch';
 
   const addVlanInterface = () => {
     const parent = interfaces.find((i) => i.kind === 'rj45' && !i.name.startsWith('wan'));
@@ -63,6 +64,18 @@ export function NetworkTab({ project, device }: { project: Project; device: Devi
         kind: 'vlan',
         vlanTag: tag,
         ...(parent ? { parentId: parent.id } : {}),
+      },
+    });
+  };
+  /** NET-16: a bond (LACP by default) — `bond0` on a host, `lag1` on a switch. */
+  const addBond = () => {
+    const n = interfaces.filter((i) => i.kind === 'bond').length;
+    run(addInterface, {
+      iface: {
+        owner: { type: 'device', id: device.id },
+        name: isSwitch ? `lag${n + 1}` : `bond${n}`,
+        kind: 'bond',
+        bond: { mode: 'lacp' },
       },
     });
   };
@@ -86,7 +99,12 @@ export function NetworkTab({ project, device }: { project: Project; device: Devi
           isRouter ? (
             <AddButton label={t('network.addVlanInterface')} onClick={addVlanInterface} />
           ) : isCompute ? (
-            <AddButton label={t('network.addBridge')} onClick={addBridge} />
+            <span className="flex gap-1">
+              <AddButton label={t('network.addBridge')} onClick={addBridge} />
+              <AddButton label={t('network.addBond')} onClick={addBond} />
+            </span>
+          ) : isSwitch ? (
+            <AddButton label={t('network.addLag')} onClick={addBond} />
           ) : undefined
         }
       >
@@ -146,12 +164,19 @@ export function InterfaceCard({
   const v6Subnets = Object.values(project.subnets).filter((s) => isIpv6Cidr(s.cidr));
   const linked = Object.values(project.links).some((l) => l.a === iface.id || l.b === iface.id);
   const bridges = siblings.filter((s) => s.kind === 'bridge' && s.id !== iface.id);
+  // NET-16: a port can join a bond, and a bond can join a bridge.
+  const bonds = siblings.filter((s) => s.kind === 'bond' && s.id !== iface.id);
+  const physical = iface.kind === 'rj45' || iface.kind.startsWith('sfp');
+  const parents = iface.kind === 'bond' ? bridges : physical ? [...bridges, ...bonds] : [];
   const showSwitchport = SWITCHED_KINDS.has(iface.kind) && device?.kind !== 'client';
   const showMembership =
     device &&
-    COMPUTE_KINDS.includes(device.kind) &&
-    (iface.kind === 'rj45' || iface.kind.startsWith('sfp')) &&
-    bridges.length > 0;
+    (COMPUTE_KINDS.includes(device.kind) || (device.kind === 'switch' && bonds.length > 0)) &&
+    (physical || iface.kind === 'bond') &&
+    parents.length > 0;
+  const bondPorts = siblings.filter(
+    (s) => (s.kind === 'rj45' || s.kind.startsWith('sfp')) && s.id !== iface.id,
+  );
 
   const setAddress = (next: IpAssignment | undefined) =>
     update({ addresses: [...(next ? [next] : []), ...v6List] });
@@ -289,15 +314,52 @@ export function InterfaceCard({
       ) : null}
       {showMembership ? (
         <Select
-          label={t('network.bridge')}
+          label={
+            iface.kind === 'bond' || bonds.length === 0
+              ? t('network.bridge')
+              : t('network.memberOf')
+          }
           mono
           value={iface.parentId ?? ''}
           options={[
             { value: '', label: '—' },
-            ...bridges.map((b) => ({ value: b.id, label: b.name })),
+            ...parents.map((b) => ({ value: b.id, label: b.name })),
           ]}
           onChange={(e) => update({ parentId: e.target.value || undefined })}
         />
+      ) : null}
+      {iface.kind === 'bond' ? (
+        <>
+          <Select
+            label={t('network.bondMode')}
+            value={iface.bond?.mode ?? 'lacp'}
+            options={(['lacp', 'active-backup', 'balance-alb'] as const).map((m) => ({
+              value: m,
+              label: t(`network.bondModes.${m}`),
+            }))}
+            onChange={(e) =>
+              update({ bond: { mode: e.target.value as NonNullable<Interface['bond']>['mode'] } })
+            }
+          />
+          <fieldset className="m-0 flex flex-wrap gap-x-4 gap-y-1 border-0 p-0">
+            <legend className="mb-1 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+              {t('network.bondPorts')}
+            </legend>
+            {bondPorts.map((port) => (
+              <Checkbox
+                key={port.id}
+                label={port.name}
+                checked={port.parentId === iface.id}
+                onChange={(e) =>
+                  run(updateInterface, {
+                    id: port.id,
+                    changes: { parentId: e.target.checked ? iface.id : undefined },
+                  })
+                }
+              />
+            ))}
+          </fieldset>
+        </>
       ) : null}
 
       {iface.kind !== 'wifi-radio' && !(showMembership && iface.parentId) ? (

@@ -219,3 +219,18 @@ test('host firewall: on, drop by default, a rule from the LAN (NET-15)', async (
   await expect(rule.getByLabel('Ports')).toHaveValue('22');
   await page.screenshot({ path: 'test-results/host-firewall.png' });
 });
+
+test('bond: LACP bond with a port, under the bridge (NET-16)', async ({ page }) => {
+  await openExample(page);
+  await node(page, 'pve1').click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Network' }).click();
+  await panel.getByRole('button', { name: 'Add bond' }).click();
+  const bond = panel.getByRole('group', { name: 'bond0' });
+  await expect(bond.getByLabel('Bond mode')).toHaveValue('lacp');
+  await bond.getByRole('checkbox', { name: 'eth0' }).check();
+  await bond.getByLabel('Bridge').selectOption({ label: 'vmbr0' });
+  await expect(panel.getByRole('group', { name: 'eth0' }).getByLabel('Bridge or bond')).toHaveValue(
+    /.+/,
+  );
+});
