@@ -226,6 +226,16 @@
     "interfaces": "{count, plural, one {Interfaces · #} other {Interfaces · #}}",
     "addVlanInterface": "Add VLAN interface",
     "addBridge": "Add bridge",
+    "addBond": "Add bond",
+    "addLag": "Add LAG",
+    "memberOf": "Bridge or bond",
+    "bondMode": "Bond mode",
+    "bondModes": {
+      "lacp": "LACP (802.3ad)",
+      "active-backup": "Active-backup",
+      "balance-alb": "Adaptive load balancing"
+    },
+    "bondPorts": "Ports in this bond",
     "name": "Name",
     "enabled": "Enabled",
     "connected": "Cable connected",

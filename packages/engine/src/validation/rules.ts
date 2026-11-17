@@ -808,6 +808,55 @@ const ipv6Rules: ValidationRule = {
   },
 };
 
+/**
+ * NET-16 bonds: a bond needs at least two ports; with LACP the other end must bundle the same
+ * cables into one bond too (a host bond or a switch LAG), or the links flap.
+ */
+const bondRules: ValidationRule = {
+  code: 'VAL_BOND',
+  run(ctx) {
+    const out: Issue[] = [];
+    const p = ctx.project;
+    for (const bond of Object.values(p.interfaces)) {
+      if (bond.kind !== 'bond') continue;
+      const owner = ownerName(ctx, bond);
+      const members = Object.values(p.interfaces).filter((i) => i.parentId === bond.id);
+      const refs = [ownerRef(bond), { type: 'interface' as const, id: bond.id }];
+      if (members.length < 2)
+        out.push(
+          issue('VAL_BOND_PORTS', 'warning', refs, {
+            target: `${owner}:${bond.name}`,
+            count: members.length,
+          }),
+        );
+      if (bond.bond?.mode !== 'lacp') continue;
+      const peers = members.flatMap((m) =>
+        (ctx.linksByInterface.get(m.id) ?? []).map((l) => p.interfaces[l.a === m.id ? l.b : l.a]),
+      );
+      const peerBonds = new Set(peers.map((peer) => peer?.parentId));
+      const bundled =
+        peers.length > 0 &&
+        peerBonds.size === 1 &&
+        peers.every((peer) => {
+          const parent = peer?.parentId ? p.interfaces[peer.parentId] : undefined;
+          return parent?.kind === 'bond';
+        });
+      if (peers.length > 1 && !bundled)
+        out.push(
+          issue('VAL_BOND_PEER', 'warning', refs, {
+            target: `${owner}:${bond.name}`,
+            peers: [
+              ...new Set(
+                peers.flatMap((peer) => (peer ? [`${ownerName(ctx, peer)}:${peer.name}`] : [])),
+              ),
+            ].join(', '),
+          }),
+        );
+    }
+    return out;
+  },
+};
+
 const GIB = 1024 ** 3;
 const gib = (bytes: number) => Math.round((bytes / GIB) * 10) / 10;
 
@@ -1094,6 +1143,7 @@ export const rules: ValidationRule[] = [
   poolDisks,
   hardwareFit,
   ipv6Rules,
+  bondRules,
   capacityRule,
   gpuRule,
   dependencies,
@@ -1127,6 +1177,8 @@ export const ISSUE_CODES = [
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
   'VAL_POOL',
+  'VAL_BOND_PORTS',
+  'VAL_BOND_PEER',
   'VAL_IPV6_MODE',
   'VAL_IPV6_PREFIX',
   'VAL_RAM_MAX',

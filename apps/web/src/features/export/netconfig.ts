@@ -29,13 +29,19 @@ const hostname = (name: string) =>
     .replace(/^-+|-+$/g, '')
     .slice(0, 63) || 'host';
 const MAC = /^[0-9a-f]{2}(:[0-9a-f]{2}){5}$/i;
+/** Kernel bonding mode names (ifupdown, Netplan). */
+const BOND_MODE = {
+  lacp: '802.3ad',
+  'active-backup': 'active-backup',
+  'balance-alb': 'balance-alb',
+};
 const PHYSICAL = new Set(['rj45', 'sfp', 'sfp+', 'sfp28', 'qsfp+', 'wan', 'wifi-radio']);
 
 interface HostIface {
   iface: Interface;
   name: string;
-  kind: 'physical' | 'bridge' | 'vlan';
-  /** Bridge ports (bridges) or the raw device (VLANs). */
+  kind: 'physical' | 'bridge' | 'vlan' | 'bond';
+  /** Bridge or bond ports (bridges, bonds) or the raw device (VLANs). */
   members: string[];
   parent?: string;
   vlan?: number;
@@ -47,6 +53,8 @@ interface HostIface {
   slaac: boolean;
   dhcp6: boolean;
   vlanAware: boolean;
+  /** NET-16 bonds: their mode. */
+  bondMode?: NonNullable<Interface['bond']>['mode'];
 }
 
 function prefixOf(project: Project, subnetId: string | undefined): number | undefined {
@@ -68,13 +76,26 @@ function hostInterfaces(project: Project, deviceId: string): HostIface[] {
     return linuxName(i.name);
   };
   return own
-    .filter((i) => PHYSICAL.has(i.kind) || i.kind === 'bridge' || i.kind === 'vlan')
+    .filter(
+      (i) => PHYSICAL.has(i.kind) || i.kind === 'bridge' || i.kind === 'vlan' || i.kind === 'bond',
+    )
     .map((i): HostIface => {
-      const kind = i.kind === 'bridge' ? 'bridge' : i.kind === 'vlan' ? 'vlan' : 'physical';
+      const kind =
+        i.kind === 'bridge'
+          ? 'bridge'
+          : i.kind === 'vlan'
+            ? 'vlan'
+            : i.kind === 'bond'
+              ? 'bond'
+              : 'physical';
       const members =
         kind === 'bridge'
-          ? own.filter((m) => m.parentId === i.id && PHYSICAL.has(m.kind)).map(nameOf)
-          : [];
+          ? own
+              .filter((m) => m.parentId === i.id && (PHYSICAL.has(m.kind) || m.kind === 'bond'))
+              .map(nameOf)
+          : kind === 'bond'
+            ? own.filter((m) => m.parentId === i.id && PHYSICAL.has(m.kind)).map(nameOf)
+            : [];
       const parent = kind === 'vlan' && i.parentId ? byId.get(i.parentId) : undefined;
       const family = (a: Interface['addresses'][number]) => assignmentFamily(project, a);
       const statics = (v6: boolean) =>
@@ -97,6 +118,7 @@ function hostInterfaces(project: Project, deviceId: string): HostIface[] {
         addresses6,
         slaac: i.addresses.some((a) => a.mode === 'slaac'),
         dhcp6: i.addresses.some((a) => a.mode === 'dhcp' && family(a) === 'ipv6'),
+        ...(kind === 'bond' ? { bondMode: i.bond?.mode ?? 'lacp' } : {}),
         vlanAware:
           kind === 'bridge' &&
           (i.switchport?.mode === 'trunk' ||
@@ -149,6 +171,20 @@ export function ifupdown(project: Project, deviceId: string): string {
       i.addresses6.length > 0 ? 'static' : i.dhcp6 ? 'dhcp' : i.slaac ? 'auto' : undefined;
     if (i.kind === 'physical' && bridged.has(i.name)) {
       out.push(`iface ${i.name} inet manual`);
+      continue;
+    }
+    if (i.kind === 'bond') {
+      out.push(
+        `auto ${i.name}`,
+        `iface ${i.name} inet ${i.addresses.length > 0 ? 'static' : 'manual'}`,
+        ...i.addresses.map((a, n) =>
+          n === 0 ? `    address ${a}` : `    up ip addr add ${a} dev ${i.name}`,
+        ),
+        `    bond-slaves ${i.members.length > 0 ? i.members.join(' ') : 'none'}`,
+        '    bond-miimon 100',
+        `    bond-mode ${BOND_MODE[i.bondMode ?? 'lacp']}`,
+        ...(i.bondMode === 'lacp' ? ['    bond-xmit-hash-policy layer2+3'] : []),
+      );
       continue;
     }
     if (method !== 'manual' || method6 || i.kind !== 'physical') out.push(`auto ${i.name}`);
@@ -234,6 +270,16 @@ export function netplan(project: Project, deviceId: string): string {
       'ethernets',
       ifaces.filter((i) => i.kind === 'physical'),
       () => [],
+    ),
+    ...section(
+      'bonds',
+      ifaces.filter((i) => i.kind === 'bond'),
+      (i) => [
+        `      interfaces: [${i.members.map(q).join(', ')}]`,
+        '      parameters:',
+        `        mode: ${BOND_MODE[i.bondMode ?? 'lacp']}`,
+        '        mii-monitor-interval: 100',
+      ],
     ),
     ...section(
       'bridges',

@@ -67,10 +67,13 @@ export function cidrWithin(inner: string, outer: string): boolean {
 const vlanOfTag = (ctx: EngineContext, tag: number | undefined) =>
   tag === undefined ? undefined : ctx.vlanByVid.get(tag)?.id;
 
-function effectiveSwitchport(ctx: EngineContext, iface: Interface) {
+function effectiveSwitchport(ctx: EngineContext, iface: Interface): Interface['switchport'] {
   if (iface.switchport) return iface.switchport;
   const parent = iface.parentId ? ctx.project.interfaces[iface.parentId] : undefined;
-  return parent?.kind === 'bridge' ? parent.switchport : undefined;
+  if (parent?.kind === 'bridge') return parent.switchport;
+  // NET-16: bond members carry what the bond carries (its own setting or its bridge's).
+  if (parent?.kind === 'bond') return effectiveSwitchport(ctx, parent);
+  return undefined;
 }
 
 /** NET-17: the simulation works on IPv4; IPv6 assignments (dual-stack) are left out. */
@@ -156,14 +159,26 @@ export function linkCarries(
 /** Interfaces of the same device that forward frames between each other. */
 export function switchGroup(ctx: EngineContext, iface: Interface): Interface[] {
   const owner = ctx.interfacesByOwner.get(iface.owner.id) ?? [];
+  const device = iface.owner.type === 'device' ? ctx.project.devices[iface.owner.id] : undefined;
+  // A switch forwards between all its ports — LAG members and bonds included (NET-16).
+  if (device && SWITCHING_KINDS.has(device.kind) && iface.kind !== 'wan' && iface.kind !== 'vlan')
+    return owner.filter((i) => i.id !== iface.id && i.kind !== 'wan' && i.kind !== 'vlan');
   if (iface.kind === 'bridge') return owner.filter((i) => i.parentId === iface.id);
   const parent = iface.parentId ? ctx.project.interfaces[iface.parentId] : undefined;
+  // NET-16: on a host a bond and its member ports are one logical port — any member link will do.
+  if (iface.kind === 'bond') {
+    const members = owner.filter((i) => i.parentId === iface.id);
+    const bridged =
+      parent?.kind === 'bridge'
+        ? [parent, ...owner.filter((i) => i.parentId === parent.id && i.id !== iface.id)]
+        : [];
+    return [...members, ...bridged];
+  }
+  if (parent?.kind === 'bond')
+    return [parent, ...owner.filter((i) => i.parentId === parent.id && i.id !== iface.id)];
   if (parent?.kind === 'bridge')
     return [parent, ...owner.filter((i) => i.parentId === parent.id && i.id !== iface.id)];
-  const device = iface.owner.type === 'device' ? ctx.project.devices[iface.owner.id] : undefined;
   if (!device || iface.kind === 'wan' || iface.kind === 'vlan') return [];
-  if (SWITCHING_KINDS.has(device.kind))
-    return owner.filter((i) => i.id !== iface.id && i.kind !== 'wan' && i.kind !== 'vlan');
   if (ROUTING_KINDS.has(device.kind) && iface.switchport)
     return owner.filter((i) => i.id !== iface.id && i.switchport);
   return [];
