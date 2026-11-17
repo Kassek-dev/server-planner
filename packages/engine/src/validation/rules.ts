@@ -15,6 +15,7 @@ import ipaddr from 'ipaddr.js';
 import { capacity as computeCapacity } from '../capacity';
 import { type CpuArch, carriedVlans, type EngineContext, hostedBy, peerOf } from '../context';
 import { addressesOf, proxyRoutes, resolveLocalName } from '../simulation/proxy';
+import { exposure } from '../simulation/reach';
 import type { EntityRef, Issue, Severity } from '../types';
 
 /** Validation rules — docs/01 § 8a (VAL-01…14) and docs/02 § 4.3 (rack). Codes map to issues.<code>. */
@@ -857,6 +858,52 @@ const bondRules: ValidationRule = {
   },
 };
 
+/**
+ * NET-16 VPN zones: the server app must exist; WireGuard / OpenVPN on a host behind the router
+ * also need a port forward that reaches it (Tailscale connects out and needs none).
+ */
+const vpnRules: ValidationRule = {
+  code: 'VAL_VPN',
+  run(ctx) {
+    const out: Issue[] = [];
+    const p = ctx.project;
+    let forwards: ReturnType<typeof exposure> | undefined;
+    for (const zone of Object.values(p.zones)) {
+      if (zone.kind !== 'vpn') continue;
+      const ref = [{ type: 'zone' as const, id: zone.id }];
+      const server = zone.vpn ? p.apps[zone.vpn.serverAppId] : undefined;
+      if (!zone.vpn || !server) {
+        out.push(issue('VAL_VPN_SERVER', 'error', ref, { zone: zone.name }));
+        continue;
+      }
+      if (zone.vpn.protocol === 'tailscale') continue;
+      const hostDevice =
+        server.runsOn.type === 'device'
+          ? p.devices[server.runsOn.id]
+          : ctx.deviceOfWorkload.get(server.runsOn.id);
+      if (hostDevice && (hostDevice.kind === 'router' || hostDevice.kind === 'firewall')) continue;
+      forwards ??= exposure(ctx);
+      const ports = new Set(server.listeners.map((l) => l.port));
+      const reached = forwards.some(
+        (e) =>
+          e.result.verdict === 'reachable' &&
+          !!e.target &&
+          ((e.target.type === 'app' && e.target.id === server.id) ||
+            (e.target.id === server.runsOn.id && ports.has(e.externalPort))),
+      );
+      if (!reached)
+        out.push(
+          issue('VAL_VPN_EXPOSED', 'warning', [...ref, { type: 'app', id: server.id }], {
+            zone: zone.name,
+            server: server.name,
+            protocol: zone.vpn.protocol,
+          }),
+        );
+    }
+    return out;
+  },
+};
+
 const GIB = 1024 ** 3;
 const gib = (bytes: number) => Math.round((bytes / GIB) * 10) / 10;
 
@@ -1144,6 +1191,7 @@ export const rules: ValidationRule[] = [
   hardwareFit,
   ipv6Rules,
   bondRules,
+  vpnRules,
   capacityRule,
   gpuRule,
   dependencies,
@@ -1177,6 +1225,8 @@ export const ISSUE_CODES = [
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
   'VAL_POOL',
+  'VAL_VPN_SERVER',
+  'VAL_VPN_EXPOSED',
   'VAL_BOND_PORTS',
   'VAL_BOND_PEER',
   'VAL_IPV6_MODE',

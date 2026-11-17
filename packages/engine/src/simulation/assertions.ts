@@ -65,7 +65,10 @@ export function endpointsOf(ctx: EngineContext, endpoint: Endpoint, all = member
     case 'any':
       return all.map((m) => m.ref);
     case 'zone': {
-      if (ctx.project.zones[endpoint.id]?.kind === 'wan') return ['internet'];
+      const zone = ctx.project.zones[endpoint.id];
+      if (zone?.kind === 'wan') return ['internet'];
+      // NET-16: the remote clients of a VPN zone are one endpoint (traffic starts at the server).
+      if (zone?.kind === 'vpn') return zone.vpn ? [{ type: 'zone', id: zone.id }] : [];
       return all.filter((m) => m.zones.has(endpoint.id)).map((m) => m.ref);
     }
     case 'subnet':

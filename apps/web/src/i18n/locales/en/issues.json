@@ -167,6 +167,14 @@
     "title": "Storage pool without enough disks",
     "description": "Pool {pool} on {device} has {count, plural, =0 {no disks} one {# disk} other {# disks}}; {layout} needs at least {needed}."
   },
+  "VAL_VPN_SERVER": {
+    "title": "VPN zone without a server",
+    "description": "Zone {zone} is a VPN zone but names no VPN server app (WireGuard, Tailscale, OpenVPN) in the project."
+  },
+  "VAL_VPN_EXPOSED": {
+    "title": "VPN server not reachable from the internet",
+    "description": "{server} ({protocol, select, wireguard {WireGuard} openvpn {OpenVPN} other {VPN}}) for zone {zone} has no port forward that reaches it, so remote clients cannot connect."
+  },
   "VAL_BOND_PORTS": {
     "title": "Bond with too few ports",
     "description": "{target} bundles {count, plural, =0 {no ports} one {# port} other {# ports}}; a bond needs at least two."

@@ -15,6 +15,7 @@ import {
   updateSubnet,
   updateVlan,
   updateZone,
+  type Zone,
 } from '@server-planner/model';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -402,13 +403,36 @@ function ZoneList({ project }: { project: Project }) {
             options={[
               { value: 'internal', label: t('vlans.internal') },
               { value: 'wan', label: 'WAN' },
+              { value: 'vpn', label: 'VPN' },
             ]}
-            onChange={(e) =>
+            onChange={(e) => {
+              const kind = e.target.value as Zone['kind'];
+              // NET-16: a VPN zone starts with the likeliest VPN app as its server.
+              const server =
+                Object.values(project.apps).find((a) =>
+                  /wireguard|wg-easy|tailscale|openvpn|headscale/i.test(a.name),
+                ) ?? Object.values(project.apps)[0];
               run(updateZone, {
                 id: zone.id,
-                changes: { kind: e.target.value as 'wan' | 'internal' },
-              })
-            }
+                changes: {
+                  kind,
+                  vpn:
+                    kind === 'vpn'
+                      ? (zone.vpn ??
+                        (server
+                          ? {
+                              serverAppId: server.id,
+                              protocol: /tailscale|headscale/i.test(server.name)
+                                ? 'tailscale'
+                                : /openvpn/i.test(server.name)
+                                  ? 'openvpn'
+                                  : 'wireguard',
+                            }
+                          : undefined))
+                      : undefined,
+                },
+              });
+            }}
           />
           <Select
             label={t('vlans.color')}
@@ -437,6 +461,53 @@ function ZoneList({ project }: { project: Project }) {
             label={t('actions.remove')}
             onClick={() => run(deleteZone, { id: zone.id })}
           />
+          {zone.kind === 'vpn' ? (
+            <div className="col-span-full grid grid-cols-[1fr_160px] gap-2.5">
+              <Select
+                label={t('vlans.vpnServer')}
+                value={zone.vpn?.serverAppId ?? ''}
+                options={[
+                  { value: '', label: t('vlans.vpnNoServer') },
+                  ...Object.values(project.apps).map((a) => ({ value: a.id, label: a.name })),
+                ]}
+                onChange={(e) =>
+                  run(updateZone, {
+                    id: zone.id,
+                    changes: {
+                      vpn: e.target.value
+                        ? {
+                            serverAppId: e.target.value,
+                            protocol: zone.vpn?.protocol ?? 'wireguard',
+                          }
+                        : undefined,
+                    },
+                  })
+                }
+              />
+              <Select
+                label={t('vlans.vpnProtocol')}
+                value={zone.vpn?.protocol ?? 'wireguard'}
+                disabled={!zone.vpn}
+                options={[
+                  { value: 'wireguard', label: 'WireGuard' },
+                  { value: 'tailscale', label: 'Tailscale' },
+                  { value: 'openvpn', label: 'OpenVPN' },
+                ]}
+                onChange={(e) =>
+                  zone.vpn &&
+                  run(updateZone, {
+                    id: zone.id,
+                    changes: {
+                      vpn: {
+                        ...zone.vpn,
+                        protocol: e.target.value as NonNullable<Zone['vpn']>['protocol'],
+                      },
+                    },
+                  })
+                }
+              />
+            </div>
+          ) : null}
         </fieldset>
       ))}
     </Section>

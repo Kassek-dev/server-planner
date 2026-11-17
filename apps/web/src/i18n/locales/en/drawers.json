@@ -21,6 +21,9 @@
     "subnetCount": "{count, plural, one {# subnet} other {# subnets}}",
     "addSubnet": "Add subnet",
     "addSubnet6": "Add IPv6 subnet",
+    "vpnServer": "VPN server",
+    "vpnNoServer": "— choose the VPN app —",
+    "vpnProtocol": "Protocol",
     "ra": "Router advertisements",
     "raModes": {
       "slaac": "SLAAC — hosts pick their address",

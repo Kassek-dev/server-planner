@@ -82,3 +82,15 @@ test('tags and project settings', async ({ page }) => {
   await warning.press('Enter');
   await expect(warning).toHaveValue('75');
 });
+
+test('a VPN zone with its server (NET-16)', async ({ page }) => {
+  await openExample(page);
+  await inspector(page).getByRole('button', { name: 'VLANs & subnets' }).click();
+  const drawer = page.getByRole('dialog', { name: 'VLANs & subnets' });
+  await drawer.getByRole('tab', { name: 'Zones' }).click();
+  await drawer.getByRole('button', { name: 'Add zone' }).click();
+  const zone = drawer.getByRole('group').last();
+  await zone.getByLabel('Kind').selectOption('vpn');
+  await expect(zone.getByLabel('VPN server')).toBeVisible();
+  await expect(zone.getByLabel('Protocol')).toHaveValue('wireguard');
+});
