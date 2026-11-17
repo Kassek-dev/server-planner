@@ -7,6 +7,7 @@ import {
 } from './defaults';
 import type { EntityType } from './ids';
 import { createId, ID_PREFIXES } from './ids';
+import { nextPatternName } from './naming';
 import type { IsoDate } from './schema/common';
 import type { Device, DeviceKind } from './schema/device';
 import type { Interface } from './schema/network';
@@ -66,6 +67,9 @@ export function createProject(name: string, ctx: ModelContext = defaultContext):
 /** Next free default name: `switch-1`, `switch-2`, … (docs/05 § 4.2). */
 export function nextDeviceName(project: Project, kind: DeviceKind): string {
   if (kind === 'internet') return 'Internet';
+  // LBL-05: the project's naming pattern for this kind, when it has one.
+  const named = nextPatternName(project, kind);
+  if (named) return named;
   const taken = new Set(Object.values(project.devices).map((d) => d.name));
   let n = 1;
   while (taken.has(`${kind}-${n}`)) n += 1;

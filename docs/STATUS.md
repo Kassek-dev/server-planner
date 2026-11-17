@@ -353,7 +353,7 @@ Schemat projektu v4 (D13).
 - Obciążenie hostów = obciążenie ich kabli (CPU procesów pozostaje w CAP‑05 przez profile obciążenia)
 
 ### Etap 42 — Konwencje nazw (LBL‑05)
-- [ ] Wzorce z tokenami na typ urządzenia, reguły hostname, walidacja z poprawką, nazywanie nowych urządzeń
+- [x] `naming.ts` w modelu (`KIND_CODES`, `nameFromPattern`, `matchesPattern`, `nextPatternName`, `isHostname`, `toHostname`), `nextDeviceName` wg wzorca; `VAL_NAMING` (info + Rename), `VAL_HOSTNAME` (+ Fix); sekcja „Naming” w ustawieniach
 
 ## Dziennik
 
@@ -426,3 +426,4 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | Etap 40b: VPN jako strefa (NET‑16) | #67 |
 | 2026-11-17 | Etap 40c: reflektor mDNS (NET‑16) | #68 |
 | 2026-11-17 | Etap 41: obciążenie łączy i scenariusze (FLW‑06/07) | #69 |
+| 2026-11-17 | Etap 42: konwencje nazw (LBL‑05) | #70 |
