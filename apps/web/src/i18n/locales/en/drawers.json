@@ -173,7 +173,7 @@
     "energyPrice": "Energy price per kWh"
   },
   "errors": {
-    "namingPattern": "Use up to 64 characters with '{nn}' or '{n}', so every device gets its own name.",
+    "namingPattern": "Use up to 64 characters with exactly one '{nn}' or '{n}', so every device gets its own name.",
     "pattern": "Enter a pattern of up to 120 characters.",
     "cidr": "Enter a network such as 192.168.10.0/24.",
     "ip": "Enter a valid IP address.",

@@ -41,8 +41,23 @@ export function nameFromPattern(
 
 const escapeRegex = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+/** Longest name we test against a pattern (names are short; this bounds the work). */
+const MAX_NAME = 128;
+
+/**
+ * A usable pattern: at most 64 characters and exactly one number token ({nn} or {n}) — so every
+ * device gets its own name, and the matcher has a single bounded digit run (no backtracking
+ * between adjacent number tokens on names from imported projects).
+ */
+export function isValidNamingPattern(pattern: string): boolean {
+  return pattern.length <= 64 && (pattern.match(/\{nn?\}/g) ?? []).length === 1;
+}
+
 /** Whether a name follows the pattern (numbers may grow past two digits). */
 export function matchesPattern(name: string, pattern: string, kind: DeviceKind, site: string) {
+  // An unusable pattern (only possible in hand-edited files) flags nothing.
+  if (!isValidNamingPattern(pattern)) return true;
+  if (name.length > MAX_NAME) return false;
   const parts = pattern.split(/(\{site\}|\{kind\}|\{nn\}|\{n\})/);
   const source = parts
     .map((p) =>
@@ -51,9 +66,9 @@ export function matchesPattern(name: string, pattern: string, kind: DeviceKind, 
         : p === '{kind}'
           ? escapeRegex(KIND_CODES[kind])
           : p === '{nn}'
-            ? '\\d{2,}'
+            ? '\\d{2,6}'
             : p === '{n}'
-              ? '\\d+'
+              ? '\\d{1,6}'
               : escapeRegex(p),
     )
     .join('');
@@ -74,7 +89,7 @@ export function nextPatternName(
   except?: string,
 ): string | undefined {
   const rule = namingPattern(project, kind);
-  if (!rule) return undefined;
+  if (!rule || !isValidNamingPattern(rule.pattern)) return undefined;
   const taken = new Set(
     Object.values(project.devices)
       .filter((d) => d.id !== except)
