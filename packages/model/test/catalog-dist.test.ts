@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { type Catalog, type CatalogDist, normalizeCpuName, versionAtLeast, withDist } from '../src';
+import {
+  type Catalog,
+  type CatalogDist,
+  imageKey,
+  normalizeCpuName,
+  versionAtLeast,
+  withDist,
+} from '../src';
 
 const cpu = { model: 'Intel Core i5-8500T', cores: 6, threads: 6, arch: 'amd64' as const };
 const curated: Catalog = {
@@ -90,5 +97,47 @@ describe('effective catalog', () => {
     );
     expect(versionAtLeast('1.10.0', '1.9.2')).toBe(true);
     expect(versionAtLeast('1.0.0', '1.1.0')).toBe(false);
+  });
+
+  describe('Docker Hub facts in the catalog (CAT-03)', () => {
+    it('puts architectures, version, size and push date on matching components', () => {
+      const app = {
+        id: 'jellyfin',
+        deployment: {
+          kind: 'single',
+          components: [
+            { key: 'server', image: 'jellyfin/jellyfin', arch: ['amd64'] },
+            { key: 'db', image: 'lscr.io/linuxserver/mariadb', arch: ['amd64', 'arm64'] },
+          ],
+        },
+      } as unknown as Catalog['apps'][number];
+      const effective = withDist(
+        { ...curated, apps: [app] },
+        {
+          ...dist,
+          apps: [],
+          images: [
+            {
+              image: 'jellyfin/jellyfin',
+              version: '10.11.3',
+              arch: ['amd64', 'arm64'],
+              sizeBytes: 420000000,
+              updatedAt: '2026-11-10T09:00:00.000Z',
+            },
+          ],
+        },
+      );
+      const [server, db] = effective.apps[0]?.deployment.components ?? [];
+      expect(server).toMatchObject({
+        arch: ['amd64', 'arm64'],
+        imageInfo: {
+          version: '10.11.3',
+          sizeBytes: 420000000,
+          updatedAt: '2026-11-10T09:00:00.000Z',
+        },
+      });
+      expect(db?.imageInfo).toBeUndefined();
+      expect(imageKey('docker.io/library/postgres:16')).toBe('postgres');
+    });
   });
 });

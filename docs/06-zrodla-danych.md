@@ -1,6 +1,6 @@
 # Server Planner — źródła danych katalogu (v0.1)
 
-> Status: **zaakceptowany, adaptery zweryfikowane na żywo (v0.3: Wikidata odrzucone, CAT‑05 = warstwa kurowana)** · Data: 2026-11-16
+> Status: **zaakceptowany, adaptery zweryfikowane na żywo (v0.3: Wikidata odrzucone, CAT‑05 = warstwa kurowana; v0.4: adapter Docker Hub)** · Data: 2026-11-17
 > Podstawa: `01-funkcjonalnosci.md` rozdz. 5 (D3, D6, D7), `02-model-danych.md` rozdz. 9, `03-architektura.md` (catalog builder, `SourceAdapter`)
 > Zamyka otwarte kwestie z `01` rozdz. 8: licencje źródeł i źródło wydajności CPU.
 
@@ -63,6 +63,7 @@
 
 - **Co bierzemy:** dla obrazów już obecnych w katalogu: lista tagów (`latest` + najnowszy semver), architektury, rozmiar skompresowany, data ostatniego wypchnięcia.
 - **Budżet:** ≤ 300 aplikacji × 1 zapytanie = poniżej limitu przy rozłożeniu na 3 okna, **lub** uwierzytelnienie tokenem (sekret `DOCKERHUB_TOKEN` w GitHub Actions, konto bezpłatne) — preferowane. Respektowanie nagłówków `ratelimit-remaining`; przy wyczerpaniu limitu — pozostałe rekordy z poprzedniej wersji.
+- **Wdrożenie (1.9, 2026-11-17):** adapter `dockerhub` (`packages/catalog-builder/src/sources/dockerhub.ts`), bez tokenu — sprawdzone na żywo: limit 180 zapytań/min (`x-ratelimit-*`), więc odstęp 400 ms i maks. 280 obrazów na przebieg; tylko obrazy z Docker Hub (bez `lscr.io`, `ghcr.io`, `quay.io`). Wynik: `dist/images.json` (`image`, `version` — najnowszy tag `X.Y[.Z]`, `arch` i rozmiar tagu `latest`, data wypchnięcia); obrazy pominięte w przebiegu zachowują dane poprzednie. Aplikacja nakłada je na komponenty katalogu (`withDist`): architektury do VAL_ARCH, wersja/rozmiar/data w D‑06.
 
 ### 2.5 Warstwa kurowana
 

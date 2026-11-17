@@ -7,6 +7,8 @@ export interface FetchContext {
   download(url: string, fileName: string): Promise<string>;
   /** Scratch directory for this run. */
   workDir: string;
+  /** Container images of the catalog (curated and imported apps) — for per-image sources. */
+  images?: string[];
 }
 
 /** A port of a container image as published by a source. */
@@ -57,7 +59,18 @@ export interface CpuPerfRecord {
   samples: number;
 }
 
-export type SourceRecord = AppRecord | CpuPerfRecord;
+/** Docker Hub facts about one catalog image (docs/06 § 2.4). */
+export interface ImageRecord {
+  kind: 'image';
+  source: string;
+  image: string;
+  version?: string;
+  arch: ('amd64' | 'arm64')[];
+  sizeBytes?: number;
+  updatedAt?: string;
+}
+
+export type SourceRecord = AppRecord | CpuPerfRecord | ImageRecord;
 
 export interface SourceAdapter {
   id: string;

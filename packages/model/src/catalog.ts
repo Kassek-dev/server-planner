@@ -1,4 +1,10 @@
-import type { Catalog, CatalogApp, CatalogManifest, CpuPerfFile } from './schema/catalog';
+import type {
+  Catalog,
+  CatalogApp,
+  CatalogImageInfo,
+  CatalogManifest,
+  CpuPerfFile,
+} from './schema/catalog';
 import type { CpuSpec } from './schema/hardware';
 
 /**
@@ -25,6 +31,37 @@ export interface CatalogDist {
   manifest: CatalogManifest;
   apps: CatalogApp[];
   perf?: CpuPerfFile;
+  /** Docker Hub facts per image (CAT-03, 1.9). */
+  images?: CatalogImageInfo[];
+}
+
+/** Image name without registry `docker.io/`, `library/` and tag. */
+export const imageKey = (image: string) =>
+  image
+    .replace(/^(docker\.io|index\.docker\.io|registry-1\.docker\.io)\//, '')
+    .replace(/^library\//, '')
+    .replace(/[:@].*$/, '')
+    .toLowerCase();
+
+/** Docker Hub facts on an app's components: architectures (when known), version, size, push date. */
+function withImages(app: CatalogApp, index: Map<string, CatalogImageInfo>): CatalogApp {
+  if (index.size === 0) return app;
+  let changed = false;
+  const components = app.deployment.components.map((c) => {
+    const info = index.get(imageKey(c.image));
+    if (!info) return c;
+    changed = true;
+    return {
+      ...c,
+      ...(info.arch.length > 0 ? { arch: info.arch } : {}),
+      imageInfo: {
+        ...(info.version ? { version: info.version } : {}),
+        ...(info.sizeBytes !== undefined ? { sizeBytes: info.sizeBytes } : {}),
+        ...(info.updatedAt ? { updatedAt: info.updatedAt } : {}),
+      },
+    };
+  });
+  return changed ? { ...app, deployment: { ...app.deployment, components } } : app;
 }
 
 /** Score lookup by normalised CPU name. */
@@ -55,11 +92,14 @@ export function withDist(curated: Catalog, dist: CatalogDist | null | undefined)
   if (!dist) return curated;
   const ids = new Set(curated.apps.map((a) => a.id));
   const index = perfIndex(dist.perf);
+  const images = new Map((dist.images ?? []).map((i) => [imageKey(i.image), i]));
   return {
     ...curated,
     catalogVersion: dist.manifest.catalogVersion,
     generatedAt: dist.manifest.generatedAt,
-    apps: [...curated.apps, ...dist.apps.filter((a) => !ids.has(a.id))],
+    apps: [...curated.apps, ...dist.apps.filter((a) => !ids.has(a.id))].map((a) =>
+      withImages(a, images),
+    ),
     cpus: curated.cpus.map((c) => withPerf(c, index)),
     devices: curated.devices.map((d) => ({
       ...d,

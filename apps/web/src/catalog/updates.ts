@@ -1,6 +1,7 @@
 import {
   CatalogAppSchema,
   type CatalogDist,
+  CatalogImageInfoSchema,
   CatalogManifestSchema,
   CpuPerfFileSchema,
   versionAtLeast,
@@ -94,10 +95,14 @@ export async function checkForUpdate(
     if (!Array.isArray(rawApps)) throw new Error('apps.json: expected a list');
     const apps = rawApps.map((a) => CatalogAppSchema.parse(a));
     const perfRaw = await file('perf.json');
+    const imagesRaw = await file('images.json');
     const dist: CatalogDist = {
       manifest,
       apps,
       ...(perfRaw ? { perf: CpuPerfFileSchema.parse(perfRaw) } : {}),
+      ...(Array.isArray(imagesRaw)
+        ? { images: imagesRaw.map((i) => CatalogImageInfoSchema.parse(i)) }
+        : {}),
     };
     await save({ current: dist, ...(state.current ? { previous: state.current } : {}) });
     useCatalog.getState().setDownloaded(dist);

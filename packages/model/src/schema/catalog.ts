@@ -40,6 +40,14 @@ export const CatalogAppComponentSchema = z.object({
   defaultTag: z.string().min(1),
   arch: z.array(z.enum(['amd64', 'arm64'])).min(1),
   platform: z.enum(['linux', 'windows']),
+  /** Docker Hub facts merged from the builder output (never in the curated YAML). */
+  imageInfo: z
+    .object({
+      version: z.string().optional(),
+      sizeBytes: z.number().int().nonnegative().optional(),
+      updatedAt: IsoDateSchema.optional(),
+    })
+    .optional(),
   listeners: z.array(ListenerSchema),
   defaultPortMappings: z.array(PortMappingSchema).optional(),
   volumes: z.array(
@@ -285,6 +293,18 @@ export const CatalogManifestSchema = z.object({
 });
 
 /** `catalog/dist/perf.json` — relative multi-core score per CPU name (i5-8500T = 100). */
+/**
+ * CAT-03 Docker Hub (`06` § 2.4, 1.9): facts about an image of a catalog app — the newest version
+ * tag, the architectures of `latest` (or of that version), the compressed size and the last push.
+ */
+export const CatalogImageInfoSchema = z.object({
+  image: z.string().min(1),
+  version: z.string().optional(),
+  arch: z.array(z.enum(['amd64', 'arm64'])),
+  sizeBytes: z.number().int().nonnegative().optional(),
+  updatedAt: IsoDateSchema.optional(),
+});
+
 export const CpuPerfFileSchema = z.object({
   reference: z.string(),
   cpus: z.array(
@@ -323,3 +343,4 @@ export type Catalog = z.infer<typeof CatalogSchema>;
 export type CatalogSource = z.infer<typeof CatalogSourceSchema>;
 export type CatalogManifest = z.infer<typeof CatalogManifestSchema>;
 export type CpuPerfFile = z.infer<typeof CpuPerfFileSchema>;
+export type CatalogImageInfo = z.infer<typeof CatalogImageInfoSchema>;

@@ -7,7 +7,7 @@ import { CURATED_DIR, isoWeekVersion, loadCurated, normalizeSizes } from './cura
 import { createFetchContext } from './http';
 import { type CpuPerf, cpuScores, type Heuristics, mergeApps } from './merge';
 import { SOURCES } from './sources';
-import type { AppRecord, CpuPerfRecord, SourceRecord } from './sources/types';
+import type { AppRecord, CpuPerfRecord, ImageRecord, SourceRecord } from './sources/types';
 
 /**
  * `pnpm catalog:build [--force] [--only <id>] [--dry-run]` — docs/03 § 7.1.
@@ -101,6 +101,15 @@ export async function buildCatalog(options: BuildOptions = {}): Promise<number> 
   const previousManifest = await readJson<Manifest>(join(distDir, 'manifest.json'));
   const previousApps = (await readJson<unknown[]>(join(distDir, 'apps.json'))) ?? [];
   const previousPerf = await readJson<PerfFile>(join(distDir, 'perf.json'));
+  const previousImages = (await readJson<ImageRecord[]>(join(distDir, 'images.json'))) ?? [];
+  // Container images of the catalog, for per-image sources (Docker Hub).
+  const catalogImages = [
+    ...new Set(
+      [...curated.apps, ...(previousApps as typeof curated.apps)].flatMap((a) =>
+        (a.deployment?.components ?? []).map((c) => c.image),
+      ),
+    ),
+  ].sort();
 
   const work = await mkdtemp(join(tmpdir(), 'catalog-build-'));
   const records = new Map<string, SourceRecord[]>();
@@ -120,7 +129,9 @@ export async function buildCatalog(options: BuildOptions = {}): Promise<number> 
       }
       log(`→ ${adapter.id}`);
       try {
-        const raw = await adapter.fetch(createFetchContext(join(work, adapter.id), budget));
+        const raw = await adapter.fetch(
+          createFetchContext(join(work, adapter.id), budget, { images: catalogImages }),
+        );
         const list = await adapter.normalize(raw);
         records.set(adapter.id, list);
         statuses.push({
@@ -193,12 +204,23 @@ export async function buildCatalog(options: BuildOptions = {}): Promise<number> 
     ? { reference: heuristics.cpuReference, cpus: cpuScores(blender, heuristics.cpuReference) }
     : previousPerf;
 
+  // Docker Hub: this run's images over the previous ones (images the run skipped keep theirs).
+  const freshImages = (records.get('dockerhub') ?? []) as ImageRecord[];
+  const imageMap = new Map(previousImages.map((i) => [i.image, i]));
+  for (const i of freshImages) imageMap.set(i.image, i);
+  const images = [...imageMap.values()]
+    .map(({ kind: _k, source: _s, ...rest }) => rest)
+    .sort((a, b) => a.image.localeCompare(b.image));
+  const imagesText = images.length > 0 ? `${JSON.stringify(images, null, 1)}\n` : undefined;
+
   const appsText = `${JSON.stringify(apps, null, 1)}\n`;
   const perfText = perf ? `${JSON.stringify(perf, null, 1)}\n` : undefined;
   const unchanged =
     previousManifest?.files.find((f) => f.name === 'apps.json')?.sha256 === sha256(appsText) &&
     (!perfText ||
-      previousManifest?.files.find((f) => f.name === 'perf.json')?.sha256 === sha256(perfText));
+      previousManifest?.files.find((f) => f.name === 'perf.json')?.sha256 === sha256(perfText)) &&
+    (!imagesText ||
+      previousManifest?.files.find((f) => f.name === 'images.json')?.sha256 === sha256(imagesText));
 
   const before = new Set((previousApps as { id: string }[]).map((a) => a.id));
   const after = new Set((apps as { id: string }[]).map((a) => a.id));
@@ -231,6 +253,7 @@ export async function buildCatalog(options: BuildOptions = {}): Promise<number> 
   };
   await write('apps.json', appsText, apps.length);
   if (perfText && perf) await write('perf.json', perfText, perf.cpus.length);
+  if (imagesText) await write('images.json', imagesText, images.length);
   const manifest: Manifest = {
     format: 'server-planner/catalog',
     schemaVersion: 1,
