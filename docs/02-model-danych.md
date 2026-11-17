@@ -694,9 +694,11 @@ interface Zone {
 // NET-15 firewall hosta — Device.hostFirewall?, Workload.hostFirewall? (VM/LXC; kontener używa hosta)
 interface HostFirewall {
   enabled: boolean;
-  inbound: 'allow' | 'deny'; // domyślnie dla ruchu przychodzącego; wychodzący bez filtrowania
-  rules: { id: Id /* hfw_ */; enabled: boolean; action: 'allow' | 'deny'; protocol: Protocol;
-           source: Endpoint; ports?: PortRange[]; description?: string }[]; // pierwsza pasująca wygrywa
+  inbound: 'allow' | 'deny'; // domyślnie dla ruchu przychodzącego
+  outbound?: 'allow' | 'deny'; // 1.10: domyślnie dla wychodzącego; brak = allow
+  rules: { id: Id /* hfw_ */; enabled: boolean; direction?: 'in' | 'out' /* 1.10, brak = in */;
+           action: 'allow' | 'deny'; protocol: Protocol; source: Endpoint;
+           destination?: Endpoint /* reguły out */; ports?: PortRange[]; description?: string }[];
 }
 // NET-16: Interface.bond?: { mode: 'lacp' | 'active-backup' | 'balance-alb' } (interfejs kind 'bond',
 // porty członkowskie przez parentId); Device.mdnsReflector?: { vlanIds: Id[] } (router).
