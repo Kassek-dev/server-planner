@@ -434,3 +434,4 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | Etap 42: konwencje nazw (LBL‑05) | #70 |
 | 2026-11-17 | **Wydanie v1.8.0** (etapy 39–42, schemat v4 z automatyczną migracją → `minor`; D11: `Z` = 0) — cały zakres P2 wdrożony | tag `v1.8.0` (#71) |
 | 2026-11-17 | Poprawka bezpieczeństwa: ReDoS we wzorcach nazw (LBL‑05) | #72 |
+| 2026-11-17 | **Wydanie v1.8.1** (D11: 1 poprawka od 1.8.0) | tag `v1.8.1` (#73) |
