@@ -147,3 +147,25 @@ test('failure analysis: a failed router and single points of failure (SIM-07)', 
   await expect(page.locator('.react-flow__node.sp-blocked', { hasText: 'sw-core' })).toBeVisible();
   await page.screenshot({ path: 'test-results/failures.png' });
 });
+
+test('scenario: three streams add up on the cables (FLW-06/07)', async ({ page }) => {
+  await openExample(page);
+  await page.getByRole('button', { name: 'Simulate' }).click();
+  const panel = page.getByRole('complementary', { name: 'Inspector' });
+  await panel.getByRole('tab', { name: 'Flows' }).click();
+  await choose(panel.getByRole('combobox', { name: 'Client', exact: true }), 'nas-01');
+  await panel.getByRole('button', { name: 'Add to scenario' }).click();
+  const scenario = panel.getByRole('region', { name: 'Scenario 1' });
+  await expect(scenario).toBeVisible();
+  await scenario.getByLabel('Times').fill('3');
+  await scenario.getByLabel('Times').blur();
+  await scenario.getByRole('button', { name: 'Calculate load' }).click();
+  // Each stream also reads from the NAS (server → storage): 3 × (40 + 40) Mb/s on its cable.
+  await expect(
+    scenario.getByText(/Bottleneck: NAS-01-ETH0 .* 240 Mb\/s of 1 Gb\/s \(24%\)/),
+  ).toBeVisible();
+  await expect(
+    page.locator('.react-flow__edge').filter({ has: page.locator('path[style*="status-ok"]') }),
+  ).not.toHaveCount(0);
+  await page.screenshot({ path: 'test-results/scenario-load.png' });
+});

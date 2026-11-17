@@ -484,6 +484,7 @@
     "NOT_FOUND": "That item no longer exists.",
     "MODEL_KIND_MISMATCH": "This model is a {model}, not a {kind}.",
     "CARD_MODEL_REQUIRED": "Name the card model.",
+    "SCENARIO_COUNT_INVALID": "Run a process 1 to 100 times.",
     "HOST_FIREWALL_CONTAINER": "{name} is a container — it uses the firewall of its host.",
     "CARD_PORTS_INVALID": "A card can add 0 to {max} ports.",
     "APP_HOST_IS_CONTAINER": "Apps from the catalog go on a host, VM or LXC, not inside a container.",

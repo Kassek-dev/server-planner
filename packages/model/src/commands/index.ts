@@ -15,6 +15,7 @@ export * from './hostFirewall';
 export * from './location';
 export * from './network';
 export * from './project';
+export * from './scenarios';
 export * from './segmentation';
 export * from './services';
 export * from './workload';
