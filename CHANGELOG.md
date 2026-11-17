@@ -2,6 +2,23 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.8.0] — 2026-11-17
+
+Firewalls on hosts, VPN, bonds and mDNS, how busy your cables get, and naming conventions.
+
+### Features
+
+- **Host firewall** — Proxmox firewall, ufw or Windows Firewall, simplified: turn it on for a host or a VM/LXC, drop or accept incoming traffic by default and add rules on the source; the simulation checks it at the receiving host (#65).
+- **Bonds and LACP** — bundle ports into a bond on a host (also under a Proxmox bridge) or a LAG on a switch; one bonded cable is no longer a single point of failure, mismatched LACP is flagged, and the network configuration export writes the bond (#66).
+- **VPN zones** — a zone of remote clients behind a WireGuard, Tailscale or OpenVPN server: with the server on the router its firewall sees the VPN zone, on a host the clients look like that host; the access matrix shows the zone and a missing port forward is flagged (#67).
+- **mDNS reflector** — choose the VLANs a router reflects mDNS between; the Access view shows which VLANs discover each other's devices and services (#68).
+- **Link load** — save scenarios like "evening: 3 streams + a backup" in the Flows tab and calculate how busy every cable gets, with the bottleneck and a canvas overlay; bonded cables share their total speed (#69).
+- **Naming conventions** — a pattern per device kind (`{site}-{kind}-{nn}` → `home-sw-01`) names new devices and flags names outside it; host names can be required to be valid (#70).
+
+### Project file
+
+- Schema version 4 (flow scenarios, host firewalls, VPN zones, bonds, mDNS, naming). Files from earlier versions open and upgrade automatically, and projects saved in the browser are upgraded on the first start. Version 1.7 and older cannot open files saved by 1.8 (#65).
+
 ## [1.7.0] — 2026-11-16
 
 Tidier diagrams, advice on where things should run, Hyper-V, and saving straight to a file.

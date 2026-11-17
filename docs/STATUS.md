@@ -335,7 +335,7 @@ Reszta P2 bez zmiany formatu projektu (D13).
 - [x] PRJ‑09 `persistence/fileLink.ts` (zapis/otwarcie przez File System Access API, uchwyt w `settings`, zapis pliku po autozapisie, ponowna prośba o zgodę), chip pliku w pasku, „Save to file…”, „Open file…”
 - Poprawka testu E2E „several apps at once” (lokator trafiał też w rozbicie capacity)
 
-## Wersja 1.8 — plan (2026-11-16)
+## Wersja 1.8 — plan (2026-11-16), wydana jako v1.8.0
 
 Schemat projektu v4 (D13).
 
@@ -427,3 +427,4 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | Etap 40c: reflektor mDNS (NET‑16) | #68 |
 | 2026-11-17 | Etap 41: obciążenie łączy i scenariusze (FLW‑06/07) | #69 |
 | 2026-11-17 | Etap 42: konwencje nazw (LBL‑05) | #70 |
+| 2026-11-17 | **Wydanie v1.8.0** (etapy 39–42, schemat v4 z automatyczną migracją → `minor`; D11: `Z` = 0) — cały zakres P2 wdrożony | tag `v1.8.0` (#71) |
