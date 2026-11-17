@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 16b: snapshots with diff and restore, own device templates, cable routing. */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 const library = (page: Page) => page.getByRole('complementary', { name: 'Library' });
 const node = (page: Page, name: string) =>
@@ -64,7 +64,7 @@ test('variant: create, change and compare with the base (PRJ-10)', async ({ page
   await page.goto('./');
   await page
     .getByTestId('import-input')
-    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json'));
+    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json'));
   await page.getByRole('button', { name: 'Open project' }).click();
   await expect(page.locator('.react-flow__node').first()).toBeVisible();
   await page.getByRole('button', { name: 'Create variant' }).click();

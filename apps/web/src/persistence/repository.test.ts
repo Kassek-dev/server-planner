@@ -102,6 +102,25 @@ describe('ProjectRepository', () => {
     expect(project?.devices).toEqual(v1.project.devices);
     const [snapshot] = await repo.listSnapshots(id);
     expect(snapshot?.project.dnsRecords).toEqual({});
+    expect(project?.flowScenarios).toEqual({});
+    expect(snapshot?.project.flowScenarios).toEqual({});
+  });
+
+  it('adds flow scenarios to projects stored by versions 1.2–1.7 (database v3, schema v4)', async () => {
+    const name = `test-repo-upgrade-${++n}`;
+    const old = await openDB(name, 3, {
+      upgrade(db) {
+        db.createObjectStore('projects', { keyPath: 'id' }).createIndex('by-updated', 'updatedAt');
+        db.createObjectStore('projectData', { keyPath: 'id' });
+        db.createObjectStore('settings');
+        db.createObjectStore('snapshots', { keyPath: 'id' }).createIndex('by-project', 'projectId');
+      },
+    });
+    const { flowScenarios: _, ...stored } = createProject('Lab');
+    await old.put('projectData', stored);
+    old.close();
+    const repo = new ProjectRepository(await openAppDb(name), sequentialContext());
+    expect((await repo.get(stored.id))?.flowScenarios).toEqual({});
   });
 
   it('an open older tab lets a newer version upgrade the database', async () => {

@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json');
 
 async function openExample(page: Page) {
   await page.goto('./');
@@ -203,4 +203,19 @@ test('Hyper-V: Windows Server runs VMs, not LXC (SW-14)', async ({ page }) => {
   await panel.getByRole('button', { name: 'Add VM' }).click();
   await expect(panel.getByRole('heading', { name: 'vm-1' })).toBeVisible();
   await expect(panel.getByLabel('net0 bridge')).toHaveValue(/.+/);
+});
+
+test('host firewall: on, drop by default, a rule from the LAN (NET-15)', async ({ page }) => {
+  await openExample(page);
+  await node(page, 'pve1').click();
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Network' }).click();
+  await panel.getByRole('checkbox', { name: 'Firewall on this host' }).check();
+  await expect(panel.getByRole('radio', { name: 'Drop by default' })).toBeChecked();
+  await panel.getByRole('button', { name: 'Add rule' }).click();
+  const rule = panel.getByRole('group', { name: 'Rule 1' });
+  await rule.getByLabel('Ports').fill('22');
+  await rule.getByLabel('Ports').press('Enter');
+  await expect(rule.getByLabel('Ports')).toHaveValue('22');
+  await page.screenshot({ path: 'test-results/host-firewall.png' });
 });

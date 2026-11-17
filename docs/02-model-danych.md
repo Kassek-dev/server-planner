@@ -1,6 +1,6 @@
 # Server Planner — model danych (v0.3)
 
-> Status: **zaakceptowany, v0.7** (v0.7: schemat projektu v3 — karty rozszerzeń, sloty, IPv6 SLAAC, § 4.1, § 6, § 11; v0.6: `CatalogGpu`, § 9.4; v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
+> Status: **zaakceptowany, v0.8** (v0.8: schemat projektu v4 — firewall hosta, VPN, bond, mDNS, scenariusze, nazewnictwo, § 6, § 11; v0.7: schemat projektu v3 — karty rozszerzeń, sloty, IPv6 SLAAC, § 4.1, § 6, § 11; v0.6: `CatalogGpu`, § 9.4; v0.3: lokalizacje i forma urządzeń, § 4.3; v0.4: zmiany z implementacji etapu 1, § 13 M5; v0.5: schemat projektu v2 — reverse proxy, lokalny DNS, wzorzec etykiet, § 6.5, § 11) · Data: 2026-11-15
 > Podstawa: `01-funkcjonalnosci.md` v0.4 (decyzje D1–D9)
 > Notacja: typy w składni TypeScript — to opis struktury, nie decyzja o implementacji (ta zapadnie w `03-architektura.md`).
 
@@ -58,6 +58,7 @@ type Confidence = 'curated' | 'imported' | 'estimated';
 | `loc_`  | Location                   | `dns_`  | DnsRecord    |
 | `app_`  | AppInstance                | `asr_`  | Assertion    |
 | `snap_` | Snapshot                   | `crd_`  | AddInCard (v3) |
+| `hfw_`  | HostFirewallRule (v4)      | `fsc_`  | FlowScenario (v4) |
 
 ---
 
@@ -135,6 +136,7 @@ interface Project {
   routes: Record<Id, Route>;
   proxyRoutes: Record<Id, ProxyRoute>; // NET-11, § 6.5
   dnsRecords: Record<Id, DnsRecord>; // NET-14, § 6.5
+  flowScenarios: Record<Id, FlowScenario>; // FLW-06/07 (schemat v4)
   tags: Record<Id, Tag>;
   assertions: Record<Id, Assertion>;
   locations: Record<Id, Location>; // rozdz. 4.3
@@ -150,6 +152,7 @@ interface ProjectSettings {
   energyPrice?: { perKwh: number; currency: string };
   currency: string; // "PLN"
   cableLabelPattern?: string; // LBL-03; tokeny {a.device} {a.port} {b.device} {b.port}; brak = domyślny wzorzec
+  naming?: { site?: string; patterns: Record<DeviceKind, string>; hostnames: boolean }; // LBL-05 (v4): tokeny {site} {kind} {nn}
 }
 ```
 
@@ -681,9 +684,28 @@ interface Subnet {
 interface Zone {
   id: Id;
   name: string; // "WAN", "LAN", "IoT", "Guest", "Mgmt"
-  kind: 'wan' | 'internal'; // WAN — strefa internetu
+  kind: 'wan' | 'internal' | 'vpn'; // WAN — strefa internetu; vpn (v4, NET-16) — zdalni klienci VPN
   color: ColorRef;
   intraZone: 'allow' | 'deny'; // ruch wewnątrz tej samej strefy (przez router)
+  vpn?: { serverAppId: Id; protocol: 'wireguard' | 'tailscale' | 'openvpn' }; // v4: serwer, do którego łączą się klienci
+}
+
+// Schemat v4 (1.8):
+// NET-15 firewall hosta — Device.hostFirewall?, Workload.hostFirewall? (VM/LXC; kontener używa hosta)
+interface HostFirewall {
+  enabled: boolean;
+  inbound: 'allow' | 'deny'; // domyślnie dla ruchu przychodzącego; wychodzący bez filtrowania
+  rules: { id: Id /* hfw_ */; enabled: boolean; action: 'allow' | 'deny'; protocol: Protocol;
+           source: Endpoint; ports?: PortRange[]; description?: string }[]; // pierwsza pasująca wygrywa
+}
+// NET-16: Interface.bond?: { mode: 'lacp' | 'active-backup' | 'balance-alb' } (interfejs kind 'bond',
+// porty członkowskie przez parentId); Device.mdnsReflector?: { vlanIds: Id[] } (router).
+// FLW-06/07: scenariusz obciążenia
+interface FlowScenario {
+  id: Id; // fsc_
+  name: string; // "Evening"
+  items: { appId: Id; flowId: string; count: number /* 1–100 */;
+           bindings: Record<string, { type: 'device' | 'workload' | 'app'; id: Id } | { type: 'internet' }> }[];
 }
 ```
 
@@ -1206,6 +1228,7 @@ interface CatalogOs {
 | 1 | 1.0 | pierwszy format | — |
 | 2 | 1.2 | `proxyRoutes`, `dnsRecords` (§ 6.5), `settings.cableLabelPattern?` | `migrateV1toV2`: puste kolekcje w projekcie i snapshotach; IndexedDB v3 migruje zapisane projekty |
 | 3 | 1.6 | `Hardware.expansion?`, `Hardware.cards?` (`crd_`), `GpuSpec.attach?` (LIB‑05); `IpAssignment.mode` + `slaac`, `Subnet.ra?` (NET‑17) | `migrateV2toV3`: tylko numer wersji (wszystkie nowe pola opcjonalne, dane v2 są poprawnymi danymi v3); IndexedDB bez zmian (projekty w bazie nie mają numeru schematu) |
+| 4 | 1.8 | `flowScenarios` (FLW‑06/07); opcjonalne: `hostFirewall` (NET‑15), `Zone.kind: vpn` + `Zone.vpn`, `Interface.bond`, `Device.mdnsReflector` (NET‑16), `settings.naming` (LBL‑05) | `migrateV3toV4`: pusta kolekcja w projekcie i snapshotach; IndexedDB v4 migruje zapisane projekty |
 
 ---
 

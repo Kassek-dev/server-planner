@@ -1,6 +1,6 @@
 import { parseProjectFile } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import dualStack from '../../../../../fixtures/schema/v3/dual-stack.json';
+import dualStack from '../../../../../fixtures/schema/v4/dual-stack.json';
 import { homeLab } from '../canvas/testSupport';
 import { logicalMap } from './logicalMap';
 

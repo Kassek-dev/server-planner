@@ -2,7 +2,7 @@ import { defaultContext, type Project, parseProjectFile } from '@server-planner/
 
 /** "Try example project": the home-lab fixture from the docs, loaded lazily (own chunk). */
 export async function loadExampleProject(name: string): Promise<Project> {
-  const { default: raw } = await import('../../../../../fixtures/schema/v3/home-lab.json');
+  const { default: raw } = await import('../../../../../fixtures/schema/v4/home-lab.json');
   const { project } = parseProjectFile(raw).file;
   const now = defaultContext.now();
   return {

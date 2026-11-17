@@ -11,6 +11,7 @@ export * from './cards';
 export * from './catalog';
 export * from './core';
 export * from './device';
+export * from './hostFirewall';
 export * from './location';
 export * from './network';
 export * from './project';

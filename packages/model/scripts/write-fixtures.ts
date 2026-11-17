@@ -6,10 +6,10 @@ import { homeLabFile } from '../test/support/project-file';
 import { buildReverseProxyLab } from '../test/support/reverse-proxy';
 
 /**
- * Regenerates fixtures/schema/v3/*.json from the builders (run after intentional model changes).
- * Fixtures of older versions (v1/, v2/) are frozen: they test the migrations.
+ * Regenerates fixtures/schema/v4/*.json from the builders (run after intentional model changes).
+ * Fixtures of older versions (v1/, v2/, v3/) are frozen: they test the migrations.
  */
-const dir = join(import.meta.dirname, '../../../fixtures/schema/v3');
+const dir = join(import.meta.dirname, '../../../fixtures/schema/v4');
 await mkdir(dir, { recursive: true });
 for (const [name, project] of [
   ['home-lab', buildHomeLab()],

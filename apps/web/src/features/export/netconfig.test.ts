@@ -7,7 +7,7 @@ import {
   updateInterface,
 } from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
-import dualStack from '../../../../../fixtures/schema/v3/dual-stack.json';
+import dualStack from '../../../../../fixtures/schema/v4/dual-stack.json';
 import { deviceByName, homeLab, sessionWith } from '../canvas/testSupport';
 import { dhcpReservations, ifupdown, linuxName, netConfigFormat, netplan } from './netconfig';
 

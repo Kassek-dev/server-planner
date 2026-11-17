@@ -14,6 +14,7 @@ import {
   sequentialContext,
   updateWorkload,
   upgradeProjectV1,
+  upgradeProjectV3,
 } from '../src';
 import { buildDualStackLab } from './support/dual-stack';
 import { buildHomeLab } from './support/home-lab';
@@ -22,12 +23,13 @@ import { buildReverseProxyLab } from './support/reverse-proxy';
 
 const readFixture = (path: string) =>
   JSON.parse(readFileSync(join(import.meta.dirname, '../../../fixtures/schema', path), 'utf8'));
-const fixture = readFixture('v3/home-lab.json');
+const fixture = readFixture('v4/home-lab.json');
 const fixtureV1 = readFixture('v1/home-lab.json');
 const fixtureV2 = readFixture('v2/home-lab.json');
-const reverseProxy = readFixture('v3/reverse-proxy.json');
+const reverseProxy = readFixture('v4/reverse-proxy.json');
 const reverseProxyV2 = readFixture('v2/reverse-proxy.json');
-const dualStack = readFixture('v3/dual-stack.json');
+const fixtureV3 = readFixture('v3/home-lab.json');
+const dualStack = readFixture('v4/dual-stack.json');
 
 function expectFileError(raw: unknown, code: string) {
   try {
@@ -41,7 +43,7 @@ function expectFileError(raw: unknown, code: string) {
 }
 
 describe('project file', () => {
-  it('parses the v3 home-lab fixture without migration', () => {
+  it('parses the v4 home-lab fixture without migration', () => {
     const { file, migratedFrom } = parseProjectFile(fixture);
     expect(migratedFrom).toBeUndefined();
     expect(Object.keys(file.project.devices)).toHaveLength(8);
@@ -53,21 +55,31 @@ describe('project file', () => {
     expect(JSON.parse(JSON.stringify(homeLabFile(buildDualStackLab())))).toEqual(dualStack);
   });
 
-  it('migrates a v1 file to v3 with empty proxy routes and DNS records', () => {
+  it('migrates a v1 file to v4 with empty proxy routes, DNS records and flow scenarios', () => {
     const { file, migratedFrom } = parseProjectFile(fixtureV1);
     expect(migratedFrom).toBe(1);
-    expect(file.schemaVersion).toBe(3);
+    expect(file.schemaVersion).toBe(4);
     expect(file.project).toEqual(fixture.project);
   });
 
-  it('migrates v2 files to v3 unchanged (only new optional fields in v3)', () => {
+  it('migrates a v3 file to v4 with empty flow scenarios', () => {
+    const { file, migratedFrom } = parseProjectFile(fixtureV3);
+    expect(migratedFrom).toBe(3);
+    expect(file.project.flowScenarios).toEqual({});
+    expect(file.project).toEqual(fixture.project);
+    expect(upgradeProjectV3(upgradeProjectV3(fixtureV3.project))).toEqual(
+      upgradeProjectV3(fixtureV3.project),
+    );
+  });
+
+  it('migrates v2 files to v4 (v3 added only optional fields)', () => {
     for (const [old, current] of [
       [fixtureV2, fixture],
       [reverseProxyV2, reverseProxy],
     ]) {
       const { file, migratedFrom } = parseProjectFile(old);
       expect(migratedFrom).toBe(2);
-      expect(file.schemaVersion).toBe(3);
+      expect(file.schemaVersion).toBe(4);
       expect(file.project).toEqual(current.project);
     }
   });
@@ -116,7 +128,7 @@ describe('project file', () => {
   });
 
   it('rejects files from a newer app version', () => {
-    expectFileError({ ...fixture, schemaVersion: 4 }, 'SCHEMA_TOO_NEW');
+    expectFileError({ ...fixture, schemaVersion: 5 }, 'SCHEMA_TOO_NEW');
   });
 
   it('reports invalid content with Zod issues', () => {

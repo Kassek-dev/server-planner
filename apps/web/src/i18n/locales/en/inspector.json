@@ -62,6 +62,16 @@
   "catalog": {
     "suggest": "Suggest a correction"
   },
+  "hostFirewall": {
+    "title": "Host firewall",
+    "enabled": "Firewall on this host",
+    "inbound": "Incoming traffic",
+    "deny": "Drop by default",
+    "allow": "Accept by default",
+    "hint": "Rules match the source and are checked in order; the first match wins. Outgoing traffic is not filtered. Containers use their host's firewall.",
+    "addRule": "Add rule",
+    "rule": "Rule {n}"
+  },
   "hardware": {
     "expansion": {
       "title": "Expansion",
@@ -460,6 +470,7 @@
     "NOT_FOUND": "That item no longer exists.",
     "MODEL_KIND_MISMATCH": "This model is a {model}, not a {kind}.",
     "CARD_MODEL_REQUIRED": "Name the card model.",
+    "HOST_FIREWALL_CONTAINER": "{name} is a container — it uses the firewall of its host.",
     "CARD_PORTS_INVALID": "A card can add 0 to {max} ports.",
     "APP_HOST_IS_CONTAINER": "Apps from the catalog go on a host, VM or LXC, not inside a container.",
     "NETWORK_ON_OTHER_HOST": "That Docker network belongs to another host.",

@@ -4,7 +4,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 26: rack front view (LOC-09). */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 
 test('rack front view: drawing, SVG download and PNG download', async ({ page }) => {

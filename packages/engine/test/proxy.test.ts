@@ -15,7 +15,7 @@ import { analyze, apply } from './support';
 /** NET-11 reverse proxy routes and NET-14 local DNS records (fixture v2/reverse-proxy). */
 
 const raw = JSON.parse(
-  readFileSync(join(import.meta.dirname, '../../../fixtures/schema/v3/reverse-proxy.json'), 'utf8'),
+  readFileSync(join(import.meta.dirname, '../../../fixtures/schema/v4/reverse-proxy.json'), 'utf8'),
 );
 const lab = (): Project => parseProjectFile(raw).file.project;
 const codes = (p: Project) => analyze(p).issues.map((i) => i.code);

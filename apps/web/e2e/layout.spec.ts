@@ -3,7 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 /** Stage 18: cable bend points, alignment guides and "Group by: None" (CAN-08, LOC-08). */
 
-const fixture = join(import.meta.dirname, '../../../fixtures/schema/v3/home-lab.json');
+const fixture = join(import.meta.dirname, '../../../fixtures/schema/v4/home-lab.json');
 const inspector = (page: Page) => page.getByRole('complementary', { name: 'Inspector' });
 
 async function openExample(page: Page) {

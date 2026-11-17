@@ -228,7 +228,7 @@ function Rules({ project, device }: { project: Project; device: Device }) {
   );
 }
 
-function IconMove({
+export function IconMove({
   label,
   disabled,
   onClick,
