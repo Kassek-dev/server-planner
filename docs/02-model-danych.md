@@ -889,6 +889,9 @@ interface CapacityReport {
   gpu?: { required: GpuFeature[]; available: GpuFeature[]; ok: boolean };
   children: CapacityReport[]; // rekurencja: VM/LXC
 }
+// Ceny podzespołów (1.9, D14): MemoryModule/Disk/GpuSpec/AddInCard.purchase? (jak Device.purchase: status,
+// price — za sztukę, currency); bez zmiany numeru schematu (pole opcjonalne). BOM liczy części ≠ owned;
+// Compare: Upgrade.price (cena urządzenia lub suma części do kupienia), nowy rodzaj `card`.
 // CAP-07 moc z podzespołów (1.9, D14, packages/engine/src/powerEstimate.ts): DevicePower.source =
 // 'spec' | 'spec+parts' | 'estimate' | 'poe' | 'none', parts?: { kind, label, count, idleW, loadW }[].
 // Wartości typowe (W, spoczynek–obciążenie): płyta/zasilacz wg typu (mini PC 3–6, serwer 35–60, NAS 8–12,

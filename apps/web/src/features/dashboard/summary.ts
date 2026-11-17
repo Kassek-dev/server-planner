@@ -62,6 +62,37 @@ export interface BomTotals {
   unpriced: number;
 }
 
+/** Parts of a device with a purchase state (1.9): RAM modules, disks, GPUs, add-in cards. */
+export function partPurchases(device: Project['devices'][string]) {
+  const hw = device.hardware;
+  return [
+    ...(hw.memory?.modules ?? []).map((m) => ({
+      kind: 'memory' as const,
+      label: '',
+      purchase: m.purchase,
+      count: m.count,
+    })),
+    ...hw.disks.map((d) => ({
+      kind: 'disk' as const,
+      label: d.name,
+      purchase: d.purchase,
+      count: 1,
+    })),
+    ...hw.gpus.map((g) => ({
+      kind: 'gpu' as const,
+      label: g.model,
+      purchase: g.purchase,
+      count: 1,
+    })),
+    ...(hw.cards ?? []).map((c) => ({
+      kind: 'card' as const,
+      label: c.model,
+      purchase: c.purchase,
+      count: 1,
+    })),
+  ].filter((p) => p.purchase && p.purchase.status !== 'owned');
+}
+
 export function bomTotals(project: Project): BomTotals {
   const out: BomTotals = {
     owned: 0,
@@ -78,6 +109,20 @@ export function bomTotals(project: Project): BomTotals {
   };
   for (const d of Object.values(project.devices)) {
     if (d.kind === 'internet' || d.kind === 'client') continue;
+    // Parts to buy count on their own (a price applies to `count` identical modules).
+    for (const part of partPurchases(d)) {
+      const p = part.purchase;
+      if (!p) continue;
+      if (p.status === 'to-buy') out.toBuy += part.count;
+      else out.optional += part.count;
+      if (p.price === undefined) out.unpriced += part.count;
+      else
+        add(
+          p.status === 'to-buy' ? out.toBuyCost : out.optionalCost,
+          p.currency ?? project.settings.currency,
+          p.price * part.count,
+        );
+    }
     const purchase = d.purchase;
     const status = purchase?.status ?? 'owned';
     if (status === 'owned') {
