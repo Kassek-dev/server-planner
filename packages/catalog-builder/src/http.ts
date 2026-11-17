@@ -14,7 +14,11 @@ export class BudgetExceeded extends Error {}
 export function createFetchContext(
   workDir: string,
   budget: number,
-  { timeoutMs = 120_000, fetchImpl = fetch }: { timeoutMs?: number; fetchImpl?: typeof fetch } = {},
+  {
+    timeoutMs = 120_000,
+    fetchImpl = fetch,
+    images,
+  }: { timeoutMs?: number; fetchImpl?: typeof fetch; images?: string[] } = {},
 ): FetchContext {
   let used = 0;
   const get = async (url: string): Promise<Response> => {
@@ -40,6 +44,7 @@ export function createFetchContext(
   };
   return {
     workDir,
+    ...(images ? { images } : {}),
     get,
     async download(url, fileName) {
       await mkdir(workDir, { recursive: true });

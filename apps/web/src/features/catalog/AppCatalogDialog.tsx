@@ -269,12 +269,30 @@ function AppDetails({ app }: { app: CatalogApp }) {
       <section className="flex flex-col gap-1">
         <Heading>{app.deployment.kind === 'stack' ? t('apps.stack') : t('apps.container')}</Heading>
         {app.deployment.components.map((c) => (
-          <div key={c.key} className="flex justify-between gap-2 text-body-sm">
-            <span className="truncate">{c.name}</span>
-            <span className="font-mono text-data-sm text-text-secondary">
-              {c.defaultPortMappings?.length
-                ? c.defaultPortMappings.map((m) => `:${m.hostPort}`).join(' ')
-                : t('apps.internal')}
+          <div key={c.key} className="flex flex-col gap-0.5">
+            <div className="flex justify-between gap-2 text-body-sm">
+              <span className="truncate">{c.name}</span>
+              <span className="font-mono text-data-sm text-text-secondary">
+                {c.defaultPortMappings?.length
+                  ? c.defaultPortMappings.map((m) => `:${m.hostPort}`).join(' ')
+                  : t('apps.internal')}
+              </span>
+            </div>
+            {/* CAT-03: Docker Hub facts of the image, when the catalog has them. */}
+            <span className="truncate font-mono text-data-sm text-text-muted">
+              {[
+                c.image,
+                c.imageInfo?.version
+                  ? t('apps.imageVersion', { version: c.imageInfo.version })
+                  : '',
+                c.imageInfo?.sizeBytes ? formatSize(c.imageInfo.sizeBytes, true) : '',
+                c.arch.join('/'),
+                c.imageInfo?.updatedAt
+                  ? t('apps.imageUpdated', { date: c.imageInfo.updatedAt.slice(0, 10) })
+                  : '',
+              ]
+                .filter(Boolean)
+                .join(' · ')}
             </span>
           </div>
         ))}

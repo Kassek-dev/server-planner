@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "name": "unstable",
+      "last_updated": "2026-11-16T13:36:36.931973Z",
+      "full_size": 751622793,
+      "images": [
+        { "architecture": "amd64", "os": "linux", "size": 751622793 },
+        { "architecture": "arm64", "os": "linux", "size": 420686161 }
+      ]
+    },
+    {
+      "name": "10.11.3",
+      "last_updated": "2026-11-10T09:00:00Z",
+      "full_size": 420000000,
+      "images": [
+        { "architecture": "amd64", "os": "linux", "size": 420000000 },
+        { "architecture": "arm64", "os": "linux", "size": 400000000 }
+      ]
+    },
+    {
+      "name": "latest",
+      "last_updated": "2026-11-10T09:00:00Z",
+      "full_size": 420000000,
+      "images": [
+        { "architecture": "amd64", "os": "linux", "size": 420000000 },
+        { "architecture": "arm64", "os": "linux", "size": 400000000 },
+        { "architecture": "arm", "os": "linux", "size": 390000000 }
+      ]
+    }
+  ]
+}

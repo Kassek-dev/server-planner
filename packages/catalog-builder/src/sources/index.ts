@@ -1,6 +1,7 @@
 import { awesomeSelfhostedSource } from './awesomeSelfhosted';
 import { blenderSource } from './blender';
 import { communityScriptsSource } from './communityScripts';
+import { dockerHubSource } from './dockerhub';
 import { linuxserverSource } from './linuxserver';
 import type { SourceAdapter } from './types';
 
@@ -10,4 +11,6 @@ export const SOURCES: { adapter: SourceAdapter; budget: number }[] = [
   { adapter: awesomeSelfhostedSource, budget: 3 },
   { adapter: communityScriptsSource, budget: 3 },
   { adapter: blenderSource, budget: 3 },
+  // One request per catalog image (docs/06 § 4).
+  { adapter: dockerHubSource, budget: 300 },
 ];

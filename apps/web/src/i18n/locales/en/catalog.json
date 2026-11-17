@@ -56,6 +56,8 @@
     "details": "App details",
     "stack": "Stack",
     "container": "Container",
+    "imageVersion": "v{version}",
+    "imageUpdated": "pushed {date}",
     "internal": "internal",
     "requirements": "Requirements",
     "minimum": "Minimum",

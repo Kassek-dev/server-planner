@@ -368,7 +368,7 @@ Decyzja D14.
 - [x] `powerEstimate.ts` (tabela typowych wartości, `estimatePower`), `power()` ze źródłami `estimate` i `spec+parts`, `EngineOptions.modelBaselines` z katalogu, `GpuSpec.tdpW` kopiowane z katalogu; rozbicie w Hardware › Power, dopisek w Energy
 
 ### Etap 44 — Adapter Docker Hub (CAT‑03, `06` § 2.4)
-- [ ] Tagi, architektury, rozmiar obrazów aplikacji z katalogu (budżet zapytań, próbka offline)
+- [x] Adapter `dockerhub` (lista obrazów katalogu z buildera, 1 zapytanie na obraz, odstęp 400 ms, przerwanie przy limicie), `dist/images.json` scalany z poprzednim, `CatalogDist.images` + `withDist` (architektury, `imageInfo`), wiersz obrazu w D‑06; próbka `test/samples/dockerhub`
 
 ### Etap 45 — Ceny podzespołów (`01` § 5 „Ceny”)
 - [ ] Cena przy RAM, dyskach, GPU i kartach; koszt rozbudowy w Compare i BOM
@@ -461,3 +461,4 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-17 | **Wydanie v1.8.1** (D11: 1 poprawka od 1.8.0) | tag `v1.8.1` (#73) |
 | 2026-11-17 | Decyzja D14, plan 1.9 i 1.10 | #74 |
 | 2026-11-17 | Etap 43: moc z podzespołów (CAP‑07) | #74 |
+| 2026-11-17 | Etap 44: adapter Docker Hub (CAT‑03) | #75 |
