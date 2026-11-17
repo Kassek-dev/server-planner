@@ -346,7 +346,7 @@ Schemat projektu v4 (D13).
 ### Etap 40 — VPN, LACP, mDNS (NET‑16)
 - [x] 40a bond/LACP: `switchGroup` (bond z portami = jeden port na hoście, LAG na switchu z resztą portów), porty dziedziczą switchport bondu; `VAL_BOND_PORTS`, `VAL_BOND_PEER`; UI „Add bond”/„Add LAG”, tryb, porty; eksport ifupdown/Netplan
 - [x] 40b VPN: `resolve({type:'zone'})` = klienci startujący u serwera; `vpnRouted` (serwer na routerze, firewall ze strefą VPN), NAT na hoście; strefa VPN w macierzy; `VAL_VPN_SERVER`, `VAL_VPN_EXPOSED`; UI w S‑01 › Zones
-- [ ] 40c reflektor mDNS między VLANami
+- [x] 40c reflektor mDNS: `mdnsDomains`/`mdnsVisible` (union‑find VLANów po reflektorach), `VAL_MDNS_VLAN`, sekcja w Network routera, „Service discovery (mDNS)” w Access
 
 ### Etap 41 — Obciążenie łączy (FLW‑06/07)
 - [ ] Scenariusze (proces × liczba) zapisane w projekcie, obciążenie łączy i hostów, wąskie gardło, nakładka
@@ -423,3 +423,4 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | Etap 39: schemat projektu v4, firewall hosta (NET‑15) | #65 |
 | 2026-11-17 | Etap 40a: bond / LACP (NET‑16) | #66 |
 | 2026-11-17 | Etap 40b: VPN jako strefa (NET‑16) | #67 |
+| 2026-11-17 | Etap 40c: reflektor mDNS (NET‑16) | #68 |

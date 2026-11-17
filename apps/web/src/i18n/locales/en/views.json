@@ -152,6 +152,9 @@
     }
   },
   "access": {
+    "mdns": "Service discovery (mDNS)",
+    "mdnsShared": "{vlans} — devices discover each other's services (reflected by {routers})",
+    "mdnsAlone": "{vlan} — services are discoverable only inside this VLAN",
     "title": "Access",
     "mode": "Matrix axis",
     "modes": {

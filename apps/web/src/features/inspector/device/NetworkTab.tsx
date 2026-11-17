@@ -121,6 +121,7 @@ export function NetworkTab({ project, device }: { project: Project; device: Devi
       {isRouter ? (
         <RoutingSection project={project} device={device} interfaces={interfaces} />
       ) : null}
+      {isRouter ? <MdnsSection project={project} device={device} /> : null}
       {device.wifi ? <WifiSection project={project} device={device} /> : null}
       {isCompute ? (
         <HostFirewallSection
@@ -745,6 +746,38 @@ function WifiSection({ project, device }: { project: Project; device: Device }) 
           </div>
         </Card>
       ))}
+    </Section>
+  );
+}
+
+/** NET-16: VLANs between which this router repeats mDNS announcements (service discovery). */
+function MdnsSection({ project, device }: { project: Project; device: Device }) {
+  const { t } = useTranslation('inspector');
+  const run = useCommand();
+  const selected = new Set(device.mdnsReflector?.vlanIds ?? []);
+  const vlans = Object.values(project.vlans).sort((a, b) => a.vid - b.vid);
+  if (vlans.length < 2) return null;
+  const toggle = (id: string, on: boolean) => {
+    const next = vlans.map((v) => v.id).filter((v) => (v === id ? on : selected.has(v)));
+    run(updateDevice, {
+      id: device.id,
+      changes: { mdnsReflector: next.length > 0 ? { vlanIds: next } : undefined },
+    });
+  };
+  return (
+    <Section title={t('network.mdns.title')}>
+      <p className="m-0 text-body-sm text-text-muted">{t('network.mdns.hint')}</p>
+      <fieldset className="m-0 flex flex-wrap gap-x-4 gap-y-1 border-0 p-0">
+        <legend className="sr-only">{t('network.mdns.title')}</legend>
+        {vlans.map((v) => (
+          <Checkbox
+            key={v.id}
+            label={`${v.vid} · ${v.name}`}
+            checked={selected.has(v.id)}
+            onChange={(e) => toggle(v.id, e.target.checked)}
+          />
+        ))}
+      </fieldset>
     </Section>
   );
 }

@@ -167,6 +167,10 @@
     "title": "Storage pool without enough disks",
     "description": "Pool {pool} on {device} has {count, plural, =0 {no disks} one {# disk} other {# disks}}; {layout} needs at least {needed}."
   },
+  "VAL_MDNS_VLAN": {
+    "title": "mDNS reflector without the VLAN",
+    "description": "{device} should reflect mDNS on VLAN {vlan}, but has no interface in it."
+  },
   "VAL_VPN_SERVER": {
     "title": "VPN zone without a server",
     "description": "Zone {zone} is a VPN zone but names no VPN server app (WireGuard, Tailscale, OpenVPN) in the project."

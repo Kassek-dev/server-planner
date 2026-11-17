@@ -121,3 +121,4 @@ export {
   type PlacementUpgrade,
   placementPlan,
 } from './placement';
+export { type MdnsDomain, mdnsDomains, mdnsVisible } from './simulation/mdns';

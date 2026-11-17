@@ -904,6 +904,46 @@ const vpnRules: ValidationRule = {
   },
 };
 
+/** NET-16 an mDNS reflector can only repeat announcements on VLANs it has an interface in. */
+const mdnsRules: ValidationRule = {
+  code: 'VAL_MDNS',
+  run(ctx) {
+    const out: Issue[] = [];
+    for (const device of Object.values(ctx.project.devices)) {
+      const vlans = device.mdnsReflector?.vlanIds ?? [];
+      if (vlans.length === 0) continue;
+      const carried = new Set<string>();
+      let all = false;
+      for (const iface of ctx.interfacesByOwner.get(device.id) ?? []) {
+        const c = carriedVlans(ctx, iface);
+        if (c === 'all') all = true;
+        else for (const v of c) carried.add(v);
+        const tag = iface.vlanTag !== undefined ? ctx.vlanByVid.get(iface.vlanTag)?.id : undefined;
+        if (tag) carried.add(tag);
+      }
+      for (const v of vlans) {
+        const vlan = ctx.project.vlans[v];
+        if (!vlan || all || carried.has(v)) continue;
+        out.push(
+          issue(
+            'VAL_MDNS_VLAN',
+            'warning',
+            [
+              { type: 'device', id: device.id },
+              { type: 'vlan', id: v },
+            ],
+            {
+              device: device.name,
+              vlan: `${vlan.vid} (${vlan.name})`,
+            },
+          ),
+        );
+      }
+    }
+    return out;
+  },
+};
+
 const GIB = 1024 ** 3;
 const gib = (bytes: number) => Math.round((bytes / GIB) * 10) / 10;
 
@@ -1192,6 +1232,7 @@ export const rules: ValidationRule[] = [
   ipv6Rules,
   bondRules,
   vpnRules,
+  mdnsRules,
   capacityRule,
   gpuRule,
   dependencies,
@@ -1225,6 +1266,7 @@ export const ISSUE_CODES = [
   'VAL_PROXY_DNS',
   'VAL_DNS_ADDRESS',
   'VAL_POOL',
+  'VAL_MDNS_VLAN',
   'VAL_VPN_SERVER',
   'VAL_VPN_EXPOSED',
   'VAL_BOND_PORTS',
