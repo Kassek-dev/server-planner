@@ -47,6 +47,9 @@ export function removeApp(draft: Project, appId: string): void {
       if (dependency.satisfiedBy === appId) delete dependency.satisfiedBy;
     }
   }
+  // FLW-07: processes of the removed app leave their scenarios.
+  for (const scenario of Object.values(draft.flowScenarios ?? {}))
+    scenario.items = scenario.items.filter((i) => i.appId !== appId);
 }
 
 export function removeWorkload(draft: Project, workloadId: string): void {

@@ -103,6 +103,8 @@ export interface OverlayInput {
   highlight?: ReachabilityResult | null;
   /** SIM-07: failed devices and cables (blocked), devices cut off by them (highlighted). */
   failure?: { devices: string[]; links: string[]; affected: string[] } | null;
+  /** FLW-06/07: load of each loaded cable as a share of its speed (link ID → ratio). */
+  load?: Record<string, number> | null;
 }
 
 /** Device of the failing step and the link it refused, if the result is blocked. */
@@ -164,7 +166,21 @@ export function decorateEdges(
   edges: Edge<LinkEdgeData>[],
   input: OverlayInput,
 ): Edge<LinkEdgeData>[] {
-  const { project, view, highlight, failure } = input;
+  const { project, view, highlight, failure, load } = input;
+  if (load && !highlight && !failure) {
+    // Same thresholds as capacity (docs/04 § 6): ok to 70 %, warning to 90 %, error above.
+    return edges.map((e) => {
+      const ratio = load[e.id];
+      if (ratio === undefined) return { ...e, className: 'sp-dim' };
+      const stroke =
+        ratio > 0.9
+          ? 'var(--sp-status-error)'
+          : ratio > 0.7
+            ? 'var(--sp-status-warning)'
+            : 'var(--sp-status-ok)';
+      return { ...e, style: { ...e.style, stroke, strokeWidth: 3 + Math.min(3, ratio * 3) } };
+    });
+  }
   if (failure && !highlight) {
     const failed = new Set(failure.links);
     const down = new Set(failure.devices);

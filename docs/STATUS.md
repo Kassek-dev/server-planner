@@ -349,7 +349,8 @@ Schemat projektu v4 (D13).
 - [x] 40c reflektor mDNS: `mdnsDomains`/`mdnsVisible` (union‑find VLANów po reflektorach), `VAL_MDNS_VLAN`, sekcja w Network routera, „Service discovery (mDNS)” w Access
 
 ### Etap 41 — Obciążenie łączy (FLW‑06/07)
-- [ ] Scenariusze (proces × liczba) zapisane w projekcie, obciążenie łączy i hostów, wąskie gardło, nakładka
+- [x] `scenarioLoad` (silnik, worker `load`): suma przepustowości kroków × liczba na kablach ścieżek, pojemność łącza i bondu, wąskie gardło; komendy `flowScenario.*` (+ kaskada przy usunięciu aplikacji); UI w Flows („Add to scenario”, „Scenarios”, „Calculate load”), nakładka obciążenia na canvasie
+- Obciążenie hostów = obciążenie ich kabli (CPU procesów pozostaje w CAP‑05 przez profile obciążenia)
 
 ### Etap 42 — Konwencje nazw (LBL‑05)
 - [ ] Wzorce z tokenami na typ urządzenia, reguły hostname, walidacja z poprawką, nazywanie nowych urządzeń
@@ -424,3 +425,4 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | Etap 40a: bond / LACP (NET‑16) | #66 |
 | 2026-11-17 | Etap 40b: VPN jako strefa (NET‑16) | #67 |
 | 2026-11-17 | Etap 40c: reflektor mDNS (NET‑16) | #68 |
+| 2026-11-17 | Etap 41: obciążenie łączy i scenariusze (FLW‑06/07) | #69 |

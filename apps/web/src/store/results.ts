@@ -10,13 +10,16 @@ import {
   type FlowRunResult,
   type FlowTarget,
   failureImpact,
+  type LoadItem,
   type ReachabilityResult,
   type ReachQuery,
+  type ScenarioLoad,
   type ServiceVisibility,
   type SinglePointOfFailure,
   sameDomain,
   simulateExposure,
   simulateFlow,
+  simulateLoad,
   simulateMatrix,
   simulateReach,
   simulateVisibleFrom,
@@ -51,6 +54,8 @@ export interface Simulator {
   /** SIM-07 "what if X fails?" and single points of failure. */
   failure(project: Project, scenario: FailureScenario): Promise<FailureImpact>;
   spof(project: Project): Promise<SinglePointOfFailure[]>;
+  /** FLW-06/07 link load of processes running together. */
+  load(project: Project, items: LoadItem[]): Promise<ScenarioLoad>;
 }
 
 let shared: Remote<EngineWorkerApi> | null | undefined;
@@ -90,6 +95,7 @@ export function createSimulator(): Simulator {
       exposure: (p) => api.exposure(p),
       failure: (p, scenario) => api.failure(p, scenario),
       spof: (p) => api.spof(p),
+      load: (p, items) => api.load(p, items),
     };
   return {
     reach: async (p, q) => simulateReach(p, q),
@@ -99,6 +105,7 @@ export function createSimulator(): Simulator {
     exposure: async (p) => simulateExposure(p),
     failure: async (p, scenario) => failureImpact(p, scenario),
     spof: async (p) => singlePointsOfFailure(p),
+    load: async (p, items) => simulateLoad(p, items),
   };
 }
 

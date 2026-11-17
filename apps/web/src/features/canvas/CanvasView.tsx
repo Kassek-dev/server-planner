@@ -282,6 +282,7 @@ function Workspace() {
   const capacity = useResults((s) => s.result?.capacity);
   const highlight = useSimulation((s) => s.highlight);
   const failure = useSimulation((s) => s.failure);
+  const load = useSimulation((s) => s.load);
   const minimap = useCanvasView((s) => s.minimap);
   // Phones are view-only (docs/05 § 12): pan, pinch and tap; no dragging or cabling.
   const readOnly = useSession((s) => s.readOnly);
@@ -306,9 +307,10 @@ function Workspace() {
             view: { links: linkColoring, devices: deviceColoring },
             highlight,
             failure,
+            load,
           })
         : edges,
-    [edges, project, linkColoring, deviceColoring, highlight, failure],
+    [edges, project, linkColoring, deviceColoring, highlight, failure, load],
   );
 
   if (!project) return null;

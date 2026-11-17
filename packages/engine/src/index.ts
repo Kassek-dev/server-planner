@@ -6,6 +6,7 @@ import { buildContext, type EngineOptions } from './context';
 import { type ServiceVisibility, visibleFrom } from './simulation/access';
 import { type AccessMatrix, accessMatrix } from './simulation/assertions';
 import { type FlowRunResult, runFlow } from './simulation/flow';
+import { type LoadItem, type ScenarioLoad, scenarioLoad } from './simulation/load';
 import { exposureWithRoutes } from './simulation/proxy';
 import { type Exposure, type ReachabilityResult, type ReachQuery, reach } from './simulation/reach';
 import type { EntityRef } from './types';
@@ -93,6 +94,15 @@ export function simulateFlow(
   return runFlow(buildContext(project, options), input);
 }
 
+/** FLW-06/07 link load of processes running together, on a project snapshot. */
+export function simulateLoad(
+  project: Project,
+  items: LoadItem[],
+  options: EngineOptions = {},
+): ScenarioLoad {
+  return scenarioLoad(buildContext(project, options), items);
+}
+
 /** Access matrix on a project snapshot (SIM-04): zones, or the given elements. */
 export function simulateMatrix(
   project: Project,
@@ -121,4 +131,5 @@ export {
   type PlacementUpgrade,
   placementPlan,
 } from './placement';
+export { type LinkLoad, type LoadItem, type ScenarioLoad, scenarioLoad } from './simulation/load';
 export { type MdnsDomain, mdnsDomains, mdnsVisible } from './simulation/mdns';

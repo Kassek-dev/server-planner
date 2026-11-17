@@ -132,6 +132,24 @@
     "internet": "Internet access: {state}",
     "visible": "Services visible from the viewpoint: {state}"
   },
+  "scenarios": {
+    "title": "Scenarios",
+    "target": "Scenario",
+    "new": "New scenario",
+    "defaultName": "Scenario {n}",
+    "add": "Add to scenario",
+    "empty": "No scenarios yet. Pick a process and its participants above, then “Add to scenario” — e.g. three streams and a backup at the same time.",
+    "name": "Scenario name",
+    "delete": "Delete scenario {name}",
+    "count": "Times",
+    "remove": "Remove from scenario",
+    "internet": "Internet",
+    "calculate": "Calculate load",
+    "bottleneck": "Bottleneck: {cable} — {load} of {capacity} ({percent}%).",
+    "noLoad": "No cable speeds known on the paths — set port speeds to see the load.",
+    "failed": "{count, plural, one {# process does} other {# processes do}} not get through and {count, plural, one {is} other {are}} left out.",
+    "links": "Most loaded cables"
+  },
   "flows": {
     "none": "No app in this project has catalog processes yet. Add an app from the catalog (e.g. Jellyfin, Immich, Pi-hole).",
     "app": "App",

@@ -1,4 +1,4 @@
-import type { Project } from '@server-planner/model';
+import type { FlowBinding, Project } from '@server-planner/model';
 import { Play } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import { Led } from '../../ui/Led';
 import { Select } from '../../ui/Select';
 import { endpointName } from './entities';
 import { candidates, defaultBindings, flowApps, targetOf } from './flows';
+import { AddToScenario, ScenariosPanel } from './ScenariosPanel';
 import { reason, verdictLed } from './Steps';
 import { useSimulation } from './store';
 
@@ -24,7 +25,7 @@ export function FlowsTab({ project }: { project: Project }) {
   const [picks, setPicks] = useState<Record<string, string>>({});
   useEffect(() => {
     void useCatalog.getState().load();
-    return () => useSimulation.setState({ flow: null, highlight: null });
+    return () => useSimulation.setState({ flow: null, highlight: null, load: null });
   }, []);
 
   const selected = apps.find((a) => a.app.id === appId) ?? apps[0];
@@ -33,6 +34,21 @@ export function FlowsTab({ project }: { project: Project }) {
   const value = (key: string) => picks[key] ?? defaults[key] ?? '';
 
   if (apps.length === 0) return <p className="m-0 text-text-secondary">{t('flows.none')}</p>;
+
+  /** FLW-07: the current process with its participants, ready for a scenario. */
+  const scenarioItem = () => {
+    if (!selected || !process) return undefined;
+    const bindings: Record<string, FlowBinding> = {};
+    for (const role of process.roles) {
+      const target = targetOf(project, catalog, process, selected, role.key, value(role.key));
+      if (!target) continue;
+      bindings[role.key] =
+        target === 'internet'
+          ? { type: 'internet' }
+          : { type: target.type as 'device' | 'workload' | 'app', id: target.id };
+    }
+    return { appId: selected.app.id, flowId: process.id, count: 1, bindings };
+  };
 
   const run = async () => {
     if (!selected || !process) return;
@@ -105,6 +121,7 @@ export function FlowsTab({ project }: { project: Project }) {
       >
         {t('flows.run')}
       </Button>
+      <AddToScenario project={project} item={scenarioItem()} />
 
       {flow ? (
         <section className="flex flex-col gap-1" aria-live="polite">
@@ -145,6 +162,13 @@ export function FlowsTab({ project }: { project: Project }) {
           ) : null}
         </section>
       ) : null}
+
+      <section aria-label={t('scenarios.title')} className="flex flex-col gap-2">
+        <h3 className="m-0 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+          {t('scenarios.title')}
+        </h3>
+        <ScenariosPanel project={project} />
+      </section>
     </div>
   );
 }
