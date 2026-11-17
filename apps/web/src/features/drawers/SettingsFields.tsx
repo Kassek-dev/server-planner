@@ -1,6 +1,7 @@
 import {
   DEFAULT_CABLE_PATTERN,
   DEVICE_KINDS,
+  isValidNamingPattern,
   nameFromPattern,
   type ProjectSettings,
 } from '@server-planner/model';
@@ -184,9 +185,7 @@ function NamingFields({
                 placeholder={`{site}-{kind}-{nn}`}
                 value={pattern ?? ''}
                 validate={(v) =>
-                  v === '' || (v.length <= 64 && /\{nn?\}/.test(v))
-                    ? null
-                    : t('errors.namingPattern')
+                  v === '' || isValidNamingPattern(v) ? null : t('errors.namingPattern')
                 }
                 onCommit={(v) => {
                   const patterns = { ...naming.patterns };

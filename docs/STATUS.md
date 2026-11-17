@@ -355,6 +355,11 @@ Schemat projektu v4 (D13).
 ### Etap 42 — Konwencje nazw (LBL‑05)
 - [x] `naming.ts` w modelu (`KIND_CODES`, `nameFromPattern`, `matchesPattern`, `nextPatternName`, `isHostname`, `toHostname`), `nextDeviceName` wg wzorca; `VAL_NAMING` (info + Rename), `VAL_HOSTNAME` (+ Fix); sekcja „Naming” w ustawieniach
 
+## Wersja 1.8 — poprawki (2026-11-17)
+
+- [x] Bezpieczeństwo (recenzja automatyczna): ReDoS w dopasowaniu wzorców nazw — wzorzec z wieloma tokenami numerycznymi z zaimportowanego pliku dawał wyrażenie z wykładniczym backtrackingiem. Teraz dokładnie jeden `{nn}`/`{n}` (schemat, UI, matcher), ograniczone kwantyfikatory `\d{1,6}`, nazwa ≤ 128 znaków; testy regresji
+- D11: 1 poprawka → wydanie 1.8.1
+
 ## Dziennik
 
 | Data       | Co                                                  | Commit                            |
@@ -428,3 +433,4 @@ Schemat projektu v4 (D13).
 | 2026-11-17 | Etap 41: obciążenie łączy i scenariusze (FLW‑06/07) | #69 |
 | 2026-11-17 | Etap 42: konwencje nazw (LBL‑05) | #70 |
 | 2026-11-17 | **Wydanie v1.8.0** (etapy 39–42, schemat v4 z automatyczną migracją → `minor`; D11: `Z` = 0) — cały zakres P2 wdrożony | tag `v1.8.0` (#71) |
+| 2026-11-17 | Poprawka bezpieczeństwa: ReDoS we wzorcach nazw (LBL‑05) | #72 |

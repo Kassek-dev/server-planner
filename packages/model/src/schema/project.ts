@@ -79,7 +79,15 @@ export const ProjectSettingsSchema = z.object({
   naming: z
     .object({
       site: z.string().max(32).optional(),
-      patterns: z.record(z.string(), z.string().min(1).max(64)),
+      patterns: z.record(
+        z.string(),
+        z
+          .string()
+          .min(1)
+          .max(64)
+          // Exactly one number token ({nn} or {n}); see isValidNamingPattern.
+          .refine((v) => (v.match(/\{nn?\}/g) ?? []).length === 1, 'One {nn} or {n} token'),
+      ),
       hostnames: z.boolean(),
     })
     .optional(),
