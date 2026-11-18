@@ -20,7 +20,7 @@
     "catalog:build": "pnpm --filter @server-planner/catalog-builder build:catalog"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
+    "@biomejs/biome": "2.6.8",
     "@types/node": "26.6.6",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
