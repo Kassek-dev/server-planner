@@ -1,0 +1,885 @@
+[
+ {
+  "image": "actualbudget/actual-server",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 72384078,
+  "updatedAt": "2026-11-23T08:32:06.904Z"
+ },
+ {
+  "image": "adguard/adguardhome",
+  "version": "v1.0.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 27345919,
+  "updatedAt": "2026-11-19T15:23:58.739Z"
+ },
+ {
+  "image": "amir20/dozzle",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 31517317,
+  "updatedAt": "2026-11-23T06:50:25.174Z"
+ },
+ {
+  "image": "archivebox/archivebox",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 1013249985,
+  "updatedAt": "2026-11-23T09:59:12.258Z"
+ },
+ {
+  "image": "authelia/authelia",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 31238920,
+  "updatedAt": "2026-11-23T11:38:08.850Z"
+ },
+ {
+  "image": "b3log/siyuan",
+  "version": "v3.8.11",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 132665780,
+  "updatedAt": "2026-11-19T15:45:47.368Z"
+ },
+ {
+  "image": "b4bz/homer",
+  "version": "v26.11.4",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 6838819,
+  "updatedAt": "2026-11-19T09:05:39.265Z"
+ },
+ {
+  "image": "bellamy/wallos",
+  "version": "5.11.3",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 71090510,
+  "updatedAt": "2026-11-20T21:17:51.988Z"
+ },
+ {
+  "image": "binwiederhier/ntfy",
+  "version": "v2.38",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 36983490,
+  "updatedAt": "2026-11-16T11:10:13.953Z"
+ },
+ {
+  "image": "caddy",
+  "version": "2.11.9",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 24793574,
+  "updatedAt": "2026-11-16T23:53:44.051Z"
+ },
+ {
+  "image": "cloudflare/cloudflared",
+  "version": "2026.11.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 29724559,
+  "updatedAt": "2026-11-17T15:20:43.909Z"
+ },
+ {
+  "image": "containrrr/watchtower",
+  "version": "1.7.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 5633191,
+  "updatedAt": "2023-11-11T18:52:13.086Z"
+ },
+ {
+  "image": "corentinth/it-tools",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 22548366,
+  "updatedAt": "2024-10-22T08:36:37.074Z"
+ },
+ {
+  "image": "crowdsecurity/crowdsec",
+  "version": "v1.8.2",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 171385895,
+  "updatedAt": "2026-10-29T12:20:30.204Z"
+ },
+ {
+  "image": "deluan/navidrome",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 92015468,
+  "updatedAt": "2026-11-23T10:24:00.010Z"
+ },
+ {
+  "image": "eclipse-mosquitto",
+  "version": "2.0.23",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 13191398,
+  "updatedAt": "2026-11-17T19:02:08.054Z"
+ },
+ {
+  "image": "excalidraw/excalidraw",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 43235863,
+  "updatedAt": "2026-05-06T21:20:09.979Z"
+ },
+ {
+  "image": "fallenbagel/jellyseerr",
+  "version": "2.7",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 433550418,
+  "updatedAt": "2026-10-13T23:21:45.684Z"
+ },
+ {
+  "image": "filebrowser/filebrowser",
+  "version": "v2.63.23",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 16838032,
+  "updatedAt": "2026-07-27T20:02:57.834Z"
+ },
+ {
+  "image": "fireflyiii/core",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 278389411,
+  "updatedAt": "2026-11-19T07:15:45.827Z"
+ },
+ {
+  "image": "freshrss/freshrss",
+  "version": "1.31.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 90911250,
+  "updatedAt": "2026-11-23T08:32:47.853Z"
+ },
+ {
+  "image": "getmeili/meilisearch",
+  "version": "v1.58.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 105659878,
+  "updatedAt": "2026-11-23T10:41:43.072Z"
+ },
+ {
+  "image": "ghostfolio/ghostfolio",
+  "version": "3.100.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 337667488,
+  "updatedAt": "2026-11-15T03:49:26.157Z"
+ },
+ {
+  "image": "gitea/gitea",
+  "version": "28.4",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 72186823,
+  "updatedAt": "2026-11-15T20:11:33.405Z"
+ },
+ {
+  "image": "glanceapp/glance",
+  "version": "v0.8.8",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 10299507,
+  "updatedAt": "2026-11-07T16:06:21.993Z"
+ },
+ {
+  "image": "gotify/server",
+  "version": "3.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 54286421,
+  "updatedAt": "2026-09-15T18:43:40.695Z"
+ },
+ {
+  "image": "gotson/komga",
+  "version": "1.30.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 253257962,
+  "updatedAt": "2026-11-10T06:05:47.377Z"
+ },
+ {
+  "image": "grafana/grafana",
+  "version": "13.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 385060720,
+  "updatedAt": "2026-11-10T17:47:38.795Z"
+ },
+ {
+  "image": "grafana/loki",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 41217201,
+  "updatedAt": "2026-11-23T11:16:42.286Z"
+ },
+ {
+  "image": "guacamole/guacamole",
+  "version": "1.6.0",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 421997800,
+  "updatedAt": "2026-11-23T01:06:57.687Z"
+ },
+ {
+  "image": "guacamole/guacd",
+  "version": "1.6.0",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 131984085,
+  "updatedAt": "2026-11-23T02:27:58.561Z"
+ },
+ {
+  "image": "headscale/headscale",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 52985689,
+  "updatedAt": "2026-11-23T09:21:32.891Z"
+ },
+ {
+  "image": "henrygd/beszel",
+  "version": "0.21",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 13580733,
+  "updatedAt": "2026-11-12T18:35:37.994Z"
+ },
+ {
+  "image": "henrygd/beszel-agent",
+  "version": "0.21",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 4655710,
+  "updatedAt": "2026-11-12T18:34:04.851Z"
+ },
+ {
+  "image": "homebridge/homebridge",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 444338251,
+  "updatedAt": "2026-11-15T10:19:38.534Z"
+ },
+ {
+  "image": "influxdb",
+  "version": "1.12.4",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 112648325,
+  "updatedAt": "2026-11-18T22:21:47.339Z"
+ },
+ {
+  "image": "jc21/nginx-proxy-manager",
+  "version": "2.17.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 484262881,
+  "updatedAt": "2026-11-19T02:58:51.858Z"
+ },
+ {
+  "image": "jellyfin/jellyfin",
+  "version": "12.4",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 751030379,
+  "updatedAt": "2026-10-26T21:26:52.976Z"
+ },
+ {
+  "image": "jokobsk/netalertx",
+  "version": "26.10",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 118574362,
+  "updatedAt": "2026-10-28T14:10:58.375Z"
+ },
+ {
+  "image": "joplin/server",
+  "version": "3.7.6",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 183988391,
+  "updatedAt": "2026-11-16T11:52:59.769Z"
+ },
+ {
+  "image": "koenkk/zigbee2mqtt",
+  "version": "2.14",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 46509864,
+  "updatedAt": "2026-11-01T06:47:52.132Z"
+ },
+ {
+  "image": "kopia/kopia",
+  "version": "20261110.0.231742",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 83972731,
+  "updatedAt": "2026-11-10T23:38:50.979Z"
+ },
+ {
+  "image": "lissy93/dashy",
+  "version": "4.10",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 125964291,
+  "updatedAt": "2026-11-22T22:25:36.828Z"
+ },
+ {
+  "image": "lldap/lldap",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 28305547,
+  "updatedAt": "2026-09-22T23:31:06.641Z"
+ },
+ {
+  "image": "localai/localai",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 9116598690,
+  "updatedAt": "2026-11-23T11:47:49.835Z"
+ },
+ {
+  "image": "louislam/dockge",
+  "version": "1.5.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 263534288,
+  "updatedAt": "2025-03-30T17:41:15.164Z"
+ },
+ {
+  "image": "louislam/uptime-kuma",
+  "version": "2.5.12",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 618706066,
+  "updatedAt": "2026-11-17T15:23:08.324Z"
+ },
+ {
+  "image": "mariadb",
+  "version": "10.6.28",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 103802142,
+  "updatedAt": "2026-11-20T08:35:40.538Z"
+ },
+ {
+  "image": "matrixdotorg/synapse",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 96611237,
+  "updatedAt": "2026-11-20T15:01:38.775Z"
+ },
+ {
+  "image": "mattermost/mattermost-team-edition",
+  "version": "12.1",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 494690777,
+  "updatedAt": "2026-11-16T06:36:40.227Z"
+ },
+ {
+  "image": "memcached",
+  "version": "1.6.45",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 32280777,
+  "updatedAt": "2026-11-05T14:34:43.694Z"
+ },
+ {
+  "image": "miniflux/miniflux",
+  "version": "2.3.5",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 14316349,
+  "updatedAt": "2026-11-02T04:12:58.722Z"
+ },
+ {
+  "image": "mintplexlabs/anythingllm",
+  "version": "1.20",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 1188313192,
+  "updatedAt": "2026-11-21T01:40:40.491Z"
+ },
+ {
+  "image": "mongo",
+  "version": "8.3.17",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 393119172,
+  "updatedAt": "2026-11-17T00:09:39.251Z"
+ },
+ {
+  "image": "mvance/unbound",
+  "version": "1.21.1",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 96636923,
+  "updatedAt": "2024-10-19T11:57:10.958Z"
+ },
+ {
+  "image": "neosmemo/memos",
+  "version": "26.11",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 24641489,
+  "updatedAt": "2026-11-22T09:22:48.949Z"
+ },
+ {
+  "image": "netdata/netdata",
+  "version": "v2.13.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 338839499,
+  "updatedAt": "2026-11-23T01:36:15.254Z"
+ },
+ {
+  "image": "nextcloud",
+  "version": "35.0.3",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 516676333,
+  "updatedAt": "2026-11-19T22:52:27.136Z"
+ },
+ {
+  "image": "nicolargo/glances",
+  "version": "4.5.9",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 45454785,
+  "updatedAt": "2026-11-07T10:40:23.819Z"
+ },
+ {
+  "image": "nodered/node-red",
+  "version": "5.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 234350349,
+  "updatedAt": "2026-11-17T21:26:01.871Z"
+ },
+ {
+  "image": "ollama/ollama",
+  "version": "0.40.17",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 3398218366,
+  "updatedAt": "2026-11-21T04:05:26.500Z"
+ },
+ {
+  "image": "outlinewiki/outline",
+  "version": "1.13.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 269639007,
+  "updatedAt": "2026-11-15T15:57:14.007Z"
+ },
+ {
+  "image": "photoprism/photoprism",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 1062931815,
+  "updatedAt": "2026-10-29T21:44:18.855Z"
+ },
+ {
+  "image": "pihole/pihole",
+  "version": "2026.11.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 42414658,
+  "updatedAt": "2026-11-11T19:40:57.460Z"
+ },
+ {
+  "image": "plexinc/pms-docker",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 154142305,
+  "updatedAt": "2026-10-26T08:05:43.940Z"
+ },
+ {
+  "image": "portainer/portainer-ce",
+  "version": "2.45.4",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 44897539,
+  "updatedAt": "2026-11-18T21:29:55.738Z"
+ },
+ {
+  "image": "postgres",
+  "version": "15.20",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 164205747,
+  "updatedAt": "2026-11-22T04:07:24.528Z"
+ },
+ {
+  "image": "prom/node-exporter",
+  "version": "v1.13.1",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 14506622,
+  "updatedAt": "2026-11-19T17:56:36.399Z"
+ },
+ {
+  "image": "prom/prometheus",
+  "version": "v3.16.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 116078268,
+  "updatedAt": "2026-11-05T15:47:06.985Z"
+ },
+ {
+  "image": "redis",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 58688861,
+  "updatedAt": "2026-11-16T00:05:19.464Z"
+ },
+ {
+  "image": "restic/rest-server",
+  "version": "0.14.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 7916201,
+  "updatedAt": "2025-05-31T20:31:33.395Z"
+ },
+ {
+  "image": "rustdesk/rustdesk-server",
+  "version": "1.1.16",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 5887282,
+  "updatedAt": "2026-07-20T22:36:06.755Z"
+ },
+ {
+  "image": "seafileltd/seafile-mc",
+  "version": "13.0.30",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 561322728,
+  "updatedAt": "2026-11-21T06:16:13.228Z"
+ },
+ {
+  "image": "searxng/searxng",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 103036551,
+  "updatedAt": "2026-11-23T07:21:33.690Z"
+ },
+ {
+  "image": "sissbruecker/linkding",
+  "version": "1.47.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 142311429,
+  "updatedAt": "2026-09-13T16:19:36.269Z"
+ },
+ {
+  "image": "stirlingtools/stirling-pdf",
+  "version": "3.5.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 1117149641,
+  "updatedAt": "2026-11-22T01:31:22.444Z"
+ },
+ {
+  "image": "syncthing/syncthing",
+  "version": "2.1.7",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 20976781,
+  "updatedAt": "2026-10-21T05:59:34.289Z"
+ },
+ {
+  "image": "tailscale/tailscale",
+  "version": "v1.104.7",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 59280179,
+  "updatedAt": "2026-11-12T23:03:25.468Z"
+ },
+ {
+  "image": "technitium/dns-server",
+  "version": "15.6.2",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 112863304,
+  "updatedAt": "2026-10-17T10:33:21.309Z"
+ },
+ {
+  "image": "teslamate/teslamate",
+  "version": "4.5",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 78421539,
+  "updatedAt": "2026-11-17T16:09:50.565Z"
+ },
+ {
+  "image": "traefik",
+  "version": "v3.7.19",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 55284998,
+  "updatedAt": "2026-11-19T02:09:51.548Z"
+ },
+ {
+  "image": "triliumnext/trilium",
+  "version": "v0.107.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 154156417,
+  "updatedAt": "2026-11-08T22:05:36.458Z"
+ },
+ {
+  "image": "twinproduction/gatus",
+  "version": "v5.38.0",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 27346411,
+  "updatedAt": "2026-11-23T02:44:37.370Z"
+ },
+ {
+  "image": "vabene1111/recipes",
+  "version": "2.7",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 346238460,
+  "updatedAt": "2026-11-18T18:43:41.397Z"
+ },
+ {
+  "image": "valkey/valkey",
+  "version": "9.2",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 47368486,
+  "updatedAt": "2026-11-19T19:52:09.121Z"
+ },
+ {
+  "image": "vaultwarden/server",
+  "version": "1.37.5",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 92777231,
+  "updatedAt": "2026-11-01T22:14:24.765Z"
+ },
+ {
+  "image": "vikunja/vikunja",
+  "version": "2.8",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 54646191,
+  "updatedAt": "2026-11-05T15:41:06.650Z"
+ },
+ {
+  "image": "wallabag/wallabag",
+  "version": "2.6",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 115160330,
+  "updatedAt": "2026-11-22T14:35:05.870Z"
+ },
+ {
+  "image": "woodpeckerci/woodpecker-agent",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 21155440,
+  "updatedAt": "2026-11-23T11:24:30.275Z"
+ },
+ {
+  "image": "woodpeckerci/woodpecker-server",
+  "arch": [
+   "amd64"
+  ],
+  "sizeBytes": 25303838,
+  "updatedAt": "2026-11-23T11:31:45.372Z"
+ },
+ {
+  "image": "zwavejs/zwave-js-ui",
+  "version": "11.27",
+  "arch": [
+   "amd64",
+   "arm64"
+  ],
+  "sizeBytes": 86230101,
+  "updatedAt": "2026-11-16T15:56:59.281Z"
+ }
+]

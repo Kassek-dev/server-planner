@@ -320,12 +320,6 @@
    "samples": 5
   },
   {
-   "name": "Apple M5 Ultra",
-   "normalized": "apple m5 ultra",
-   "score": 1606.2,
-   "samples": 23
-  },
-  {
    "name": "Genuine Intel CPU 0000%@",
    "normalized": "genuine intel 0000%",
    "score": 1604,
@@ -344,10 +338,16 @@
    "samples": 8
   },
   {
+   "name": "Apple M5 Ultra",
+   "normalized": "apple m5 ultra",
+   "score": 1551.6,
+   "samples": 25
+  },
+  {
    "name": "AMD Ryzen Threadripper PRO 3995WX 64-Cores",
    "normalized": "amd ryzen threadripper pro 3995wx 64-cores",
-   "score": 1540.3,
-   "samples": 59
+   "score": 1540.2,
+   "samples": 60
   },
   {
    "name": "Intel Xeon Gold 6430",
@@ -394,8 +394,8 @@
   {
    "name": "AMD Ryzen Threadripper PRO 9965WX 24-Cores",
    "normalized": "amd ryzen threadripper pro 9965wx 24-cores",
-   "score": 1352.7,
-   "samples": 36
+   "score": 1354.3,
+   "samples": 39
   },
   {
    "name": "Intel Xeon 6731P",
@@ -472,8 +472,8 @@
   {
    "name": "AMD EPYC 4585PX 16-Core Processor",
    "normalized": "amd epyc 4585px",
-   "score": 1080.1,
-   "samples": 10
+   "score": 1078.8,
+   "samples": 11
   },
   {
    "name": "AMD EPYC 7313 16-Core Processor",
@@ -502,8 +502,8 @@
   {
    "name": "AMD Ryzen 9 9950X3D2 16-Core Processor",
    "normalized": "amd ryzen 9 9950x3d2",
-   "score": 1043.1,
-   "samples": 127
+   "score": 1043.8,
+   "samples": 130
   },
   {
    "name": "AMD EPYC 7642 48-Core Processor",
@@ -514,14 +514,14 @@
   {
    "name": "AMD Ryzen Threadripper 3970X 32-Core Processor",
    "normalized": "amd ryzen threadripper 3970x",
-   "score": 1029.1,
-   "samples": 337
+   "score": 1025,
+   "samples": 341
   },
   {
    "name": "AMD Ryzen Threadripper PRO 3975WX 32-Cores",
    "normalized": "amd ryzen threadripper pro 3975wx 32-cores",
-   "score": 1027.5,
-   "samples": 66
+   "score": 1014.6,
+   "samples": 70
   },
   {
    "name": "Intel Xeon Gold 6326 CPU @ 2.90GHz",
@@ -574,8 +574,8 @@
   {
    "name": "AMD Ryzen 9 9950X3D 16-Core Processor",
    "normalized": "amd ryzen 9 9950x3d",
-   "score": 930.1,
-   "samples": 2643
+   "score": 930.2,
+   "samples": 2665
   },
   {
    "name": "AMD EPYC 7453 28-Core Processor",
@@ -622,14 +622,14 @@
   {
    "name": "AMD Ryzen 9 9950X 16-Core Processor",
    "normalized": "amd ryzen 9 9950x",
-   "score": 877.8,
-   "samples": 2257
+   "score": 878.5,
+   "samples": 2271
   },
   {
    "name": "Intel Core Ultra 7 270K Plus",
    "normalized": "intel core ultra 7 270k plus",
-   "score": 874.1,
-   "samples": 286
+   "score": 874.4,
+   "samples": 290
   },
   {
    "name": "AMD Ryzen Threadripper PRO 7955WX 16-Cores",
@@ -658,20 +658,20 @@
   {
    "name": "Apple M5 Max",
    "normalized": "apple m5 max",
-   "score": 828.4,
-   "samples": 225
+   "score": 830.5,
+   "samples": 244
   },
   {
    "name": "AMD EPYC 9135 16-Core Processor",
    "normalized": "amd epyc 9135",
-   "score": 827.4,
-   "samples": 14
+   "score": 827.1,
+   "samples": 15
   },
   {
    "name": "AMD Ryzen 9 7950X 16-Core Processor",
    "normalized": "amd ryzen 9 7950x",
    "score": 826.9,
-   "samples": 5612
+   "samples": 5614
   },
   {
    "name": "AMD Ryzen Threadripper 3960X 24-Core Processor",
@@ -682,14 +682,14 @@
   {
    "name": "Intel Core Ultra 9 285K",
    "normalized": "intel core ultra 9 285k",
-   "score": 824.3,
-   "samples": 761
+   "score": 825.4,
+   "samples": 781
   },
   {
    "name": "Intel Xeon CPU E5-2699 v4 @ 2.20GHz",
    "normalized": "intel xeon e5-2699 v4",
    "score": 823.6,
-   "samples": 39
+   "samples": 41
   },
   {
    "name": "AMD EPYC 9354 32-Core Processor",
@@ -725,13 +725,13 @@
    "name": "AMD Ryzen 9 9955HX 16-Core Processor",
    "normalized": "amd ryzen 9 9955hx",
    "score": 789.7,
-   "samples": 78
+   "samples": 80
   },
   {
    "name": "13th Gen Intel Core i9-13900K",
    "normalized": "intel core i9-13900k",
-   "score": 779.8,
-   "samples": 2714
+   "score": 779.7,
+   "samples": 2716
   },
   {
    "name": "13th Gen Intel Core i9-13900KS",
@@ -742,8 +742,8 @@
   {
    "name": "AMD Ryzen 9 7950X3D 16-Core Processor",
    "normalized": "amd ryzen 9 7950x3d",
-   "score": 776.4,
-   "samples": 2559
+   "score": 776.6,
+   "samples": 2563
   },
   {
    "name": "Intel Xeon Gold 6148 CPU @ 2.40GHz",
@@ -754,26 +754,26 @@
   {
    "name": "Apple M5 Pro",
    "normalized": "apple m5 pro",
-   "score": 771.5,
-   "samples": 195
-  },
-  {
-   "name": "Intel Core Ultra 9 290HX Plus",
-   "normalized": "intel core ultra 9 290hx plus",
-   "score": 769.5,
-   "samples": 39
+   "score": 772.7,
+   "samples": 203
   },
   {
    "name": "Apple M2 Ultra",
    "normalized": "apple m2 ultra",
-   "score": 769.3,
-   "samples": 116
+   "score": 768.9,
+   "samples": 117
   },
   {
    "name": "AMD Ryzen 9 9955HX3D 16-Core Processor",
    "normalized": "amd ryzen 9 9955hx3d",
-   "score": 766.5,
-   "samples": 118
+   "score": 766.9,
+   "samples": 119
+  },
+  {
+   "name": "Intel Core Ultra 9 290HX Plus",
+   "normalized": "intel core ultra 9 290hx plus",
+   "score": 763.5,
+   "samples": 41
   },
   {
    "name": "AMD EPYC 7452 32-Core Processor",
@@ -806,28 +806,28 @@
    "samples": 14
   },
   {
+   "name": "Intel Core i9-14900KF",
+   "normalized": "intel core i9-14900kf",
+   "score": 746.8,
+   "samples": 866
+  },
+  {
    "name": "AMD EPYC Processor",
    "normalized": "amd epyc",
    "score": 746.6,
    "samples": 8
   },
   {
-   "name": "Intel Core i9-14900KF",
-   "normalized": "intel core i9-14900kf",
-   "score": 746.6,
-   "samples": 863
-  },
-  {
    "name": "Intel Core i9-14900K",
    "normalized": "intel core i9-14900k",
-   "score": 741.4,
-   "samples": 2090
+   "score": 741.2,
+   "samples": 2098
   },
   {
    "name": "Intel Core Ultra 9 285HX",
    "normalized": "intel core ultra 9 285hx",
    "score": 734.3,
-   "samples": 52
+   "samples": 53
   },
   {
    "name": "AMD Eng Sample: 100-000000870-32_Y",
@@ -848,22 +848,22 @@
    "samples": 42
   },
   {
+   "name": "Intel Xeon Gold 6240 CPU @ 2.60GHz",
+   "normalized": "intel xeon gold 6240",
+   "score": 705.2,
+   "samples": 5
+  },
+  {
    "name": "Apple M4 Max",
    "normalized": "apple m4 max",
-   "score": 704.6,
-   "samples": 496
+   "score": 704.3,
+   "samples": 498
   },
   {
    "name": "AMD Ryzen 9 9900X3D 12-Core Processor",
    "normalized": "amd ryzen 9 9900x3d",
    "score": 702,
    "samples": 78
-  },
-  {
-   "name": "Intel Xeon Gold 6226R CPU @ 2.90GHz",
-   "normalized": "intel xeon gold 6226r",
-   "score": 701.7,
-   "samples": 7
   },
   {
    "name": "Intel Xeon Gold 6138 CPU @ 2.00GHz",
@@ -875,7 +875,7 @@
    "name": "Intel Core Ultra 9 275HX",
    "normalized": "intel core ultra 9 275hx",
    "score": 696.7,
-   "samples": 520
+   "samples": 522
   },
   {
    "name": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
@@ -884,16 +884,16 @@
    "samples": 91
   },
   {
+   "name": "Intel Core Ultra 7 265KF",
+   "normalized": "intel core ultra 7 265kf",
+   "score": 689.4,
+   "samples": 176
+  },
+  {
    "name": "Intel Xeon CPU E5-2698 v4 @ 2.20GHz",
    "normalized": "intel xeon e5-2698 v4",
    "score": 688.1,
    "samples": 27
-  },
-  {
-   "name": "Intel Core Ultra 7 265KF",
-   "normalized": "intel core ultra 7 265kf",
-   "score": 687.6,
-   "samples": 164
   },
   {
    "name": "Intel Core Ultra 7 265K",
@@ -904,8 +904,8 @@
   {
    "name": "AMD Ryzen 9 7945HX with Radeon Graphics",
    "normalized": "amd ryzen 9 7945hx",
-   "score": 686.7,
-   "samples": 341
+   "score": 686.6,
+   "samples": 342
   },
   {
    "name": "AMD Ryzen 9 7945HX3D with Radeon Graphics",
@@ -914,10 +914,16 @@
    "samples": 26
   },
   {
+   "name": "Intel Xeon Gold 6226R CPU @ 2.90GHz",
+   "normalized": "intel xeon gold 6226r",
+   "score": 684.2,
+   "samples": 8
+  },
+  {
    "name": "AMD Ryzen 9 9900X 12-Core Processor",
    "normalized": "amd ryzen 9 9900x",
-   "score": 674.8,
-   "samples": 1350
+   "score": 674.7,
+   "samples": 1355
   },
   {
    "name": "AMD EPYC 9124 16-Core Processor",
@@ -928,8 +934,8 @@
   {
    "name": "AMD Ryzen 9 8940HX with Radeon Graphics",
    "normalized": "amd ryzen 9 8940hx",
-   "score": 667.8,
-   "samples": 79
+   "score": 668.5,
+   "samples": 80
   },
   {
    "name": "AMD Ryzen 9 7940HX with Radeon Graphics",
@@ -950,16 +956,22 @@
    "samples": 104
   },
   {
-   "name": "Intel Core Ultra 5 250KF Plus",
-   "normalized": "intel core ultra 5 250kf plus",
-   "score": 649.9,
-   "samples": 24
+   "name": "Intel Core Ultra 5 250K Plus",
+   "normalized": "intel core ultra 5 250k plus",
+   "score": 652,
+   "samples": 88
   },
   {
    "name": "Intel Core i7-14700K",
    "normalized": "intel core i7-14700k",
-   "score": 649.5,
-   "samples": 845
+   "score": 649.7,
+   "samples": 848
+  },
+  {
+   "name": "Intel Core Ultra 5 250KF Plus",
+   "normalized": "intel core ultra 5 250kf plus",
+   "score": 649.2,
+   "samples": 31
   },
   {
    "name": "Intel Xeon w7-2475X",
@@ -974,22 +986,16 @@
    "samples": 7
   },
   {
+   "name": "Snapdragon(R) X2 Elite Extreme - X2E94100 - Qualcomm Oryon(TM) CPU",
+   "normalized": "snapdragon x2 elite extreme - x2e94100 - qualcomm oryon",
+   "score": 643,
+   "samples": 20
+  },
+  {
    "name": "Intel Core i7-14700KF",
    "normalized": "intel core i7-14700kf",
    "score": 642.9,
    "samples": 1131
-  },
-  {
-   "name": "Snapdragon(R) X2 Elite Extreme - X2E94100 - Qualcomm Oryon(TM) CPU",
-   "normalized": "snapdragon x2 elite extreme - x2e94100 - qualcomm oryon",
-   "score": 642,
-   "samples": 17
-  },
-  {
-   "name": "Intel Core Ultra 5 250K Plus",
-   "normalized": "intel core ultra 5 250k plus",
-   "score": 633.5,
-   "samples": 60
   },
   {
    "name": "AMD EPYC 9115 16-Core Processor",
@@ -1006,8 +1012,8 @@
   {
    "name": "Apple M1 Ultra",
    "normalized": "apple m1 ultra",
-   "score": 627.6,
-   "samples": 188
+   "score": 627.5,
+   "samples": 189
   },
   {
    "name": "Intel Xeon Silver 4410T",
@@ -1037,7 +1043,7 @@
    "name": "Apple M3 Max",
    "normalized": "apple m3 max",
    "score": 612.7,
-   "samples": 498
+   "samples": 499
   },
   {
    "name": "Intel Xeon Silver 4410Y",
@@ -1060,8 +1066,8 @@
   {
    "name": "13th Gen Intel Core i7-13700KF",
    "normalized": "intel core i7-13700kf",
-   "score": 597.5,
-   "samples": 1258
+   "score": 597.4,
+   "samples": 1260
   },
   {
    "name": "INTEL XEON SILVER 4509Y",
@@ -1072,8 +1078,8 @@
   {
    "name": "AMD Ryzen 9 5950X 16-Core Processor",
    "normalized": "amd ryzen 9 5950x",
-   "score": 597.1,
-   "samples": 6381
+   "score": 597,
+   "samples": 6390
   },
   {
    "name": "Intel Core Ultra 7 265HX",
@@ -1085,7 +1091,7 @@
    "name": "13th Gen Intel Core i7-13700K",
    "normalized": "intel core i7-13700k",
    "score": 591.6,
-   "samples": 1805
+   "samples": 1807
   },
   {
    "name": "AMD Ryzen Threadripper PRO 5955WX 16-Cores",
@@ -1097,7 +1103,7 @@
    "name": "AMD Ryzen 9 7900X 12-Core Processor",
    "normalized": "amd ryzen 9 7900x",
    "score": 589.7,
-   "samples": 2374
+   "samples": 2376
   },
   {
    "name": "Intel Xeon w5-3435X",
@@ -1106,16 +1112,16 @@
    "samples": 10
   },
   {
+   "name": "AMD RYZEN AI MAX+ 395",
+   "normalized": "amd ryzen ai max+ 395",
+   "score": 588,
+   "samples": 59
+  },
+  {
    "name": "Intel Xeon Gold 6254 CPU @ 3.10GHz",
    "normalized": "intel xeon gold 6254",
    "score": 587.6,
    "samples": 8
-  },
-  {
-   "name": "AMD RYZEN AI MAX+ 395",
-   "normalized": "amd ryzen ai max+ 395",
-   "score": 587.3,
-   "samples": 58
   },
   {
    "name": "13th Gen Intel Core i7-13790F",
@@ -1160,22 +1166,22 @@
    "samples": 652
   },
   {
-   "name": "NVIDIA RTX Spark N1X (6144-core GPU, 20-core CPU)",
-   "normalized": "nvidia rtx spark n1x (6144-core gpu, 20-core )",
-   "score": 569.4,
-   "samples": 21
-  },
-  {
    "name": "12th Gen Intel Core i9-12900KS",
    "normalized": "intel core i9-12900ks",
-   "score": 568.9,
-   "samples": 212
+   "score": 568.8,
+   "samples": 213
   },
   {
    "name": "13th Gen Intel Core i9-13900",
    "normalized": "intel core i9-13900",
    "score": 561.8,
    "samples": 88
+  },
+  {
+   "name": "NVIDIA RTX Spark N1X (6144-core GPU, 20-core CPU)",
+   "normalized": "nvidia rtx spark n1x (6144-core gpu, 20-core )",
+   "score": 561.4,
+   "samples": 27
   },
   {
    "name": "Intel Xeon Silver 4216 CPU @ 2.10GHz",
@@ -1190,6 +1196,12 @@
    "samples": 21
   },
   {
+   "name": "Intel Core Ultra 7 265",
+   "normalized": "intel core ultra 7 265",
+   "score": 560.3,
+   "samples": 32
+  },
+  {
    "name": "AMD Ryzen 9 3950X 16-Core Processor",
    "normalized": "amd ryzen 9 3950x",
    "score": 558.7,
@@ -1198,20 +1210,14 @@
   {
    "name": "12th Gen Intel Core i9-12900K",
    "normalized": "intel core i9-12900k",
-   "score": 557.2,
-   "samples": 1508
-  },
-  {
-   "name": "Intel Core Ultra 7 265",
-   "normalized": "intel core ultra 7 265",
    "score": 557.1,
-   "samples": 30
+   "samples": 1510
   },
   {
    "name": "12th Gen Intel Core i9-12900KF",
    "normalized": "intel core i9-12900kf",
-   "score": 555.5,
-   "samples": 341
+   "score": 554.8,
+   "samples": 342
   },
   {
    "name": "AMD Ryzen Threadripper PRO 3955WX 16-Cores",
@@ -1252,8 +1258,8 @@
   {
    "name": "AMD Ryzen 9 5900XT 16-Core Processor",
    "normalized": "amd ryzen 9 5900xt",
-   "score": 537.1,
-   "samples": 255
+   "score": 537.2,
+   "samples": 260
   },
   {
    "name": "Intel Xeon Gold 6246R CPU @ 3.40GHz",
@@ -1268,28 +1274,28 @@
    "samples": 5
   },
   {
-   "name": "13th Gen Intel Core i9-13900HX",
-   "normalized": "intel core i9-13900hx",
-   "score": 534.6,
-   "samples": 698
-  },
-  {
    "name": "Intel Core i9-7980XE CPU @ 2.60GHz",
    "normalized": "intel core i9-7980xe",
    "score": 533.2,
    "samples": 66
   },
   {
+   "name": "13th Gen Intel Core i9-13900HX",
+   "normalized": "intel core i9-13900hx",
+   "score": 533.1,
+   "samples": 701
+  },
+  {
    "name": "AMD Ryzen 7 9850X3D 8-Core Processor",
    "normalized": "amd ryzen 7 9850x3d",
-   "score": 530.3,
-   "samples": 146
+   "score": 530.8,
+   "samples": 147
   },
   {
    "name": "Apple M4 Pro",
    "normalized": "apple m4 pro",
-   "score": 524.3,
-   "samples": 668
+   "score": 524.2,
+   "samples": 671
   },
   {
    "name": "AMD EPYC 7302 16-Core Processor",
@@ -1300,8 +1306,8 @@
   {
    "name": "Intel Core i9-14900HX",
    "normalized": "intel core i9-14900hx",
-   "score": 514.4,
-   "samples": 547
+   "score": 514.6,
+   "samples": 550
   },
   {
    "name": "Intel Xeon CPU E5-2687W v4 @ 3.00GHz",
@@ -1388,22 +1394,22 @@
    "samples": 11
   },
   {
-   "name": "13th Gen Intel Core i7-13700F",
-   "normalized": "intel core i7-13700f",
-   "score": 478,
-   "samples": 216
-  },
-  {
    "name": "AMD Ryzen 7 9800X3D 8-Core Processor",
    "normalized": "amd ryzen 7 9800x3d",
-   "score": 476.6,
-   "samples": 2859
+   "score": 477.1,
+   "samples": 2887
   },
   {
    "name": "Intel Xeon Gold 5416S",
    "normalized": "intel xeon gold 5416s",
    "score": 475.8,
    "samples": 5
+  },
+  {
+   "name": "13th Gen Intel Core i7-13700F",
+   "normalized": "intel core i7-13700f",
+   "score": 475.2,
+   "samples": 219
   },
   {
    "name": "Snapdragon(R) X2 Elite - X2E88100 - Qualcomm Oryon(TM) CPU",
@@ -1415,7 +1421,7 @@
    "name": "Apple M6",
    "normalized": "apple m6",
    "score": 474.8,
-   "samples": 33
+   "samples": 39
   },
   {
    "name": "Intel Core i7-14700HX",
@@ -1438,20 +1444,20 @@
   {
    "name": "12th Gen Intel Core i9-12900",
    "normalized": "intel core i9-12900",
-   "score": 464.7,
-   "samples": 57
+   "score": 465.7,
+   "samples": 58
   },
   {
    "name": "AMD Ryzen 9 5900X 12-Core Processor",
    "normalized": "amd ryzen 9 5900x",
    "score": 463.9,
-   "samples": 5228
+   "samples": 5236
   },
   {
    "name": "12th Gen Intel Core i7-12700K",
    "normalized": "intel core i7-12700k",
    "score": 461.6,
-   "samples": 1634
+   "samples": 1635
   },
   {
    "name": "AMD Ryzen AI 9 HX 375 w/ Radeon 890M",
@@ -1460,16 +1466,10 @@
    "samples": 8
   },
   {
-   "name": "Intel Xeon CPU E5-2698B v3 @ 2.00GHz",
-   "normalized": "intel xeon e5-2698b v3",
-   "score": 460.7,
-   "samples": 5
-  },
-  {
    "name": "Intel Core i7-14700F",
    "normalized": "intel core i7-14700f",
    "score": 460.2,
-   "samples": 193
+   "samples": 194
   },
   {
    "name": "Intel Core Ultra 5 245K",
@@ -1486,8 +1486,8 @@
   {
    "name": "12th Gen Intel Core i7-12700KF",
    "normalized": "intel core i7-12700kf",
-   "score": 458.9,
-   "samples": 866
+   "score": 458.6,
+   "samples": 868
   },
   {
    "name": "13th Gen Intel Core i5-13600K",
@@ -1510,8 +1510,8 @@
   {
    "name": "Intel Core i5-14600KF",
    "normalized": "intel core i5-14600kf",
-   "score": 450.8,
-   "samples": 379
+   "score": 451,
+   "samples": 382
   },
   {
    "name": "Intel(R) Xeon(R) W-2191B CPU @ 2.30GHz",
@@ -1538,16 +1538,10 @@
    "samples": 10
   },
   {
-   "name": "AMD Ryzen AI 9 HX 470",
-   "normalized": "amd ryzen ai 9 hx 470",
-   "score": 442.8,
-   "samples": 8
-  },
-  {
    "name": "Intel Core i5-14600K",
    "normalized": "intel core i5-14600k",
-   "score": 441.6,
-   "samples": 390
+   "score": 441.7,
+   "samples": 393
   },
   {
    "name": "13th Gen Intel Core i7-13700T",
@@ -1560,6 +1554,12 @@
    "normalized": "intel core i9-12900f",
    "score": 441.6,
    "samples": 25
+  },
+  {
+   "name": "AMD Ryzen AI 9 HX 470",
+   "normalized": "amd ryzen ai 9 hx 470",
+   "score": 440.7,
+   "samples": 10
   },
   {
    "name": "AMD EPYC 7282 16-Core Processor",
@@ -1619,7 +1619,7 @@
    "name": "AMD Ryzen 7 9700X 8-Core Processor",
    "normalized": "amd ryzen 7 9700x",
    "score": 433.3,
-   "samples": 1206
+   "samples": 1212
   },
   {
    "name": "AMD Ryzen Threadripper 2950X 16-Core Processor",
@@ -1664,16 +1664,16 @@
    "samples": 12
   },
   {
-   "name": "AMD Ryzen AI 9 HX 370",
-   "normalized": "amd ryzen ai 9 hx 370",
-   "score": 423.3,
-   "samples": 50
-  },
-  {
    "name": "Snapdragon(R) X Elite - X1E78100 - Qualcomm(R) Oryon(TM) CPU",
    "normalized": "snapdragon x elite - x1e78100 - qualcomm oryon",
    "score": 422.2,
    "samples": 13
+  },
+  {
+   "name": "AMD Ryzen AI 9 HX 370",
+   "normalized": "amd ryzen ai 9 hx 370",
+   "score": 421.1,
+   "samples": 54
   },
   {
    "name": "Intel Xeon CPU E5-2673 v4 @ 2.30GHz",
@@ -1714,8 +1714,8 @@
   {
    "name": "AMD Ryzen 7 7700X 8-Core Processor",
    "normalized": "amd ryzen 7 7700x",
-   "score": 411.9,
-   "samples": 1582
+   "score": 412,
+   "samples": 1590
   },
   {
    "name": "Intel Xeon Gold 5220R CPU @ 2.20GHz",
@@ -1745,7 +1745,7 @@
    "name": "AMD Ryzen 9 3900XT 12-Core Processor",
    "normalized": "amd ryzen 9 3900xt",
    "score": 410.4,
-   "samples": 136
+   "samples": 137
   },
   {
    "name": "AMD Ryzen AI 9 HX PRO 375",
@@ -1780,14 +1780,14 @@
   {
    "name": "Intel Xeon CPU E5-2697A v4 @ 2.60GHz",
    "normalized": "intel xeon e5-2697a v4",
-   "score": 401.9,
-   "samples": 85
+   "score": 401.6,
+   "samples": 86
   },
   {
    "name": "12th Gen Intel Core i7-12700F",
    "normalized": "intel core i7-12700f",
-   "score": 401.6,
-   "samples": 276
+   "score": 401.4,
+   "samples": 277
   },
   {
    "name": "Intel Xeon CPU E5-2680 v3 @ 2.50GHz",
@@ -1832,6 +1832,12 @@
    "samples": 9
   },
   {
+   "name": "12th Gen Intel Core i9-12950HX",
+   "normalized": "intel core i9-12950hx",
+   "score": 392.5,
+   "samples": 48
+  },
+  {
    "name": "13th Gen Intel Core i5-13600",
    "normalized": "intel core i5-13600",
    "score": 391.7,
@@ -1840,20 +1846,14 @@
   {
    "name": "Intel Core Ultra 9 386H",
    "normalized": "intel core ultra 9 386h",
-   "score": 391.5,
-   "samples": 46
+   "score": 389.1,
+   "samples": 47
   },
   {
    "name": "Intel Xeon CPU E5-2686 v4 @ 2.30GHz",
    "normalized": "intel xeon e5-2686 v4",
    "score": 388.5,
    "samples": 46
-  },
-  {
-   "name": "Intel Xeon CPU E5-2699 v3 @ 2.30GHz",
-   "normalized": "intel xeon e5-2699 v3",
-   "score": 388.2,
-   "samples": 143
   },
   {
    "name": "Apple M2 Max",
@@ -1868,10 +1868,10 @@
    "samples": 41
   },
   {
-   "name": "12th Gen Intel Core i9-12950HX",
-   "normalized": "intel core i9-12950hx",
-   "score": 387.6,
-   "samples": 46
+   "name": "Intel Xeon CPU E5-2699 v3 @ 2.30GHz",
+   "normalized": "intel xeon e5-2699 v3",
+   "score": 388.1,
+   "samples": 144
   },
   {
    "name": "AMD Ryzen AI 9 H 365 w/ Radeon 880M",
@@ -1888,20 +1888,20 @@
   {
    "name": "Intel Xeon CPU E5-2696 v3 @ 2.30GHz",
    "normalized": "intel xeon e5-2696 v3",
-   "score": 386.4,
-   "samples": 194
-  },
-  {
-   "name": "13th Gen Intel Core i7-13700HX",
-   "normalized": "intel core i7-13700hx",
-   "score": 386.2,
-   "samples": 322
+   "score": 386.7,
+   "samples": 195
   },
   {
    "name": "AMD Ryzen 9 3900 12-Core Processor",
    "normalized": "amd ryzen 9 3900",
    "score": 386.1,
    "samples": 77
+  },
+  {
+   "name": "13th Gen Intel Core i7-13700HX",
+   "normalized": "intel core i7-13700hx",
+   "score": 386,
+   "samples": 323
   },
   {
    "name": "Snapdragon(R) X Elite - X1E80100 - Qualcomm(R) Oryon(TM) CPU",
@@ -1912,8 +1912,8 @@
   {
    "name": "AMD Ryzen 7 7800X3D 8-Core Processor",
    "normalized": "amd ryzen 7 7800x3d",
-   "score": 384.8,
-   "samples": 3051
+   "score": 384.9,
+   "samples": 3067
   },
   {
    "name": "13th Gen Intel Core i5-13500",
@@ -1925,7 +1925,7 @@
    "name": "AMD Ryzen 7 7700 8-Core Processor",
    "normalized": "amd ryzen 7 7700",
    "score": 381,
-   "samples": 751
+   "samples": 753
   },
   {
    "name": "Intel Core i9-10940X CPU @ 3.30GHz",
@@ -1942,20 +1942,26 @@
   {
    "name": "Intel Core Ultra X7 358H",
    "normalized": "intel core ultra x7 358h",
-   "score": 371.9,
-   "samples": 65
+   "score": 371.2,
+   "samples": 68
   },
   {
    "name": "AMD Ryzen 7 8700G",
    "normalized": "amd ryzen 7 8700g",
    "score": 367.1,
-   "samples": 23
+   "samples": 24
   },
   {
    "name": "AMD Ryzen 7 8745HS w/ Radeon 780M Graphics",
    "normalized": "amd ryzen 7 8745hs w/ radeon 780m graphics",
    "score": 367,
    "samples": 17
+  },
+  {
+   "name": "Intel Core i5-14500",
+   "normalized": "intel core i5-14500",
+   "score": 365.8,
+   "samples": 71
   },
   {
    "name": "12th Gen Intel Core i7-12700T",
@@ -1970,22 +1976,16 @@
    "samples": 23
   },
   {
-   "name": "Apple M5",
-   "normalized": "apple m5",
-   "score": 364.2,
-   "samples": 210
-  },
-  {
    "name": "Intel Core 9 270H",
    "normalized": "intel core 9 270h",
    "score": 364.1,
    "samples": 6
   },
   {
-   "name": "Intel Core i5-14500",
-   "normalized": "intel core i5-14500",
-   "score": 362.5,
-   "samples": 70
+   "name": "Apple M5",
+   "normalized": "apple m5",
+   "score": 363.9,
+   "samples": 213
   },
   {
    "name": "Intel Xeon W-2275 CPU @ 3.30GHz",
@@ -2020,8 +2020,8 @@
   {
    "name": "12th Gen Intel Core i5-12600K",
    "normalized": "intel core i5-12600k",
-   "score": 354.6,
-   "samples": 844
+   "score": 354.4,
+   "samples": 849
   },
   {
    "name": "Intel Xeon w5-2445",
@@ -2056,14 +2056,14 @@
   {
    "name": "Intel Core Ultra 9 285H",
    "normalized": "intel core ultra 9 285h",
-   "score": 347.8,
-   "samples": 118
+   "score": 347.5,
+   "samples": 121
   },
   {
    "name": "13th Gen Intel Core i7-13650HX",
    "normalized": "intel core i7-13650hx",
-   "score": 347.2,
-   "samples": 351
+   "score": 346.9,
+   "samples": 352
   },
   {
    "name": "Intel Xeon CPU E5-2690 v4 @ 2.60GHz",
@@ -2086,14 +2086,14 @@
   {
    "name": "AMD Ryzen 5 9600X 6-Core Processor",
    "normalized": "amd ryzen 5 9600x",
-   "score": 342.1,
-   "samples": 714
+   "score": 341.9,
+   "samples": 724
   },
   {
    "name": "Apple M3 Pro",
    "normalized": "apple m3 pro",
    "score": 341.3,
-   "samples": 390
+   "samples": 391
   },
   {
    "name": "Snapdragon(R) X 10-core X1P64100 @ 3.40 GHz",
@@ -2104,8 +2104,8 @@
   {
    "name": "Apple M4",
    "normalized": "apple m4",
-   "score": 340.2,
-   "samples": 769
+   "score": 339.8,
+   "samples": 774
   },
   {
    "name": "12th Gen Intel Core i5-12600KF",
@@ -2116,8 +2116,8 @@
   {
    "name": "AMD Ryzen 7 260",
    "normalized": "amd ryzen 7 260",
-   "score": 337.7,
-   "samples": 38
+   "score": 337.5,
+   "samples": 39
   },
   {
    "name": "Intel Core i9-10900KF CPU @ 3.70GHz",
@@ -2174,12 +2174,6 @@
    "samples": 258
   },
   {
-   "name": "AMD Ryzen 5 7600X3D 6-Core Processor",
-   "normalized": "amd ryzen 5 7600x3d",
-   "score": 328.7,
-   "samples": 94
-  },
-  {
    "name": "AMD Ryzen Threadripper 2920X 12-Core Processor",
    "normalized": "amd ryzen threadripper 2920x",
    "score": 328.5,
@@ -2198,6 +2192,18 @@
    "samples": 97
   },
   {
+   "name": "AMD Ryzen 5 7600X3D 6-Core Processor",
+   "normalized": "amd ryzen 5 7600x3d",
+   "score": 328.2,
+   "samples": 96
+  },
+  {
+   "name": "Intel Core Ultra 5 225",
+   "normalized": "intel core ultra 5 225",
+   "score": 327.6,
+   "samples": 5
+  },
+  {
    "name": "AMD Ryzen 7 H 255",
    "normalized": "amd ryzen 7 h 255",
    "score": 326.5,
@@ -2213,7 +2219,7 @@
    "name": "AMD Ryzen AI 9 365",
    "normalized": "amd ryzen ai 9 365",
    "score": 323.9,
-   "samples": 20
+   "samples": 22
   },
   {
    "name": "Intel Core i9-9900X CPU @ 3.50GHz",
@@ -2242,8 +2248,8 @@
   {
    "name": "Intel Core Ultra 7 255H",
    "normalized": "intel core ultra 7 255h",
-   "score": 319.9,
-   "samples": 65
+   "score": 320.4,
+   "samples": 66
   },
   {
    "name": "Intel Core Ultra 5 225F",
@@ -2272,8 +2278,8 @@
   {
    "name": "12th Gen Intel Core i9-12900H",
    "normalized": "intel core i9-12900h",
-   "score": 315.6,
-   "samples": 438
+   "score": 315.4,
+   "samples": 439
   },
   {
    "name": "Intel Xeon Silver 4214 CPU @ 2.20GHz",
@@ -2300,6 +2306,12 @@
    "samples": 5
   },
   {
+   "name": "Intel Core Ultra 7 265H",
+   "normalized": "intel core ultra 7 265h",
+   "score": 313.8,
+   "samples": 28
+  },
+  {
    "name": "Intel Xeon CPU E5-2643 v4 @ 3.40GHz",
    "normalized": "intel xeon e5-2643 v4",
    "score": 313.8,
@@ -2309,13 +2321,19 @@
    "name": "Apple M1 Max",
    "normalized": "apple m1 max",
    "score": 312.9,
-   "samples": 1087
+   "samples": 1088
   },
   {
    "name": "AMD EPYC 7252 8-Core Processor",
    "normalized": "amd epyc 7252",
    "score": 312.8,
    "samples": 8
+  },
+  {
+   "name": "AMD Ryzen 7 5800XT 8-Core Processor",
+   "normalized": "amd ryzen 7 5800xt",
+   "score": 312.7,
+   "samples": 271
   },
   {
    "name": "AMD Ryzen 9 PRO 7940HS w/ Radeon 780M Graphics",
@@ -2327,19 +2345,13 @@
    "name": "AMD Ryzen 7 8845HS",
    "normalized": "amd ryzen 7 8845hs",
    "score": 312.5,
-   "samples": 24
-  },
-  {
-   "name": "AMD Ryzen 7 5800XT 8-Core Processor",
-   "normalized": "amd ryzen 7 5800xt",
-   "score": 312.4,
-   "samples": 259
+   "samples": 28
   },
   {
    "name": "AMD Ryzen 7 5800X 8-Core Processor",
    "normalized": "amd ryzen 7 5800x",
    "score": 312.1,
-   "samples": 3517
+   "samples": 3518
   },
   {
    "name": "Intel(R) Xeon(R) W-3235 CPU @ 3.30GHz",
@@ -2378,16 +2390,16 @@
    "samples": 13
   },
   {
-   "name": "Intel Core Ultra 7 265H",
-   "normalized": "intel core ultra 7 265h",
-   "score": 310.4,
-   "samples": 27
-  },
-  {
    "name": "Intel Core i9-10900F CPU @ 2.80GHz",
    "normalized": "intel core i9-10900f",
    "score": 310.1,
    "samples": 44
+  },
+  {
+   "name": "Intel Core Ultra 9 185H",
+   "normalized": "intel core ultra 9 185h",
+   "score": 309.6,
+   "samples": 287
   },
   {
    "name": "AMD Ryzen 7 H 255 w/ Radeon 780M Graphics",
@@ -2396,16 +2408,10 @@
    "samples": 7
   },
   {
-   "name": "Intel Core Ultra 9 185H",
-   "normalized": "intel core ultra 9 185h",
-   "score": 308.8,
-   "samples": 285
-  },
-  {
    "name": "AMD Ryzen 7 5800X3D 8-Core Processor",
    "normalized": "amd ryzen 7 5800x3d",
-   "score": 308.5,
-   "samples": 1489
+   "score": 308.6,
+   "samples": 1506
   },
   {
    "name": "AMD Ryzen 7 7840H w/ Radeon 780M Graphics",
@@ -2417,7 +2423,7 @@
    "name": "Apple M2 Pro",
    "normalized": "apple m2 pro",
    "score": 308,
-   "samples": 425
+   "samples": 426
   },
   {
    "name": "Intel Xeon CPU E5-2690 v3 @ 2.60GHz",
@@ -2435,7 +2441,7 @@
    "name": "11th Gen Intel Core i7-11700K @ 3.60GHz",
    "normalized": "intel core i7-11700k",
    "score": 307.2,
-   "samples": 464
+   "samples": 465
   },
   {
    "name": "AMD Ryzen 7 255",
@@ -2456,6 +2462,12 @@
    "samples": 18
   },
   {
+   "name": "12th Gen Intel Core i7-12700H",
+   "normalized": "intel core i7-12700h",
+   "score": 305.8,
+   "samples": 1126
+  },
+  {
    "name": "AMD Ryzen 9 8945HS",
    "normalized": "amd ryzen 9 8945hs",
    "score": 305.7,
@@ -2466,12 +2478,6 @@
    "normalized": "intel core i5-13490f",
    "score": 305.7,
    "samples": 21
-  },
-  {
-   "name": "12th Gen Intel Core i7-12700H",
-   "normalized": "intel core i7-12700h",
-   "score": 305.5,
-   "samples": 1125
   },
   {
    "name": "Intel Xeon CPU E5-2683 v4 @ 2.10GHz",
@@ -2512,14 +2518,14 @@
   {
    "name": "AMD Ryzen 5 7500X3D 6-Core Processor",
    "normalized": "amd ryzen 5 7500x3d",
-   "score": 301,
-   "samples": 27
+   "score": 300.8,
+   "samples": 28
   },
   {
    "name": "AMD Ryzen 7 5700X 8-Core Processor",
    "normalized": "amd ryzen 7 5700x",
-   "score": 300.3,
-   "samples": 2891
+   "score": 300.1,
+   "samples": 2900
   },
   {
    "name": "Intel(R) Xeon(R) W-2150B CPU @ 3.00GHz",
@@ -2555,7 +2561,7 @@
    "name": "AMD Ryzen 5 7600X 6-Core Processor",
    "normalized": "amd ryzen 5 7600x",
    "score": 298.7,
-   "samples": 1287
+   "samples": 1292
   },
   {
    "name": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics",
@@ -2570,28 +2576,28 @@
    "samples": 27
   },
   {
+   "name": "AMD Ryzen AI 7 350",
+   "normalized": "amd ryzen ai 7 350",
+   "score": 297.8,
+   "samples": 44
+  },
+  {
    "name": "Intel Core Ultra 7 165H",
    "normalized": "intel core ultra 7 165h",
    "score": 297.7,
    "samples": 37
   },
   {
+   "name": "AMD Ryzen 7 250",
+   "normalized": "amd ryzen 7 250",
+   "score": 297.5,
+   "samples": 23
+  },
+  {
    "name": "11th Gen Intel Core i7-11700KF @ 3.60GHz",
    "normalized": "intel core i7-11700kf",
    "score": 296.8,
    "samples": 130
-  },
-  {
-   "name": "AMD Ryzen 7 250",
-   "normalized": "amd ryzen 7 250",
-   "score": 296.7,
-   "samples": 22
-  },
-  {
-   "name": "AMD Ryzen AI 7 350",
-   "normalized": "amd ryzen ai 7 350",
-   "score": 294.9,
-   "samples": 41
   },
   {
    "name": "Intel Xeon Gold 6130 CPU @ 2.10GHz",
@@ -2606,16 +2612,16 @@
    "samples": 30
   },
   {
-   "name": "Intel Core i9-10900X CPU @ 3.70GHz",
-   "normalized": "intel core i9-10900x",
-   "score": 294,
-   "samples": 66
+   "name": "Intel Core i5-14400",
+   "normalized": "intel core i5-14400",
+   "score": 293.9,
+   "samples": 36
   },
   {
    "name": "Apple M1 Pro",
    "normalized": "apple m1 pro",
-   "score": 293.9,
-   "samples": 1078
+   "score": 293.7,
+   "samples": 1082
   },
   {
    "name": "13th Gen Intel Core i5-13400F",
@@ -2630,16 +2636,16 @@
    "samples": 82
   },
   {
-   "name": "Intel Core i5-14400",
-   "normalized": "intel core i5-14400",
-   "score": 293.5,
-   "samples": 35
-  },
-  {
    "name": "Intel Xeon CPU E5-2697 v3 @ 2.60GHz",
    "normalized": "intel xeon e5-2697 v3",
-   "score": 292.8,
-   "samples": 91
+   "score": 292.7,
+   "samples": 92
+  },
+  {
+   "name": "Intel Core i9-10900X CPU @ 3.70GHz",
+   "normalized": "intel core i9-10900x",
+   "score": 292.5,
+   "samples": 67
   },
   {
    "name": "13th Gen Intel Core i5-13400",
@@ -2668,14 +2674,14 @@
   {
    "name": "Intel Core i5-14400F",
    "normalized": "intel core i5-14400f",
-   "score": 289.7,
-   "samples": 158
+   "score": 289.6,
+   "samples": 159
   },
   {
    "name": "AMD Ryzen 7 5700G with Radeon Graphics",
    "normalized": "amd ryzen 7 5700g",
-   "score": 289.5,
-   "samples": 877
+   "score": 289.4,
+   "samples": 882
   },
   {
    "name": "13th Gen Intel Core i5-13450HX",
@@ -2708,16 +2714,16 @@
    "samples": 8
   },
   {
-   "name": "13th Gen Intel Core i7-13700H",
-   "normalized": "intel core i7-13700h",
-   "score": 284.7,
-   "samples": 323
-  },
-  {
    "name": "AMD Ryzen AI 7 PRO 350",
    "normalized": "amd ryzen ai 7 pro 350",
    "score": 284.6,
    "samples": 5
+  },
+  {
+   "name": "13th Gen Intel Core i7-13700H",
+   "normalized": "intel core i7-13700h",
+   "score": 284.6,
+   "samples": 324
   },
   {
    "name": "AMD Ryzen 7 5800 8-Core Processor",
@@ -2738,22 +2744,22 @@
    "samples": 7
   },
   {
-   "name": "Intel Core 7 240H",
-   "normalized": "intel core 7 240h",
-   "score": 282.4,
-   "samples": 42
-  },
-  {
    "name": "Intel Xeon Silver 4116 CPU @ 2.10GHz",
    "normalized": "intel xeon silver 4116",
    "score": 282.2,
    "samples": 6
   },
   {
+   "name": "Intel Core 7 240H",
+   "normalized": "intel core 7 240h",
+   "score": 281.7,
+   "samples": 43
+  },
+  {
    "name": "AMD Ryzen 5 7500F 6-Core Processor",
    "normalized": "amd ryzen 5 7500f",
    "score": 281.1,
-   "samples": 577
+   "samples": 579
   },
   {
    "name": "Snapdragon(R) X Plus - X1P42100 - Qualcomm(R) Oryon(TM) CPU",
@@ -2776,14 +2782,14 @@
   {
    "name": "Intel Core Ultra 5 225H",
    "normalized": "intel core ultra 5 225h",
-   "score": 276.2,
-   "samples": 123
+   "score": 275.9,
+   "samples": 124
   },
   {
    "name": "AMD Ryzen 7 3800X 8-Core Processor",
    "normalized": "amd ryzen 7 3800x",
-   "score": 275.2,
-   "samples": 454
+   "score": 275.1,
+   "samples": 455
   },
   {
    "name": "AMD Ryzen 7 PRO 3700 8-Core Processor",
@@ -2882,12 +2888,6 @@
    "samples": 80
   },
   {
-   "name": "12th Gen Intel Core i7-12800H",
-   "normalized": "intel core i7-12800h",
-   "score": 268,
-   "samples": 70
-  },
-  {
    "name": "AMD Ryzen 9 6900HX with Radeon Graphics",
    "normalized": "amd ryzen 9 6900hx",
    "score": 267.9,
@@ -2930,6 +2930,12 @@
    "samples": 135
   },
   {
+   "name": "12th Gen Intel Core i7-12800H",
+   "normalized": "intel core i7-12800h",
+   "score": 265.8,
+   "samples": 71
+  },
+  {
    "name": "Intel Core Processor (Broadwell, no TSX, IBRS)",
    "normalized": "intel core (broadwell, no tsx, ibrs)",
    "score": 264,
@@ -2957,7 +2963,7 @@
    "name": "13th Gen Intel Core i7-13620H",
    "normalized": "intel core i7-13620h",
    "score": 261.6,
-   "samples": 417
+   "samples": 419
   },
   {
    "name": "Intel Xeon CPU E5-2673 v3 @ 2.40GHz",
@@ -2990,18 +2996,6 @@
    "samples": 157
   },
   {
-   "name": "12th Gen Intel Core i7-12650HX",
-   "normalized": "intel core i7-12650hx",
-   "score": 258.9,
-   "samples": 5
-  },
-  {
-   "name": "11th Gen Intel Core i9-11900F @ 2.50GHz",
-   "normalized": "intel core i9-11900f",
-   "score": 258,
-   "samples": 13
-  },
-  {
    "name": "Intel Xeon Gold 5215 CPU @ 2.20GHz",
    "normalized": "intel xeon gold 5215",
    "score": 257.5,
@@ -3032,6 +3026,12 @@
    "samples": 87
   },
   {
+   "name": "12th Gen Intel Core i7-12650HX",
+   "normalized": "intel core i7-12650hx",
+   "score": 255.1,
+   "samples": 6
+  },
+  {
    "name": "11th Gen Intel Core i9-11900KB @ 3.30GHz",
    "normalized": "intel core i9-11900kb",
    "score": 255.1,
@@ -3044,16 +3044,28 @@
    "samples": 30
   },
   {
+   "name": "Apple Silicon",
+   "normalized": "apple silicon",
+   "score": 254.6,
+   "samples": 15
+  },
+  {
    "name": "AMD Ryzen 5 7640U w/ Radeon 760M Graphics",
    "normalized": "amd ryzen 5 7640u w/ radeon 760m graphics",
    "score": 254.4,
    "samples": 497
   },
   {
+   "name": "11th Gen Intel Core i9-11900F @ 2.50GHz",
+   "normalized": "intel core i9-11900f",
+   "score": 254.3,
+   "samples": 14
+  },
+  {
    "name": "Intel Xeon CPU E5-2678 v3 @ 2.50GHz",
    "normalized": "intel xeon e5-2678 v3",
-   "score": 254.2,
-   "samples": 82
+   "score": 254.1,
+   "samples": 83
   },
   {
    "name": "11th Gen Intel Core i9-11900 @ 2.50GHz",
@@ -3092,12 +3104,6 @@
    "samples": 314
   },
   {
-   "name": "Apple Silicon",
-   "normalized": "apple silicon",
-   "score": 251.3,
-   "samples": 14
-  },
-  {
    "name": "AMD Ryzen 7 8840U",
    "normalized": "amd ryzen 7 8840u",
    "score": 251.2,
@@ -3118,8 +3124,8 @@
   {
    "name": "AMD Ryzen 7 7735HS with Radeon Graphics",
    "normalized": "amd ryzen 7 7735hs",
-   "score": 248.6,
-   "samples": 281
+   "score": 248.7,
+   "samples": 282
   },
   {
    "name": "Genuine Intel CPU @ 2.20GHz",
@@ -3132,6 +3138,12 @@
    "normalized": "amd ryzen 7 8840u w/ radeon 780m graphics",
    "score": 247.4,
    "samples": 20
+  },
+  {
+   "name": "AMD Ryzen Z2 Extreme",
+   "normalized": "amd ryzen z2 extreme",
+   "score": 247.3,
+   "samples": 5
   },
   {
    "name": "Intel Core Ultra 7 155H",
@@ -3158,16 +3170,16 @@
    "samples": 19
   },
   {
-   "name": "AMD Ryzen 7 7435HS",
-   "normalized": "amd ryzen 7 7435hs",
-   "score": 246.1,
-   "samples": 189
-  },
-  {
    "name": "12th Gen Intel Core i5-12400",
    "normalized": "intel core i5-12400",
    "score": 245.8,
    "samples": 439
+  },
+  {
+   "name": "AMD Ryzen 7 7435HS",
+   "normalized": "amd ryzen 7 7435hs",
+   "score": 245.6,
+   "samples": 194
   },
   {
    "name": "AMD Ryzen 7 PRO 5750GE with Radeon Graphics",
@@ -3214,8 +3226,8 @@
   {
    "name": "Intel Core i7-10700F CPU @ 2.90GHz",
    "normalized": "intel core i7-10700f",
-   "score": 241.7,
-   "samples": 175
+   "score": 241.6,
+   "samples": 176
   },
   {
    "name": "AMD Ryzen 7 8840HS w/ Radeon 780M Graphics",
@@ -3256,8 +3268,8 @@
   {
    "name": "AMD Ryzen 7 5800H with Radeon Graphics",
    "normalized": "amd ryzen 7 5800h",
-   "score": 236.7,
-   "samples": 958
+   "score": 236.6,
+   "samples": 959
   },
   {
    "name": "Intel(R) Xeon(R) W-2140B CPU @ 3.20GHz",
@@ -3292,14 +3304,14 @@
   {
    "name": "12th Gen Intel Core i5-12400F",
    "normalized": "intel core i5-12400f",
-   "score": 231.9,
-   "samples": 972
+   "score": 231.8,
+   "samples": 978
   },
   {
    "name": "Intel Core i5-14450HX",
    "normalized": "intel core i5-14450hx",
-   "score": 231.2,
-   "samples": 53
+   "score": 231.3,
+   "samples": 54
   },
   {
    "name": "AMD Ryzen 7 6800HS Creator Edition",
@@ -3310,8 +3322,8 @@
   {
    "name": "AMD Ryzen 9 5900HS with Radeon Graphics",
    "normalized": "amd ryzen 9 5900hs",
-   "score": 230.8,
-   "samples": 140
+   "score": 230.6,
+   "samples": 141
   },
   {
    "name": "11th Gen Intel Core i5-11600K @ 3.90GHz",
@@ -3329,13 +3341,7 @@
    "name": "12th Gen Intel Core i5-12500H",
    "normalized": "intel core i5-12500h",
    "score": 229.3,
-   "samples": 481
-  },
-  {
-   "name": "AMD Ryzen 7 PRO 6850U with Radeon Graphics",
-   "normalized": "amd ryzen 7 pro 6850u",
-   "score": 229.1,
-   "samples": 53
+   "samples": 483
   },
   {
    "name": "AMD Ryzen 7 6800U with Radeon Graphics",
@@ -3365,7 +3371,7 @@
    "name": "AMD Ryzen 5 5600X 6-Core Processor",
    "normalized": "amd ryzen 5 5600x",
    "score": 226.7,
-   "samples": 3065
+   "samples": 3069
   },
   {
    "name": "Intel Core i9-9900 CPU @ 3.10GHz",
@@ -3386,10 +3392,16 @@
    "samples": 62
   },
   {
+   "name": "AMD Ryzen 7 PRO 6850U with Radeon Graphics",
+   "normalized": "amd ryzen 7 pro 6850u",
+   "score": 225.1,
+   "samples": 61
+  },
+  {
    "name": "AMD Ryzen 7 2700X Eight-Core Processor",
    "normalized": "amd ryzen 7 2700x eight-core",
-   "score": 224.4,
-   "samples": 590
+   "score": 224.3,
+   "samples": 591
   },
   {
    "name": "AMD Ryzen 5 8645HS w/ Radeon 760M Graphics",
@@ -3400,8 +3412,8 @@
   {
    "name": "AMD Ryzen 7 4800H with Radeon Graphics",
    "normalized": "amd ryzen 7 4800h",
-   "score": 223.6,
-   "samples": 361
+   "score": 223.3,
+   "samples": 363
   },
   {
    "name": "Intel Xeon W-10885M CPU @ 2.40GHz",
@@ -3413,7 +3425,7 @@
    "name": "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz",
    "normalized": "intel xeon e5-2670 v3",
    "score": 222.5,
-   "samples": 58
+   "samples": 60
   },
   {
    "name": "Intel Xeon CPU E5-2687W v2 @ 3.40GHz",
@@ -3497,7 +3509,7 @@
    "name": "AMD Ryzen 5 5600 6-Core Processor",
    "normalized": "amd ryzen 5 5600",
    "score": 218,
-   "samples": 1181
+   "samples": 1182
   },
   {
    "name": "Intel Xeon W-2245 CPU @ 3.90GHz",
@@ -3527,13 +3539,19 @@
    "name": "Apple M2",
    "normalized": "apple m2",
    "score": 216.6,
-   "samples": 851
+   "samples": 854
   },
   {
    "name": "11th Gen Intel Core i9-11900H @ 2.50GHz",
    "normalized": "intel core i9-11900h",
    "score": 216.4,
    "samples": 147
+  },
+  {
+   "name": "Intel Xeon CPU E5-2698B v3 @ 2.00GHz",
+   "normalized": "intel xeon e5-2698b v3",
+   "score": 216.3,
+   "samples": 10
   },
   {
    "name": "Intel Xeon CPU E5-1660 v3 @ 3.00GHz",
@@ -3578,22 +3596,22 @@
    "samples": 21
   },
   {
-   "name": "11th Gen Intel Core i7-11850H @ 2.50GHz",
-   "normalized": "intel core i7-11850h",
-   "score": 214.5,
-   "samples": 127
-  },
-  {
    "name": "11th Gen Intel Core i5-11400 @ 2.60GHz",
    "normalized": "intel core i5-11400",
    "score": 214.3,
    "samples": 231
   },
   {
+   "name": "11th Gen Intel Core i7-11850H @ 2.50GHz",
+   "normalized": "intel core i7-11850h",
+   "score": 214.2,
+   "samples": 128
+  },
+  {
    "name": "AMD Ryzen 5 5600G with Radeon Graphics",
    "normalized": "amd ryzen 5 5600g",
-   "score": 213.6,
-   "samples": 1345
+   "score": 213.5,
+   "samples": 1347
   },
   {
    "name": "AMD Ryzen 5 5600XT 6-Core Processor",
@@ -3694,8 +3712,8 @@
   {
    "name": "AMD Ryzen 5 5500",
    "normalized": "amd ryzen 5 5500",
-   "score": 206.2,
-   "samples": 842
+   "score": 205.9,
+   "samples": 848
   },
   {
    "name": "Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz",
@@ -3716,12 +3734,6 @@
    "samples": 5
   },
   {
-   "name": "Intel Core 5 210H",
-   "normalized": "intel core 5 210h",
-   "score": 203.8,
-   "samples": 60
-  },
-  {
    "name": "Intel Core i5-10600K CPU @ 4.10GHz",
    "normalized": "intel core i5-10600k",
    "score": 203.7,
@@ -3737,13 +3749,19 @@
    "name": "Intel Core i7-9700K CPU @ 3.60GHz",
    "normalized": "intel core i7-9700k",
    "score": 203.3,
-   "samples": 784
+   "samples": 785
+  },
+  {
+   "name": "Intel Core 5 210H",
+   "normalized": "intel core 5 210h",
+   "score": 202.9,
+   "samples": 61
   },
   {
    "name": "AMD Ryzen 5 3600X 6-Core Processor",
    "normalized": "amd ryzen 5 3600x",
-   "score": 202.5,
-   "samples": 366
+   "score": 202,
+   "samples": 375
   },
   {
    "name": "AMD Ryzen 5 5600GT with Radeon Graphics",
@@ -3785,7 +3803,7 @@
    "name": "Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz",
    "normalized": "intel core i9-9880h",
    "score": 199.8,
-   "samples": 366
+   "samples": 367
   },
   {
    "name": "Intel Xeon E-2286M  CPU @ 2.40GHz",
@@ -3809,7 +3827,7 @@
    "name": "AMD Ryzen 5 3600 6-Core Processor",
    "normalized": "amd ryzen 5 3600",
    "score": 197.8,
-   "samples": 2079
+   "samples": 2101
   },
   {
    "name": "Intel Core Ultra 7 268V",
@@ -3844,8 +3862,8 @@
   {
    "name": "12th Gen Intel Core i5-12450HX",
    "normalized": "intel core i5-12450hx",
-   "score": 195.7,
-   "samples": 161
+   "score": 195.5,
+   "samples": 162
   },
   {
    "name": "AMD Ryzen 7 7445HS w/ Radeon 740M Graphics",
@@ -3917,7 +3935,7 @@
    "name": "Apple M1",
    "normalized": "apple m1",
    "score": 192.9,
-   "samples": 1530
+   "samples": 1532
   },
   {
    "name": "Intel Core Ultra 9 288V",
@@ -3928,8 +3946,8 @@
   {
    "name": "AMD Ryzen 7 2700 Eight-Core Processor",
    "normalized": "amd ryzen 7 2700 eight-core",
-   "score": 192.7,
-   "samples": 248
+   "score": 192.4,
+   "samples": 249
   },
   {
    "name": "Intel(R) Xeon(R) CPU           X5690  @ 3.47GHz",
@@ -4022,6 +4040,12 @@
    "samples": 135
   },
   {
+   "name": "12th Gen Intel Core i5-12500T",
+   "normalized": "intel core i5-12500t",
+   "score": 188.3,
+   "samples": 13
+  },
+  {
    "name": "13th Gen Intel Core i5-1340P",
    "normalized": "intel core i5-1340p",
    "score": 188,
@@ -4042,8 +4066,8 @@
   {
    "name": "Intel Core Ultra 7 256V",
    "normalized": "intel core ultra 7 256v",
-   "score": 186.5,
-   "samples": 41
+   "score": 186.1,
+   "samples": 42
   },
   {
    "name": "Intel Core i5-10600KF CPU @ 4.10GHz",
@@ -4056,12 +4080,6 @@
    "normalized": "intel xeon e5-2670 0",
    "score": 186,
    "samples": 23
-  },
-  {
-   "name": "13th Gen Intel Core i5-13420H",
-   "normalized": "intel core i5-13420h",
-   "score": 185.7,
-   "samples": 286
   },
   {
    "name": "Intel Core i5-10500 CPU @ 3.10GHz",
@@ -4079,7 +4097,7 @@
    "name": "AMD Ryzen 7 7445HS",
    "normalized": "amd ryzen 7 7445hs",
    "score": 185.3,
-   "samples": 20
+   "samples": 22
   },
   {
    "name": "Intel Core i9-10980HK CPU @ 2.40GHz",
@@ -4088,16 +4106,16 @@
    "samples": 35
   },
   {
-   "name": "12th Gen Intel Core i5-12500T",
-   "normalized": "intel core i5-12500t",
-   "score": 184.8,
-   "samples": 12
+   "name": "13th Gen Intel Core i5-13420H",
+   "normalized": "intel core i5-13420h",
+   "score": 185,
+   "samples": 290
   },
   {
    "name": "Intel Core i9-10885H CPU @ 2.40GHz",
    "normalized": "intel core i9-10885h",
    "score": 184.5,
-   "samples": 65
+   "samples": 67
   },
   {
    "name": "AMD Ryzen 5 220 w/ Radeon 740M Graphics",
@@ -4166,22 +4184,16 @@
    "samples": 24
   },
   {
+   "name": "Intel Xeon CPU E5-2630 v3 @ 2.40GHz",
+   "normalized": "intel xeon e5-2630 v3",
+   "score": 178.9,
+   "samples": 34
+  },
+  {
    "name": "Intel Core i7-10875H CPU @ 2.30GHz",
    "normalized": "intel core i7-10875h",
    "score": 178.1,
    "samples": 163
-  },
-  {
-   "name": "Intel Xeon CPU E5-2630 v3 @ 2.40GHz",
-   "normalized": "intel xeon e5-2630 v3",
-   "score": 178.1,
-   "samples": 33
-  },
-  {
-   "name": "Intel Core i7-10870H CPU @ 2.20GHz",
-   "normalized": "intel core i7-10870h",
-   "score": 177.5,
-   "samples": 121
   },
   {
    "name": "12th Gen Intel Core i5-12450H",
@@ -4194,6 +4206,12 @@
    "normalized": "amd ryzen 5 7545u w/ radeon 740m graphics",
    "score": 176.5,
    "samples": 7
+  },
+  {
+   "name": "Intel Core i7-10870H CPU @ 2.20GHz",
+   "normalized": "intel core i7-10870h",
+   "score": 176.5,
+   "samples": 123
   },
   {
    "name": "13th Gen Intel Core i7-1365U",
@@ -4229,7 +4247,7 @@
    "name": "AMD Ryzen 5 5600H with Radeon Graphics",
    "normalized": "amd ryzen 5 5600h",
    "score": 174.3,
-   "samples": 518
+   "samples": 521
   },
   {
    "name": "Intel Core Ultra 7 165U",
@@ -4310,16 +4328,16 @@
    "samples": 8
   },
   {
-   "name": "AMD Ryzen 5 4600H with Radeon Graphics",
-   "normalized": "amd ryzen 5 4600h",
-   "score": 168.3,
-   "samples": 208
-  },
-  {
    "name": "Intel Core i5-10505 CPU @ 3.20GHz",
    "normalized": "intel core i5-10505",
    "score": 168.3,
    "samples": 6
+  },
+  {
+   "name": "AMD Ryzen 5 4600H with Radeon Graphics",
+   "normalized": "amd ryzen 5 4600h",
+   "score": 168.2,
+   "samples": 209
   },
   {
    "name": "AMD Ryzen 5 7535HS with Radeon Graphics",
@@ -4330,20 +4348,20 @@
   {
    "name": "Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz",
    "normalized": "intel core i7-9700",
-   "score": 167.3,
-   "samples": 144
-  },
-  {
-   "name": "AMD Ryzen 7 PRO 4750U with Radeon Graphics",
-   "normalized": "amd ryzen 7 pro 4750u",
    "score": 167,
-   "samples": 54
+   "samples": 145
   },
   {
    "name": "11th Gen Intel Core i7-11600H @ 2.90GHz",
    "normalized": "intel core i7-11600h",
    "score": 166.8,
    "samples": 7
+  },
+  {
+   "name": "AMD Ryzen 7 PRO 4750U with Radeon Graphics",
+   "normalized": "amd ryzen 7 pro 4750u",
+   "score": 166.6,
+   "samples": 55
   },
   {
    "name": "Intel Xeon W-2235 CPU @ 3.80GHz",
@@ -4373,7 +4391,7 @@
    "name": "Intel Core i5-10400F CPU @ 2.90GHz",
    "normalized": "intel core i5-10400f",
    "score": 163.8,
-   "samples": 434
+   "samples": 435
   },
   {
    "name": "Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz",
@@ -4394,28 +4412,34 @@
    "samples": 28
   },
   {
+   "name": "Intel Xeon Silver 4208 CPU @ 2.10GHz",
+   "normalized": "intel xeon silver 4208",
+   "score": 163.3,
+   "samples": 7
+  },
+  {
    "name": "11th Gen Intel Core i5-11400H @ 2.70GHz",
    "normalized": "intel core i5-11400h",
    "score": 162.7,
-   "samples": 423
-  },
-  {
-   "name": "Intel Xeon Silver 4208 CPU @ 2.10GHz",
-   "normalized": "intel xeon silver 4208",
-   "score": 162.7,
-   "samples": 6
+   "samples": 425
   },
   {
    "name": "AMD Ryzen 5 2600 Six-Core Processor",
    "normalized": "amd ryzen 5 2600 six-core",
    "score": 161.3,
-   "samples": 768
+   "samples": 769
   },
   {
    "name": "Intel Core i3-14100F",
    "normalized": "intel core i3-14100f",
    "score": 160.2,
    "samples": 13
+  },
+  {
+   "name": "11th Gen Intel Core i5-11260H @ 2.60GHz",
+   "normalized": "intel core i5-11260h",
+   "score": 160.1,
+   "samples": 35
   },
   {
    "name": "Intel Core i7-7800X CPU @ 3.50GHz",
@@ -4436,12 +4460,6 @@
    "samples": 12
   },
   {
-   "name": "11th Gen Intel Core i5-11260H @ 2.60GHz",
-   "normalized": "intel core i5-11260h",
-   "score": 159.2,
-   "samples": 34
-  },
-  {
    "name": "AMD Ryzen 5 7535U with Radeon Graphics",
    "normalized": "amd ryzen 5 7535u",
    "score": 156.1,
@@ -4450,8 +4468,8 @@
   {
    "name": "12th Gen Intel Core i3-12100F",
    "normalized": "intel core i3-12100f",
-   "score": 155.7,
-   "samples": 202
+   "score": 155.8,
+   "samples": 203
   },
   {
    "name": "Intel Xeon CPU E5-2623 v3 @ 3.00GHz",
@@ -4510,8 +4528,8 @@
   {
    "name": "AMD Ryzen 5 1600 Six-Core Processor",
    "normalized": "amd ryzen 5 1600 six-core",
-   "score": 150.8,
-   "samples": 300
+   "score": 150.7,
+   "samples": 301
   },
   {
    "name": "AMD Ryzen 5 7530U with Radeon Graphics",
@@ -4568,34 +4586,34 @@
    "samples": 30
   },
   {
-   "name": "AMD Ryzen 5 5600U with Radeon Graphics",
-   "normalized": "amd ryzen 5 5600u",
-   "score": 147.8,
-   "samples": 44
-  },
-  {
    "name": "13th Gen Intel Core i7-1355U",
    "normalized": "intel core i7-1355u",
    "score": 147.7,
    "samples": 111
   },
   {
+   "name": "Intel Core 5 120U",
+   "normalized": "intel core 5 120u",
+   "score": 147.6,
+   "samples": 27
+  },
+  {
+   "name": "AMD Ryzen 5 5600U with Radeon Graphics",
+   "normalized": "amd ryzen 5 5600u",
+   "score": 147.4,
+   "samples": 45
+  },
+  {
    "name": "AMD Ryzen 5 5625U with Radeon Graphics",
    "normalized": "amd ryzen 5 5625u",
-   "score": 147.1,
-   "samples": 93
+   "score": 146.9,
+   "samples": 94
   },
   {
    "name": "Intel Core i5-9500 CPU @ 3.00GHz",
    "normalized": "intel core i5-9500",
    "score": 145.3,
    "samples": 83
-  },
-  {
-   "name": "Intel Core 5 120U",
-   "normalized": "intel core 5 120u",
-   "score": 144.8,
-   "samples": 26
   },
   {
    "name": "Intel Core i5-9600K CPU @ 3.70GHz",
@@ -4606,8 +4624,8 @@
   {
    "name": "AMD Ryzen 5 5500U with Radeon Graphics",
    "normalized": "amd ryzen 5 5500u",
-   "score": 143.5,
-   "samples": 334
+   "score": 143.4,
+   "samples": 336
   },
   {
    "name": "AMD Ryzen 5 Microsoft Surface Edition",
@@ -4655,7 +4673,7 @@
    "name": "Intel Core i7-9750H CPU @ 2.60GHz",
    "normalized": "intel core i7-9750h",
    "score": 139.3,
-   "samples": 903
+   "samples": 904
   },
   {
    "name": "Intel Xeon CPU E5-2690 0 @ 2.90GHz",
@@ -4727,19 +4745,13 @@
    "name": "Intel Xeon E-2276M  CPU @ 2.80GHz",
    "normalized": "intel xeon e-2276m",
    "score": 135.2,
-   "samples": 11
+   "samples": 13
   },
   {
    "name": "Intel Xeon CPU E5-1650 v3 @ 3.50GHz",
    "normalized": "intel xeon e5-1650 v3",
    "score": 135.1,
    "samples": 51
-  },
-  {
-   "name": "Intel Core i7-8700T CPU @ 2.40GHz",
-   "normalized": "intel core i7-8700t",
-   "score": 134.9,
-   "samples": 7
   },
   {
    "name": "Intel(R) Xeon(R) CPU           X5650  @ 2.67GHz",
@@ -4859,7 +4871,7 @@
    "name": "Intel Core i7-7700K CPU @ 4.20GHz",
    "normalized": "intel core i7-7700k",
    "score": 127.6,
-   "samples": 449
+   "samples": 450
   },
   {
    "name": "Intel Core 7 150U",
@@ -4888,8 +4900,8 @@
   {
    "name": "12th Gen Intel Core i5-1235U",
    "normalized": "intel core i5-1235u",
-   "score": 126.5,
-   "samples": 242
+   "score": 126.4,
+   "samples": 243
   },
   {
    "name": "AMD Ryzen 5 3500X 6-Core Processor",
@@ -4925,7 +4937,7 @@
    "name": "AMD Ryzen 3 3100 4-Core Processor",
    "normalized": "amd ryzen 3 3100",
    "score": 124.6,
-   "samples": 71
+   "samples": 73
   },
   {
    "name": "Intel Xeon Silver 4112 CPU @ 2.60GHz",
@@ -4938,6 +4950,12 @@
    "normalized": "intel core i3-10105",
    "score": 123.2,
    "samples": 26
+  },
+  {
+   "name": "Intel Core i7-8700T CPU @ 2.40GHz",
+   "normalized": "intel core i7-8700t",
+   "score": 123.2,
+   "samples": 8
   },
   {
    "name": "Intel Xeon CPU E5-2660 v2 @ 2.20GHz",
@@ -4967,7 +4985,7 @@
    "name": "Intel Core i7-6700K CPU @ 4.00GHz",
    "normalized": "intel core i7-6700k",
    "score": 120.8,
-   "samples": 481
+   "samples": 482
   },
   {
    "name": "Intel Xeon W-2225 CPU @ 4.10GHz",
@@ -5003,7 +5021,7 @@
    "name": "Intel Core i5-9400 CPU @ 2.90GHz",
    "normalized": "intel core i5-9400",
    "score": 119.8,
-   "samples": 65
+   "samples": 66
   },
   {
    "name": "AMD Ryzen 3 4300GE with Radeon Graphics",
@@ -5015,7 +5033,7 @@
    "name": "Intel Core i5-9400F CPU @ 2.90GHz",
    "normalized": "intel core i5-9400f",
    "score": 118.5,
-   "samples": 279
+   "samples": 282
   },
   {
    "name": "Intel Core Ultra 5 322",
@@ -5066,6 +5084,12 @@
    "samples": 30
   },
   {
+   "name": "Intel Core i3-10100F CPU @ 3.60GHz",
+   "normalized": "intel core i3-10100f",
+   "score": 115,
+   "samples": 129
+  },
+  {
    "name": "QEMU Virtual CPU version 2.5+",
    "normalized": "qemu virtual version 2.5+",
    "score": 114.9,
@@ -5088,12 +5112,6 @@
    "normalized": "amd ryzen 3 pro 4350g",
    "score": 114.1,
    "samples": 13
-  },
-  {
-   "name": "Intel Core i3-10100F CPU @ 3.60GHz",
-   "normalized": "intel core i3-10100f",
-   "score": 114,
-   "samples": 126
   },
   {
    "name": "Intel Core i3-10105F CPU @ 3.70GHz",
@@ -5270,6 +5288,12 @@
    "samples": 30
   },
   {
+   "name": "Intel(R) Core(TM) i5-8279U CPU @ 2.40GHz",
+   "normalized": "intel core i5-8279u",
+   "score": 103.3,
+   "samples": 25
+  },
+  {
    "name": "Intel(R) Core(TM) i5-1038NG7 CPU @ 2.00GHz",
    "normalized": "intel core i5-1038ng7",
    "score": 103.1,
@@ -5298,12 +5322,6 @@
    "normalized": "intel xeon e3-1265l v3",
    "score": 101.7,
    "samples": 16
-  },
-  {
-   "name": "Intel(R) Core(TM) i5-8279U CPU @ 2.40GHz",
-   "normalized": "intel core i5-8279u",
-   "score": 101.6,
-   "samples": 24
   },
   {
    "name": "Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz",
@@ -5363,13 +5381,13 @@
    "name": "Intel Core i5-10300H CPU @ 2.50GHz",
    "normalized": "intel core i5-10300h",
    "score": 99.5,
-   "samples": 286
+   "samples": 288
   },
   {
    "name": "AMD Ryzen 5 1500X Quad-Core Processor",
    "normalized": "amd ryzen 5 1500x quad-core",
-   "score": 99.2,
-   "samples": 34
+   "score": 99.3,
+   "samples": 35
   },
   {
    "name": "AMD Custom APU 0932",
@@ -5426,16 +5444,16 @@
    "samples": 19
   },
   {
+   "name": "Intel Core i5-9500T CPU @ 2.20GHz",
+   "normalized": "intel core i5-9500t",
+   "score": 97.2,
+   "samples": 6
+  },
+  {
    "name": "Intel(R) Core(TM) i5-5675R CPU @ 3.10GHz",
    "normalized": "intel core i5-5675r",
    "score": 96.6,
    "samples": 8
-  },
-  {
-   "name": "AMD Ryzen 5 7520U with Radeon Graphics",
-   "normalized": "amd ryzen 5 7520u",
-   "score": 96,
-   "samples": 70
   },
   {
    "name": "Intel Core i7-4790S CPU @ 3.20GHz",
@@ -5456,6 +5474,12 @@
    "samples": 15
   },
   {
+   "name": "AMD Ryzen 5 7520U with Radeon Graphics",
+   "normalized": "amd ryzen 5 7520u",
+   "score": 95.6,
+   "samples": 71
+  },
+  {
    "name": "Intel(R) Core(TM) i7-4960HQ CPU @ 2.60GHz",
    "normalized": "intel core i7-4960hq",
    "score": 95.3,
@@ -5474,16 +5498,16 @@
    "samples": 20
   },
   {
-   "name": "Intel(R) Core(TM) i7-4980HQ CPU @ 2.80GHz",
-   "normalized": "intel core i7-4980hq",
-   "score": 94.7,
-   "samples": 29
-  },
-  {
    "name": "Intel Xeon CPU E5-1620 v4 @ 3.50GHz",
    "normalized": "intel xeon e5-1620 v4",
    "score": 94.7,
    "samples": 21
+  },
+  {
+   "name": "Intel(R) Core(TM) i7-4980HQ CPU @ 2.80GHz",
+   "normalized": "intel core i7-4980hq",
+   "score": 94.3,
+   "samples": 30
   },
   {
    "name": "12th Gen Intel Core i3-1215U",
@@ -5516,6 +5540,12 @@
    "samples": 12
   },
   {
+   "name": "11th Gen Intel Core i7-1185G7 @ 3.00GHz",
+   "normalized": "intel core i7-1185g7",
+   "score": 92.3,
+   "samples": 135
+  },
+  {
    "name": "Intel(R) Core(TM) i7-8557U CPU @ 1.70GHz",
    "normalized": "intel core i7-8557u",
    "score": 91.9,
@@ -5546,12 +5576,6 @@
    "samples": 14
   },
   {
-   "name": "11th Gen Intel Core i7-1185G7 @ 3.00GHz",
-   "normalized": "intel core i7-1185g7",
-   "score": 91.5,
-   "samples": 132
-  },
-  {
    "name": "Intel Xeon CPU E3-1276 v3 @ 3.60GHz",
    "normalized": "intel xeon e3-1276 v3",
    "score": 91.5,
@@ -5561,7 +5585,7 @@
    "name": "Intel Core i7-7700HQ CPU @ 2.80GHz",
    "normalized": "intel core i7-7700hq",
    "score": 91.2,
-   "samples": 413
+   "samples": 415
   },
   {
    "name": "Intel Core i7-4770 CPU @ 3.40GHz",
@@ -5621,7 +5645,7 @@
    "name": "11th Gen Intel Core i5-1135G7 @ 2.40GHz",
    "normalized": "intel core i5-1135g7",
    "score": 89.8,
-   "samples": 620
+   "samples": 622
   },
   {
    "name": "Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz",
@@ -5644,8 +5668,8 @@
   {
    "name": "11th Gen Intel Core i7-1165G7 @ 2.80GHz",
    "normalized": "intel core i7-1165g7",
-   "score": 88.5,
-   "samples": 467
+   "score": 88.6,
+   "samples": 474
   },
   {
    "name": "12th Gen Intel Core i7-1250U",
@@ -5687,7 +5711,7 @@
    "name": "Intel Core i7-6700HQ CPU @ 2.60GHz",
    "normalized": "intel core i7-6700hq",
    "score": 86.4,
-   "samples": 151
+   "samples": 152
   },
   {
    "name": "Intel Xeon CPU           E5520  @ 2.27GHz",
@@ -5706,12 +5730,6 @@
    "normalized": "intel core i7-6820hq",
    "score": 85.6,
    "samples": 97
-  },
-  {
-   "name": "11th Gen Intel Core i5-1145G7 @ 2.60GHz",
-   "normalized": "intel core i5-1145g7",
-   "score": 85,
-   "samples": 58
   },
   {
    "name": "11th Gen Intel Core i7-11390H @ 3.40GHz",
@@ -5736,6 +5754,12 @@
    "normalized": "intel xeon e5-1650 0",
    "score": 84.1,
    "samples": 15
+  },
+  {
+   "name": "Intel Core i3-N305",
+   "normalized": "intel core i3-n305",
+   "score": 83.9,
+   "samples": 14
   },
   {
    "name": "Intel Xeon E-2124G CPU @ 3.40GHz",
@@ -5774,6 +5798,12 @@
    "samples": 16
   },
   {
+   "name": "11th Gen Intel Core i5-1145G7 @ 2.60GHz",
+   "normalized": "intel core i5-1145g7",
+   "score": 83.1,
+   "samples": 59
+  },
+  {
    "name": "Intel Core i7 CPU       X 990  @ 3.47GHz",
    "normalized": "intel core i7 x 990",
    "score": 83,
@@ -5802,12 +5832,6 @@
    "normalized": "intel xeon e3-1505m v5",
    "score": 82.3,
    "samples": 18
-  },
-  {
-   "name": "Intel Core i3-N305",
-   "normalized": "intel core i3-n305",
-   "score": 82.1,
-   "samples": 13
   },
   {
    "name": "Intel Xeon CPU E3-1535M v5 @ 2.90GHz",
@@ -5852,22 +5876,22 @@
    "samples": 7
   },
   {
-   "name": "AMD Ryzen 5 1400 Quad-Core Processor",
-   "normalized": "amd ryzen 5 1400 quad-core",
-   "score": 80.3,
-   "samples": 34
-  },
-  {
-   "name": "Intel Core i5-4690K CPU @ 3.50GHz",
-   "normalized": "intel core i5-4690k",
-   "score": 80.3,
-   "samples": 89
-  },
-  {
    "name": "AMD Ryzen 5 3350G with Radeon Vega Graphics",
    "normalized": "amd ryzen 5 3350g",
    "score": 80.2,
    "samples": 5
+  },
+  {
+   "name": "Intel Core i5-4690K CPU @ 3.50GHz",
+   "normalized": "intel core i5-4690k",
+   "score": 80.2,
+   "samples": 90
+  },
+  {
+   "name": "AMD Ryzen 5 1400 Quad-Core Processor",
+   "normalized": "amd ryzen 5 1400 quad-core",
+   "score": 80.1,
+   "samples": 35
   },
   {
    "name": "11th Gen Intel Core i7-1195G7 @ 2.90GHz",
@@ -5990,6 +6014,12 @@
    "samples": 14
   },
   {
+   "name": "Intel Core i7-4720HQ CPU @ 2.60GHz",
+   "normalized": "intel core i7-4720hq",
+   "score": 74.4,
+   "samples": 32
+  },
+  {
    "name": "Intel Core i5-6600 CPU @ 3.30GHz",
    "normalized": "intel core i5-6600",
    "score": 74.1,
@@ -6002,12 +6032,6 @@
    "samples": 125
   },
   {
-   "name": "Intel Core i7-4720HQ CPU @ 2.60GHz",
-   "normalized": "intel core i7-4720hq",
-   "score": 73.9,
-   "samples": 30
-  },
-  {
    "name": "Intel Core i7-4700MQ CPU @ 2.40GHz",
    "normalized": "intel core i7-4700mq",
    "score": 73.6,
@@ -6016,8 +6040,8 @@
   {
    "name": "Intel Core i7-4710HQ CPU @ 2.50GHz",
    "normalized": "intel core i7-4710hq",
-   "score": 73.6,
-   "samples": 36
+   "score": 73.5,
+   "samples": 37
   },
   {
    "name": "Intel Xeon CPU E5-1620 v2 @ 3.70GHz",
@@ -6082,14 +6106,14 @@
   {
    "name": "Intel Core i3-8100 CPU @ 3.60GHz",
    "normalized": "intel core i3-8100",
-   "score": 70.6,
-   "samples": 63
+   "score": 70.7,
+   "samples": 64
   },
   {
    "name": "Intel Core i7-3770K CPU @ 3.50GHz",
    "normalized": "intel core i7-3770k",
-   "score": 70.5,
-   "samples": 119
+   "score": 70.4,
+   "samples": 120
   },
   {
    "name": "Intel Xeon CPU           X3470  @ 2.93GHz",
@@ -6179,7 +6203,7 @@
    "name": "AMD Ryzen 5 3500U with Radeon Vega Mobile Gfx",
    "normalized": "amd ryzen 5 3500u",
    "score": 68.4,
-   "samples": 200
+   "samples": 201
   },
   {
    "name": "Intel Xeon CPU E3-1220 v3 @ 3.10GHz",
@@ -6218,12 +6242,6 @@
    "samples": 134
   },
   {
-   "name": "Intel Core i7-8550U CPU @ 1.80GHz",
-   "normalized": "intel core i7-8550u",
-   "score": 67.9,
-   "samples": 218
-  },
-  {
    "name": "Intel(R) Core(TM) i7-3770S CPU @ 3.10GHz",
    "normalized": "intel core i7-3770s",
    "score": 67.7,
@@ -6242,10 +6260,16 @@
    "samples": 244
   },
   {
+   "name": "Intel Core i7-8550U CPU @ 1.80GHz",
+   "normalized": "intel core i7-8550u",
+   "score": 67.6,
+   "samples": 221
+  },
+  {
    "name": "Intel Core i7-3770 CPU @ 3.40GHz",
    "normalized": "intel core i7-3770",
    "score": 67.5,
-   "samples": 305
+   "samples": 306
   },
   {
    "name": "AMD EPYC 7V12 64-Core Processor",
@@ -6272,12 +6296,6 @@
    "samples": 113
   },
   {
-   "name": "Intel Core i7-10510U CPU @ 1.80GHz",
-   "normalized": "intel core i7-10510u",
-   "score": 67.2,
-   "samples": 114
-  },
-  {
    "name": "Intel Core i7-2700K CPU @ 3.50GHz",
    "normalized": "intel core i7-2700k",
    "score": 66.9,
@@ -6296,16 +6314,16 @@
    "samples": 48
   },
   {
+   "name": "Intel Core i7-10510U CPU @ 1.80GHz",
+   "normalized": "intel core i7-10510u",
+   "score": 66.5,
+   "samples": 115
+  },
+  {
    "name": "Intel(R) Core(TM) i7-3635QM CPU @ 2.40GHz",
    "normalized": "intel core i7-3635qm",
    "score": 66.5,
    "samples": 11
-  },
-  {
-   "name": "AMD Ryzen 3 1200 Quad-Core Processor",
-   "normalized": "amd ryzen 3 1200 quad-core",
-   "score": 65.9,
-   "samples": 47
   },
   {
    "name": "AMD Ryzen 3 1300X Quad-Core Processor",
@@ -6318,6 +6336,12 @@
    "normalized": "intel core i7-3740qm",
    "score": 65.7,
    "samples": 26
+  },
+  {
+   "name": "AMD Ryzen 3 1200 Quad-Core Processor",
+   "normalized": "amd ryzen 3 1200 quad-core",
+   "score": 65.4,
+   "samples": 48
   },
   {
    "name": "Intel Core i7-3840QM CPU @ 2.80GHz",
@@ -6338,16 +6362,16 @@
    "samples": 121
   },
   {
-   "name": "Intel Core i5-4570 CPU @ 3.20GHz",
-   "normalized": "intel core i5-4570",
-   "score": 64.7,
-   "samples": 96
-  },
-  {
    "name": "Intel Core i7-10610U CPU @ 1.80GHz",
    "normalized": "intel core i7-10610u",
    "score": 64.7,
    "samples": 32
+  },
+  {
+   "name": "Intel Core i5-4570 CPU @ 3.20GHz",
+   "normalized": "intel core i5-4570",
+   "score": 64.3,
+   "samples": 98
   },
   {
    "name": "Intel Core i5-4440 CPU @ 3.10GHz",
@@ -6458,16 +6482,22 @@
    "samples": 54
   },
   {
-   "name": "Intel Core i5-1035G1 CPU @ 1.00GHz",
-   "normalized": "intel core i5-1035g1",
-   "score": 61.2,
-   "samples": 216
+   "name": "Intel Core i5-10210U CPU @ 1.60GHz",
+   "normalized": "intel core i5-10210u",
+   "score": 60.7,
+   "samples": 132
   },
   {
    "name": "Intel Xeon CPU E5-1620 0 @ 3.60GHz",
    "normalized": "intel xeon e5-1620 0",
    "score": 60.7,
    "samples": 24
+  },
+  {
+   "name": "Intel Core i5-1035G1 CPU @ 1.00GHz",
+   "normalized": "intel core i5-1035g1",
+   "score": 60.6,
+   "samples": 218
   },
   {
    "name": "Intel Core i5-7500T CPU @ 2.70GHz",
@@ -6478,14 +6508,8 @@
   {
    "name": "Intel Core i5-8265U CPU @ 1.60GHz",
    "normalized": "intel core i5-8265u",
-   "score": 60.5,
-   "samples": 137
-  },
-  {
-   "name": "Intel Core i5-10210U CPU @ 1.60GHz",
-   "normalized": "intel core i5-10210u",
-   "score": 60.3,
-   "samples": 129
+   "score": 60.4,
+   "samples": 138
   },
   {
    "name": "Intel Xeon CPU           X3450  @ 2.67GHz",
@@ -6497,7 +6521,7 @@
    "name": "Intel Core i7-2600 CPU @ 3.40GHz",
    "normalized": "intel core i7-2600",
    "score": 58.9,
-   "samples": 114
+   "samples": 115
   },
   {
    "name": "Intel Core i7-3820 CPU @ 3.60GHz",
@@ -6536,6 +6560,12 @@
    "samples": 21
   },
   {
+   "name": "Intel Core i5-3570K CPU @ 3.40GHz",
+   "normalized": "intel core i5-3570k",
+   "score": 54.8,
+   "samples": 75
+  },
+  {
    "name": "Intel Core i7 CPU         870  @ 2.93GHz",
    "normalized": "intel core i7 870",
    "score": 54.8,
@@ -6546,12 +6576,6 @@
    "normalized": "intel core i7-3630qm",
    "score": 54.8,
    "samples": 29
-  },
-  {
-   "name": "Intel Core i5-3570K CPU @ 3.40GHz",
-   "normalized": "intel core i5-3570k",
-   "score": 54.7,
-   "samples": 74
   },
   {
    "name": "Intel Core i5-4590T CPU @ 2.00GHz",
@@ -6576,6 +6600,12 @@
    "normalized": "intel core i3-4330",
    "score": 53.7,
    "samples": 8
+  },
+  {
+   "name": "AMD FX(tm)-8120 Eight-Core Processor",
+   "normalized": "amd fx -8120 eight-core",
+   "score": 53.5,
+   "samples": 15
   },
   {
    "name": "Intel Xeon CPU           E5462  @ 2.80GHz",
@@ -6626,12 +6656,6 @@
    "samples": 52
   },
   {
-   "name": "AMD FX(tm)-8120 Eight-Core Processor",
-   "normalized": "amd fx -8120 eight-core",
-   "score": 51.9,
-   "samples": 14
-  },
-  {
    "name": "Intel Core i5-4570T CPU @ 2.90GHz",
    "normalized": "intel core i5-4570t",
    "score": 51.9,
@@ -6653,7 +6677,7 @@
    "name": "11th Gen Intel Core i3-1115G4 @ 3.00GHz",
    "normalized": "intel core i3-1115g4",
    "score": 51.2,
-   "samples": 129
+   "samples": 131
   },
   {
    "name": "Intel Pentium CPU G4620 @ 3.70GHz",
@@ -6785,7 +6809,7 @@
    "name": "Intel N150",
    "normalized": "intel n150",
    "score": 47.8,
-   "samples": 19
+   "samples": 21
   },
   {
    "name": "Intel(R) Xeon(R) CPU           W3530  @ 2.80GHz",
@@ -6878,16 +6902,16 @@
    "samples": 7
   },
   {
+   "name": "Intel Core i3-4170 CPU @ 3.70GHz",
+   "normalized": "intel core i3-4170",
+   "score": 44.2,
+   "samples": 23
+  },
+  {
    "name": "Intel Core i7-4600M CPU @ 2.90GHz",
    "normalized": "intel core i7-4600m",
    "score": 44.2,
    "samples": 9
-  },
-  {
-   "name": "Intel Core i3-4170 CPU @ 3.70GHz",
-   "normalized": "intel core i3-4170",
-   "score": 44.1,
-   "samples": 22
   },
   {
    "name": "Intel(R) Core(TM) i5-6267U CPU @ 2.90GHz",
@@ -7144,8 +7168,8 @@
   {
    "name": "Intel(R) Core(TM) i5-5350U CPU @ 1.80GHz",
    "normalized": "intel core i5-5350u",
-   "score": 37.5,
-   "samples": 78
+   "score": 37.3,
+   "samples": 80
   },
   {
    "name": "Intel Core i7-7500U CPU @ 2.70GHz",
@@ -7158,6 +7182,12 @@
    "normalized": "amd ryzen 3 2200u",
    "score": 36.5,
    "samples": 10
+  },
+  {
+   "name": "Intel(R) Core(TM) i3-1000NG4 CPU @ 1.10GHz",
+   "normalized": "intel core i3-1000ng4",
+   "score": 36.5,
+   "samples": 28
   },
   {
    "name": "Intel(R) Core(TM) i5-4250U CPU @ 1.30GHz",
@@ -7184,28 +7214,22 @@
    "samples": 21
   },
   {
-   "name": "Intel(R) Core(TM) i3-1000NG4 CPU @ 1.10GHz",
-   "normalized": "intel core i3-1000ng4",
-   "score": 35.6,
-   "samples": 27
-  },
-  {
    "name": "Intel Core i7-6600U CPU @ 2.60GHz",
    "normalized": "intel core i7-6600u",
    "score": 35.6,
    "samples": 50
   },
   {
-   "name": "AMD Ryzen 3 3250U with Radeon Graphics",
-   "normalized": "amd ryzen 3 3250u",
-   "score": 35.4,
-   "samples": 34
-  },
-  {
    "name": "Intel Core i5-6300U CPU @ 2.40GHz",
    "normalized": "intel core i5-6300u",
    "score": 35.3,
    "samples": 70
+  },
+  {
+   "name": "AMD Ryzen 3 3250U with Radeon Graphics",
+   "normalized": "amd ryzen 3 3250u",
+   "score": 35,
+   "samples": 35
   },
   {
    "name": "Intel Core i3-8145U CPU @ 2.10GHz",
@@ -7256,12 +7280,6 @@
    "samples": 7
   },
   {
-   "name": "Intel Core i5-4300U CPU @ 1.90GHz",
-   "normalized": "intel core i5-4300u",
-   "score": 34,
-   "samples": 16
-  },
-  {
    "name": "AMD Athlon Gold 3150U with Radeon Graphics",
    "normalized": "amd athlon gold 3150u",
    "score": 33.9,
@@ -7272,6 +7290,12 @@
    "normalized": "amd phenom ii x4 965",
    "score": 33.9,
    "samples": 24
+  },
+  {
+   "name": "Intel Core i5-4300U CPU @ 1.90GHz",
+   "normalized": "intel core i5-4300u",
+   "score": 33.7,
+   "samples": 17
   },
   {
    "name": "AMD A10-7800 Radeon R7, 12 Compute Cores 4C+8G",
@@ -7562,6 +7586,12 @@
    "samples": 9
   },
   {
+   "name": "Intel Core i5-2540M CPU @ 2.60GHz",
+   "normalized": "intel core i5-2540m",
+   "score": 27.3,
+   "samples": 5
+  },
+  {
    "name": "Intel Core2 Quad CPU    Q9550  @ 2.83GHz",
    "normalized": "intel core2 quad q9550",
    "score": 27.3,
@@ -7676,9 +7706,9 @@
    "samples": 10
   },
   {
-   "name": "Intel Core i3-4030U CPU @ 1.90GHz",
-   "normalized": "intel core i3-4030u",
-   "score": 23.1,
+   "name": "Intel Celeron N5100 @ 1.10GHz",
+   "normalized": "intel celeron n5100",
+   "score": 23.2,
    "samples": 5
   },
   {
@@ -7698,6 +7728,12 @@
    "normalized": "intel celeron j4125",
    "score": 22.6,
    "samples": 21
+  },
+  {
+   "name": "Intel Core i3-4030U CPU @ 1.90GHz",
+   "normalized": "intel core i3-4030u",
+   "score": 22.4,
+   "samples": 6
   },
   {
    "name": "Intel Core i5-3317U CPU @ 1.70GHz",

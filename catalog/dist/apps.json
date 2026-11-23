@@ -8,7 +8,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 16148889,
+  "popularity": 16289807,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -150,7 +150,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 6849657,
+  "popularity": 6686041,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -292,7 +292,7 @@
   "categories": [
    "management"
   ],
-  "popularity": 5659535,
+  "popularity": 5414758,
   "source": [
    "linuxserver"
   ],
@@ -354,7 +354,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 2528219,
+  "popularity": 2538145,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -491,7 +491,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 2253227,
+  "popularity": 2268876,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -675,7 +675,7 @@
   "categories": [
    "dashboard"
   ],
-  "popularity": 1732493,
+  "popularity": 1784778,
   "source": [
    "linuxserver"
   ],
@@ -828,7 +828,7 @@
    "networking",
    "vpn"
   ],
-  "popularity": 1269081,
+  "popularity": 1343662,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -927,7 +927,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 1184964,
+  "popularity": 1208486,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -1065,7 +1065,7 @@
    "networking",
    "dns"
   ],
-  "popularity": 897352,
+  "popularity": 906989,
   "source": [
    "linuxserver"
   ],
@@ -1127,6 +1127,169 @@
   "flows": []
  },
  {
+  "id": "swag",
+  "name": "Swag",
+  "description": {
+   "en": "Swag — container image from LinuxServer.io."
+  },
+  "categories": [
+   "reverse-proxy"
+  ],
+  "popularity": 756197,
+  "source": [
+   "linuxserver"
+  ],
+  "confidence": "estimated",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "swag",
+     "role": "app",
+     "image": "lscr.io/linuxserver/swag",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 443,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      },
+      {
+       "port": 80,
+       "protocol": "tcp",
+       "purpose": "service"
+      },
+      {
+       "port": 443,
+       "protocol": "udp",
+       "purpose": "service"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 443,
+       "containerPort": 443,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 0.25,
+    "memoryBytes": 268435456,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 1,
+    "memoryBytes": 536870912,
+    "diskBytes": 2000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-443",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "service-tcp-80",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 80,
+    "purpose": "service",
+    "required": false
+   },
+   {
+    "id": "service-udp-443",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "udp",
+    "port": 443,
+    "purpose": "service",
+    "required": false
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "swag.open-ui",
+    "name": {
+     "en": "Open Swag"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "Swag"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "deluge",
   "name": "Deluge",
   "description": {
@@ -1135,7 +1298,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 728924,
+  "popularity": 733347,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -1322,169 +1485,6 @@
   ]
  },
  {
-  "id": "swag",
-  "name": "Swag",
-  "description": {
-   "en": "Swag — container image from LinuxServer.io."
-  },
-  "categories": [
-   "reverse-proxy"
-  ],
-  "popularity": 728165,
-  "source": [
-   "linuxserver"
-  ],
-  "confidence": "estimated",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "swag",
-     "role": "app",
-     "image": "lscr.io/linuxserver/swag",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [
-      {
-       "port": 443,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      },
-      {
-       "port": 80,
-       "protocol": "tcp",
-       "purpose": "service"
-      },
-      {
-       "port": 443,
-       "protocol": "udp",
-       "purpose": "service"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 443,
-       "containerPort": 443,
-       "protocol": "tcp"
-      }
-     ],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 0.25,
-    "memoryBytes": 268435456,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 1,
-    "memoryBytes": 536870912,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-443",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "service-tcp-80",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 80,
-    "purpose": "service",
-    "required": false
-   },
-   {
-    "id": "service-udp-443",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "udp",
-    "port": 443,
-    "purpose": "service",
-    "required": false
-   },
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": [
-   {
-    "id": "swag.open-ui",
-    "name": {
-     "en": "Open Swag"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "Swag"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
- },
- {
   "id": "smokeping",
   "name": "SmokePing",
   "description": {
@@ -1494,7 +1494,7 @@
    "monitoring",
    "networking"
   ],
-  "popularity": 681214,
+  "popularity": 688666,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -1631,7 +1631,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 564724,
+  "popularity": 603509,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -1794,7 +1794,7 @@
   "categories": [
    "management"
   ],
-  "popularity": 548022,
+  "popularity": 557470,
   "source": [
    "linuxserver"
   ],
@@ -1925,7 +1925,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 511500,
+  "popularity": 520133,
   "source": [
    "linuxserver"
   ],
@@ -2053,6 +2053,78 @@
   ]
  },
  {
+  "id": "ddclient",
+  "name": "ddclient",
+  "description": {
+   "en": "ddclient — container image from LinuxServer.io."
+  },
+  "categories": [
+   "networking",
+   "dns"
+  ],
+  "popularity": 456603,
+  "source": [
+   "linuxserver",
+   "community-scripts"
+  ],
+  "confidence": "imported",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "ddclient",
+     "role": "app",
+     "image": "lscr.io/linuxserver/ddclient",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [],
+     "defaultPortMappings": [],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 0.5,
+    "memoryBytes": 201326592,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 1,
+    "memoryBytes": 402653184,
+    "diskBytes": 1000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": []
+ },
+ {
   "id": "pairdrop",
   "name": "PairDrop",
   "description": {
@@ -2061,7 +2133,7 @@
   "categories": [
    "files"
   ],
-  "popularity": 435195,
+  "popularity": 441607,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -2186,7 +2258,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 429102,
+  "popularity": 436006,
   "source": [
    "linuxserver"
   ],
@@ -2319,78 +2391,6 @@
   ]
  },
  {
-  "id": "ddclient",
-  "name": "ddclient",
-  "description": {
-   "en": "ddclient — container image from LinuxServer.io."
-  },
-  "categories": [
-   "networking",
-   "dns"
-  ],
-  "popularity": 411733,
-  "source": [
-   "linuxserver",
-   "community-scripts"
-  ],
-  "confidence": "imported",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "ddclient",
-     "role": "app",
-     "image": "lscr.io/linuxserver/ddclient",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [],
-     "defaultPortMappings": [],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 0.5,
-    "memoryBytes": 201326592,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 1,
-    "memoryBytes": 402653184,
-    "diskBytes": 1000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": []
- },
- {
   "id": "apprise-api",
   "name": "Apprise-API",
   "description": {
@@ -2399,7 +2399,7 @@
   "categories": [
    "monitoring"
   ],
-  "popularity": 406332,
+  "popularity": 406787,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -2536,7 +2536,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 399323,
+  "popularity": 383952,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -2669,7 +2669,7 @@
    "media",
    "management"
   ],
-  "popularity": 338316,
+  "popularity": 336737,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -2740,7 +2740,7 @@
   "categories": [
    "ai"
   ],
-  "popularity": 327096,
+  "popularity": 334199,
   "source": [
    "linuxserver"
   ],
@@ -2871,7 +2871,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 264291,
+  "popularity": 266694,
   "source": [
    "linuxserver"
   ],
@@ -3015,6 +3015,164 @@
   ]
  },
  {
+  "id": "tvheadend",
+  "name": "Tvheadend",
+  "description": {
+   "en": "Tvheadend — container image from LinuxServer.io."
+  },
+  "categories": [
+   "media"
+  ],
+  "popularity": 256364,
+  "source": [
+   "linuxserver",
+   "community-scripts"
+  ],
+  "confidence": "imported",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "tvheadend",
+     "role": "app",
+     "image": "lscr.io/linuxserver/tvheadend",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 9981,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      },
+      {
+       "port": 9982,
+       "protocol": "tcp",
+       "purpose": "service"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 9981,
+       "containerPort": 9981,
+       "protocol": "tcp"
+      },
+      {
+       "hostPort": 9982,
+       "containerPort": 9982,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      },
+      {
+       "name": "recordings",
+       "containerPath": "/recordings",
+       "purpose": "data"
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 1,
+    "memoryBytes": 805306368,
+    "diskBytes": 3000000000
+   },
+   "recommended": {
+    "cpu": 2,
+    "memoryBytes": 1610612736,
+    "diskBytes": 6000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-9981",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 9981,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "service-tcp-9982",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 9982,
+    "purpose": "service",
+    "required": true
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "tvheadend.open-ui",
+    "name": {
+     "en": "Open Tvheadend"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "Tvheadend"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "resilio-sync",
   "name": "Resilio Sync",
   "description": {
@@ -3023,7 +3181,7 @@
   "categories": [
    "backup"
   ],
-  "popularity": 257941,
+  "popularity": 248684,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -3178,58 +3336,36 @@
   ]
  },
  {
-  "id": "tvheadend",
-  "name": "Tvheadend",
+  "id": "fail2ban",
+  "name": "Fail2ban",
   "description": {
-   "en": "Tvheadend — container image from LinuxServer.io."
+   "en": "Fail2ban — container image from LinuxServer.io."
   },
   "categories": [
-   "media"
+   "networking",
+   "security"
   ],
-  "popularity": 242795,
+  "popularity": 229517,
   "source": [
-   "linuxserver",
-   "community-scripts"
+   "linuxserver"
   ],
-  "confidence": "imported",
+  "confidence": "estimated",
   "deployment": {
    "kind": "single",
    "components": [
     {
      "key": "server",
-     "name": "tvheadend",
+     "name": "fail2ban",
      "role": "app",
-     "image": "lscr.io/linuxserver/tvheadend",
+     "image": "lscr.io/linuxserver/fail2ban",
      "defaultTag": "latest",
      "arch": [
       "amd64",
       "arm64"
      ],
      "platform": "linux",
-     "listeners": [
-      {
-       "port": 9981,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      },
-      {
-       "port": 9982,
-       "protocol": "tcp",
-       "purpose": "service"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 9981,
-       "containerPort": 9981,
-       "protocol": "tcp"
-      },
-      {
-       "hostPort": 9982,
-       "containerPort": 9982,
-       "protocol": "tcp"
-      }
-     ],
+     "listeners": [],
+     "defaultPortMappings": [],
      "volumes": [
       {
        "name": "config",
@@ -3238,8 +3374,93 @@
        "defaultSizeBytes": 1000000000
       },
       {
-       "name": "recordings",
-       "containerPath": "/recordings",
+       "name": "var-log-ro",
+       "containerPath": "/var/log:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-airsonic-ro",
+       "containerPath": "/remotelogs/airsonic:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-apache2-ro",
+       "containerPath": "/remotelogs/apache2:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-authelia-ro",
+       "containerPath": "/remotelogs/authelia:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-emby-ro",
+       "containerPath": "/remotelogs/emby:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-filebrowser-ro",
+       "containerPath": "/remotelogs/filebrowser:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-homeassistant-ro",
+       "containerPath": "/remotelogs/homeassistant:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-lighttpd-ro",
+       "containerPath": "/remotelogs/lighttpd:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-nextcloud-ro",
+       "containerPath": "/remotelogs/nextcloud:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-nginx-ro",
+       "containerPath": "/remotelogs/nginx:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-nzbget-ro",
+       "containerPath": "/remotelogs/nzbget:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-overseerr-ro",
+       "containerPath": "/remotelogs/overseerr:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-prowlarr-ro",
+       "containerPath": "/remotelogs/prowlarr:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-radarr-ro",
+       "containerPath": "/remotelogs/radarr:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-sabnzbd-ro",
+       "containerPath": "/remotelogs/sabnzbd:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-sonarr-ro",
+       "containerPath": "/remotelogs/sonarr:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-unificontroller-ro",
+       "containerPath": "/remotelogs/unificontroller:ro",
+       "purpose": "data"
+      },
+      {
+       "name": "remotelogs-vaultwarden-ro",
+       "containerPath": "/remotelogs/vaultwarden:ro",
        "purpose": "data"
       }
      ]
@@ -3248,41 +3469,19 @@
   },
   "requirements": {
    "min": {
-    "cpu": 1,
-    "memoryBytes": 805306368,
-    "diskBytes": 3000000000
+    "cpu": 0.25,
+    "memoryBytes": 268435456,
+    "diskBytes": 1000000000
    },
    "recommended": {
-    "cpu": 2,
-    "memoryBytes": 1610612736,
-    "diskBytes": 6000000000
+    "cpu": 1,
+    "memoryBytes": 536870912,
+    "diskBytes": 2000000000
    }
   },
   "dependencies": [],
   "provides": [],
   "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-9981",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 9981,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "service-tcp-9982",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 9982,
-    "purpose": "service",
-    "required": true
-   },
    {
     "id": "update-check",
     "direction": "outbound",
@@ -3295,45 +3494,7 @@
     "required": false
    }
   ],
-  "flows": [
-   {
-    "id": "tvheadend.open-ui",
-    "name": {
-     "en": "Open Tvheadend"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "Tvheadend"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
+  "flows": []
  },
  {
   "id": "piper",
@@ -3344,7 +3505,7 @@
   "categories": [
    "ai"
   ],
-  "popularity": 218397,
+  "popularity": 218440,
   "source": [
    "linuxserver"
   ],
@@ -3476,7 +3637,7 @@
    "desktop",
    "productivity"
   ],
-  "popularity": 209190,
+  "popularity": 218094,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -3635,167 +3796,6 @@
   ]
  },
  {
-  "id": "fail2ban",
-  "name": "Fail2ban",
-  "description": {
-   "en": "Fail2ban — container image from LinuxServer.io."
-  },
-  "categories": [
-   "networking",
-   "security"
-  ],
-  "popularity": 204163,
-  "source": [
-   "linuxserver"
-  ],
-  "confidence": "estimated",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "fail2ban",
-     "role": "app",
-     "image": "lscr.io/linuxserver/fail2ban",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [],
-     "defaultPortMappings": [],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      },
-      {
-       "name": "var-log-ro",
-       "containerPath": "/var/log:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-airsonic-ro",
-       "containerPath": "/remotelogs/airsonic:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-apache2-ro",
-       "containerPath": "/remotelogs/apache2:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-authelia-ro",
-       "containerPath": "/remotelogs/authelia:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-emby-ro",
-       "containerPath": "/remotelogs/emby:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-filebrowser-ro",
-       "containerPath": "/remotelogs/filebrowser:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-homeassistant-ro",
-       "containerPath": "/remotelogs/homeassistant:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-lighttpd-ro",
-       "containerPath": "/remotelogs/lighttpd:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-nextcloud-ro",
-       "containerPath": "/remotelogs/nextcloud:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-nginx-ro",
-       "containerPath": "/remotelogs/nginx:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-nzbget-ro",
-       "containerPath": "/remotelogs/nzbget:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-overseerr-ro",
-       "containerPath": "/remotelogs/overseerr:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-prowlarr-ro",
-       "containerPath": "/remotelogs/prowlarr:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-radarr-ro",
-       "containerPath": "/remotelogs/radarr:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-sabnzbd-ro",
-       "containerPath": "/remotelogs/sabnzbd:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-sonarr-ro",
-       "containerPath": "/remotelogs/sonarr:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-unificontroller-ro",
-       "containerPath": "/remotelogs/unificontroller:ro",
-       "purpose": "data"
-      },
-      {
-       "name": "remotelogs-vaultwarden-ro",
-       "containerPath": "/remotelogs/vaultwarden:ro",
-       "purpose": "data"
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 0.25,
-    "memoryBytes": 268435456,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 1,
-    "memoryBytes": 536870912,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": []
- },
- {
   "id": "adguardhome-sync",
   "name": "Adguardhome Sync",
   "description": {
@@ -3805,7 +3805,7 @@
    "networking",
    "dns"
   ],
-  "popularity": 196740,
+  "popularity": 200295,
   "source": [
    "linuxserver"
   ],
@@ -3936,7 +3936,7 @@
   "categories": [
    "monitoring"
   ],
-  "popularity": 184012,
+  "popularity": 187158,
   "source": [
    "linuxserver"
   ],
@@ -4115,7 +4115,7 @@
    "documents",
    "management"
   ],
-  "popularity": 150322,
+  "popularity": 158615,
   "source": [
    "linuxserver"
   ],
@@ -4262,7 +4262,7 @@
   "categories": [
    "photos"
   ],
-  "popularity": 114919,
+  "popularity": 119984,
   "source": [
    "linuxserver"
   ],
@@ -4398,7 +4398,7 @@
   "categories": [
    "home"
   ],
-  "popularity": 113271,
+  "popularity": 115202,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -4530,7 +4530,7 @@
   "categories": [
    "database"
   ],
-  "popularity": 110517,
+  "popularity": 112587,
   "source": [
    "linuxserver"
   ],
@@ -4663,7 +4663,7 @@
    "productivity",
    "networking"
   ],
-  "popularity": 93381,
+  "popularity": 93585,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -4796,7 +4796,7 @@
    "files",
    "media"
   ],
-  "popularity": 84988,
+  "popularity": 92453,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -4933,7 +4933,7 @@
   "categories": [
    "games"
   ],
-  "popularity": 81212,
+  "popularity": 79783,
   "source": [
    "linuxserver"
   ],
@@ -5027,7 +5027,7 @@
    "documents",
    "management"
   ],
-  "popularity": 55168,
+  "popularity": 56673,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -5159,7 +5159,7 @@
   "categories": [
    "messaging"
   ],
-  "popularity": 44208,
+  "popularity": 47074,
   "source": [
    "linuxserver"
   ],
@@ -5290,7 +5290,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 42205,
+  "popularity": 43796,
   "source": [
    "linuxserver"
   ],
@@ -5457,7 +5457,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 40521,
+  "popularity": 40970,
   "source": [
    "linuxserver"
   ],
@@ -5608,7 +5608,7 @@
   "categories": [
    "management"
   ],
-  "popularity": 37287,
+  "popularity": 36093,
   "source": [
    "linuxserver"
   ],
@@ -5673,7 +5673,7 @@
   "website": "https://changedetection.io/",
   "repository": "https://github.com/dgtlmoon/changedetection.io",
   "license": "Apache-2.0",
-  "popularity": 35690,
+  "popularity": 35967,
   "source": [
    "linuxserver",
    "awesome-selfhosted"
@@ -5806,7 +5806,7 @@
    "desktop",
    "productivity"
   ],
-  "popularity": 32408,
+  "popularity": 33629,
   "source": [
    "linuxserver"
   ],
@@ -5982,7 +5982,7 @@
   "website": "https://nginx.org/en/",
   "repository": "https://github.com/nginx/nginx",
   "license": "BSD-2-Clause",
-  "popularity": 32088,
+  "popularity": 32904,
   "source": [
    "linuxserver",
    "awesome-selfhosted"
@@ -6135,7 +6135,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 31784,
+  "popularity": 32167,
   "source": [
    "linuxserver"
   ],
@@ -6284,143 +6284,6 @@
   ]
  },
  {
-  "id": "diskover",
-  "name": "Diskover",
-  "description": {
-   "en": "Diskover — container image from LinuxServer.io."
-  },
-  "categories": [
-   "files",
-   "monitoring"
-  ],
-  "popularity": 29320,
-  "source": [
-   "linuxserver"
-  ],
-  "confidence": "estimated",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "diskover",
-     "role": "app",
-     "image": "lscr.io/linuxserver/diskover",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [
-      {
-       "port": 80,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 80,
-       "containerPort": 80,
-       "protocol": "tcp"
-      }
-     ],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      },
-      {
-       "name": "data",
-       "containerPath": "/data",
-       "purpose": "data"
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 0.25,
-    "memoryBytes": 268435456,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 1,
-    "memoryBytes": 536870912,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-80",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 80,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": [
-   {
-    "id": "diskover.open-ui",
-    "name": {
-     "en": "Open Diskover"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "Diskover"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
- },
- {
   "id": "wikijs",
   "name": "Wiki.js",
   "description": {
@@ -6433,7 +6296,7 @@
   "website": "https://js.wiki/",
   "repository": "https://github.com/Requarks/wiki",
   "license": "AGPL-3.0",
-  "popularity": 29229,
+  "popularity": 29360,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -6563,15 +6426,16 @@
   ]
  },
  {
-  "id": "hishtory-server",
-  "name": "Hishtory Server",
+  "id": "diskover",
+  "name": "Diskover",
   "description": {
-   "en": "Hishtory Server — container image from LinuxServer.io."
+   "en": "Diskover — container image from LinuxServer.io."
   },
   "categories": [
-   "management"
+   "files",
+   "monitoring"
   ],
-  "popularity": 28350,
+  "popularity": 29332,
   "source": [
    "linuxserver"
   ],
@@ -6581,9 +6445,9 @@
    "components": [
     {
      "key": "server",
-     "name": "hishtory-server",
+     "name": "diskover",
      "role": "app",
-     "image": "lscr.io/linuxserver/hishtory-server",
+     "image": "lscr.io/linuxserver/diskover",
      "defaultTag": "latest",
      "arch": [
       "amd64",
@@ -6592,19 +6456,31 @@
      "platform": "linux",
      "listeners": [
       {
-       "port": 8080,
+       "port": 80,
        "protocol": "tcp",
        "purpose": "web-ui"
       }
      ],
      "defaultPortMappings": [
       {
-       "hostPort": 8080,
-       "containerPort": 8080,
+       "hostPort": 80,
+       "containerPort": 80,
        "protocol": "tcp"
       }
      ],
-     "volumes": []
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      },
+      {
+       "name": "data",
+       "containerPath": "/data",
+       "purpose": "data"
+      }
+     ]
     }
    ]
   },
@@ -6624,13 +6500,13 @@
   "provides": [],
   "trafficPatterns": [
    {
-    "id": "web-ui-tcp-8080",
+    "id": "web-ui-tcp-80",
     "direction": "inbound",
     "peer": {
      "kind": "lan-clients"
     },
     "protocol": "tcp",
-    "port": 8080,
+    "port": 80,
     "purpose": "web-ui",
     "required": true
    },
@@ -6648,9 +6524,9 @@
   ],
   "flows": [
    {
-    "id": "hishtory-server.open-ui",
+    "id": "diskover.open-ui",
     "name": {
-     "en": "Open Hishtory Server"
+     "en": "Open Diskover"
     },
     "roles": [
      {
@@ -6666,7 +6542,7 @@
      {
       "key": "server",
       "name": {
-       "en": "Hishtory Server"
+       "en": "Diskover"
       },
       "selector": {
        "kind": "self"
@@ -6696,7 +6572,7 @@
    "media",
    "management"
   ],
-  "popularity": 28079,
+  "popularity": 29162,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -6838,7 +6714,7 @@
   "categories": [
    "ai"
   ],
-  "popularity": 27958,
+  "popularity": 28522,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -6956,6 +6832,130 @@
   ]
  },
  {
+  "id": "hishtory-server",
+  "name": "Hishtory Server",
+  "description": {
+   "en": "Hishtory Server — container image from LinuxServer.io."
+  },
+  "categories": [
+   "management"
+  ],
+  "popularity": 26684,
+  "source": [
+   "linuxserver"
+  ],
+  "confidence": "estimated",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "hishtory-server",
+     "role": "app",
+     "image": "lscr.io/linuxserver/hishtory-server",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 8080,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 8080,
+       "containerPort": 8080,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": []
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 0.25,
+    "memoryBytes": 268435456,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 1,
+    "memoryBytes": 536870912,
+    "diskBytes": 2000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-8080",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 8080,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "hishtory-server.open-ui",
+    "name": {
+     "en": "Open Hishtory Server"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "Hishtory Server"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "flexget",
   "name": "Flexget",
   "description": {
@@ -6964,7 +6964,7 @@
   "categories": [
    "downloads"
   ],
-  "popularity": 24459,
+  "popularity": 25198,
   "source": [
    "linuxserver"
   ],
@@ -7092,137 +7092,6 @@
   ]
  },
  {
-  "id": "oscam",
-  "name": "Oscam",
-  "description": {
-   "en": "Oscam — container image from LinuxServer.io."
-  },
-  "categories": [
-   "media"
-  ],
-  "popularity": 21465,
-  "source": [
-   "linuxserver"
-  ],
-  "confidence": "estimated",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "oscam",
-     "role": "app",
-     "image": "lscr.io/linuxserver/oscam",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [
-      {
-       "port": 8888,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 8888,
-       "containerPort": 8888,
-       "protocol": "tcp"
-      }
-     ],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 0.25,
-    "memoryBytes": 268435456,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 1,
-    "memoryBytes": 536870912,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-8888",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 8888,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": [
-   {
-    "id": "oscam.open-ui",
-    "name": {
-     "en": "Open Oscam"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "Oscam"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
- },
- {
   "id": "mstream",
   "name": "Mstream",
   "description": {
@@ -7231,7 +7100,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 19400,
+  "popularity": 19103,
   "source": [
    "linuxserver"
   ],
@@ -7359,6 +7228,137 @@
   ]
  },
  {
+  "id": "oscam",
+  "name": "Oscam",
+  "description": {
+   "en": "Oscam — container image from LinuxServer.io."
+  },
+  "categories": [
+   "media"
+  ],
+  "popularity": 18790,
+  "source": [
+   "linuxserver"
+  ],
+  "confidence": "estimated",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "oscam",
+     "role": "app",
+     "image": "lscr.io/linuxserver/oscam",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 8888,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 8888,
+       "containerPort": 8888,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 0.25,
+    "memoryBytes": 268435456,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 1,
+    "memoryBytes": 536870912,
+    "diskBytes": 2000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-8888",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 8888,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "oscam.open-ui",
+    "name": {
+     "en": "Open Oscam"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "Oscam"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "mastodon",
   "name": "Mastodon",
   "description": {
@@ -7367,7 +7367,7 @@
   "categories": [
    "messaging"
   ],
-  "popularity": 18213,
+  "popularity": 18318,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -7536,7 +7536,7 @@
   "categories": [
    "documents"
   ],
-  "popularity": 14670,
+  "popularity": 15107,
   "source": [
    "linuxserver"
   ],
@@ -7687,7 +7687,7 @@
   "categories": [
    "media"
   ],
-  "popularity": 13867,
+  "popularity": 13363,
   "source": [
    "linuxserver"
   ],
@@ -7767,7 +7767,7 @@
   "website": "https://planka.app/",
   "repository": "https://github.com/plankanban/planka",
   "license": "⊘ Proprietary",
-  "popularity": 12672,
+  "popularity": 12703,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -7892,6 +7892,138 @@
   ]
  },
  {
+  "id": "pwndrop",
+  "name": "Pwndrop",
+  "description": {
+   "en": "Pwndrop — container image from LinuxServer.io."
+  },
+  "categories": [
+   "files",
+   "security"
+  ],
+  "popularity": 12343,
+  "source": [
+   "linuxserver"
+  ],
+  "confidence": "estimated",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "pwndrop",
+     "role": "app",
+     "image": "lscr.io/linuxserver/pwndrop",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 8080,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 8080,
+       "containerPort": 8080,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 0.25,
+    "memoryBytes": 268435456,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 1,
+    "memoryBytes": 536870912,
+    "diskBytes": 2000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-8080",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 8080,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "pwndrop.open-ui",
+    "name": {
+     "en": "Open Pwndrop"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "Pwndrop"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "kavita",
   "name": "Kavita",
   "description": {
@@ -7905,7 +8037,7 @@
   "website": "https://www.kavitareader.com/",
   "repository": "https://github.com/Kareadita/Kavita",
   "license": "GPL-3.0",
-  "popularity": 12085,
+  "popularity": 12167,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -8047,7 +8179,7 @@
   "website": "https://healthchecks.io/",
   "repository": "https://github.com/healthchecks/healthchecks",
   "license": "BSD-3-Clause",
-  "popularity": 10516,
+  "popularity": 10540,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -8188,138 +8320,6 @@
   ]
  },
  {
-  "id": "pwndrop",
-  "name": "Pwndrop",
-  "description": {
-   "en": "Pwndrop — container image from LinuxServer.io."
-  },
-  "categories": [
-   "files",
-   "security"
-  ],
-  "popularity": 10157,
-  "source": [
-   "linuxserver"
-  ],
-  "confidence": "estimated",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "pwndrop",
-     "role": "app",
-     "image": "lscr.io/linuxserver/pwndrop",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [
-      {
-       "port": 8080,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 8080,
-       "containerPort": 8080,
-       "protocol": "tcp"
-      }
-     ],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 0.25,
-    "memoryBytes": 268435456,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 1,
-    "memoryBytes": 536870912,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-8080",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 8080,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": [
-   {
-    "id": "pwndrop.open-ui",
-    "name": {
-     "en": "Open Pwndrop"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "Pwndrop"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
- },
- {
   "id": "grocy",
   "name": "grocy",
   "description": {
@@ -8332,7 +8332,7 @@
   "website": "https://grocy.info/",
   "repository": "https://github.com/grocy/grocy",
   "license": "MIT",
-  "popularity": 9671,
+  "popularity": 9705,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -8470,7 +8470,7 @@
   "website": "https://hedgedoc.org/",
   "repository": "https://github.com/hedgedoc/hedgedoc",
   "license": "AGPL-3.0",
-  "popularity": 7506,
+  "popularity": 7519,
   "source": [
    "linuxserver",
    "awesome-selfhosted"
@@ -8594,279 +8594,6 @@
   ]
  },
  {
-  "id": "thelounge",
-  "name": "The Lounge",
-  "description": {
-   "en": "Web IRC client."
-  },
-  "categories": [
-   "messaging"
-  ],
-  "website": "https://thelounge.chat/",
-  "repository": "https://github.com/thelounge/thelounge",
-  "license": "MIT",
-  "popularity": 6370,
-  "source": [
-   "linuxserver",
-   "awesome-selfhosted",
-   "community-scripts"
-  ],
-  "confidence": "imported",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "thelounge",
-     "role": "app",
-     "image": "lscr.io/linuxserver/thelounge",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [
-      {
-       "port": 9000,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 9000,
-       "containerPort": 9000,
-       "protocol": "tcp"
-      }
-     ],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 1,
-    "memoryBytes": 805306368,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 2,
-    "memoryBytes": 1610612736,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-9000",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 9000,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": [
-   {
-    "id": "thelounge.open-ui",
-    "name": {
-     "en": "Open The Lounge"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "The Lounge"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
- },
- {
-  "id": "speedtest-tracker",
-  "name": "Speedtest Tracker",
-  "description": {
-   "en": "Monitor the performance and uptime of your internet connection."
-  },
-  "categories": [
-   "monitoring",
-   "networking"
-  ],
-  "website": "https://docs.speedtest-tracker.dev/",
-  "repository": "https://github.com/alexjustesen/speedtest-tracker",
-  "license": "MIT",
-  "popularity": 6079,
-  "source": [
-   "linuxserver",
-   "awesome-selfhosted",
-   "community-scripts"
-  ],
-  "confidence": "imported",
-  "deployment": {
-   "kind": "single",
-   "components": [
-    {
-     "key": "server",
-     "name": "speedtest-tracker",
-     "role": "app",
-     "image": "lscr.io/linuxserver/speedtest-tracker",
-     "defaultTag": "latest",
-     "arch": [
-      "amd64",
-      "arm64"
-     ],
-     "platform": "linux",
-     "listeners": [
-      {
-       "port": 80,
-       "protocol": "tcp",
-       "purpose": "web-ui"
-      }
-     ],
-     "defaultPortMappings": [
-      {
-       "hostPort": 80,
-       "containerPort": 80,
-       "protocol": "tcp"
-      }
-     ],
-     "volumes": [
-      {
-       "name": "config",
-       "containerPath": "/config",
-       "purpose": "config",
-       "defaultSizeBytes": 1000000000
-      }
-     ]
-    }
-   ]
-  },
-  "requirements": {
-   "min": {
-    "cpu": 1,
-    "memoryBytes": 805306368,
-    "diskBytes": 1000000000
-   },
-   "recommended": {
-    "cpu": 2,
-    "memoryBytes": 1610612736,
-    "diskBytes": 2000000000
-   }
-  },
-  "dependencies": [],
-  "provides": [],
-  "trafficPatterns": [
-   {
-    "id": "web-ui-tcp-80",
-    "direction": "inbound",
-    "peer": {
-     "kind": "lan-clients"
-    },
-    "protocol": "tcp",
-    "port": 80,
-    "purpose": "web-ui",
-    "required": true
-   },
-   {
-    "id": "update-check",
-    "direction": "outbound",
-    "peer": {
-     "kind": "internet"
-    },
-    "protocol": "tcp",
-    "port": 443,
-    "purpose": "update-check",
-    "required": false
-   }
-  ],
-  "flows": [
-   {
-    "id": "speedtest-tracker.open-ui",
-    "name": {
-     "en": "Open Speedtest Tracker"
-    },
-    "roles": [
-     {
-      "key": "client",
-      "name": {
-       "en": "Browser"
-      },
-      "selector": {
-       "kind": "lan-clients"
-      },
-      "userPicks": true
-     },
-     {
-      "key": "server",
-      "name": {
-       "en": "Speedtest Tracker"
-      },
-      "selector": {
-       "kind": "self"
-      },
-      "userPicks": false
-     }
-    ],
-    "steps": [
-     {
-      "from": "client",
-      "to": "server",
-      "protocol": "tcp",
-      "purpose": "web-ui",
-      "resolveDns": true
-     }
-    ]
-   }
-  ]
- },
- {
   "id": "kimai",
   "name": "Kimai",
   "description": {
@@ -8876,7 +8603,7 @@
    "finance",
    "productivity"
   ],
-  "popularity": 6014,
+  "popularity": 6721,
   "source": [
    "linuxserver",
    "community-scripts"
@@ -9021,6 +8748,279 @@
   ]
  },
  {
+  "id": "thelounge",
+  "name": "The Lounge",
+  "description": {
+   "en": "Web IRC client."
+  },
+  "categories": [
+   "messaging"
+  ],
+  "website": "https://thelounge.chat/",
+  "repository": "https://github.com/thelounge/thelounge",
+  "license": "MIT",
+  "popularity": 6378,
+  "source": [
+   "linuxserver",
+   "awesome-selfhosted",
+   "community-scripts"
+  ],
+  "confidence": "imported",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "thelounge",
+     "role": "app",
+     "image": "lscr.io/linuxserver/thelounge",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 9000,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 9000,
+       "containerPort": 9000,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 1,
+    "memoryBytes": 805306368,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 2,
+    "memoryBytes": 1610612736,
+    "diskBytes": 2000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-9000",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 9000,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "thelounge.open-ui",
+    "name": {
+     "en": "Open The Lounge"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "The Lounge"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "speedtest-tracker",
+  "name": "Speedtest Tracker",
+  "description": {
+   "en": "Monitor the performance and uptime of your internet connection."
+  },
+  "categories": [
+   "monitoring",
+   "networking"
+  ],
+  "website": "https://docs.speedtest-tracker.dev/",
+  "repository": "https://github.com/alexjustesen/speedtest-tracker",
+  "license": "MIT",
+  "popularity": 6097,
+  "source": [
+   "linuxserver",
+   "awesome-selfhosted",
+   "community-scripts"
+  ],
+  "confidence": "imported",
+  "deployment": {
+   "kind": "single",
+   "components": [
+    {
+     "key": "server",
+     "name": "speedtest-tracker",
+     "role": "app",
+     "image": "lscr.io/linuxserver/speedtest-tracker",
+     "defaultTag": "latest",
+     "arch": [
+      "amd64",
+      "arm64"
+     ],
+     "platform": "linux",
+     "listeners": [
+      {
+       "port": 80,
+       "protocol": "tcp",
+       "purpose": "web-ui"
+      }
+     ],
+     "defaultPortMappings": [
+      {
+       "hostPort": 80,
+       "containerPort": 80,
+       "protocol": "tcp"
+      }
+     ],
+     "volumes": [
+      {
+       "name": "config",
+       "containerPath": "/config",
+       "purpose": "config",
+       "defaultSizeBytes": 1000000000
+      }
+     ]
+    }
+   ]
+  },
+  "requirements": {
+   "min": {
+    "cpu": 1,
+    "memoryBytes": 805306368,
+    "diskBytes": 1000000000
+   },
+   "recommended": {
+    "cpu": 2,
+    "memoryBytes": 1610612736,
+    "diskBytes": 2000000000
+   }
+  },
+  "dependencies": [],
+  "provides": [],
+  "trafficPatterns": [
+   {
+    "id": "web-ui-tcp-80",
+    "direction": "inbound",
+    "peer": {
+     "kind": "lan-clients"
+    },
+    "protocol": "tcp",
+    "port": 80,
+    "purpose": "web-ui",
+    "required": true
+   },
+   {
+    "id": "update-check",
+    "direction": "outbound",
+    "peer": {
+     "kind": "internet"
+    },
+    "protocol": "tcp",
+    "port": 443,
+    "purpose": "update-check",
+    "required": false
+   }
+  ],
+  "flows": [
+   {
+    "id": "speedtest-tracker.open-ui",
+    "name": {
+     "en": "Open Speedtest Tracker"
+    },
+    "roles": [
+     {
+      "key": "client",
+      "name": {
+       "en": "Browser"
+      },
+      "selector": {
+       "kind": "lan-clients"
+      },
+      "userPicks": true
+     },
+     {
+      "key": "server",
+      "name": {
+       "en": "Speedtest Tracker"
+      },
+      "selector": {
+       "kind": "self"
+      },
+      "userPicks": false
+     }
+    ],
+    "steps": [
+     {
+      "from": "client",
+      "to": "server",
+      "protocol": "tcp",
+      "purpose": "web-ui",
+      "resolveDns": true
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "lidarr",
   "name": "Lidarr",
   "description": {
@@ -9034,7 +9034,7 @@
   "website": "https://lidarr.audio/",
   "repository": "https://github.com/Lidarr/Lidarr",
   "license": "GPL-3.0",
-  "popularity": 5819,
+  "popularity": 5844,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -9181,7 +9181,7 @@
   "website": "https://github.com/Yooooomi/your_spotify",
   "repository": "https://github.com/Yooooomi/your_spotify",
   "license": "MIT",
-  "popularity": 4619,
+  "popularity": 4632,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -9332,7 +9332,7 @@
   "website": "https://lycheeorg.github.io/",
   "repository": "https://github.com/LycheeOrg/Lychee",
   "license": "MIT",
-  "popularity": 4329,
+  "popularity": 4333,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -9474,7 +9474,7 @@
   "website": "https://openspeedtest.com/",
   "repository": "https://github.com/openspeedtest/Speed-Test",
   "license": "MIT",
-  "popularity": 3846,
+  "popularity": 3868,
   "source": [
    "linuxserver",
    "awesome-selfhosted"
@@ -9609,7 +9609,7 @@
   "website": "https://manyfold.app",
   "repository": "https://github.com/manyfold3d/manyfold",
   "license": "MIT",
-  "popularity": 2241,
+  "popularity": 2260,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
@@ -9750,7 +9750,7 @@
   "website": "https://xbackbone.app/",
   "repository": "https://github.com/SergiX44/XBackBone",
   "license": "AGPL-3.0",
-  "popularity": 1171,
+  "popularity": 1172,
   "source": [
    "linuxserver",
    "awesome-selfhosted"
@@ -9908,7 +9908,7 @@
   "website": "https://mylar.nerdfirehurricane.com/",
   "repository": "https://github.com/MylarComics/mylar3",
   "license": "GPL-3.0",
-  "popularity": 128,
+  "popularity": 131,
   "source": [
    "linuxserver",
    "awesome-selfhosted",
