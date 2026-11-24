@@ -32,6 +32,8 @@ export interface LabelContent {
   title: string;
   /** Second line (address, model, other end), may be empty. */
   detail: string;
+  /** 1.10: cable labels can be printed as flags. */
+  kind?: 'cable' | 'device';
 }
 
 export interface LabelOptions {
@@ -53,7 +55,7 @@ export function projectLabels(project: Project, options: LabelOptions): LabelCon
     for (const d of Object.values(project.devices)
       .filter((x) => x.kind !== 'internet')
       .sort((a, b) => a.name.localeCompare(b.name)))
-      labels.push({ title: d.physicalLabel || d.name, detail: address(d.id) });
+      labels.push({ title: d.physicalLabel || d.name, detail: address(d.id), kind: 'device' });
   }
   if (options.cables) {
     const pattern = project.settings.cableLabelPattern;
@@ -64,6 +66,7 @@ export function projectLabels(project: Project, options: LabelOptions): LabelCon
         detail: [l.cable?.category?.toUpperCase(), l.cable?.lengthM ? `${l.cable.lengthM} m` : '']
           .filter(Boolean)
           .join(' · '),
+        kind: 'cable' as const,
       }))
       .sort((a, b) => a.title.localeCompare(b.title));
     for (const c of cables) labels.push(...(options.bothEnds ? [c, c] : [c]));
@@ -74,6 +77,11 @@ export function projectLabels(project: Project, options: LabelOptions): LabelCon
 export interface PlacedLabel extends LabelContent {
   x: number;
   y: number;
+  /** Size of this label, mm. */
+  w: number;
+  h: number;
+  /** 1.10: a cable flag — the text twice with a wrap zone between the halves. */
+  flag?: boolean;
 }
 
 /**
@@ -84,6 +92,8 @@ export function layoutSheets(
   labels: LabelContent[],
   preset: SheetPreset,
   skip = 0,
+  /** 1.10: cable labels as flags. */
+  flag = false,
 ): PlacedLabel[][] {
   const perSheet = preset.cols * preset.rows;
   const start = Math.min(Math.max(0, Math.floor(skip)), perSheet - 1);
@@ -103,7 +113,90 @@ export function layoutSheets(
       ...label,
       x: left + col * (preset.w + preset.gapX),
       y: top + row * (preset.h + preset.gapY),
+      w: preset.w,
+      h: preset.h,
+      ...(flag && label.kind === 'cable' ? { flag: true } : {}),
     });
   });
   return sheets;
+}
+
+/** LBL-04 (1.10) label tape widths (Brother P-touch / Dymo class printers), mm. */
+export const TAPE_WIDTHS = [12, 18, 24] as const;
+/** Cable flag: the part that wraps around the cable, between the two halves, mm. */
+export const FLAG_WRAP = 15;
+const TAPE_MARGIN = 3;
+const MIN_TAPE_LABEL = 20;
+
+/** Title font on a tape of this width, mm (one line plus a smaller detail line). */
+export const tapeFont = (tapeMm: number) => tapeMm * 0.4;
+
+/** Length of one label on tape: the text plus margins (a flag: twice plus the wrap). */
+export function tapeLength(label: LabelContent, tapeMm: number, flag: boolean): number {
+  const chars = Math.max(label.title.length, Math.ceil(label.detail.length * 0.75));
+  const half = Math.max(MIN_TAPE_LABEL, chars * tapeFont(tapeMm) * 0.6 + 2 * TAPE_MARGIN);
+  return Math.round((flag && label.kind === 'cable' ? 2 * half + FLAG_WRAP : half) * 10) / 10;
+}
+
+/**
+ * Tape labels on A4 pages for printing or reference: rows of labels, as long as their text, packed
+ * left to right inside 10 mm margins.
+ */
+export function layoutTape(labels: LabelContent[], tapeMm: number, flag: boolean): PlacedLabel[][] {
+  const pages: PlacedLabel[][] = [];
+  const margin = 10;
+  const gap = 3;
+  let page: PlacedLabel[] = [];
+  let x = margin;
+  let y = margin;
+  for (const label of labels) {
+    const w = Math.min(A4.w - 2 * margin, tapeLength(label, tapeMm, flag));
+    if (x + w > A4.w - margin) {
+      x = margin;
+      y += tapeMm + gap;
+    }
+    if (y + tapeMm > A4.h - margin) {
+      pages.push(page);
+      page = [];
+      x = margin;
+      y = margin;
+    }
+    page.push({
+      ...label,
+      x,
+      y,
+      w,
+      h: tapeMm,
+      ...(flag && label.kind === 'cable' ? { flag: true } : {}),
+    });
+    x += w + gap;
+  }
+  if (page.length > 0) pages.push(page);
+  return pages;
+}
+
+/** The whole tape as one strip — labels end to end — for a label printer's own software. */
+export function tapeStrip(
+  labels: LabelContent[],
+  tapeMm: number,
+  flag: boolean,
+): {
+  labels: PlacedLabel[];
+  length: number;
+} {
+  let x = 0;
+  const placed = labels.map((label) => {
+    const w = tapeLength(label, tapeMm, flag);
+    const p: PlacedLabel = {
+      ...label,
+      x,
+      y: 0,
+      w,
+      h: tapeMm,
+      ...(flag && label.kind === 'cable' ? { flag: true } : {}),
+    };
+    x += w;
+    return p;
+  });
+  return { labels: placed, length: x };
 }

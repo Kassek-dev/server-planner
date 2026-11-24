@@ -168,6 +168,29 @@ test('print labels: cables and devices on an A4 sheet (LBL-04)', async ({ page }
   await page.emulateMedia({ media: 'screen' });
 });
 
+test('print labels on tape, cables as flags, and download the tape (LBL-04, 1.10)', async ({
+  page,
+}) => {
+  await openExample(page);
+  await page.getByRole('button', { name: 'Print labels' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Print labels' });
+  await dialog.getByRole('combobox', { name: 'Format' }).selectOption('12');
+  await expect(dialog.getByRole('combobox', { name: 'Label sheet' })).toBeHidden();
+  await expect(dialog.getByText(/cm of tape/)).toBeVisible();
+  const before = await dialog.getByText(/cm of tape/).textContent();
+  await dialog.getByRole('checkbox', { name: /Cable flags/ }).check();
+  await expect(dialog.getByText(/cm of tape/)).not.toHaveText(before ?? '');
+  const download = page.waitForEvent('download');
+  await dialog.getByRole('button', { name: 'Download tape (SVG)' }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toMatch(/-tape-12mm\.svg$/);
+  const path = await file.path();
+  const svg = (await import('node:fs')).readFileSync(path, 'utf8');
+  expect(svg).toContain('height="12mm"');
+  expect(svg).not.toContain('var(--sp-');
+  await page.screenshot({ path: 'test-results/labels-tape.png' });
+});
+
 test('IPv6: dual-stack addressing in the inspector and the IP plan (NET-17)', async ({ page }) => {
   await page.goto('./');
   await page
