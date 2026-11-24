@@ -475,4 +475,5 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-24 | Etap 48: internet klientów VPN (NET‑16) | #85 |
 | 2026-11-24 | Etap 49: scenariusze obciążają hosty (FLW‑07) | #86 |
 | 2026-11-24 | Etap 50: krok „Configure” w D‑05 (LIB‑05) | #87 |
-| 2026-11-24 | Etap 51: etykiety taśmowe i flagi kabli (LBL‑04) | — |
+| 2026-11-24 | Etap 51: etykiety taśmowe i flagi kabli (LBL‑04) | #88 |
+| 2026-11-24 | Wydanie v1.10.0 | — |

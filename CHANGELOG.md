@@ -2,6 +2,23 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [1.10.0] — 2026-11-24
+
+Simpler ways through things that used to take several steps: IPv6 in the simulator, VPN clients on the internet, scenarios that load hosts, configuring a model as you pick it, and labels for tape printers.
+
+### Features
+
+- **Outgoing host firewall** — host firewalls now have outbound rules and policy next to the inbound ones; the simulator checks both ends of a connection (#78).
+- **IPv6 in the simulator** — the reachability check runs over IPv4 or IPv6; Access lists what the internet can reach over IPv6, where there is no NAT to hide behind (#84).
+- **Full and split VPN tunnels** — a VPN zone sets whether its clients reach the internet through the lab (the router's firewall and NAT apply) or over their own connection (#85).
+- **Scenarios load hosts** — Calculate load also shows how the CPU and memory of hosts and VMs change: three streams mean three transcodes in the app's load profile (#86).
+- **Configure a model as you pick it** — the device model dialog has a Configure step: a memory kit that fits the model, extra disks for its free bays and add-in cards for its free slots (#87).
+- **Label tape and cable flags** — Print labels supports 12, 18 and 24 mm label tape (Brother, Dymo) with an SVG download for the printer's software, and cable labels can be printed as flags (#88).
+
+### Catalog
+
+- Catalog updated to 2026.48.
+
 ## [1.9.0] — 2026-11-17
 
 Power that fills itself in, image facts from Docker Hub, and prices for parts.
