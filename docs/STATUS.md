@@ -388,6 +388,7 @@ Rozwinięcie uproszczeń z D12/D13.
 ### Etap 50 — Krok „Configure” w D‑05 (LIB‑05)
 - [x] `ModelConfigure` (zestawy RAM w limitach modelu, dyski w wolnych zatokach/M.2, karty w wolnych slotach), drugi krok w `DeviceModelPicker`, `configCommands` po dodaniu urządzenia lub zmianie modelu
 ### Etap 51 — Etykiety taśmowe i flagi kabli (LBL‑04)
+- [x] `layoutTape` / `tapeStrip` / `tapeLength`, flagi w `layoutSheets`; D‑17: Format (A4 / taśma 12–24 mm), Cable flags, pobieranie paska SVG
 
 ## Dziennik
 
@@ -473,4 +474,5 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-24 | Etap 47: IPv6 w symulacji (NET‑17) | #84 |
 | 2026-11-24 | Etap 48: internet klientów VPN (NET‑16) | #85 |
 | 2026-11-24 | Etap 49: scenariusze obciążają hosty (FLW‑07) | #86 |
-| 2026-11-24 | Etap 50: krok „Configure” w D‑05 (LIB‑05) | — |
+| 2026-11-24 | Etap 50: krok „Configure” w D‑05 (LIB‑05) | #87 |
+| 2026-11-24 | Etap 51: etykiety taśmowe i flagi kabli (LBL‑04) | — |
