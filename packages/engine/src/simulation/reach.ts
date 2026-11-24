@@ -53,7 +53,8 @@ export const SIM_CODES = [
   'SIM_HOSTFW_OUT_DEFAULT_DENY',
   'SIM_VPN_TUNNEL',
   'SIM_VPN_NAT',
-  'SIM_VPN_INTERNET',
+  'SIM_VPN_SPLIT',
+  'SIM_VPN_FULL',
   'SIM_VPN_NOT_TARGET',
   'SIM_HOSTFW_RULE_DENY',
   'SIM_HOSTFW_DEFAULT_ALLOW',
@@ -597,6 +598,10 @@ function attempt(
     const params = { zone: zone?.name ?? '', server: srcDevice?.name ?? '' };
     if (srcDevice && (srcDevice.kind === 'router' || srcDevice.kind === 'firewall'))
       return vpnRouted(ctx, t, q, src.vpnZone, srcDevice, dst, dstAtt);
+    if ((!dst || !dstAtt) && zone?.vpn?.tunnel === 'split') {
+      t.pass('l3', ifaceRef(srcAtt.ifaceId), 'SIM_VPN_SPLIT', params);
+      return t.result();
+    }
     // A VPN server on a host masquerades its clients: they look like the host from here on.
     t.pass('l3', ifaceRef(srcAtt.ifaceId), 'SIM_VPN_NAT', params);
   }
@@ -658,51 +663,7 @@ function attempt(
   const routerIfaces = ctx.interfacesByOwner.get(router.id) ?? [];
   const routerRef = deviceRef(router);
   if (q.to === 'internet' || !dst || !dstAtt) {
-    const masquerade = router.firewall?.nat.filter((n) => n.kind === 'masquerade') ?? [];
-    const wans = routerIfaces.filter((i) => isWan(ctx, i) && i.enabled);
-    const wan = wans.find((i) => masquerade.some((m) => m.outInterfaceId === i.id)) ?? wans[0];
-    if (!wan) {
-      t.fail('l3', routerRef, 'SIM_L3_NO_WAN', { router: router.name });
-      return t.result();
-    }
-    t.pass('l3', routerRef, 'SIM_L3_ROUTE_INTERNET', { router: router.name, from: srcSubnet.cidr });
-    const wanZone = wan.zoneId ?? Object.values(p.zones).find((z) => z.kind === 'wan')?.id;
-    const dstSide: Side = {
-      internet: true,
-      ...(wanZone ? { zoneId: wanZone } : {}),
-      devices: new Set(),
-      workloads: new Set(),
-      apps: new Set(),
-    };
-    if (!firewall(ctx, t, router, srcSide, dstSide, q)) return t.result();
-    if (ctx.family === 'ipv6') {
-      // NET-17: IPv6 is routed as it is — no address translation on the way out.
-      t.pass('nat', routerRef, 'SIM_NAT_NONE_IPV6', { router: router.name, interface: wan.name });
-    } else {
-      const nat = masquerade.find(
-        (m) =>
-          m.outInterfaceId === wan.id &&
-          (!m.sourceZoneIds?.length ||
-            (srcSide.zoneId && m.sourceZoneIds.includes(srcSide.zoneId))),
-      );
-      if (!nat) {
-        t.fail('nat', routerRef, 'SIM_NAT_MISSING', { router: router.name, interface: wan.name });
-        return t.result();
-      }
-      t.pass('nat', routerRef, 'SIM_NAT_MASQUERADE', { router: router.name, interface: wan.name });
-    }
-    const uplink = (ctx.linksByInterface.get(wan.id) ?? []).find((l) => {
-      const peer = ctx.deviceOfInterface.get(l.a === wan.id ? l.b : l.a);
-      return peer?.kind === 'internet';
-    });
-    if (!uplink) {
-      t.fail('l3', ifaceRef(wan.id), 'SIM_WAN_NO_UPLINK', { interface: wan.name });
-      return t.result();
-    }
-    t.links.add(uplink.id);
-    const internet = ctx.deviceOfInterface.get(uplink.a === wan.id ? uplink.b : uplink.a);
-    if (internet) t.devices.add(internet.id);
-    t.pass('l3', ifaceRef(wan.id), 'SIM_INTERNET', { interface: wan.name });
+    toInternet(ctx, t, router, srcSide, q, srcSubnet.cidr);
     return t.result();
   }
 
@@ -764,11 +725,6 @@ function vpnRouted(
   const zone = ctx.project.zones[zoneId];
   const routerRef = deviceRef(router);
   t.pass('l3', routerRef, 'SIM_VPN_TUNNEL', { zone: zone?.name ?? '', router: router.name });
-  if (!dst || !dstAtt) {
-    t.unknown = true;
-    t.fail('l3', routerRef, 'SIM_VPN_INTERNET', { zone: zone?.name ?? '' });
-    return t.result();
-  }
   const src: Side = {
     internet: false,
     zoneId,
@@ -776,6 +732,16 @@ function vpnRouted(
     workloads: new Set(),
     apps: new Set(),
   };
+  if (!dst || !dstAtt) {
+    // 1.10: split tunnel — the client's own connection; full tunnel — out through the lab.
+    if (zone?.vpn?.tunnel === 'split') {
+      t.pass('l3', routerRef, 'SIM_VPN_SPLIT', { zone: zone?.name ?? '' });
+      return t.result();
+    }
+    t.pass('l3', routerRef, 'SIM_VPN_FULL', { zone: zone?.name ?? '', router: router.name });
+    toInternet(ctx, t, router, src, q, zone?.name ?? '');
+    return t.result();
+  }
   const dstSubnet = dstAtt.subnetId ? ctx.project.subnets[dstAtt.subnetId] : undefined;
   const egress = (ctx.interfacesByOwner.get(router.id) ?? [])
     .map((i) => attachmentOf(ctx, i))
@@ -792,6 +758,65 @@ function vpnRouted(
     return t.result();
   targetChecks(t, dst, q, false, { ctx, src, att: dstAtt });
   return t.result();
+}
+
+/** The router's way out: WAN interface, firewall to the internet, NAT (IPv4), uplink. */
+function toInternet(
+  ctx: EngineContext,
+  t: Trace,
+  router: Device,
+  srcSide: Side,
+  q: ReachQuery,
+  from: string,
+): boolean {
+  const p = ctx.project;
+  const routerIfaces = ctx.interfacesByOwner.get(router.id) ?? [];
+  const routerRef = deviceRef(router);
+  const masquerade = router.firewall?.nat.filter((n) => n.kind === 'masquerade') ?? [];
+  const wans = routerIfaces.filter((i) => isWan(ctx, i) && i.enabled);
+  const wan = wans.find((i) => masquerade.some((m) => m.outInterfaceId === i.id)) ?? wans[0];
+  if (!wan) {
+    t.fail('l3', routerRef, 'SIM_L3_NO_WAN', { router: router.name });
+    return false;
+  }
+  t.pass('l3', routerRef, 'SIM_L3_ROUTE_INTERNET', { router: router.name, from });
+  const wanZone = wan.zoneId ?? Object.values(p.zones).find((z) => z.kind === 'wan')?.id;
+  const dstSide: Side = {
+    internet: true,
+    ...(wanZone ? { zoneId: wanZone } : {}),
+    devices: new Set(),
+    workloads: new Set(),
+    apps: new Set(),
+  };
+  if (!firewall(ctx, t, router, srcSide, dstSide, q)) return false;
+  if (ctx.family === 'ipv6') {
+    // NET-17: IPv6 is routed as it is — no address translation on the way out.
+    t.pass('nat', routerRef, 'SIM_NAT_NONE_IPV6', { router: router.name, interface: wan.name });
+  } else {
+    const nat = masquerade.find(
+      (m) =>
+        m.outInterfaceId === wan.id &&
+        (!m.sourceZoneIds?.length || (srcSide.zoneId && m.sourceZoneIds.includes(srcSide.zoneId))),
+    );
+    if (!nat) {
+      t.fail('nat', routerRef, 'SIM_NAT_MISSING', { router: router.name, interface: wan.name });
+      return false;
+    }
+    t.pass('nat', routerRef, 'SIM_NAT_MASQUERADE', { router: router.name, interface: wan.name });
+  }
+  const uplink = (ctx.linksByInterface.get(wan.id) ?? []).find((l) => {
+    const peer = ctx.deviceOfInterface.get(l.a === wan.id ? l.b : l.a);
+    return peer?.kind === 'internet';
+  });
+  if (!uplink) {
+    t.fail('l3', ifaceRef(wan.id), 'SIM_WAN_NO_UPLINK', { interface: wan.name });
+    return false;
+  }
+  t.links.add(uplink.id);
+  const internet = ctx.deviceOfInterface.get(uplink.a === wan.id ? uplink.b : uplink.a);
+  if (internet) t.devices.add(internet.id);
+  t.pass('l3', ifaceRef(wan.id), 'SIM_INTERNET', { interface: wan.name });
+  return true;
 }
 
 const passed = (r: ReachabilityResult) => r.steps.filter((s) => s.decision === 'pass').length;

@@ -1,4 +1,11 @@
-import { addApp, addFirewallRule, addZone, execute, type Project } from '@server-planner/model';
+import {
+  addApp,
+  addFirewallRule,
+  addZone,
+  execute,
+  type Project,
+  updateZone,
+} from '@server-planner/model';
 import { describe, expect, it } from 'vitest';
 import { accessMatrix, buildContext, reach } from '../src';
 import { analyze, byName, homeLab } from './support';
@@ -81,5 +88,30 @@ describe('VPN zones (NET-16)', () => {
     const codes = analyze(p).issues.map((i) => i.code);
     expect(codes).toContain('VAL_VPN_EXPOSED');
     expect(analyze(withVpn(true).p).issues.map((i) => i.code)).not.toContain('VAL_VPN_EXPOSED');
+  });
+
+  it('reaches the internet through the router in a full tunnel, on its own in a split one (1.10)', () => {
+    const { p, zone } = withVpn(true);
+    const internet = (q: Project) =>
+      reach(buildContext(q), {
+        from: { type: 'zone', id: zone },
+        to: 'internet',
+        protocol: 'tcp',
+        port: 443,
+      });
+    const full = internet(p);
+    expect(full.steps.some((s) => s.code === 'SIM_VPN_FULL')).toBe(true);
+    // gw-01 denies by default and its masquerade covers the LAN zones only.
+    expect(full.verdict).toBe('blocked');
+    const z = p.zones[zone];
+    const split = execute(p, updateZone, {
+      id: zone,
+      changes: {
+        vpn: { ...(z?.vpn ?? { serverAppId: '', protocol: 'wireguard' }), tunnel: 'split' },
+      },
+    }).project;
+    const result = internet(split);
+    expect(result.verdict).toBe('reachable');
+    expect(result.steps.at(-1)?.code).toBe('SIM_VPN_SPLIT');
   });
 });

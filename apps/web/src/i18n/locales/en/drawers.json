@@ -24,6 +24,9 @@
     "vpnServer": "VPN server",
     "vpnNoServer": "— choose the VPN app —",
     "vpnProtocol": "Protocol",
+    "vpnTunnel": "Tunnel",
+    "vpnFull": "Full — internet through the lab",
+    "vpnSplit": "Split — lab traffic only",
     "ra": "Router advertisements",
     "raModes": {
       "slaac": "SLAAC — hosts pick their address",

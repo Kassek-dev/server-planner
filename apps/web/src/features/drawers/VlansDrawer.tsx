@@ -462,7 +462,7 @@ function ZoneList({ project }: { project: Project }) {
             onClick={() => run(deleteZone, { id: zone.id })}
           />
           {zone.kind === 'vpn' ? (
-            <div className="col-span-full grid grid-cols-[1fr_160px] gap-2.5">
+            <div className="col-span-full grid grid-cols-[1fr_140px_140px] gap-2.5">
               <Select
                 label={t('vlans.vpnServer')}
                 value={zone.vpn?.serverAppId ?? ''}
@@ -502,6 +502,24 @@ function ZoneList({ project }: { project: Project }) {
                         ...zone.vpn,
                         protocol: e.target.value as NonNullable<Zone['vpn']>['protocol'],
                       },
+                    },
+                  })
+                }
+              />
+              <Select
+                label={t('vlans.vpnTunnel')}
+                value={zone.vpn?.tunnel ?? 'full'}
+                disabled={!zone.vpn}
+                options={[
+                  { value: 'full', label: t('vlans.vpnFull') },
+                  { value: 'split', label: t('vlans.vpnSplit') },
+                ]}
+                onChange={(e) =>
+                  zone.vpn &&
+                  run(updateZone, {
+                    id: zone.id,
+                    changes: {
+                      vpn: { ...zone.vpn, tunnel: e.target.value as 'full' | 'split' },
                     },
                   })
                 }

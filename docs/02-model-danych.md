@@ -687,7 +687,7 @@ interface Zone {
   kind: 'wan' | 'internal' | 'vpn'; // WAN — strefa internetu; vpn (v4, NET-16) — zdalni klienci VPN
   color: ColorRef;
   intraZone: 'allow' | 'deny'; // ruch wewnątrz tej samej strefy (przez router)
-  vpn?: { serverAppId: Id; protocol: 'wireguard' | 'tailscale' | 'openvpn' }; // v4: serwer, do którego łączą się klienci
+  vpn?: { serverAppId: Id; protocol: 'wireguard' | 'tailscale' | 'openvpn'; tunnel?: 'full' | 'split' /* 1.10, brak = full */ };
 }
 
 // Schemat v4 (1.8):
