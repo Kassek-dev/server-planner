@@ -23,6 +23,8 @@ export interface EngineOptions {
   osArch?: Partial<Record<OsId, CpuArch[]>>;
   /** CAP-07: what each catalog device model ships with (power spec, disks, discrete GPUs). */
   modelBaselines?: Record<string, ModelBaseline>;
+  /** NET-17 (1.10): address family the simulation works on; IPv4 by default. */
+  family?: 'ipv4' | 'ipv6';
 }
 
 export type CpuArch = 'amd64' | 'arm64';
@@ -38,6 +40,7 @@ export interface EngineContext {
   imageArch: Record<string, CpuArch[]>;
   osArch: Partial<Record<OsId, CpuArch[]>>;
   modelBaselines: Record<string, ModelBaseline>;
+  family: 'ipv4' | 'ipv6';
   interfacesByOwner: Map<string, Interface[]>;
   linksByInterface: Map<string, Link[]>;
   vlanByVid: Map<number, Vlan>;
@@ -110,6 +113,7 @@ export function buildContext(project: Project, options: EngineOptions = {}): Eng
     imageArch: options.imageArch ?? {},
     osArch: options.osArch ?? {},
     modelBaselines: options.modelBaselines ?? {},
+    family: options.family ?? 'ipv4',
     interfacesByOwner,
     linksByInterface,
     vlanByVid,

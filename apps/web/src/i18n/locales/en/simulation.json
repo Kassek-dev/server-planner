@@ -15,6 +15,7 @@
     "app": "app"
   },
   "reach": {
+    "family": "IP version",
     "from": "From",
     "to": "To",
     "choose": "Choose…",
@@ -77,6 +78,9 @@
     "SIM_HOSTFW_OUT_RULE_ALLOW": "{host} lets it out by outgoing rule #{rule}.",
     "SIM_HOSTFW_OUT_RULE_DENY": "{host} blocks outgoing {protocol}/{port} by rule #{rule}.",
     "SIM_HOSTFW_OUT_DEFAULT_DENY": "No outgoing rule matches; {host} drops outgoing {protocol}/{port} by default.",
+    "SIM_NAT_NONE_IPV6": "IPv6 is routed by {router} as it is — no address translation.",
+    "SIM_IPV6_GLOBAL": "{subnet} is a global IPv6 prefix: the internet can address its hosts directly.",
+    "SIM_IPV6_LOCAL_ONLY": "{subnet} is a local IPv6 prefix (ULA): not routed on the internet.",
     "SIM_HOSTFW_RULE_ALLOW": "Allowed by host firewall rule #{rule} on {host}.",
     "SIM_HOSTFW_RULE_DENY": "Blocked by host firewall rule #{rule} on {host} ({protocol}/{port}).",
     "SIM_HOSTFW_DEFAULT_ALLOW": "No host firewall rule matches; {host} accepts incoming traffic by default.",

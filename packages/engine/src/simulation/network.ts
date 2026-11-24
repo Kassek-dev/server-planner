@@ -76,13 +76,13 @@ function effectiveSwitchport(ctx: EngineContext, iface: Interface): Interface['s
   return undefined;
 }
 
-/** NET-17: the simulation works on IPv4; IPv6 assignments (dual-stack) are left out. */
-export const ipv4Assignments = (ctx: EngineContext, iface: Interface) =>
-  iface.addresses.filter((a) => assignmentFamily(ctx.project, a) === 'ipv4');
+/** NET-17: the simulation works on one address family at a time (IPv4 unless asked for IPv6). */
+export const familyAssignments = (ctx: EngineContext, iface: Interface) =>
+  iface.addresses.filter((a) => assignmentFamily(ctx.project, a) === ctx.family);
 
 /** Subnet of the interface's first IPv4 address (explicit, by address, or none). */
 function addressSubnet(ctx: EngineContext, iface: Interface): string | undefined {
-  for (const a of ipv4Assignments(ctx, iface)) {
+  for (const a of familyAssignments(ctx, iface)) {
     if (a.subnetId && ctx.project.subnets[a.subnetId]) return a.subnetId;
     const byAddress = a.address ? subnetForAddress(ctx.project, a.address) : undefined;
     if (byAddress) return byAddress;
@@ -267,7 +267,7 @@ function neighbourSegment(ctx: EngineContext, iface: Interface): SegmentKey | un
 export function attachmentOf(ctx: EngineContext, iface: Interface): Attachment | undefined {
   if (!iface.enabled) return undefined;
   const p = ctx.project;
-  const v4 = ipv4Assignments(ctx, iface);
+  const v4 = familyAssignments(ctx, iface);
   const address = v4.find((a) => a.address)?.address;
   let subnetId = addressSubnet(ctx, iface);
   let l2IfaceId = iface.id;
@@ -287,9 +287,9 @@ export function attachmentOf(ctx: EngineContext, iface: Interface): Attachment |
     if (v4.length === 0) return undefined;
     segment = '';
   }
-  // DHCP / unaddressed clients take the IPv4 subnet of their segment.
+  // DHCP / SLAAC / unaddressed clients take the subnet of their segment in the simulated family.
   subnetId ??= Object.values(p.subnets).find(
-    (s) => (s.vlanId ?? '') === segment && !isIpv6Cidr(s.cidr),
+    (s) => (s.vlanId ?? '') === segment && isIpv6Cidr(s.cidr) === (ctx.family === 'ipv6'),
   )?.id;
   const zoneId = iface.zoneId ?? (subnetId ? p.subnets[subnetId]?.zoneId : undefined);
   return {
@@ -313,7 +313,7 @@ export function ownerAttachments(ctx: EngineContext, ownerId: string): Attachmen
   for (const iface of owned) {
     if (iface.kind === 'wan' && device?.kind === 'internet') continue;
     const parent = iface.parentId ? ctx.project.interfaces[iface.parentId] : undefined;
-    const addressed = ipv4Assignments(ctx, iface).length > 0;
+    const addressed = familyAssignments(ctx, iface).length > 0;
     const plainPort =
       !infra &&
       PHYSICAL.has(iface.kind) &&

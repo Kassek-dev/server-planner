@@ -299,7 +299,7 @@ Silnik operuje na **grafie projektu**, nie na pakietach. Dla pary (źródło, ce
 
 Węzeł **Internet** jest specjalnym celem/źródłem: każde połączenie wychodzące przez WAN z NAT = „ma internet”.
 
-**Uproszczenia świadomie przyjęte:** brak STP (pętla = ostrzeżenie), brak multicastu/mDNS (P2), IPv6 tylko w adresacji i walidacji (1.6, D12 — symulacja liczy IPv4), brak QoS, brak opóźnień.
+**Uproszczenia świadomie przyjęte:** brak STP (pętla = ostrzeżenie), brak multicastu/mDNS (P2), IPv6 w adresacji i walidacji (1.6), w symulacji osobno od IPv4 (1.10: tryb IPv6 w Reachability, ekspozycja IPv6 z internetu; macierz, przepływy i awarie liczą IPv4), brak QoS, brak opóźnień.
 
 ### M9. Capacity planning
 

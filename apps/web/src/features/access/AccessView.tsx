@@ -2,6 +2,7 @@ import {
   type AccessMatrix,
   type EntityRef,
   type Exposure,
+  type Ipv6Exposure,
   type MatrixCell,
   mdnsDomains,
   type ReachabilityResult,
@@ -159,6 +160,7 @@ export function AccessView() {
             ) : null}
           </section>
           <ExposureList project={project} exposure={exposure} />
+          <Ipv6ExposureList project={project} />
           <MdnsList project={project} />
           <AssertionList project={project} />
         </div>
@@ -549,6 +551,53 @@ function MdnsList({ project }: { project: Project }) {
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+/** NET-17 (1.10): hosts the internet reaches over IPv6 — no port forward, only firewalls. */
+function Ipv6ExposureList({ project }: { project: Project }) {
+  const { t } = useTranslation('views');
+  const ts = useTranslation('simulation').t;
+  const { simulator } = useServices();
+  const hasIpv6 = Object.values(project.subnets).some((s) => s.cidr.includes(':'));
+  const [list, setList] = useState<Ipv6Exposure[] | null>(null);
+  useEffect(() => {
+    if (!hasIpv6) return;
+    let cancelled = false;
+    void simulator.ipv6Exposure(project).then((r) => !cancelled && setList(r));
+    return () => {
+      cancelled = true;
+    };
+  }, [project, simulator, hasIpv6]);
+  if (!hasIpv6) return null;
+  return (
+    <section className="flex flex-col gap-3" aria-label={t('access.ipv6')}>
+      <Heading>{t('access.ipv6')}</Heading>
+      <p className="m-0 text-body-sm text-text-secondary">{t('access.ipv6Hint')}</p>
+      {!list ? null : list.length === 0 ? (
+        <p className="m-0 text-body-sm text-text-muted">{t('access.ipv6None')}</p>
+      ) : (
+        <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+          {list.map((e) => (
+            <li key={e.ref.id} className="flex items-start gap-2 text-body">
+              <Led
+                status={e.result.verdict === 'reachable' ? 'warning' : e.global ? 'ok' : 'off'}
+                size={7}
+              />
+              <span className="flex flex-col">
+                <span>
+                  {refName(project, e.ref)}
+                  <span className="ml-2 font-mono text-data-sm text-text-muted">
+                    {project.subnets[e.subnetId]?.cidr ?? ''}
+                  </span>
+                </span>
+                <span className="text-body-sm text-text-secondary">{reason(ts, e.result)}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

@@ -206,3 +206,23 @@ test('logical L3: routers, zones and subnets (VIEW-06)', async ({ page }) => {
   await map.getByRole('button', { name: /192\.168\.10\.0\/24/ }).click();
   await expect(page).toHaveURL(/panel=vlans/);
 });
+
+test('IPv6 simulation: reachability over IPv6 and IPv6 from the internet (1.10)', async ({
+  page,
+}) => {
+  await page.goto('./');
+  await page
+    .getByTestId('import-input')
+    .setInputFiles(join(import.meta.dirname, '../../../fixtures/schema/v4/dual-stack.json'));
+  await page.getByRole('button', { name: 'Open project' }).click();
+  await expect(page.locator('.react-flow__node').first()).toBeVisible();
+  await page.getByRole('link', { name: 'Access' }).click();
+  const v6 = page.getByRole('region', { name: 'IPv6 from the internet' });
+  await expect(v6.getByText(/local IPv6 prefix \(ULA\)/).first()).toBeVisible();
+
+  await page.getByRole('button', { name: 'Simulate' }).click();
+  const panel = inspector(page);
+  await expect(panel.getByRole('radio', { name: 'IPv6' })).toBeVisible();
+  await panel.getByText('IPv6', { exact: true }).click();
+  await expect(page).toHaveURL(/fam=6/);
+});

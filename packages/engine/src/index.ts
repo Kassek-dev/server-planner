@@ -8,7 +8,14 @@ import { type AccessMatrix, accessMatrix } from './simulation/assertions';
 import { type FlowRunResult, runFlow } from './simulation/flow';
 import { type LoadItem, type ScenarioLoad, scenarioLoad } from './simulation/load';
 import { exposureWithRoutes } from './simulation/proxy';
-import { type Exposure, type ReachabilityResult, type ReachQuery, reach } from './simulation/reach';
+import {
+  type Exposure,
+  type Ipv6Exposure,
+  ipv6Exposure,
+  type ReachabilityResult,
+  type ReachQuery,
+  reach,
+} from './simulation/reach';
 import type { EntityRef } from './types';
 
 export { analyze, sameDomain } from './analyze';
@@ -85,6 +92,14 @@ export function simulateReach(
   return reach(buildContext(project, options), query);
 }
 
+/** NET-17 (1.10): which hosts' IPv6 prefixes the internet can reach directly. */
+export function simulateIpv6Exposure(
+  project: Project,
+  options: EngineOptions = {},
+): Ipv6Exposure[] {
+  return ipv6Exposure(buildContext(project, { ...options, family: 'ipv6' }));
+}
+
 /** Flow run on a project snapshot (FLW-03, worker entry point). */
 export function simulateFlow(
   project: Project,
@@ -134,3 +149,4 @@ export {
 export * from './powerEstimate';
 export { type LinkLoad, type LoadItem, type ScenarioLoad, scenarioLoad } from './simulation/load';
 export { type MdnsDomain, mdnsDomains, mdnsVisible } from './simulation/mdns';
+export type { Ipv6Exposure } from './simulation/reach';

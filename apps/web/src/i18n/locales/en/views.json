@@ -154,6 +154,9 @@
     }
   },
   "access": {
+    "ipv6": "IPv6 from the internet",
+    "ipv6Hint": "IPv6 has no NAT: hosts on a global prefix can be reached directly unless a firewall stops it — no port forward needed. Checked for any TCP.",
+    "ipv6None": "No hosts with IPv6 addresses.",
     "mdns": "Service discovery (mDNS)",
     "mdnsShared": "{vlans} — devices discover each other's services (reflected by {routers})",
     "mdnsAlone": "{vlan} — services are discoverable only inside this VLAN",
