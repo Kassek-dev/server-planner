@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useServices, useSession } from '../../app/services';
 import { useResults } from '../../store/results';
 import { Button } from '../../ui/Button';
+import { configCommands } from '../catalog/ModelConfigure';
 import { useExportDialog } from '../export/store';
 import { SimulationCanvasLayer } from '../simulation/CanvasLayer';
 import { useSimulation } from '../simulation/store';
@@ -322,17 +323,25 @@ function Workspace() {
       {readOnly ? null : (
         <Library
           onAdd={addAtCenter}
-          onAddModel={(device, catalogVersion) =>
-            report(
-              addItemAt(
-                session,
-                { type: 'device', kind: device.kind, meta: '' },
-                viewportCenter(),
-                defaultName,
-                { device, catalogVersion },
-              ),
-            )
-          }
+          onAddModel={(device, catalogVersion, config) => {
+            const result = addItemAt(
+              session,
+              { type: 'device', kind: device.kind, meta: '' },
+              viewportCenter(),
+              defaultName,
+              { device, catalogVersion },
+            );
+            // LIB-05: what the Configure step added (memory kit, disks, cards).
+            const project = session.getState().project;
+            if (config && result.ok && result.selectId && project) {
+              const steps = configCommands(project, result.selectId, config);
+              if (steps.length > 0)
+                session.transaction(t('configured'), (run) => {
+                  for (const s of steps) run(s.command, s.payload);
+                });
+            }
+            report(result);
+          }}
         />
       )}
       <section

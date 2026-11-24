@@ -7,6 +7,7 @@ import { DeviceIcon, Silhouette } from '../../icons/devices';
 import { AppCatalogDialog } from '../catalog/AppCatalogDialog';
 import { DeviceModelPicker } from '../catalog/DeviceModelPicker';
 import { defaultHost } from '../catalog/helpers';
+import type { ModelConfig } from '../catalog/ModelConfigure';
 import { useDeviceTemplates } from './deviceTemplates';
 import { DRAG_MIME, LIBRARY, type LibraryItem } from './library';
 import { useSelection } from './selection';
@@ -18,7 +19,7 @@ export function Library({
 }: {
   onAdd: (item: LibraryItem) => void;
   /** D-05 from the library: a catalog model added at the viewport center. */
-  onAddModel: (model: CatalogDevice, catalogVersion: string) => void;
+  onAddModel: (model: CatalogDevice, catalogVersion: string, config?: ModelConfig) => void;
 }) {
   const { t } = useTranslation('canvas');
   const project = useSession((s) => s.project);
