@@ -45,4 +45,34 @@ describe('link load (FLW-06/07)', () => {
     expect(result.links[0]?.ratio).toBeGreaterThan(1);
     expect(result.bottleneck).toBe(result.links[0]?.linkId);
   });
+
+  it('raises the CPU of the host by the app load profile (1.10)', () => {
+    const p = homeLab();
+    const profiles = {
+      jellyfin: [
+        {
+          id: 'typical',
+          name: { en: 'Typical' },
+          params: [{ key: 'transcodes', name: { en: 'Transcodes' }, default: 1, min: 0, max: 8 }],
+          resources: { cpu: 1.5, memoryBytes: 1024 ** 3, diskBytes: 0 },
+          perParam: { transcodes: { cpu: 1, memoryBytes: 0.25 * 1024 ** 3 } },
+        },
+      ],
+    };
+    const ctx = buildContext(p, { loadProfiles: profiles });
+    const app = Object.values(p.apps)[0];
+    const withApp = items(p, 4).map((i) => ({
+      ...i,
+      appId: app?.id ?? '',
+      catalogAppId: 'jellyfin',
+    }));
+    const result = scenarioLoad(ctx, withApp);
+    // Jellyfin runs in docker-vm: the VM works harder (its allocation caps what pve1 sees).
+    const vm = Object.values(p.workloads).find((w) => w.name === 'docker-vm');
+    const load = result.hosts.find((h) => h.host.id === vm?.id);
+    expect(load?.host.type).toBe('workload');
+    expect(load?.cpuRatio).toBeGreaterThan(load?.baselineCpuRatio ?? 1);
+    // Without a profile the hosts stay as they are.
+    expect(scenarioLoad(buildContext(p), withApp).hosts).toEqual([]);
+  });
 });

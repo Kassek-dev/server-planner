@@ -167,5 +167,9 @@ test('scenario: three streams add up on the cables (FLW-06/07)', async ({ page }
   await expect(
     page.locator('.react-flow__edge').filter({ has: page.locator('path[style*="status-ok"]') }),
   ).not.toHaveCount(0);
+  // 1.10: the Jellyfin load profile makes docker-vm work harder with three streams.
+  await expect(
+    scenario.getByRole('list', { name: 'Hosts under the scenario' }).getByText('docker-vm'),
+  ).toBeVisible();
   await page.screenshot({ path: 'test-results/scenario-load.png' });
 });

@@ -156,7 +156,9 @@
     "bottleneck": "Bottleneck: {cable} — {load} of {capacity} ({percent}%).",
     "noLoad": "No cable speeds known on the paths — set port speeds to see the load.",
     "failed": "{count, plural, one {# process does} other {# processes do}} not get through and {count, plural, one {is} other {are}} left out.",
-    "links": "Most loaded cables"
+    "links": "Most loaded cables",
+    "hosts": "Hosts under the scenario",
+    "hostLoad": "CPU {cpuBefore}% → {cpu}% · RAM {memBefore}% → {mem}%"
   },
   "flows": {
     "none": "No app in this project has catalog processes yet. Add an app from the catalog (e.g. Jellyfin, Immich, Pi-hole).",

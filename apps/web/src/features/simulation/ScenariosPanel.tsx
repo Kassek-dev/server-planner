@@ -15,7 +15,7 @@ import { Gauge, ListPlus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useServices } from '../../app/services';
-import { useCatalog } from '../../catalog/store';
+import { engineOptions, useCatalog } from '../../catalog/store';
 import { Button } from '../../ui/Button';
 import { Led } from '../../ui/Led';
 import { Select } from '../../ui/Select';
@@ -92,17 +92,20 @@ export function ScenariosPanel({ project }: { project: Project }) {
     const items: LoadItem[] = scenario.items.flatMap((item) => {
       const flow = flowOf(item);
       if (!flow) return [];
+      const entry = entries.find((e) => e.app.id === item.appId)?.entry;
       return [
         {
           flow,
           count: item.count,
+          appId: item.appId,
+          ...(entry ? { catalogAppId: entry.id } : {}),
           bindings: Object.fromEntries(
             Object.entries(item.bindings).map(([k, b]) => [k, target(b)]),
           ),
         },
       ];
     });
-    const load = await simulator.load(project, items);
+    const load = await simulator.load(project, items, engineOptions(catalog));
     setResult({ id: scenario.id, load });
     useSimulation.setState({
       load: Object.fromEntries(load.links.map((l) => [l.linkId, l.ratio ?? 0])),
@@ -220,6 +223,36 @@ export function ScenariosPanel({ project }: { project: Project }) {
                 ) : (
                   <p className="m-0 text-body-sm text-text-secondary">{t('scenarios.noLoad')}</p>
                 )}
+                {shown.hosts.length > 0 ? (
+                  <ul aria-label={t('scenarios.hosts')} className="m-0 flex list-none flex-col p-0">
+                    {shown.hosts.map((h) => (
+                      <li
+                        key={h.host.id}
+                        className="flex gap-2 border-t border-border-subtle py-1 font-mono text-data-sm"
+                      >
+                        <span className="min-w-0 flex-1 truncate">
+                          {endpointName(project, { type: h.host.type, id: h.host.id })}
+                        </span>
+                        <span
+                          className={
+                            h.cpuRatio > 0.9
+                              ? 'text-error-text'
+                              : h.cpuRatio > 0.7
+                                ? 'text-warning-text'
+                                : 'text-text-secondary'
+                          }
+                        >
+                          {t('scenarios.hostLoad', {
+                            cpuBefore: Math.round(h.baselineCpuRatio * 100),
+                            cpu: Math.round(h.cpuRatio * 100),
+                            memBefore: Math.round(h.baselineMemoryRatio * 100),
+                            mem: Math.round(h.memoryRatio * 100),
+                          })}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
                 {shown.failed > 0 ? (
                   <p className="m-0 text-body-sm text-warning-text">
                     {t('scenarios.failed', { count: shown.failed })}

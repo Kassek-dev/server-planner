@@ -64,7 +64,7 @@ export interface Simulator {
   failure(project: Project, scenario: FailureScenario): Promise<FailureImpact>;
   spof(project: Project): Promise<SinglePointOfFailure[]>;
   /** FLW-06/07 link load of processes running together. */
-  load(project: Project, items: LoadItem[]): Promise<ScenarioLoad>;
+  load(project: Project, items: LoadItem[], options?: EngineOptions): Promise<ScenarioLoad>;
 }
 
 let shared: Remote<EngineWorkerApi> | null | undefined;
@@ -105,7 +105,7 @@ export function createSimulator(): Simulator {
       exposure: (p) => api.exposure(p),
       failure: (p, scenario) => api.failure(p, scenario),
       spof: (p) => api.spof(p),
-      load: (p, items) => api.load(p, items),
+      load: (p, items, o) => api.load(p, items, o ?? {}),
     };
   return {
     reach: async (p, q, o) => simulateReach(p, q, o ?? {}),
@@ -116,7 +116,7 @@ export function createSimulator(): Simulator {
     exposure: async (p) => simulateExposure(p),
     failure: async (p, scenario) => failureImpact(p, scenario),
     spof: async (p) => singlePointsOfFailure(p),
-    load: async (p, items) => simulateLoad(p, items),
+    load: async (p, items, o) => simulateLoad(p, items, o ?? {}),
   };
 }
 
