@@ -10,6 +10,7 @@ import {
   type FlowRunResult,
   type FlowTarget,
   failureImpact,
+  type Ipv6Exposure,
   type LoadItem,
   type ReachabilityResult,
   type ReachQuery,
@@ -19,6 +20,7 @@ import {
   sameDomain,
   simulateExposure,
   simulateFlow,
+  simulateIpv6Exposure,
   simulateLoad,
   simulateMatrix,
   simulateReach,
@@ -43,7 +45,14 @@ type Analyzer = (project: Project, options?: EngineOptions) => Promise<AnalysisR
 
 /** On-demand simulation queries (SIM-01, SIM-03, SIM-04, SIM-05) on a project snapshot. */
 export interface Simulator {
-  reach(project: Project, query: ReachQuery): Promise<ReachabilityResult>;
+  /** `family` (NET-17, 1.10): simulate IPv6 instead of IPv4. */
+  reach(
+    project: Project,
+    query: ReachQuery,
+    options?: { family?: 'ipv4' | 'ipv6' },
+  ): Promise<ReachabilityResult>;
+  /** NET-17: hosts whose IPv6 prefix the internet reaches directly. */
+  ipv6Exposure(project: Project): Promise<Ipv6Exposure[]>;
   visibleFrom(project: Project, viewpoint: EntityRef): Promise<ServiceVisibility[]>;
   runFlow(
     project: Project,
@@ -88,7 +97,8 @@ export function createSimulator(): Simulator {
   const api = engineWorker();
   if (api)
     return {
-      reach: (p, q) => api.reach(p, q),
+      reach: (p, q, o) => api.reach(p, q, o ?? {}),
+      ipv6Exposure: (p) => api.ipv6Exposure(p),
       visibleFrom: (p, v) => api.visibleFrom(p, v),
       runFlow: (p, input) => api.runFlow(p, input),
       matrix: (p, refs) => api.matrix(p, refs),
@@ -98,7 +108,8 @@ export function createSimulator(): Simulator {
       load: (p, items) => api.load(p, items),
     };
   return {
-    reach: async (p, q) => simulateReach(p, q),
+    reach: async (p, q, o) => simulateReach(p, q, o ?? {}),
+    ipv6Exposure: async (p) => simulateIpv6Exposure(p),
     visibleFrom: async (p, v) => simulateVisibleFrom(p, v),
     runFlow: async (p, input) => simulateFlow(p, input),
     matrix: async (p, refs) => simulateMatrix(p, refs),

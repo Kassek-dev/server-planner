@@ -380,6 +380,7 @@ Rozwinięcie uproszczeń z D12/D13.
 ### Etap 46 — Firewall hosta: ruch wychodzący (NET‑15)
 - [x] `HostFirewall.outbound?`, reguły `direction`/`destination`, `hostFirewallOut` u nadawcy, UI (Outgoing traffic, Direction)
 ### Etap 47 — IPv6 w symulacji (NET‑17)
+- [x] `EngineOptions.family` / `ctx.family`, `familyAssignments`, podsieć segmentu wg rodziny, brak NAT dla IPv6 (`SIM_NAT_NONE_IPV6`), `ipv6Exposure` (prefiks globalny vs ULA, firewall routera i hosta); przełącznik IPv4/IPv6 w Reachability, sekcja w Access
 ### Etap 48 — Internet klientów VPN: pełny / dzielony tunel (NET‑16)
 ### Etap 49 — Scenariusze obciążają CPU hostów (FLW‑07, CAP‑05)
 ### Etap 50 — Krok „Configure” w D‑05 (LIB‑05)
@@ -466,3 +467,4 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-17 | Etap 45: ceny podzespołów | #76 |
 | 2026-11-17 | **Wydanie v1.9.0** (etapy 43–45, bez zmiany schematu; D11: `Z` = 0) | tag `v1.9.0` (#77) |
 | 2026-11-17 | Etap 46: firewall hosta — ruch wychodzący | #78 |
+| 2026-11-24 | Etap 47: IPv6 w symulacji (NET‑17) | #79 |

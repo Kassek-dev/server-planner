@@ -7,6 +7,7 @@ import type {
   Protocol,
   Workload,
 } from '@server-planner/model';
+import ipaddr from 'ipaddr.js';
 import type { EngineContext } from '../context';
 import type { EntityRef, IssueFix } from '../types';
 import {
@@ -78,6 +79,9 @@ export const SIM_CODES = [
   'SIM_LOCAL',
   'SIM_NAT_MASQUERADE',
   'SIM_NAT_MISSING',
+  'SIM_NAT_NONE_IPV6',
+  'SIM_IPV6_GLOBAL',
+  'SIM_IPV6_LOCAL_ONLY',
   'SIM_SRC_NO_NETWORK',
   'SIM_WAN_NO_UPLINK',
   'SIM_FLOW_UNBOUND',
@@ -671,16 +675,22 @@ function attempt(
       apps: new Set(),
     };
     if (!firewall(ctx, t, router, srcSide, dstSide, q)) return t.result();
-    const nat = masquerade.find(
-      (m) =>
-        m.outInterfaceId === wan.id &&
-        (!m.sourceZoneIds?.length || (srcSide.zoneId && m.sourceZoneIds.includes(srcSide.zoneId))),
-    );
-    if (!nat) {
-      t.fail('nat', routerRef, 'SIM_NAT_MISSING', { router: router.name, interface: wan.name });
-      return t.result();
+    if (ctx.family === 'ipv6') {
+      // NET-17: IPv6 is routed as it is — no address translation on the way out.
+      t.pass('nat', routerRef, 'SIM_NAT_NONE_IPV6', { router: router.name, interface: wan.name });
+    } else {
+      const nat = masquerade.find(
+        (m) =>
+          m.outInterfaceId === wan.id &&
+          (!m.sourceZoneIds?.length ||
+            (srcSide.zoneId && m.sourceZoneIds.includes(srcSide.zoneId))),
+      );
+      if (!nat) {
+        t.fail('nat', routerRef, 'SIM_NAT_MISSING', { router: router.name, interface: wan.name });
+        return t.result();
+      }
+      t.pass('nat', routerRef, 'SIM_NAT_MASQUERADE', { router: router.name, interface: wan.name });
     }
-    t.pass('nat', routerRef, 'SIM_NAT_MASQUERADE', { router: router.name, interface: wan.name });
     const uplink = (ctx.linksByInterface.get(wan.id) ?? []).find((l) => {
       const peer = ctx.deviceOfInterface.get(l.a === wan.id ? l.b : l.a);
       return peer?.kind === 'internet';
@@ -960,6 +970,81 @@ export function exposure(ctx: EngineContext): Exposure[] {
     for (const rule of router.firewall?.nat ?? []) {
       if (rule.kind === 'port-forward') out.push(inbound(ctx, router, rule));
     }
+  }
+  return out;
+}
+
+/** NET-17 (1.10): whether a host's IPv6 prefix can be reached from the internet. */
+export interface Ipv6Exposure {
+  ref: EntityRef;
+  subnetId: string;
+  /** Global unicast prefix (routed on the internet); false for ULA / link-local. */
+  global: boolean;
+  result: ReachabilityResult;
+}
+
+const INFRA_KINDS = new Set(['internet', 'switch', 'access-point', 'patch-panel', 'ups', 'modem']);
+
+/**
+ * IPv6 has no address translation: a host with a global address is reachable from the internet
+ * unless the router firewall (and its own) stops it — no port forward needed. Checked for any TCP
+ * on every host and VM/LXC with an IPv6 attachment. `ctx` must be built with `family: 'ipv6'`.
+ */
+export function ipv6Exposure(ctx: EngineContext): Ipv6Exposure[] {
+  const p = ctx.project;
+  const out: Ipv6Exposure[] = [];
+  const owners: EntityRef[] = [
+    ...Object.values(p.devices)
+      .filter((d) => !INFRA_KINDS.has(d.kind) && d.kind !== 'router' && d.kind !== 'firewall')
+      .map((d) => ({ type: 'device' as const, id: d.id })),
+    ...Object.values(p.workloads)
+      .filter((w) => w.kind !== 'container')
+      .map((w) => ({ type: 'workload' as const, id: w.id })),
+  ];
+  for (const ref of owners) {
+    const att = ownerAttachments(ctx, ref.id).find((a) => a.subnetId);
+    const subnet = att?.subnetId ? p.subnets[att.subnetId] : undefined;
+    if (!att || !subnet) continue;
+    let global = false;
+    try {
+      global = ipaddr.parseCIDR(subnet.cidr)[0].range() === 'unicast';
+    } catch {
+      continue;
+    }
+    const t = new Trace(ctx);
+    const subnetRef: EntityRef = { type: 'subnet', id: subnet.id };
+    if (!global) {
+      t.fail('l3', subnetRef, 'SIM_IPV6_LOCAL_ONLY', { subnet: subnet.cidr });
+      out.push({ ref, subnetId: subnet.id, global, result: t.result() });
+      continue;
+    }
+    t.pass('l3', subnetRef, 'SIM_IPV6_GLOBAL', { subnet: subnet.cidr });
+    const gwIface = subnet.gateway ? findInterfaceByIp(ctx, subnet.gateway) : undefined;
+    const router = gwIface ? ctx.deviceOfInterface.get(gwIface.id) : undefined;
+    if (!router) {
+      t.fail('l3', subnetRef, 'SIM_L3_NO_GATEWAY', { subnet: subnet.cidr });
+      out.push({ ref, subnetId: subnet.id, global, result: t.result() });
+      continue;
+    }
+    t.devices.add(router.id);
+    const wanZone = Object.values(p.zones).find((z) => z.kind === 'wan')?.id;
+    const internet: Side = {
+      internet: true,
+      ...(wanZone ? { zoneId: wanZone } : {}),
+      devices: new Set(),
+      workloads: new Set(),
+      apps: new Set(),
+    };
+    const q: ReachQuery = { from: ref, to: ref, protocol: 'tcp' };
+    const dst = resolve(ctx, ref);
+    if (
+      firewall(ctx, t, router, internet, sideOf(ctx, dst, att), q) &&
+      hostFirewall(ctx, t, internet, att, q)
+    ) {
+      const device = ctx.deviceOfInterface.get(att.ifaceId);
+      if (device) t.target = device.id;
+    }
+    out.push({ ref, subnetId: subnet.id, global, result: t.result() });
   }
   return out;
 }

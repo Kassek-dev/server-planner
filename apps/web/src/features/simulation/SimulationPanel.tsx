@@ -122,6 +122,9 @@ function ReachTab({ project }: { project: Project }) {
   const protocol = (PROTOCOLS as string[]).includes(params.get('proto') ?? '')
     ? (params.get('proto') as Protocol)
     : 'tcp';
+  // NET-17 (1.10): simulate IPv6 instead of IPv4 when the project has IPv6 subnets.
+  const hasIpv6 = Object.values(project.subnets).some((s) => s.cidr.includes(':'));
+  const family = hasIpv6 && params.get('fam') === '6' ? 'ipv6' : 'ipv4';
   const portParam = Number(params.get('port'));
   const port =
     Number.isInteger(portParam) && portParam > 0 && portParam <= 65535 ? portParam : undefined;
@@ -138,7 +141,7 @@ function ReachTab({ project }: { project: Project }) {
   useEffect(() => () => useSimulation.setState({ highlight: null }), []);
 
   // The URL is the query: re-run whenever it or the project changes (e.g. after applying a fix).
-  const key = `${from?.id}|${to === 'internet' ? 'internet' : to?.id}|${protocol}|${port ?? ''}`;
+  const key = `${from?.id}|${to === 'internet' ? 'internet' : to?.id}|${protocol}|${port ?? ''}|${family}`;
   // biome-ignore lint/correctness/useExhaustiveDependencies: `key` captures from/to/protocol/port
   useEffect(() => {
     if (!from || !to) {
@@ -148,7 +151,7 @@ function ReachTab({ project }: { project: Project }) {
     }
     let cancelled = false;
     void simulator
-      .reach(project, { from, to, protocol, ...(port !== undefined ? { port } : {}) })
+      .reach(project, { from, to, protocol, ...(port !== undefined ? { port } : {}) }, { family })
       .then((r) => {
         if (cancelled) return;
         setResult(r);
@@ -210,6 +213,17 @@ function ReachTab({ project }: { project: Project }) {
             ...options,
           ]}
         />
+        {hasIpv6 ? (
+          <Segmented
+            label={t('reach.family')}
+            value={family}
+            onChange={(v) => update({ fam: v === 'ipv6' ? '6' : '' })}
+            options={[
+              { value: 'ipv4', label: 'IPv4' },
+              { value: 'ipv6', label: 'IPv6' },
+            ]}
+          />
+        ) : null}
         <div className="grid grid-cols-2 gap-3">
           <Select
             label={t('reach.protocol')}
