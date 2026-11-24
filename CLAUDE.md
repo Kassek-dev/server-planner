@@ -19,6 +19,7 @@ Open‑source'owa (MIT) aplikacja webowa do planowania home labów: canvas z urz
 | `docs/05-projekt-ui.md`      | zachowania ekranów, interakcje canvasu, inspector, przepływy, copy                                                          | każdy UI                |
 | `docs/06-zrodla-danych.md`   | źródła katalogu, licencje, adaptery, wydajność CPU                                                                          | katalog                 |
 | `docs/07-mapa-widokow.md`    | **spis wszystkich widoków z ID** (P/V/I/X/S/D/O/T/M), trasy, sitemapa, status makiet                                        | nowy widok / trasa      |
+| `docs/08-dalszy-rozwoj.md`  | przekazanie: stan, sposób pracy, pułapki utrzymania, otwarte uproszczenia i kandydaci na kolejne wersje, mapa kodu           | początek sesji          |
 | `docs/STATUS.md`             | postęp etapów implementacji                                                                                                 | początek i koniec pracy |
 | `docs/adr/`                  | decyzje architektoniczne                                                                                                    | zmiana architektury     |
 | `design/`                    | kopia canvasu z makietami + generatory                                                                                      | wygląd ekranu           |
@@ -78,7 +79,7 @@ Przed uznaniem pracy za skończoną: `pnpm lint && pnpm typecheck && pnpm test` 
 
 ## Sposób pracy
 
-1. Na początku sesji przeczytaj `docs/STATUS.md` i odpowiednie sekcje dokumentacji.
+1. Na początku sesji przeczytaj `docs/08-dalszy-rozwoj.md`, `docs/STATUS.md` i odpowiednie sekcje dokumentacji.
 2. Pracuj w kolejności etapów z `docs/03` § 11; funkcje P1/P2 dopiero po MVP, chyba że użytkownik zdecyduje inaczej.
 3. Nowa funkcja: znajdź jej ID w `01` i widok w `07`; wygląd z `04`/`05` i makiet.
 4. Testy razem z kodem: silniki i komendy — Vitest na fixture'ach; każdy błąd symulacji = nowy fixture.
