@@ -113,3 +113,27 @@ test('device model from the library and in the Hardware tab (D-05)', async ({ pa
   await forNas.getByRole('button', { name: 'Synology DiskStation DS920+' }).dblclick();
   await expect(panel.getByText('Synology DiskStation DS920+')).toBeVisible();
 });
+
+test('configure a model before adding it: memory, a disk and a 10G card (LIB-05)', async ({
+  page,
+}) => {
+  await openExample(page);
+  await page.getByRole('button', { name: 'Browse device models' }).click();
+  const picker = page.getByRole('dialog', { name: 'Browse device models' });
+  await picker.getByRole('searchbox', { name: 'Search models or CPUs' }).fill('m720q');
+  await picker.getByRole('button', { name: 'Lenovo ThinkCentre M720q Tiny' }).click();
+  await picker.getByRole('button', { name: 'Configure…' }).click();
+  await expect(picker.getByText(/Free on this model: 1 PCIe, 0 M\.2, 1 SATA/)).toBeVisible();
+  await picker.getByLabel('Memory').selectOption({ label: '2× 32 GiB DDR4-3200' });
+  await picker.getByLabel('Add a disk').selectOption({ label: 'ssd-sata 1 TB' });
+  await picker.getByRole('checkbox', { name: 'Intel X520-DA2 (PCIe)' }).check();
+  // The only PCIe slot is taken now.
+  await expect(picker.getByRole('checkbox', { name: 'Intel I350-T4 (PCIe)' })).toBeDisabled();
+  await picker.getByRole('button', { name: 'Use this model' }).click();
+
+  const panel = inspector(page);
+  await panel.getByRole('tab', { name: 'Hardware' }).click();
+  await expect(panel.getByText('PCIe 1/1')).toBeVisible();
+  await expect(panel.getByText('ports card1p0, card1p1')).toBeVisible();
+  await expect(panel.getByRole('textbox', { name: 'Size' }).first()).toHaveValue('32 GiB');
+});

@@ -8,6 +8,7 @@ import { Checkbox } from '../../ui/Checkbox';
 import { Dialog } from '../../ui/Dialog';
 import { Select } from '../../ui/Select';
 import { matchesSpec, type SpecFilter } from './helpers';
+import { EMPTY_CONFIG, type ModelConfig, ModelConfigure } from './ModelConfigure';
 
 /**
  * D-05 Device model picker (docs/07): filters by type, vendor and spec (LIB-02: CPU, RAM, ports,
@@ -25,7 +26,8 @@ export function DeviceModelPicker({
   /** Fixed kind (Hardware › Model); without it every kind is offered (library). */
   kind?: DeviceKind;
   title: string;
-  onPick: (model: CatalogDevice, catalogVersion: string) => void;
+  /** `config` (LIB-05, 1.10): what the Configure step adds to the model as shipped. */
+  onPick: (model: CatalogDevice, catalogVersion: string, config?: ModelConfig) => void;
 }) {
   const { t } = useTranslation('catalog');
   const catalog = useCatalog((s) => s.catalog);
@@ -34,6 +36,8 @@ export function DeviceModelPicker({
   const [query, setQuery] = useState('');
   const [spec, setSpec] = useState<SpecFilter>({});
   const [chosen, setChosen] = useState<string | null>(null);
+  const [step, setStep] = useState<'list' | 'configure'>('list');
+  const [config, setConfig] = useState<ModelConfig>(EMPTY_CONFIG);
 
   useEffect(() => {
     if (open) void useCatalog.getState().load();
@@ -75,13 +79,31 @@ export function DeviceModelPicker({
                 })
               : t('models.pick')}
           </span>
-          <Button onClick={() => onOpenChange(false)}>{t('cancel')}</Button>
+          {step === 'configure' ? (
+            <Button onClick={() => setStep('list')}>{t('configure.back')}</Button>
+          ) : (
+            <Button onClick={() => onOpenChange(false)}>{t('cancel')}</Button>
+          )}
+          {step === 'list' ? (
+            <Button
+              disabled={!selected || !catalog}
+              onClick={() => {
+                setConfig(EMPTY_CONFIG);
+                setStep('configure');
+              }}
+            >
+              {t('configure.open')}
+            </Button>
+          ) : null}
           <Button
             variant="primary"
             disabled={!selected || !catalog}
             onClick={() => {
               if (!selected || !catalog) return;
-              onPick(selected, catalog.catalogVersion);
+              const configured =
+                step === 'configure' &&
+                (config.memory || config.disks.length > 0 || config.cards.length > 0);
+              onPick(selected, catalog.catalogVersion, configured ? config : undefined);
               onOpenChange(false);
             }}
           >
@@ -90,120 +112,126 @@ export function DeviceModelPicker({
         </>
       }
     >
-      <div className="flex h-[480px] min-h-0">
-        <div className="flex w-55 shrink-0 flex-col gap-4 overflow-auto border-r border-border-subtle p-4">
-          {kind ? null : (
+      {step === 'configure' && selected ? (
+        <div className="flex h-[480px] min-h-0 flex-col">
+          <ModelConfigure model={selected} config={config} onChange={setConfig} />
+        </div>
+      ) : (
+        <div className="flex h-[480px] min-h-0">
+          <div className="flex w-55 shrink-0 flex-col gap-4 overflow-auto border-r border-border-subtle p-4">
+            {kind ? null : (
+              <fieldset className="m-0 flex flex-col gap-1.5 border-0 p-0">
+                <legend className="mb-1.5 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
+                  {t('models.type')}
+                </legend>
+                {kindOptions.map((k) => (
+                  <Checkbox
+                    key={k}
+                    label={t(`canvas:deviceKind.${k}`)}
+                    checked={kinds.includes(k)}
+                    onChange={() => toggle(kinds, setKinds, k)}
+                  />
+                ))}
+              </fieldset>
+            )}
             <fieldset className="m-0 flex flex-col gap-1.5 border-0 p-0">
               <legend className="mb-1.5 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
-                {t('models.type')}
+                {t('models.vendor')}
               </legend>
-              {kindOptions.map((k) => (
+              {vendorOptions.map((v) => (
                 <Checkbox
-                  key={k}
-                  label={t(`canvas:deviceKind.${k}`)}
-                  checked={kinds.includes(k)}
-                  onChange={() => toggle(kinds, setKinds, k)}
+                  key={v}
+                  label={v}
+                  checked={vendors.includes(v)}
+                  onChange={() => toggle(vendors, setVendors, v)}
                 />
               ))}
             </fieldset>
-          )}
-          <fieldset className="m-0 flex flex-col gap-1.5 border-0 p-0">
-            <legend className="mb-1.5 font-mono text-label font-semibold tracking-[0.08em] text-text-secondary uppercase">
-              {t('models.vendor')}
-            </legend>
-            {vendorOptions.map((v) => (
-              <Checkbox
-                key={v}
-                label={v}
-                checked={vendors.includes(v)}
-                onChange={() => toggle(vendors, setVendors, v)}
-              />
-            ))}
-          </fieldset>
-          <SpecFilters spec={spec} onChange={setSpec} />
-        </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-auto p-4">
-          <input
-            type="search"
-            aria-label={t('models.search')}
-            placeholder={t('models.search')}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="h-8 shrink-0 rounded-md border border-border-default bg-inset px-2.5 text-body text-text-primary outline-none focus:border-accent"
-          />
-          <span className="font-mono text-data-sm text-text-muted" role="status">
-            {t('models.results', { count: results.length })} · {t('models.perfHint')}
-          </span>
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="font-mono text-label tracking-[0.08em] text-text-secondary uppercase">
-                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.model')}</th>
-                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.cpu')}</th>
-                <th className="py-1.5 pr-3 font-semibold" title={t('models.perfHint')}>
-                  {t('models.columns.perf')}
-                </th>
-                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.ram')}</th>
-                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.nic')}</th>
-                <th className="py-1.5 pr-3 font-semibold">{t('models.columns.idle')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((d) => {
-                const cpu = d.hardware.cpus[0];
-                const mem = d.hardware.memory;
-                const wired = d.ports.filter((p) => p.kind !== 'wifi-radio');
-                const active = d.id === chosen;
-                return (
-                  <tr
-                    key={d.id}
-                    aria-selected={active}
-                    className={`border-t border-border-subtle ${active ? 'bg-accent-subtle' : 'hover:bg-tile-header'}`}
-                  >
-                    <td className="py-2 pr-3">
-                      <button
-                        type="button"
-                        className="text-left font-semibold"
-                        onClick={() => setChosen(d.id)}
-                        onDoubleClick={() => {
-                          if (!catalog) return;
-                          onPick(d, catalog.catalogVersion);
-                          onOpenChange(false);
-                        }}
-                      >
-                        {modelName(d)}
-                      </button>
-                    </td>
-                    <td className="py-2 pr-3 font-mono text-data">
-                      {cpu
-                        ? `${cpu.model.replace(/^(Intel|AMD) /, '')} · ${cpu.cores}C/${cpu.threads}T${d.hardware.cpus.length > 1 ? ` × ${d.hardware.cpus.length}` : ''}`
-                        : '—'}
-                    </td>
-                    <td className="py-2 pr-3">
-                      <PerfCell
-                        cpus={d.hardware.cpus}
-                        label={t('models.perfLabel', { model: modelName(d) })}
-                      />
-                    </td>
-                    <td className="py-2 pr-3 font-mono text-data">
-                      {mem?.maxBytes
-                        ? `${formatSize(mem.maxBytes)}${mem.slotsTotal ? ` · ${mem.slotsTotal}` : ''}`
-                        : mem?.modules[0]
-                          ? formatSize(mem.modules[0].sizeBytes)
+            <SpecFilters spec={spec} onChange={setSpec} />
+          </div>
+          <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-auto p-4">
+            <input
+              type="search"
+              aria-label={t('models.search')}
+              placeholder={t('models.search')}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="h-8 shrink-0 rounded-md border border-border-default bg-inset px-2.5 text-body text-text-primary outline-none focus:border-accent"
+            />
+            <span className="font-mono text-data-sm text-text-muted" role="status">
+              {t('models.results', { count: results.length })} · {t('models.perfHint')}
+            </span>
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="font-mono text-label tracking-[0.08em] text-text-secondary uppercase">
+                  <th className="py-1.5 pr-3 font-semibold">{t('models.columns.model')}</th>
+                  <th className="py-1.5 pr-3 font-semibold">{t('models.columns.cpu')}</th>
+                  <th className="py-1.5 pr-3 font-semibold" title={t('models.perfHint')}>
+                    {t('models.columns.perf')}
+                  </th>
+                  <th className="py-1.5 pr-3 font-semibold">{t('models.columns.ram')}</th>
+                  <th className="py-1.5 pr-3 font-semibold">{t('models.columns.nic')}</th>
+                  <th className="py-1.5 pr-3 font-semibold">{t('models.columns.idle')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((d) => {
+                  const cpu = d.hardware.cpus[0];
+                  const mem = d.hardware.memory;
+                  const wired = d.ports.filter((p) => p.kind !== 'wifi-radio');
+                  const active = d.id === chosen;
+                  return (
+                    <tr
+                      key={d.id}
+                      aria-selected={active}
+                      className={`border-t border-border-subtle ${active ? 'bg-accent-subtle' : 'hover:bg-tile-header'}`}
+                    >
+                      <td className="py-2 pr-3">
+                        <button
+                          type="button"
+                          className="text-left font-semibold"
+                          onClick={() => setChosen(d.id)}
+                          onDoubleClick={() => {
+                            if (!catalog) return;
+                            onPick(d, catalog.catalogVersion);
+                            onOpenChange(false);
+                          }}
+                        >
+                          {modelName(d)}
+                        </button>
+                      </td>
+                      <td className="py-2 pr-3 font-mono text-data">
+                        {cpu
+                          ? `${cpu.model.replace(/^(Intel|AMD) /, '')} · ${cpu.cores}C/${cpu.threads}T${d.hardware.cpus.length > 1 ? ` × ${d.hardware.cpus.length}` : ''}`
                           : '—'}
-                    </td>
-                    <td className="py-2 pr-3 font-mono text-data">
-                      {portSummary(wired.map((p) => p.speedMbps))}
-                    </td>
-                    <td className="py-2 font-mono text-data">
-                      {d.hardware.power ? `${d.hardware.power.idleW} W` : '—'}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="py-2 pr-3">
+                        <PerfCell
+                          cpus={d.hardware.cpus}
+                          label={t('models.perfLabel', { model: modelName(d) })}
+                        />
+                      </td>
+                      <td className="py-2 pr-3 font-mono text-data">
+                        {mem?.maxBytes
+                          ? `${formatSize(mem.maxBytes)}${mem.slotsTotal ? ` · ${mem.slotsTotal}` : ''}`
+                          : mem?.modules[0]
+                            ? formatSize(mem.modules[0].sizeBytes)
+                            : '—'}
+                      </td>
+                      <td className="py-2 pr-3 font-mono text-data">
+                        {portSummary(wired.map((p) => p.speedMbps))}
+                      </td>
+                      <td className="py-2 font-mono text-data">
+                        {d.hardware.power ? `${d.hardware.power.idleW} W` : '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </Dialog>
   );
 }

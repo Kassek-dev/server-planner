@@ -386,6 +386,7 @@ Rozwinięcie uproszczeń z D12/D13.
 ### Etap 49 — Scenariusze obciążają CPU hostów (FLW‑07, CAP‑05)
 - [x] `LoadItem.appId/catalogAppId`, `ScenarioLoad.hosts` (pierwszy parametr profilu = suma liczb, capacity Expected przed/po, urządzenia i VM/LXC), opcje silnika z katalogu w `load`; lista hostów w wynikach
 ### Etap 50 — Krok „Configure” w D‑05 (LIB‑05)
+- [x] `ModelConfigure` (zestawy RAM w limitach modelu, dyski w wolnych zatokach/M.2, karty w wolnych slotach), drugi krok w `DeviceModelPicker`, `configCommands` po dodaniu urządzenia lub zmianie modelu
 ### Etap 51 — Etykiety taśmowe i flagi kabli (LBL‑04)
 
 ## Dziennik
@@ -471,4 +472,5 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-17 | Etap 46: firewall hosta — ruch wychodzący | #78 |
 | 2026-11-24 | Etap 47: IPv6 w symulacji (NET‑17) | #84 |
 | 2026-11-24 | Etap 48: internet klientów VPN (NET‑16) | #85 |
-| 2026-11-24 | Etap 49: scenariusze obciążają hosty (FLW‑07) | — |
+| 2026-11-24 | Etap 49: scenariusze obciążają hosty (FLW‑07) | #86 |
+| 2026-11-24 | Etap 50: krok „Configure” w D‑05 (LIB‑05) | — |

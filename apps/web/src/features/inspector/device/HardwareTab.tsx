@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatSize, parseSize } from '../../../app/format';
 import { catalogCorrectionUrl } from '../../../app/links';
-import { useSession } from '../../../app/services';
+import { useServices, useSession } from '../../../app/services';
 import { catalogDevice, useCatalog } from '../../../catalog/store';
 import { Silhouette, type SilhouetteName } from '../../../icons/devices';
 import { useResults } from '../../../store/results';
@@ -30,6 +30,7 @@ import { Segmented } from '../../../ui/Segmented';
 import { Select } from '../../../ui/Select';
 import { TextField } from '../../../ui/TextField';
 import { DeviceModelPicker, modelName } from '../../catalog/DeviceModelPicker';
+import { configCommands } from '../../catalog/ModelConfigure';
 import {
   AddButton,
   Card,
@@ -1025,6 +1026,7 @@ function LocationSection({ project, device }: { project: Project; device: Device
 function ModelSection({ device }: { device: Device }) {
   const { t } = useTranslation(['inspector', 'canvas']);
   const run = useCommand();
+  const { session } = useServices();
   const catalog = useCatalog((s) => s.catalog);
   const [open, setOpen] = useState(false);
   const model = device.catalogRef ? catalogDevice(catalog, device.catalogRef.id) : undefined;
@@ -1103,9 +1105,13 @@ function ModelSection({ device }: { device: Device }) {
           onOpenChange={setOpen}
           kind={device.kind}
           title={t('hardware.chooseModelFor', { name: device.name })}
-          onPick={(picked, catalogVersion) =>
-            run(applyDeviceModel, { id: device.id, model: picked, catalogVersion })
-          }
+          onPick={(picked, catalogVersion, config) => {
+            run(applyDeviceModel, { id: device.id, model: picked, catalogVersion });
+            // LIB-05: what the Configure step added, on the device with its new model.
+            const project = session.getState().project;
+            if (config && project)
+              for (const s of configCommands(project, device.id, config)) run(s.command, s.payload);
+          }}
         />
       ) : null}
     </Section>

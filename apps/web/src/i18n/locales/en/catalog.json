@@ -1,4 +1,17 @@
 {
+  "configure": {
+    "open": "Configure…",
+    "back": "Back",
+    "slots": "Free on this model: {pcie} PCIe, {m2} M.2, {sata} SATA (after the disks it ships with).",
+    "noSlots": "The catalog does not list this model's slots — anything can be added; check it fits.",
+    "memory": "Memory",
+    "asShipped": "As shipped ({size})",
+    "disks": "Extra disks",
+    "addDisk": "Add a disk",
+    "choose": "Choose…",
+    "remove": "Remove",
+    "cards": "Add-in cards"
+  },
   "cancel": "Cancel",
   "confidence": {
     "curated": "curated",
