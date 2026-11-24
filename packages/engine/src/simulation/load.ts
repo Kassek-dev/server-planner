@@ -1,5 +1,6 @@
 import type { CatalogFlow, Id, Link } from '@server-planner/model';
-import type { EngineContext } from '../context';
+import { capacity } from '../capacity';
+import { buildContext, type EngineContext, type EngineOptions } from '../context';
 import { type FlowTarget, runFlow } from './flow';
 
 /**
@@ -13,6 +14,19 @@ export interface LoadItem {
   flow: CatalogFlow;
   bindings: Record<string, FlowTarget | undefined>;
   count: number;
+  /** 1.10: the app whose process this is, and its catalog entry (for its load profile). */
+  appId?: Id;
+  catalogAppId?: string;
+}
+
+/** 1.10: CPU and memory of a host while the scenario runs, against its expected use now. */
+export interface HostLoad {
+  /** A device, or a VM/LXC (its allocation caps what it passes on to its host). */
+  host: { type: 'device' | 'workload'; id: Id };
+  cpuRatio: number;
+  baselineCpuRatio: number;
+  memoryRatio: number;
+  baselineMemoryRatio: number;
 }
 
 export interface LinkLoad {
@@ -29,7 +43,79 @@ export interface ScenarioLoad {
   bottleneck?: Id;
   /** Items whose flow did not get through (blocked or unknown hops are not counted). */
   failed: number;
+  /** Hosts whose expected CPU or memory changes with the scenario (apps with a load profile). */
+  hosts: HostLoad[];
 }
+
+/**
+ * FLW-07 × CAP-05: the scenario's count becomes the first parameter of each app's load profile
+ * (e.g. 3 streams → transcodes = 3); hosts are compared in the expected mode before and after.
+ */
+function hostLoad(ctx: EngineContext, items: LoadItem[]): HostLoad[] {
+  const perApp = new Map<Id, { count: number; catalogAppId?: string }>();
+  for (const item of items) {
+    if (!item.appId || !ctx.project.apps[item.appId]) continue;
+    const entry = perApp.get(item.appId) ?? { count: 0 };
+    entry.count += item.count;
+    if (item.catalogAppId) entry.catalogAppId = item.catalogAppId;
+    perApp.set(item.appId, entry);
+  }
+  if (perApp.size === 0) return [];
+  const apps = { ...ctx.project.apps };
+  let changed = false;
+  for (const [appId, { count, catalogAppId }] of perApp) {
+    const app = apps[appId];
+    if (!app) continue;
+    const catalogId = app.catalogRef?.id ?? catalogAppId;
+    const profiles = catalogId ? ctx.loadProfiles[catalogId] : undefined;
+    const profile =
+      profiles?.find((p) => p.id === app.loadProfile?.profileId) ??
+      profiles?.find((p) => p.id === 'typical');
+    const param = profile?.params?.[0];
+    if (!profile || !param || !catalogId) continue;
+    apps[appId] = {
+      ...app,
+      ...(app.catalogRef ? {} : { catalogRef: { id: catalogId, version: '' } }),
+      loadProfile: {
+        profileId: profile.id,
+        params: { ...app.loadProfile?.params, [param.key]: Math.min(param.max, count) },
+      },
+    };
+    changed = true;
+  }
+  if (!changed) return [];
+  const before = capacity(ctx, 'expected');
+  const after = capacity(buildContext({ ...ctx.project, apps }, optionsOf(ctx)), 'expected');
+  const out: HostLoad[] = [];
+  for (const [id, report] of Object.entries(after)) {
+    if (report.host.type !== 'device' && report.host.type !== 'workload') continue;
+    const base = before[id];
+    if (!base) continue;
+    if (
+      Math.abs(report.cpu.ratio - base.cpu.ratio) < 1e-9 &&
+      Math.abs(report.memory.ratio - base.memory.ratio) < 1e-9
+    )
+      continue;
+    out.push({
+      host: { type: report.host.type, id },
+      cpuRatio: report.cpu.ratio,
+      baselineCpuRatio: base.cpu.ratio,
+      memoryRatio: report.memory.ratio,
+      baselineMemoryRatio: base.memory.ratio,
+    });
+  }
+  return out.sort((a, b) => b.cpuRatio - a.cpuRatio);
+}
+
+/** The options a context was built with (to build a changed copy the same way). */
+const optionsOf = (ctx: EngineContext): EngineOptions => ({
+  osOverhead: ctx.osOverhead,
+  loadProfiles: ctx.loadProfiles,
+  imageArch: ctx.imageArch,
+  osArch: ctx.osArch,
+  modelBaselines: ctx.modelBaselines,
+  family: ctx.family,
+});
 
 function linkSpeed(ctx: EngineContext, link: Link): number | undefined {
   const speeds = [link.a, link.b]
@@ -86,5 +172,5 @@ export function scenarioLoad(ctx: EngineContext, items: LoadItem[]): ScenarioLoa
   }
   links.sort((a, b) => (b.ratio ?? -1) - (a.ratio ?? -1) || b.loadMbps - a.loadMbps);
   const top = links[0];
-  return { links, ...(top ? { bottleneck: top.linkId } : {}), failed };
+  return { links, ...(top ? { bottleneck: top.linkId } : {}), failed, hosts: hostLoad(ctx, items) };
 }
