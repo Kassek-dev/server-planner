@@ -2,6 +2,13 @@
 
 All notable changes to Server Planner. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/) — 1.0.0 is the completed MVP.
 
+## [Unreleased]
+
+### Dependencies
+
+- i18next 27.1.2, lucide-react 1.73.0, yaml 2.9.1 (#81–#83).
+- Tooling: Biome 2.6.8 (config schema updated), Vite 8.3.8 (#79); testing: Vitest 5.1.1, Playwright 1.65.1, jsdom 31.0.1 (#91).
+
 ## [1.10.0] — 2026-11-24
 
 Simpler ways through things that used to take several steps: IPv6 in the simulator, VPN clients on the internet, scenarios that load hosts, configuring a model as you pick it, and labels for tape printers.

@@ -477,3 +477,4 @@ Rozwinięcie uproszczeń z D12/D13.
 | 2026-11-24 | Etap 50: krok „Configure” w D‑05 (LIB‑05) | #87 |
 | 2026-11-24 | Etap 51: etykiety taśmowe i flagi kabli (LBL‑04) | #88 |
 | 2026-11-24 | Wydanie v1.10.0 | #89 |
+| 2026-11-24 | Zależności po 1.10: i18next, lucide-react, yaml, Biome 2.6.8 (schemat `biome.json`), Vite, Vitest, Playwright 1.65.1 (lokalnie `playwright install chromium`), jsdom; wszystkie kontrole zielone (373 unit, 80 E2E) | #79, #81–#83, #91 |
