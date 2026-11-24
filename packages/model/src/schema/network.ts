@@ -156,6 +156,11 @@ export const ZoneSchema = z.object({
     .object({
       serverAppId: IdSchema,
       protocol: z.enum(['wireguard', 'tailscale', 'openvpn']),
+      /**
+       * 1.10: `full` — clients reach the internet through the lab (the router's WAN); `split` —
+       * only lab traffic goes through the tunnel. Absent = full.
+       */
+      tunnel: z.enum(['full', 'split']).optional(),
     })
     .optional(),
 });
