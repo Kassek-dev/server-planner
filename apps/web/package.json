@@ -22,7 +22,7 @@
     "comlink": "4.4.2",
     "html-to-image": "1.11.13",
     "i18next": "27.1.2",
-    "i18next-icu": "2.7.0",
+    "i18next-icu": "2.7.1",
     "idb": "8.0.4",
     "intl-messageformat": "12.1.5",
     "lucide-react": "1.73.0",
