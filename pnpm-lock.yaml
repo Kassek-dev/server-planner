@@ -215,8 +215,8 @@ importers:
         specifier: 1.11.13
         version: 1.11.13
       i18next:
-        specifier: 27.1.2
-        version: 27.1.2(typescript@7.0.2)
+        specifier: 27.2.4
+        version: 27.2.4(typescript@7.0.2)
       i18next-icu:
         specifier: 2.7.0
         version: 2.7.0(intl-messageformat@12.1.5)
@@ -237,7 +237,7 @@ importers:
         version: 19.3.1(react@19.3.1)
       react-i18next:
         specifier: 18.0.1
-        version: 18.0.1(@types/react@19.3.0)(i18next@27.1.2(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2)
+        version: 18.0.1(@types/react@19.3.0)(i18next@27.2.4(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2)
       react-router:
         specifier: 8.5.1
         version: 8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -2498,8 +2498,8 @@ packages:
     peerDependencies:
       intl-messageformat: '>=10.3.3 <13.0.0'
 
-  i18next@27.1.2:
-    resolution: {integrity: sha512-851D6dY9vuhn9hF0p5KpY7FPeYnm3P73tqyX2nxfsjeEYVg7Du0Fflw0rJtv7nFnZcDQS0+Hqn0UP6+SPx8mew==}
+  i18next@27.2.4:
+    resolution: {integrity: sha512-Twhl6dx3IznvyQEv7rrYH2xBMAmOIjNuj/lPicevTa0d/fxg4Km315MlAI07SOWQcw2pypA4qf39RoMJgJ8WEQ==}
     engines: {node: '>=22'}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
@@ -5623,7 +5623,7 @@ snapshots:
     dependencies:
       intl-messageformat: 12.1.5
 
-  i18next@27.1.2(typescript@7.0.2):
+  i18next@27.2.4(typescript@7.0.2):
     optionalDependencies:
       typescript: 7.0.2
 
@@ -5993,10 +5993,10 @@ snapshots:
       react: 19.3.1
       scheduler: 0.28.0
 
-  react-i18next@18.0.1(@types/react@19.3.0)(i18next@27.1.2(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2):
+  react-i18next@18.0.1(@types/react@19.3.0)(i18next@27.2.4(typescript@7.0.2))(react@19.3.1)(typescript@7.0.2):
     dependencies:
       html-parse-stringify: 4.0.1
-      i18next: 27.1.2(typescript@7.0.2)
+      i18next: 27.2.4(typescript@7.0.2)
       react: 19.3.1
     optionalDependencies:
       '@types/react': 19.3.0
