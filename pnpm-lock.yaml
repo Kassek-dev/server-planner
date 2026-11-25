@@ -219,13 +219,13 @@ importers:
         version: 27.1.2(typescript@7.0.2)
       i18next-icu:
         specifier: 2.7.0
-        version: 2.7.0(intl-messageformat@12.1.5)
+        version: 2.7.0(intl-messageformat@12.2.0)
       idb:
         specifier: 8.0.4
         version: 8.0.4
       intl-messageformat:
-        specifier: 12.1.5
-        version: 12.1.5
+        specifier: 12.2.0
+        version: 12.2.0
       lucide-react:
         specifier: 1.73.0
         version: 1.73.0(@types/react@19.3.0)(react@19.3.1)
@@ -2520,8 +2520,8 @@ packages:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
 
-  intl-messageformat@12.1.5:
-    resolution: {integrity: sha512-quhcDFAxy4wr/GrgWgmMjuegoedNUIxGNLORfXgDgdjuv8cBM88ClLTLXmfYC1roMSR1PPc55yUEkpJ5m67W2g==}
+  intl-messageformat@12.2.0:
+    resolution: {integrity: sha512-zFzW80iYSSJm4V185g3ItJQ96lBZ2RDO8O8qmRiPAAVKYXJeHfDQN2ITdtLlV+CjSi9Lo7zVW9xGt9CPCx7J6A==}
 
   ipaddr.js@2.5.0:
     resolution: {integrity: sha512-aq+t5NAc+cS6rZQQVWC2x98CPqGtKKTMDd4Gaodv0wShnItdKg/51djkGJ1hqH+Oy0ivDftCbSLCQob8zso01w==}
@@ -5619,9 +5619,9 @@ snapshots:
 
   html-to-image@1.11.13: {}
 
-  i18next-icu@2.7.0(intl-messageformat@12.1.5):
+  i18next-icu@2.7.0(intl-messageformat@12.2.0):
     dependencies:
-      intl-messageformat: 12.1.5
+      intl-messageformat: 12.2.0
 
   i18next@27.1.2(typescript@7.0.2):
     optionalDependencies:
@@ -5639,7 +5639,7 @@ snapshots:
       hasown: 2.0.4
       side-channel: 1.1.1
 
-  intl-messageformat@12.1.5:
+  intl-messageformat@12.2.0:
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
       '@formatjs/icu-messageformat-parser': 3.5.23
